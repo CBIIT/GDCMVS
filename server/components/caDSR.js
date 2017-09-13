@@ -105,18 +105,15 @@ var loadDataAfter = function(){
 	let content = fs.readFileSync("./synonyms.js").toString();
 	content = content.replace(/}{/g, ",");
 	let syns = JSON.parse(content);
-	//load data from conceptcode
-	let cc = fs.readFileSync("./conceptcode.js").toString();
+	//load data from codeTodo.js
+	let cc = fs.readFileSync("./codeTodo.js").toString();
 	let codes = JSON.parse(cc);
-	for(var c in codes){
-		let enums = codes[c];
-		for(var nm in enums){
-			if(enums[nm] !== "" && !(enums[nm] in syns) && ncitids.indexOf(enums[nm]) == -1){
-				ncitids.push(enums[nm]);
-			}
+	codes.forEach(function(cd){
+		if(!(cd in syns) && ncitids.indexOf(cd) == -1){
+			ncitids.push(cd);
 		}
-	}
-	//check what data is missing 
+	})
+	//get data
 	synchronziedLoadSynonmys(ncitids, 0);
 };
 

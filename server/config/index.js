@@ -16,11 +16,17 @@ var all = {
 	// Node environment (dev, test, stage, prod), must select one.
 	env: process.env.NODE_ENV || 'prod',
 
-	//gdc index name for building elasticsearch indices
+	//general gdc index name
 	indexName: 'gdc',
 
 	//suggestion index name for typeahead
 	suggestionName: 'gdc-suggestion',
+
+	//index name for properties
+	index_p: 'gdc-p',
+
+	//index name for values
+	index_v: 'gdc-v',
 
 	//get data from caDSR
 	caDSR_url:[

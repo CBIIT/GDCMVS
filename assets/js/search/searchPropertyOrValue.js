@@ -407,13 +407,20 @@ function render(keyword,option, items){
                                 let tmp = {};
                                 tmp.nm = enums[em];
                                 // debugger;
-                                if(prop.ref !== undefined){
-                                    prop.ref.forEach(function(r){
-                                        if(r.pv === em){
-                                            tmp.cd = r.code;
+                                // if(prop.ref !== undefined){
+                                //     prop.ref.forEach(function(r){
+                                //         if(r.pv === em){
+                                //             tmp.cd = r.code;
+                                //         }
+                                //     });
+                                // }
+                                if(prop.name == 'morphology'){
+                                    prop.syns.forEach(function(ss){
+                                        if(ss.pv === em){
+                                            tmp.cd = ss.code;
                                         }
                                     });
-                                }
+                                }   
                                 tmp.pn = p.title;
                                 tmp.category = item.category;
                                 tmp.nd = item.id;
@@ -422,7 +429,8 @@ function render(keyword,option, items){
                                 if(tmp.lk === 'caDSR'){
                                     tmp.uid = prop.term.termDef.cde_id;
                                     //external values if exists
-                                    tmp.evs = prop.syns;
+                                    //tmp.evs = prop.syns;
+                                    tmp.cde_len = prop.cde_len;
                                 }
                                 else if(tmp.lk !== '--'){
                                     tmp.uid = prop.term.termDef.term_url;
@@ -436,7 +444,7 @@ function render(keyword,option, items){
                                         delete matched_cde[em.toLowerCase()];
                                     }
                                 }
-                                if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
+                                if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis' || prop.name == 'morphology'){
                                     tmp.list_syns = prop.syns;
                                 }
                                 vs.push(tmp);
@@ -473,10 +481,17 @@ function render(keyword,option, items){
                                 e.highlight = true;
                                 let tmp = {};
                                 tmp.nm = enums_oneof[em];
-                                if(prop.ref !== undefined){
-                                    prop.ref.forEach(function(r){
-                                        if(r.pv === em){
-                                            tmp.cd = r.code;
+                                // if(prop.ref !== undefined){
+                                //     prop.ref.forEach(function(r){
+                                //         if(r.pv === em){
+                                //             tmp.cd = r.code;
+                                //         }
+                                //     });
+                                // }
+                                if(prop.name == 'morphology'){
+                                    prop.syns.forEach(function(ss){
+                                        if(ss.pv === em){
+                                            tmp.cd = ss.code;
                                         }
                                     });
                                 }
@@ -488,7 +503,8 @@ function render(keyword,option, items){
                                 if(tmp.lk === 'caDSR'){
                                     tmp.uid = prop.term.termDef.cde_id;
                                     //external values if exists
-                                    tmp.evs = prop.syns;
+                                    //tmp.evs = prop.syns;
+                                    tmp.cde_len = prop.cde_len;
                                 }
                                 else if(tmp.lk !== '--'){
                                     tmp.uid = prop.term.termDef.term_url;
@@ -496,7 +512,7 @@ function render(keyword,option, items){
                                 else{
                                     tmp.uid = "--";
                                 }
-                                if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
+                                if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis' || prop.name == 'morphology'){
                                     tmp.list_syns = prop.syns;
                                 }
                                 vs.push(tmp);
@@ -554,13 +570,20 @@ function render(keyword,option, items){
                             let tmp = {};
                             let t_n = nm.trim().toLowerCase();
                             tmp.nm = ems[t_n] !== undefined ? ems[t_n] :'--';
-                            if(prop.ref !== undefined){
-                                prop.ref.forEach(function(r){
-                                    if(r.pv === nm){
-                                        tmp.cd = r.code;
-                                    }
-                                });
-                            }
+                            // if(prop.ref !== undefined){
+                            //     prop.ref.forEach(function(r){
+                            //         if(r.pv === nm){
+                            //             tmp.cd = r.code;
+                            //         }
+                            //     });
+                            // }
+                            if(prop.name == 'morphology'){
+                                    prop.syns.forEach(function(ss){
+                                        if(ss.pv === tmp.nm){
+                                            tmp.cd = ss.code;
+                                        }
+                                    });
+                                }
                             tmp.vs = prop.enum === undefined ? [] : prop.enum;
                             tmp.pn = p.title;
                             tmp.category = item.category;
@@ -570,7 +593,8 @@ function render(keyword,option, items){
                             if(tmp.lk === 'caDSR'){
                                 tmp.uid = prop.term.termDef.cde_id;
                                 //external values if exists
-                                tmp.evs = prop.syns;
+                                //tmp.evs = prop.syns;
+                                tmp.cde_len = prop.cde_len;
                             }
                             else if(tmp.lk !== '--'){
                                 tmp.uid = prop.term.termDef.term_url;
@@ -580,7 +604,7 @@ function render(keyword,option, items){
                             }
                             tmp.hl = false;
                             tmp.syns = matched_cde[nm];
-                            if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
+                            if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis' || prop.name == 'morphology'){
                                 tmp.list_syns = prop.syns;
                             }
                             vs.push(tmp);
@@ -597,7 +621,8 @@ function render(keyword,option, items){
                         if(tmp.lk === 'caDSR'){
                             tmp.uid = prop.term.termDef.cde_id;
                             //external values if exists
-                            tmp.evs = prop.syns;
+                            //tmp.evs = prop.syns;
+                            tmp.cde_len = prop.cde_len;
                         }
                         else if(tmp.lk !== '--'){
                             tmp.uid = prop.term.termDef.term_url;
@@ -607,7 +632,7 @@ function render(keyword,option, items){
                         }
                         // tmp.mv = matchedValue;
                         tmp.vs = values;
-                        if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
+                        if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis' || prop.name == 'morphology'){
                             tmp.list_syns = prop.syns;
                         }
                         ps.push(tmp);
@@ -700,7 +725,10 @@ function render(keyword,option, items){
         t.className = "data-table treetable";
 
         let tb = document.createElement("tbody");
-        tb.style.height = "60vh";
+        let offset = $('#container').offset().top;
+        let h = window.innerHeight - offset - 110;
+        tb.style.maxHeight = ""+ h+ "px";
+        //tb.style.height = "60vh";
         tb.style.overflowY = "auto";
         tb.style.width= "100%";
         tb.style.display = "block";
@@ -821,7 +849,10 @@ function render(keyword,option, items){
             t.style.display = "table";
             t.className = "data-table treetable";
             tb = document.createElement("tbody");
-            tb.style.height = "60vh";
+            let offset = $('#container').offset().top;
+            let h = window.innerHeight - offset - 80;
+            tb.style.maxHeight = ""+ h+ "px";
+            //tb.style.height = "60vh";
             tb.style.overflowY = "auto";
             tb.style.width= "100%";
             tb.style.display = "block";
@@ -924,16 +955,15 @@ function render(keyword,option, items){
                         tmp = tmp.substr(3);
                         tmp = tmp.substr(0, tmp.length - 4);
                     }
-                    if(tmp =='biospecimen_anatomic_site' || tmp == 'new_event_anatomic_site' || tmp == 'treatment_anatomic_site' || tmp == 'primary_diagnosis'){
-                        let synstostr = JSON.stringify(r.list_syns);
-                        synstostr = synstostr.replace(/'/g, '#');
+                    if(tmp =='biospecimen_anatomic_site' || tmp == 'new_event_anatomic_site' || tmp == 'treatment_anatomic_site' || tmp == 'primary_diagnosis' || tmp == 'morphology'){
+                        
                         br = document.createElement("BR");
                         td.appendChild(br);
                         br = document.createElement("BR");
                         td.appendChild(br);
                         hf = document.createElement("a");
                         hf.className = "table-td-link";
-                        hf.href = "javascript:getGDCSynonyms('"+synstostr+"');";
+                        hf.href = "javascript:getGDCSynonyms('"+tmp+"');";
                         hf.innerHTML = "See All synonyms";
                         td.appendChild(hf);
                     }
@@ -954,7 +984,7 @@ function render(keyword,option, items){
                     hf.innerHTML = "CDE";
                     td.appendChild(hf);
 
-                    if(tostr !== ""){
+                    if(tostr !== "" && r.cde_len !== undefined){
                         let br = document.createElement("BR");
                         td.appendChild(br);
                         br = document.createElement("BR");
@@ -968,14 +998,7 @@ function render(keyword,option, items){
                         td.appendChild(txt);
                         hf = document.createElement("a");
                         hf.className = "table-td-link";
-                        let evs = "";
-                        r.evs.forEach(function(ev){
-                            evs += ev.pv +"#";
-                        });
-                        if(evs !== ""){
-                            evs = evs.substr(0, evs.length -1);
-                        }
-                        hf.href = "javascript:compareGDC('"+tostr+"','"+evs+"');";
+                        hf.href = "javascript:compareGDC('"+tostr+"','"+r.uid+"');";
                         hf.innerHTML = "Compare with GDC";
                         td.appendChild(hf);
                     }
@@ -1056,7 +1079,10 @@ function render(keyword,option, items){
             t.style.display = "table";
             t.className = "data-table treetable";
             tb = document.createElement("tbody");
-            tb.style.height = "60vh";
+            let offset = $('#container').offset().top;
+            let h = window.innerHeight - offset - 111;
+            tb.style.maxHeight = ""+ h+ "px";
+            //tb.style.height = "60vh";
             tb.style.overflowY = "auto";
             tb.style.cssFloat = "left";
             tb.style.width = "100%"
@@ -1114,7 +1140,7 @@ function render(keyword,option, items){
             let tmp1 = {};
             let tmp2 = {};
             vs.forEach(function(r){
-
+                debugger;
               if(current_p =="" || current_p != r.category +"/" +r.nd+"/" + r.pn){
 
                 if(current_p != "") {
@@ -1131,11 +1157,12 @@ function render(keyword,option, items){
                 tmp1.vs_list = r.vs;
                 tmp1.vs = [];
                 tmp1.uid = r.uid;
-                tmp1.evs = r.evs;
+                tmp1.cde_len = r.cde_len;
                 tmp1.list_syns = r.list_syns;
               }
 
               tmp2.nm = r.nm;
+              tmp2.cd = r.cd;
               tmp2.hl = r.hl;
               tmp2.syns = r.syns;
               tmp2.list_syns = r.list_syns;
@@ -1144,7 +1171,6 @@ function render(keyword,option, items){
 
             });
             vs_new.push(tmp1);
-            console.log(vs_new);
             // New Values
             vs_new.forEach(function(nr){
               tr = document.createElement("tr");
@@ -1344,14 +1370,12 @@ function render(keyword,option, items){
 
             //See All synonyms
             let r = nr;
-            if(r.pn =='biospecimen_anatomic_site' || r.pn == 'new_event_anatomic_site' || r.pn == 'treatment_anatomic_site' || r.pn == 'primary_diagnosis'){
-                let synstostr = JSON.stringify(r.list_syns);
-                synstostr = synstostr.replace(/'/g, '#');
+            if(r.pn =='biospecimen_anatomic_site' || r.pn == 'new_event_anatomic_site' || r.pn == 'treatment_anatomic_site' || r.pn == 'primary_diagnosis' || r.pn == 'morphology'){
                 let txt = document.createTextNode(" , ");
                 td.appendChild(txt);
                 hf = document.createElement("a");
                 hf.className = "table-td-link";
-                hf.href = "javascript:getGDCSynonyms('"+synstostr+"');";
+                hf.href = "javascript:getGDCSynonyms('"+r.pn+"');";
                 hf.innerHTML = "See All synonyms";
                 td.appendChild(hf);
             }
@@ -1376,7 +1400,7 @@ function render(keyword,option, items){
                 hf.target = "_blank";
                 hf.innerHTML = "CDE";
                 inner_d.appendChild(hf);
-                if(tostr !== ""){
+                if(tostr !== "" && r.cde_len !== undefined){
                     let br = document.createElement("BR");
                     inner_d.appendChild(br);
                     br = document.createElement("BR");
@@ -1390,14 +1414,7 @@ function render(keyword,option, items){
                     inner_d.appendChild(txt);
                     hf = document.createElement("a");
                     hf.className = "table-td-link";
-                    let evs = "";
-                    r.evs.forEach(function(ev){
-                        evs += ev.pv +"#";
-                    });
-                    if(evs !== ""){
-                        evs = evs.substr(0, evs.length -1);
-                    }
-                    hf.href = "javascript:compareGDC('"+tostr+"','"+evs+"');";
+                    hf.href = "javascript:compareGDC('"+tostr+"','"+r.uid+"');";
                     hf.innerHTML = "Compare with GDC";
                     inner_d.appendChild(hf);
                 }
@@ -1934,7 +1951,7 @@ var getExternalData = function(source, uid){
     }
 };
 
-var compareGDC = function(fromV, toV){
+var compareGDC = function(fromV, uid){
     if($('#compareGDC_dialog').length){
         $('#compareGDC_dialog').remove();
     }
@@ -1946,73 +1963,79 @@ var compareGDC = function(fromV, toV){
     let opt = {};
     opt.sensitive = false;
     opt.unmatched = false;
-    let table = generateCompareGDCResult(fromV, toV, opt);
-    let html = '<div class="cp_result_title">Compare Result</div>'
-                +'<div id="cpGDC_result_option"><div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div>'
-                +'<div id="cpGDC_result_table">'+table+'</div>'
-                +'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
-                +'</div>';
+    $.getJSON('./search/external/caDSR', {uid:uid}, function(result){
+        let toV = [];
+        result.forEach(function(emt){
+            toV.push(emt.pv);
+        });
+        let table = generateCompareGDCResult(fromV, toV, opt);
+        let html = '<div class="cp_result_title">Compare Result</div>'
+                    +'<div id="cpGDC_result_option"><div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div>'
+                    +'<div id="cpGDC_result_table">'+table+'</div>'
+                    +'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
+                    +'</div>';
 
 
-    $("#compareGDC_dialog").dialog({
-            modal: false,
-            position: { my: "center top+"+tp, at: "center top", of:window},
-            width:"50%",
-            title: "Compare GDC Values with caDSR Values ",
-            open: function() {
-                //display result in a table
-                $('#compareGDC_result').html(html);
-                let height = $('#cpGDC_result_table table:first-child').height() +1;
-                if(height >= 30 * 12.8){
-                    height = 384;
+        $("#compareGDC_dialog").dialog({
+                modal: false,
+                position: { my: "center top+"+tp, at: "center top", of:window},
+                width:"50%",
+                title: "Compare GDC Values with caDSR Values ",
+                open: function() {
+                    //display result in a table
+                    $('#compareGDC_result').html(html);
+                    let height = $('#cpGDC_result_table table:first-child').height() +1;
+                    if(height >= 30 * 12.8){
+                        height = 384;
+                    }
+                    $('#cpGDC_result_table').height(height+'px');
+                    $('#closeCompareGDC').bind('click', function(){
+                        $("#compareGDC_dialog").dialog('close');
+                    });
+                    $('#compareGDC_filter').bind('click', function(){
+                        let options = {};
+                        options.sensitive = $("#compareGDC_filter").prop('checked');
+                        options.unmatched = $("#compareGDC_unmatched").prop('checked');
+                        let table_new = generateCompareGDCResult(fromV, toV, options);
+                        $('#cpGDC_result_table').html(table_new);
+                        let h = $('#cpGDC_result_table table:first-child').height() +1;
+                        if(h >= 30 * 12.8){
+                            h = 384;
+                        }
+                        $('#cpGDC_result_table').height(h+'px');
+                    });
+                    $('#compareGDC_unmatched').bind('click', function(){
+                        let options = {};
+                        options.sensitive = $("#compareGDC_filter").prop('checked');
+                        options.unmatched = $("#compareGDC_unmatched").prop('checked');
+                        let table_new = generateCompareGDCResult(fromV, toV, options);
+                        $('#cpGDC_result_table').html(table_new);
+                        let h = $('#cpGDC_result_table table:first-child').height() +1;
+                        if(h >= 30 * 12.8){
+                            h = 384;
+                        }
+                        $('#cpGDC_result_table').height(h+'px');
+                    });
+                },
+                close: function() {
+                    $(this).remove();
                 }
-                $('#cpGDC_result_table').height(height+'px');
-                $('#closeCompareGDC').bind('click', function(){
-                    $("#compareGDC_dialog").dialog('close');
-                });
-                $('#compareGDC_filter').bind('click', function(){
-                    let options = {};
-                    options.sensitive = $("#compareGDC_filter").prop('checked');
-                    options.unmatched = $("#compareGDC_unmatched").prop('checked');
-                    let table_new = generateCompareGDCResult(fromV, toV, options);
-                    $('#cpGDC_result_table').html(table_new);
-                    let h = $('#cpGDC_result_table table:first-child').height() +1;
-                    if(h >= 30 * 12.8){
-                        h = 384;
-                    }
-                    $('#cpGDC_result_table').height(h+'px');
-                });
-                $('#compareGDC_unmatched').bind('click', function(){
-                    let options = {};
-                    options.sensitive = $("#compareGDC_filter").prop('checked');
-                    options.unmatched = $("#compareGDC_unmatched").prop('checked');
-                    let table_new = generateCompareGDCResult(fromV, toV, options);
-                    $('#cpGDC_result_table').html(table_new);
-                    let h = $('#cpGDC_result_table table:first-child').height() +1;
-                    if(h >= 30 * 12.8){
-                        h = 384;
-                    }
-                    $('#cpGDC_result_table').height(h+'px');
-                });
-            },
-            close: function() {
-                $(this).remove();
-            }
+        });
     });
+    
 };
 
 var generateCompareGDCResult = function(fromV, toV, option){
     let from = fromV.split("#");
-    let to = toV.split("#");
     let v_lowercase = [], v_matched = [];
     let from_num = 0;
     if(option.sensitive){
-        to.forEach(function(v){
+        toV.forEach(function(v){
             v_lowercase.push(v.trim());
         });
     }
     else{
-        to.forEach(function(v){
+        toV.forEach(function(v){
             v_lowercase.push(v.trim().toLowerCase());
         });
     }
@@ -2027,7 +2050,7 @@ var generateCompareGDCResult = function(fromV, toV, option){
         let text = '';
         let idx = option.sensitive ? v_lowercase.indexOf(tmp) : v_lowercase.indexOf(tmp.toLowerCase());
         if(idx >= 0){
-            text = to[idx];
+            text = toV[idx];
             v_matched.push(idx);
         }
         if(text ===''){
@@ -2038,51 +2061,56 @@ var generateCompareGDCResult = function(fromV, toV, option){
             table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
         }
     });
-    for(var i = 0; i< to.length; i++){
+    for(var i = 0; i< toV.length; i++){
         if(v_matched.indexOf(i) >= 0){
             continue;
         }
-        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+to[i]+'</td></tr>';
+        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
     }
     table += "</tbody></table>";
 
     return table;
 };
 
-var getGDCSynonyms = function(values){
+var getGDCSynonyms = function(uid){
+
     if($('#gdc_syn_data').length){
         $('#gdc_syn_data').remove();
     }
-    let popup = '<div id="gdc_syn_data"><div id="gdc-syn-data-list" class="div-list"></div></div>';
-    $(document.body).append(popup);
-    let tp = window.innerHeight * 0.2;
-    let data = values.replace(/#/g,"'");
-    let result = JSON.parse(data);
-    $("#gdc_syn_data").dialog({
-            modal: false,
-            position: { my: "center top+"+tp, at: "center top", of:window},
-            width:"30%",
-            title: "GDC Synonyms ("+result.length+")",
-            open: function() {
-                //display result in a table
-                let html = "<table><tbody><tr class=\"data-table-head\"><td width=\"5%\"></td><td width=\"25%\">PV</td><td width=\"25%\">NCIt</td><td width=\"45%\">Synonyms</td></tr>";
-                let count = 0;
-                result.forEach(function(emt){
-                    let syn_html = "";
-                    emt.syn.forEach(function(s){
-                            syn_html += s + "<br>";
-                    });
-                    syn_html = syn_html.substr(0, syn_html.length -4);
-                    html += "<tr class=\"data-table-row\"><td><b>"+(++count)+".</b></td><td>"+emt.pv+"</td><td>"+emt.pvc+"</td><td>"+syn_html+"</td></tr>";
-                });
-                html += "</tbody></table>";
+    $.getJSON('./search/local', {uid:uid}, function(result){
+            let popup = '<div id="gdc_syn_data"><div id="gdc-syn-data-list" class="div-list"></div></div>';
+            $(document.body).append(popup);
+            let tp = window.innerHeight * 0.2;
+            $("#gdc_syn_data").dialog({
+                    modal: false,
+                    position: { my: "center top+"+tp, at: "center top", of:window},
+                    width:"50%",
+                    title: "GDC Synonyms ("+result.length+")",
+                    open: function() {
+                        //display result in a table
+                        let html = "<table><tbody><tr class=\"data-table-head\"><td width=\"5%\"></td><td width=\"25%\">PV</td><td width=\"25%\">NCIt</td><td width=\"45%\">Synonyms</td></tr>";
+                        let count = 0;
+                        result.forEach(function(emt){
+                            let syn_html = "";
+                            if(emt.syn !== undefined){
+                                emt.syn.forEach(function(s){
+                                    syn_html += s + "<br>";
+                                });
+                                syn_html = syn_html.substr(0, syn_html.length -4);
+                            }
+                            
+                            html += "<tr class=\"data-table-row\"><td><b>"+(++count)+".</b></td><td>"+emt.pv+"</td><td>"+emt.pvc+"</td><td>"+syn_html+"</td></tr>";
+                        });
+                        html += "</tbody></table>";
 
-                $('#gdc-syn-data-list').html(html);
-            },
-            close: function() {
-                $(this).remove();
-            }
+                        $('#gdc-syn-data-list').html(html);
+                    },
+                    close: function() {
+                        $(this).remove();
+                    }
+            });
     });
+    
 };
 
 var getGDCData = function(values, item){
@@ -2357,4 +2385,4 @@ var findWord = function(words){
         word = words[0];
     }
     return word;
-}
+};

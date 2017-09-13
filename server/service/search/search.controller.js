@@ -7,6 +7,7 @@ var handleError = require('../../components/handleError');
 var config = require('../../config');
 var fs = require('fs');
 var cdeData = '';
+var gdcData = '';
 
 var suggestion = function(req, res){
 	let term = req.query.keyword;
@@ -310,6 +311,73 @@ var indexing = function(req, res){
 	};
 
 	configs.push(config_node);
+	//config property index
+	let config_property = {};
+	config_property.index = config.index_p;
+	config_property.body = {
+		"settings": {
+	      "analysis": {
+	         "analyzer": {
+	            "case_insensitive": {
+	               "tokenizer": "keyword",
+	               "filter": [
+	                  "lowercase"
+	               ]
+	            }
+	         }
+	      }
+		},
+		"mappings" : {
+	        "props" : {
+	            "properties" : {
+	                "id": {
+	                	"type":"keyword"
+	                },
+	                "category": {
+	                	"type":"keyword"
+	                },
+	                "name" : {
+	                	"type": "string",
+	                	"fields":{
+	                		"have":{
+	                			"type": "text"
+	                		}
+	                	},
+	                	"analyzer": "case_insensitive"
+	                },
+	                "enum.n" : {
+	                	"type": "string",
+	                	"fields":{
+	                		"have":{
+	                			"type": "text"
+	                		}
+	                	},
+	                	"analyzer": "case_insensitive"
+	                },
+	                "enum.s" : {
+	                	"type": "string",
+	                	"fields":{
+	                		"have":{
+	                			"type": "text"
+	                		}
+	                	},
+	                	"analyzer": "case_insensitive"
+	                },
+	                "cde_pv.ss.s" : {
+	                	"type": "string",
+	                	"fields":{
+	                		"have":{
+	                			"type": "text"
+	                		}
+	                	},
+	                	"analyzer": "case_insensitive"
+	                }
+	            }
+	        }
+	    }
+	};
+	configs.push(config_property);
+	//config suggestion index
 	let config_suggestion = {};
 	config_suggestion.index = config.suggestionName;
 	config_suggestion.body = {
@@ -374,6 +442,46 @@ var getDataFromCDE = function(req, res){
 	res.json(cdeData[uid]);
 };
 
+var getDataFromGDC = function(req, res){
+	if(gdcData === ''){
+		//load data file to memory
+		let content_1 = fs.readFileSync("./conceptCode.js").toString();
+		let content_2 = fs.readFileSync("./synonyms.js").toString();
+		let content_3 = fs.readFileSync("./gdc_values.js").toString();
+		content_2 = content_2.replace(/}{/g, ",");
+		let cc = JSON.parse(content_1);
+		let syns = JSON.parse(content_2);
+		let gv = JSON.parse(content_3);
+		gdcData = {};
+		//put data from gdc_values.js to memory
+		for(var c in gv){
+			gdcData[c] = [];
+			gv[c].forEach(function(ss){
+				let tmp = {};
+				tmp.pv = ss.nm;
+				tmp.pvc = ss.n_c;
+				tmp.code = ss.i_c;
+				tmp.syn = syns[ss.n_c];
+				gdcData[c].push(tmp);
+			});
+		}
+		//put data from conceptCode.js to memory
+		for(var t in cc){
+			gdcData[t] = [];
+			let obj = cc[t];
+			for(var m in obj){
+				let tmp = {};
+				tmp.pv = m;
+				tmp.pvc = obj[m];
+				tmp.syn = syns[tmp.pvc];
+				gdcData[t].push(tmp);
+			}
+		}
+	}
+	let uid = req.query.uid;
+	res.json(gdcData[uid]);
+};
+
 var preload = function(req, res){
 	// elastic.preloadDataFromCaDSR(function(result){
 	// 	if(result === 1){
@@ -399,6 +507,7 @@ module.exports = {
 	valueSearch,
 	search,
 	getDataFromCDE,
+	getDataFromGDC,
 	preload,
 	indexing
 };

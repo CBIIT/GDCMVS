@@ -14,6 +14,7 @@ var extend = require('util')._extend;
 var allTerm = {};
 var cdeData = '';
 var gdc_values = {};
+var allProperties = [];
 
 var esClient = new elasticsearch.Client({
 	host: config.elasticsearch.host,
@@ -45,6 +46,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 	doc.suggestion.input = [];
 	for(var prop in propsRaw){
 		let entry = {};
+		let p = {};
 		let entryRaw = propsRaw[prop];
 		if(prop === '$ref'){
 			let idx = entryRaw.indexOf('/');
@@ -68,6 +70,33 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 					entry.term.termDef.cde_id = "" + entry.term.termDef.cde_id;
 					if(entry.term.termDef.source ==='caDSR'){
 						entry.syns = cdeData[entry.term.termDef.cde_id];
+						if(entry.syns.length > 0){
+							entry.cde_len = entry.syns.length;
+						}
+						
+						//generate cde_pv for properties index
+						p.cde_pv = [];
+						entry.syns.forEach(function(sn){
+							let tmp = {};
+							tmp.n = sn.pv;
+							tmp.d = sn.pvd;
+							tmp.ss = [];
+							if(sn.syn !== undefined){
+								let v = {};
+								v.c = sn.pvc;
+								v.s = sn.syn;
+								tmp.ss.push(v);
+							}
+							else if(sn.ss !== undefined){
+								sn.ss.forEach(function(s){
+									let v = {};
+									v.c = s.code;
+									v.s = s.syn;
+									tmp.ss.push(v);
+								});
+							}
+							p.cde_pv.push(tmp);
+						});
 					}
 				}
 			}
@@ -96,16 +125,16 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		//check extra gdc values
 		if(prop in gdc_values){
 			let enums = [];
-			let refs = [];
 			let obj = gdc_values[prop];
-			for(var c in obj){
+			obj.forEach(function(v){
 				let tmp = {};
-				tmp.pv = c;
-				tmp.code = obj[c];
-				refs.push(tmp);
-				enums.push(c);
-			}
-			entry.ref = refs;
+				tmp.pv = v.nm;
+				tmp.code = v.i_c;
+				tmp.pvc = v.n_c;
+				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
+				entry.syns.push(tmp);
+				enums.push(v.nm);
+			});
 			entry.enum = enums;
 		}
 		doc.properties.push(entry);
@@ -150,6 +179,48 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 				allTerm[em] = t;
 			}
 		});
+		//generate property index
+		p.name = entry.name;
+		p.node = fileJson.id;
+		p.category = fileJson.category;
+		if(entry.description === undefined){
+			if(entry.term !== undefined && entry.term.description !== undefined){
+				p.desc = entry.term.description;
+			}
+		}
+		else{
+			p.desc = entry.description;
+		}
+		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.cde_id !== undefined){
+			p.cde_id = entry.term.termDef.cde_id;
+		}
+		//generate enum
+		if(entry.syns == undefined){
+			//simple enumeration
+			if(entry.enum !==undefined && entry.enum.length > 0){
+				p.enum = [];
+				entry.enum.forEach(function(item){
+					let tmp = {};
+					tmp.n = item;
+					p.enum.push(tmp);
+				});
+			}
+		}
+		else{
+			//has gdc synonyms
+			p.enum = [];
+			entry.syns.forEach(function(item){
+				let tmp = {};
+				tmp.n = item.pv;
+				if(item.code !== undefined){
+					tmp.i_c = item.code;
+				}
+				tmp.n_c = item.pvc;
+				tmp.s = item.syn;
+				p.enum.push(tmp);
+			});
+		}
+		allProperties.push(p);
 	}
 	
 	return doc;
@@ -242,6 +313,20 @@ function bulkIndex(next){
 		});
 		suggestionBody.push(doc);
 	}
+	//build property index
+	let propertyBody = [];
+	allProperties.forEach(function(ap){
+		let doc = extend(ap, {});
+		doc.id = ap.name+"/"+ap.node+"/"+ap.category;
+		propertyBody.push({
+			index: {
+				_index: config.index_p,
+				_type: 'props',
+				_id: doc.id
+			}
+		});
+		propertyBody.push(doc);
+	});
 	esClient.bulk({body: bulkBody}, function(err, data){
 		if(err){
 			return next(err);
@@ -252,19 +337,34 @@ function bulkIndex(next){
 			  console.log(++errorCount, item.index.error);
 			}
 		});
-		esClient.bulk({body: suggestionBody}, function(err, result){
-			if(err){
-				return next(err);
+		esClient.bulk({body: propertyBody}, function(err_p, data_p){
+			if(err_p){
+				return next(err_p);
 			}
-			let errorCount_suggest = 0;
-			result.items.forEach(itm => {
-				if (itm.index && itm.index.error) {
-				  console.log(++errorCount_suggest, itm.index.error);
+			let errorCount_p = 0;
+			data_p.items.forEach(item => {
+				if (item.index && item.index.error) {
+				  console.log(++errorCount_p, item.index.error);
 				}
 			});
-			next({indexed: (count - errorCount), total: count, suggestion_indexed: (suggestionBody.length - errorCount_suggest), suggestion_total: suggestionBody.length});
+			esClient.bulk({body: suggestionBody}, function(err_s, data_s){
+				if(err_s){
+					return next(err_s);
+				}
+				let errorCount_s = 0;
+				data_s.items.forEach(itm => {
+					if (itm.index && itm.index.error) {
+					  console.log(++errorCount_s, itm.index.error);
+					}
+				});
+				next({indexed: (count - errorCount), 
+						total: count, 
+						property_indexed: (propertyBody.length - errorCount_p),
+						property_total: propertyBody.length,
+						suggestion_indexed: (suggestionBody.length - errorCount_s), 
+						suggestion_total: suggestionBody.length});
+			});
 		});
-		
 	});
 	
 }
@@ -312,20 +412,28 @@ function suggest(index, suggest, next){
 exports.suggest = suggest;
 
 function createIndexes(params, next){
-	esClient.indices.create(params[0], function(err, resp){
-		if(err){
-			console.log(err);
-			next(err);
+	esClient.indices.create(params[0], function(err_1, result_1){
+		if(err_1){
+			console.log(err_1);
+			next(err_1);
 		}
 		else{
-			esClient.indices.create(params[1], function(error, result){
-				if(error){
-					console.log(error);
-					next(error);
+			esClient.indices.create(params[1], function(err_2, result_2){
+				if(err_2){
+					console.log(err_2);
+					next(err_2);
 				}
 				else{
-					console.log("have built node and suggestion indexes.");
-					next(result);
+					esClient.indices.create(params[2], function(err_3, result_3){
+						if(err_3){
+							console.log(err_3);
+							next(err_3);
+						}
+						else{
+							console.log("have built node, property and suggestion indexes.");
+							next(result_3);
+						}
+					});
 				}
 			});
 		}

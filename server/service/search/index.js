@@ -9,6 +9,7 @@ router.get('/value', controller.valueSearch);
 router.get('/all', controller.search);
 router.get('/buildIndex', controller.indexing);
 router.get('/external/caDSR', controller.getDataFromCDE);
+router.get('/local', controller.getDataFromGDC);
 router.get('/suggest', controller.suggestion);
 router.get('/preload', controller.preload);
 
