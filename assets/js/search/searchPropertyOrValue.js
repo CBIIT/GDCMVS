@@ -1017,7 +1017,7 @@ function render(keyword,option, items){
             t.style.display = "table";
             t.className = "data-table treetable";
             tb = document.createElement("tbody");
-            tb.style.height = "600px";
+            tb.style.height = "70vh";
             tb.style.overflowY = "auto";
             tb.style.cssFloat = "left";
             tb.style.width = "100%"
@@ -1113,11 +1113,8 @@ function render(keyword,option, items){
               tr.style.cssFloat = "left";
               tr.style.width = "100%";
               td = document.createElement("td");
-              td.style.borderRight = "dashed 1px #BEBEBE";
               td.style.cssFloat = "left";
               td.style.width = "20%";
-              td.style.paddingBottom = "500em";
-              td.style.marginBottom  = "-500em";
               let div = document.createElement("div");
               div.innerHTML = nr.category;
               div.className = "tree-l-head";
@@ -1153,6 +1150,7 @@ function render(keyword,option, items){
               //Matched GDC Value Content
               td = document.createElement("td");
               td.colSpan = 3;
+              td.style.borderLeft = "dashed 1px #BEBEBE";
               td.style.borderRight = "dashed 1px #BEBEBE";
               td.style.padding = "0em";
               td.style.cssFloat = "left";
@@ -1291,7 +1289,6 @@ function render(keyword,option, items){
             if(nr.vs.length > 4) {
               hf = document.createElement("a");
               hf.className = "table-td-link show-more-less";
-              hf.style.marginLeft = "10px"
               hf.href = "javascript:void(0);";
               hf.innerHTML = "Show More";
               td.appendChild(hf)
@@ -1302,7 +1299,6 @@ function render(keyword,option, items){
             td.appendChild(br);
             hf = document.createElement("a");
             hf.className = "table-td-link";
-            hf.style.marginLeft = "10px";
             hf.href = "javascript:toCompare('"+tostr+"');";
             hf.innerHTML = "Compare with User List";
             td.appendChild(hf);
@@ -1654,10 +1650,20 @@ function render(keyword,option, items){
             });
         });
 
-        console.log($(".show-more-less"));
         $(".show-more-less").click(function () {
           let target = $(this);
-          target.parent().find('.data-table-toggle').removeClass('data-table-toggle');
+
+          let parentTable = $(this).parent();
+          let targets = parentTable.find('.data-table-toggle');
+          if(parentTable.hasClass('more')){
+            parentTable.removeClass('more');
+            targets.css({display: 'none'});
+            target.text('Show More');
+          } else {
+            parentTable.addClass('more');
+            targets.css({display: 'table-row'});
+            target.text('Show Less');
+          }
         });
     }
 }
