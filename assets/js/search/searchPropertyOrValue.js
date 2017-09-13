@@ -683,7 +683,14 @@ function render(keyword,option, items){
         sp.innerHTML = "Expand all";
         sp.addEventListener("click",expandAll);
         d.appendChild(sp);
+
         let t = document.createElement("table");
+        t.className = "data-table treetable";
+        let thb = document.createElement("thead");
+        t.appendChild(thb);
+        d.appendChild(t);
+
+        t = document.createElement("table");
         t.id="type_table";
         t.border = "0";
         t.cellPadding = "0";
@@ -691,18 +698,23 @@ function render(keyword,option, items){
         t.width = "100%";
         t.style.display = "table";
         t.className = "data-table treetable";
+
         let tb = document.createElement("tbody");
+        tb.style.height = "60vh";
+        tb.style.overflowY = "auto";
+        tb.style.width= "100%";
+        tb.style.display = "block";
         t.appendChild(tb);
-        let thb = document.createElement("thead");
+
         let th = document.createElement("tr");
         th.className = "data-table-head";
-        tb.appendChild(th);
+        thb.appendChild(th);
         let td = document.createElement("td");
-        td.width = "20%";
+        td.width = "30%";
         td.innerHTML = "Name";
         th.appendChild(td);
         td = document.createElement("td");
-        td.width = "60%";
+        td.width = "70%";
         td.innerHTML = "Description";
         th.appendChild(td);
         //search result
@@ -710,10 +722,14 @@ function render(keyword,option, items){
             let tr = document.createElement("tr");
             tr.key = r.id;
             tr.className = "data-table-row " + r.node;
-
+            tr.style.width = "100%";
+            tr.style.cssFloat = "left";
             tr.setAttribute("data-tt-id",r["data-tt-id"]);
             tr.setAttribute("data-tt-parent-id", r["data-tt-parent-id"]);
             let td = document.createElement("td");
+            td.width = "30%";
+            td.style.width = "30%"
+            td.style.cssFloat = "left";
             let span = document.createElement("span");
             span.className = r.type +"";
             if(r.highlight === undefined){
@@ -746,6 +762,9 @@ function render(keyword,option, items){
             }
             else{
                 td = document.createElement("td");
+                td.width = "70%";
+                td.style.width = "70%"
+                td.style.cssFloat = "left";
                 td.innerHTML = r.description;
                 tr.appendChild(td);
             }
@@ -782,8 +801,19 @@ function render(keyword,option, items){
             c.appendChild(d);
         }
         else{
+            //has properties
             t = document.createElement("table");
+            t.border = "0";
+            t.cellPadding = "0";
+            t.cellSpacing = "0";
+            t.width = "100%";
+            t.style.display = "table";
+            t.className = "data-table treetable";
+            thb = document.createElement("thead");
+            t.appendChild(thb);
+            d.appendChild(t);
 
+            t = document.createElement("table");
             t.border = "0";
             t.cellPadding = "0";
             t.cellSpacing = "0";
@@ -791,10 +821,14 @@ function render(keyword,option, items){
             t.style.display = "table";
             t.className = "data-table treetable";
             tb = document.createElement("tbody");
+            tb.style.height = "60vh";
+            tb.style.overflowY = "auto";
+            tb.style.width= "100%";
+            tb.style.display = "block";
             t.appendChild(tb);
             th = document.createElement("tr");
             th.className = "data-table-head";
-            tb.appendChild(th);
+            thb.appendChild(th);
             // td = document.createElement("td");
             // td.width = "10%";
             // td.innerHTML = "Category";
@@ -804,24 +838,24 @@ function render(keyword,option, items){
             // td.innerHTML = "Node";
             // th.appendChild(td);
             td = document.createElement("td");
-            td.width = "10%";
+            td.width = "12%";
             td.innerHTML = "Category / Node";
             th.appendChild(td);
 
             td = document.createElement("td");
-            td.width = "10%";
+            td.width = "12%";
             td.innerHTML = "Property";
             th.appendChild(td);
             td = document.createElement("td");
-            td.width = "35%";
+            td.width = "44%";
             td.innerHTML = "Description";
             th.appendChild(td);
             td = document.createElement("td");
-            td.width = "15%";
+            td.width = "16%";
             td.innerHTML = "Matched GDC Value " +"<span class=\"tip-info\"></span>";
             th.appendChild(td);
             td = document.createElement("td");
-            td.width = "15%";
+            td.width = "16%";
             td.innerHTML = "CDE Reference " +"<span class=\"tip-info\"></span>";
             th.appendChild(td);
             //properties
@@ -836,6 +870,7 @@ function render(keyword,option, items){
                 // td.innerHTML = r.nd;
                 // tr.appendChild(td);
                 let td = document.createElement("td");
+                td.width = "12%";
                 let div = document.createElement("div");
                 div.innerHTML = r.category;
                 div.className = "tree-l-head";
@@ -853,12 +888,15 @@ function render(keyword,option, items){
                 tr.appendChild(td);
 
                 td = document.createElement("td");
+                td.width = "12%";
                 td.innerHTML = r.nm;
                 tr.appendChild(td);
                 td = document.createElement("td");
+                td.width = "44%";
                 td.innerHTML = r.desc;
                 tr.appendChild(td);
                 td = document.createElement("td");
+                td.width = "16%";
                 let tostr = "";
                 r.vs.forEach(function(v){
                     tostr += v + "#";
@@ -905,6 +943,7 @@ function render(keyword,option, items){
                 }
                 tr.appendChild(td);
                 td = document.createElement("td");
+                td.width = "16%";
                 if(r.lk !== "--" && r.lk ==='caDSR' && r.uid !== "--"){
                     let txt = document.createTextNode("caDSR: ");
                     td.appendChild(txt);
@@ -1017,7 +1056,7 @@ function render(keyword,option, items){
             t.style.display = "table";
             t.className = "data-table treetable";
             tb = document.createElement("tbody");
-            tb.style.height = "70vh";
+            tb.style.height = "60vh";
             tb.style.overflowY = "auto";
             tb.style.cssFloat = "left";
             tb.style.width = "100%"
