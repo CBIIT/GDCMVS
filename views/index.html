@@ -6,8 +6,8 @@
 	<link rel="stylesheet" type="text/css" href="./css/jquery.treetable.theme.default.css" />
 	<link rel="stylesheet" type="text/css" href="./css/jquery-ui.css" />
 
-	<script type="text/javascript" src="./js/react.js"></script>
-	<script type="text/javascript" src="./js/react-dom.js"></script>
+	<!-- <script type="text/javascript" src="./js/react.js"></script>
+	<script type="text/javascript" src="./js/react-dom.js"></script> -->
 	<script type="text/javascript" src="./js/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/jquery.treetable.js"></script>
 	<script type="text/javascript" src="./js/search/searchPropertyOrValue.js"></script>
@@ -188,13 +188,13 @@
 		    text-decoration:none;
 		}
 		.btn-a:hover{
-			text-decoration:underline; 
+			text-decoration:underline;
 		}
 		.div-list{
 			height:30em;
 			width:100%;
 			float:left;
-			width:100%;		
+			width:100%;
 		}
 		.div-list div{
 			float:left;
@@ -210,25 +210,33 @@
 			float:left;
 			margin-top:1em;
 		}
-		.data-table { 
-			border:1px solid #cdcdcd; 
+		table.treetable {
+			margin: 0;
+		}
+		.data-table {
+			border:1px solid #cdcdcd;
 		}
 		.inner-data-table{
 			font-size: inherit;
 		    width: 100%;
 		}
-		.data-table td:first-child { 
+		.data-table td:first-child {
 			/*padding:8px 5px; */
 		}
-		.data-table-head { 
+		.data-table-head {
 			background-color:#f0f0f0;
 		}
-		.data-table-head td { 
+		.data-table-head td {
 			font-weight:bold;
 			border-left: 1px solid #cdcdcd;
+			padding: 8px 5px;
 		}
 		.data-table-row{
 			border-bottom:dashed 1px #BEBEBE;
+		}
+
+		.data-table-toggle {
+			display: none;
 		}
 
 		.center{
@@ -238,10 +246,10 @@
 			font-weight:bold;
 			color:#4486F3;
 		}
-		.data-table tr:last-child { 
+		.data-table tr:last-child {
 			border-bottom:dashed 0px #BEBEBE;
 		}
-		.data-table-row:hover { 
+		.data-table-row:hover {
 			background-color:#FAFAFA;
 		}
 		.td-split{
@@ -613,15 +621,15 @@
 	</style>
 </head>
 <body>
-	<div class="header">	
-	 	<a href="https://www.cancer.gov/"><img src="https://www.cancer.gov/publishedcontent/images/images/design-elements/logos/nci-logo-full.svg" alt="National Cancer Institute"></a> 
+	<div class="header">
+	 	<a href="https://www.cancer.gov/"><img src="https://www.cancer.gov/publishedcontent/images/images/design-elements/logos/nci-logo-full.svg" alt="National Cancer Institute"></a>
 	</div>
 	<div class="nav-bar">
 		<div class="navigation">
 			<div id="prop_s" class="nav-item active">Property & Value Search</div>
 			<!-- <a class="tab active" href="./ui?idx=1"> -->
 			<!-- <div id="prop_value_s" class="nav-item">Suggest new term</div> -->
-			
+
 		</div>
 	</div>
 	<div class="search-bar">
@@ -651,8 +659,8 @@
 		<div><input type="checkbox" id="i_syn"> Synonyms</div>
 	</div>
 	<div id="suggestBox" class="suggestArea"></div>
-	
+
 	<div id="container">
 	</div>
-</body>	
+</body>
 </html>

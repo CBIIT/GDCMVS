@@ -84,7 +84,7 @@ function render(keyword,option, items){
                     targetTypes.push(tt.replace(/<b>/g,"").replace(/<\/b>/g, ""));
                 });
             }
-            
+
             let links = item.links;
             if(targetTypes.length > 0){
                 links.forEach(function(l){
@@ -94,7 +94,7 @@ function render(keyword,option, items){
                     }
                 });
             }
-            
+
             let propName = [];
             if(hl !== undefined && (hl["properties.name"] !== undefined || hl["properties.name.have"] !== undefined)){
                 propName = hl["properties.name"] || hl["properties.name.have"];
@@ -318,7 +318,7 @@ function render(keyword,option, items){
                                         cache[sn_lc] = [];
                                     }
                                     cache[sn_lc].push(sn);
-                                    
+
                                 });
                                 let result = [];
                                 for(let idx in cache){
@@ -334,7 +334,7 @@ function render(keyword,option, items){
                                     else{
                                         syn_str +=  sn+"#";
                                     }
-                                    
+
                                 });
 
                                 if(have){
@@ -362,7 +362,7 @@ function render(keyword,option, items){
                                             cache[sn_lc] = [];
                                         }
                                         cache[sn_lc].push(sn);
-                                        
+
                                     });
                                     let result = [];
                                     for(let idx in cache){
@@ -378,7 +378,7 @@ function render(keyword,option, items){
                                         else{
                                             ctt +=  sn+"<br>";
                                         }
-                                        
+
                                     });
                                     ctt = ctt.substr(0, ctt.length -4);
                                     ctt += "</td></tr>";
@@ -406,7 +406,7 @@ function render(keyword,option, items){
                                 e.highlight = true;
                                 let tmp = {};
                                 tmp.nm = enums[em];
-                                debugger;
+                                // debugger;
                                 if(prop.ref !== undefined){
                                     prop.ref.forEach(function(r){
                                         if(r.pv === em){
@@ -437,7 +437,7 @@ function render(keyword,option, items){
                                     }
                                 }
                                 if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
-                                    tmp.list_syns = prop.syns;    
+                                    tmp.list_syns = prop.syns;
                                 }
                                 vs.push(tmp);
                                 // matchedValue = em;
@@ -450,7 +450,7 @@ function render(keyword,option, items){
                             e.node = "leaf";
                             trs.push(e);
                         });
-                        
+
                         values = prop.enum;
                     }
                     else if(prop.oneOf !== undefined && $.isArray(prop.oneOf)){
@@ -497,7 +497,7 @@ function render(keyword,option, items){
                                     tmp.uid = "--";
                                 }
                                 if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
-                                    tmp.list_syns = prop.syns;    
+                                    tmp.list_syns = prop.syns;
                                 }
                                 vs.push(tmp);
                                 // matchedValue = em;
@@ -518,7 +518,7 @@ function render(keyword,option, items){
                         count++;
                         let e = {};
                         e.id = count + "_l";
-                        
+
                         e["data-tt-id"] = e.id;
                         e["data-tt-parent-id"] = p.id;
                         e.type = "link";
@@ -531,7 +531,7 @@ function render(keyword,option, items){
                             e.title = "No values in GDC, concept referenced in ";
                             e.uid = prop.term.termDef.term_url;
                         }
-                        
+
                         e.node = "leaf";
                         trs.push(e);
                     }
@@ -543,7 +543,7 @@ function render(keyword,option, items){
                     if(matched_cde.length !== 0){
                         let ems = {};
                         if(prop.enum !== undefined){
-                            
+
                             prop.enum.forEach(function(em){
                                 let tmp = em.toString();
 
@@ -565,7 +565,7 @@ function render(keyword,option, items){
                             tmp.pn = p.title;
                             tmp.category = item.category;
                             tmp.nd = item.id;
-                            
+
                             tmp.lk = (prop.term !== undefined && prop.term.termDef !== undefined)  ? (prop.term.termDef.source !== null ? prop.term.termDef.source : "--") : "--";
                             if(tmp.lk === 'caDSR'){
                                 tmp.uid = prop.term.termDef.cde_id;
@@ -581,7 +581,7 @@ function render(keyword,option, items){
                             tmp.hl = false;
                             tmp.syns = matched_cde[nm];
                             if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
-                                tmp.list_syns = prop.syns;    
+                                tmp.list_syns = prop.syns;
                             }
                             vs.push(tmp);
                         }
@@ -608,11 +608,11 @@ function render(keyword,option, items){
                         // tmp.mv = matchedValue;
                         tmp.vs = values;
                         if(prop.name =='biospecimen_anatomic_site' || prop.name == 'new_event_anatomic_site' || prop.name == 'treatment_anatomic_site' || prop.name == 'primary_diagnosis'){
-                            tmp.list_syns = prop.syns;    
+                            tmp.list_syns = prop.syns;
                         }
                         ps.push(tmp);
                     }
-                    
+
                 });
                 if(prop_count === 0){
                     entry.node = "leaf";
@@ -693,6 +693,7 @@ function render(keyword,option, items){
         t.className = "data-table treetable";
         let tb = document.createElement("tbody");
         t.appendChild(tb);
+        let thb = document.createElement("thead");
         let th = document.createElement("tr");
         th.className = "data-table-head";
         tb.appendChild(th);
@@ -704,6 +705,7 @@ function render(keyword,option, items){
         td.width = "60%";
         td.innerHTML = "Description";
         th.appendChild(td);
+        //search result
         trs.forEach(function(r){
             let tr = document.createElement("tr");
             tr.key = r.id;
@@ -740,14 +742,14 @@ function render(keyword,option, items){
                 else{
                     span.innerHTML = r.title +"<a target=\"_blank\" href=\""+r.uid+"\" class=\"table-td-link\">"+r.lk+"</a>";
                 }
-                
+
             }
             else{
                 td = document.createElement("td");
                 td.innerHTML = r.description;
                 tr.appendChild(td);
             }
-            
+
             // td = document.createElement("td");
             // td.innerHTML = r.category;
             // tr.appendChild(td);
@@ -781,7 +783,7 @@ function render(keyword,option, items){
         }
         else{
             t = document.createElement("table");
-        
+
             t.border = "0";
             t.cellPadding = "0";
             t.cellSpacing = "0";
@@ -822,6 +824,7 @@ function render(keyword,option, items){
             td.width = "15%";
             td.innerHTML = "CDE Reference " +"<span class=\"tip-info\"></span>";
             th.appendChild(td);
+            //properties
             ps.forEach(function(r){
                 let tr = document.createElement("tr");
                 tr.className = "data-table-row ";
@@ -993,8 +996,20 @@ function render(keyword,option, items){
         }
         else{
             //has values
+
+            //header table
             t = document.createElement("table");
-        
+            t.border = "0";
+            t.cellPadding = "0";
+            t.cellSpacing = "0";
+            t.width = "100%";
+            t.style.display = "table";
+            t.className = "data-table treetable";
+            thb = document.createElement("thead");
+            t.appendChild(thb);
+            d.appendChild(t);
+            //body table
+            t = document.createElement("table");
             t.border = "0";
             t.cellPadding = "0";
             t.cellSpacing = "0";
@@ -1002,10 +1017,14 @@ function render(keyword,option, items){
             t.style.display = "table";
             t.className = "data-table treetable";
             tb = document.createElement("tbody");
+            tb.style.height = "600px";
+            tb.style.overflowY = "auto";
+            tb.style.cssFloat = "left";
+            tb.style.width = "100%"
             t.appendChild(tb);
             th = document.createElement("tr");
             th.className = "data-table-head";
-            tb.appendChild(th);
+            thb.appendChild(th);
 
             td = document.createElement("td");
             td.width = "20%";
@@ -1023,12 +1042,11 @@ function render(keyword,option, items){
             td.width = "40%";
             td.colSpan = 2;
             td.className = "super-header";
-            td.innerHTML = "CDE references and permissible values and Synonyms";
+            td.innerHTML = "CDE references, permissible values and Synonyms";
             th.appendChild(td);
-
             th = document.createElement("tr");
             th.className = "data-table-head";
-            tb.appendChild(th);
+            thb.appendChild(th);
 
             td = document.createElement("td");
             td.width = "20%";
@@ -1043,240 +1061,569 @@ function render(keyword,option, items){
             td = document.createElement("td");
             td.width = "20%";
             td.style.borderLeft = "1px solid #cdcdcd";
-            td.innerHTML = "CDE Reference " +"<span class=\"tip-info\"></span>";
+            td.innerHTML = "NCIt Code and Synonyms " +"<span class=\"tip-info\"></span>";
             th.appendChild(td);
             td = document.createElement("td");
             td.width = "20%";
-            td.innerHTML = "NCIt Code and Synonyms " +"<span class=\"tip-info\"></span>";
+            td.innerHTML = "CDE Reference " +"<span class=\"tip-info\"></span>";
             td.style.borderLeft = "1px solid #cdcdcd";
             th.appendChild(td);
+            //generate new vs from the current vs
             let current_p = "";
-            let inner_tb;
+            //let inner_tb;
+            let vs_new = [];
+            let tmp1 = {};
+            let tmp2 = {};
             vs.forEach(function(r){
-                if(current_p =="" || current_p != r.category +"/" +r.nd+"/" + r.pn){
-                    current_p = r.category +"/" +r.nd+"/" + r.pn;
-                    tr = document.createElement("tr");
-                    tr.className = "data-table-row ";
 
-                    td = document.createElement("td");
-                    td.style.borderRight = "dashed 1px #BEBEBE";
-                    let div = document.createElement("div");
-                    div.innerHTML = r.category;
-                    div.className = "tree-l-head";
-                    td.appendChild(div);
-                    div = document.createElement("div");
-                    div.className = "tree-l-1";
-                    let subdiv = document.createElement("div");
-                    subdiv.className = "tree-l-link";
-                    div.appendChild(subdiv);
-                    subdiv = document.createElement("div");
-                    subdiv.className = "tree-l-content";
-                    subdiv.innerHTML = r.nd;
-                    div.appendChild(subdiv);
-                    td.appendChild(div);
-                    div = document.createElement("div");
-                    div.className = "tree-l-2";
-                    subdiv = document.createElement("div");
-                    subdiv.className = "tree-l-link";
-                    div.appendChild(subdiv);
-                    subdiv = document.createElement("div");
-                    subdiv.className = "tree-l-content";
-                    subdiv.innerHTML = r.pn;
-                    div.appendChild(subdiv);
-                    td.appendChild(div);
-                    tr.appendChild(td);
-                    td = document.createElement("td");
-                    td.colSpan = 4;
-                    td.style.padding = "0em";
-                    let inner_t = document.createElement("table");
-        
-                    inner_t.border = "0";
-                    inner_t.cellPadding = "0";
-                    inner_t.cellSpacing = "0";
-                    inner_t.width = "100%";
-                    inner_t.style.display = "table";
-                    inner_t.className = "inner-data-table";
-                    inner_tb = document.createElement("tbody");
-                    inner_t.appendChild(inner_tb);
-                    td.appendChild(inner_t);
-                    tr.appendChild(td);
-                    tb.appendChild(tr);
+              if(current_p =="" || current_p != r.category +"/" +r.nd+"/" + r.pn){
+
+                if(current_p != "") {
+                  vs_new.push(tmp1);
+                  tmp1 = {};
                 }
-                tr = document.createElement("tr");
-                tr.className = "data-table-row ";
-                td = document.createElement("td");
-                td.width = "25%";
-                let tostr = "";
-                r.vs.forEach(function(v){
-                    tostr += v + "#";
-                });
+
+                current_p = r.category +"/" +r.nd+"/" + r.pn;
+
+                tmp1.category = r.category;
+                tmp1.nd = r.nd;
+                tmp1.pn = r.pn;
+                tmp1.lk = r.lk;
+                tmp1.vs_list = r.vs;
+                tmp1.vs = [];
+                tmp1.uid = r.uid;
+                tmp1.evs = r.evs;
+                tmp1.list_syns = r.list_syns;
+              }
+
+              tmp2.nm = r.nm;
+              tmp2.hl = r.hl;
+              tmp2.syns = r.syns;
+              tmp2.list_syns = r.list_syns;
+              tmp1.vs.push(tmp2);
+              tmp2 = {};
+
+            });
+            vs_new.push(tmp1);
+            console.log(vs_new);
+            // New Values
+            vs_new.forEach(function(nr){
+              tr = document.createElement("tr");
+              tr.className = "data-table-row";
+              tr.style.cssFloat = "left";
+              tr.style.width = "100%";
+              td = document.createElement("td");
+              td.style.borderRight = "dashed 1px #BEBEBE";
+              td.style.cssFloat = "left";
+              td.style.width = "20%";
+              td.style.paddingBottom = "500em";
+              td.style.marginBottom  = "-500em";
+              let div = document.createElement("div");
+              div.innerHTML = nr.category;
+              div.className = "tree-l-head";
+              td.appendChild(div);
+              div = document.createElement("div");
+              div.className = "tree-l-1";
+              let subdiv = document.createElement("div");
+              subdiv.className = "tree-l-link";
+              div.appendChild(subdiv);
+              subdiv = document.createElement("div");
+              subdiv.className = "tree-l-content";
+              subdiv.innerHTML = nr.nd;
+              div.appendChild(subdiv);
+              td.appendChild(div);
+              div = document.createElement("div");
+              div.className = "tree-l-2";
+              subdiv = document.createElement("div");
+              subdiv.className = "tree-l-link";
+              div.appendChild(subdiv);
+              subdiv = document.createElement("div");
+              subdiv.className = "tree-l-content";
+              subdiv.innerHTML = nr.pn;
+              div.appendChild(subdiv);
+              td.appendChild(div);
+              tr.appendChild(td);
+
+              //tostr Variable
+              let tostr = "";
+              nr.vs_list.forEach(function(v){
+                  tostr += v + "#";
+              });
+
+              //Matched GDC Value Content
+              td = document.createElement("td");
+              td.colSpan = 3;
+              td.style.borderRight = "dashed 1px #BEBEBE";
+              td.style.padding = "0em";
+              td.style.cssFloat = "left";
+              td.style.width = "60%";
+              let inner_t = document.createElement("table");
+              inner_t.border = "0";
+              inner_t.cellPadding = "0";
+              inner_t.cellSpacing = "0";
+              inner_t.width = "100%";
+              inner_t.style.display = "table";
+              inner_t.className = "inner-data-table";
+              let inner_tb = document.createElement("tbody");
+              inner_t.appendChild(inner_tb);
+              td.appendChild(inner_t);
+              tr.appendChild(td);
+              tb.appendChild(tr);
+
+              //counter
+              let cont = 0;
+              //Matched GDC Value
+              nr.vs.forEach(function(r){
+
+                //Matched GDC Value
+                let inner_tr = document.createElement("tr");
+                inner_tr.className = "data-table-row";
+                inner_td = document.createElement("td");
+                inner_td.width = "25%";
+                if(cont > 4) {
+                  inner_tr.className += " data-table-toggle";
+                }
+                cont++;
+
+                inner_tb.appendChild(inner_tr);
+                inner_tr.appendChild(inner_td);
+
                 if(tostr !== ""){
-                    tostr = tostr.substr(0, tostr.length-1);
-                    let hf = document.createElement("a");
-                    
-                    if(r.hl === undefined || r.hl){
-                       hf.className = "table-td-link ";
-                       if(r.nm.indexOf("<b>") >= 0){
-                            hf.innerHTML = r.nm;
-                       }
-                       else{
-                            hf.className += "underline";
-                            hf.innerHTML = "<b>"+r.nm+"</b>";
-                       }
-                       
-                       hf.href = "javascript:getGDCData('"+tostr+"', '"+r.nm+"');"; 
-                    }
-                    else{
-                       hf.className = "table-td-link";
-                       if(r.nm === '--'){
-                            hf.innerHTML = 'See All Values';
-                            hf.href = "javascript:getGDCData('"+tostr+"');";
-                       }
-                       else{
-                            hf.innerHTML = r.nm;
-                            hf.href = "javascript:getGDCData('"+tostr+"', '"+r.nm+"');";
-                       }
-                       
-                    }
-                    
-                    td.appendChild(hf);
-                    if(r.cd !== undefined){
-                        let txt = document.createTextNode(" ("+r.cd+")");
-                        td.appendChild(txt);
-                    }
+                  tostr = tostr.substr(0, tostr.length-1);
+                  let hf = document.createElement("a");
+
+                  if(r.hl === undefined || r.hl){
+                     hf.className = "table-td-link ";
+                     if(r.nm.indexOf("<b>") >= 0){
+                          hf.innerHTML = r.nm;
+                     }
+                     else{
+                          hf.className += "underline";
+                          hf.innerHTML = "<b>"+r.nm+"</b>";
+                     }
+
+                     hf.href = "javascript:getGDCData('"+tostr+"', '"+r.nm+"');";
+                  }
+                  else{
+                     hf.className = "table-td-link";
+                     if(r.nm === '--'){
+                          hf.innerHTML = 'See All Values';
+                          hf.href = "javascript:getGDCData('"+tostr+"');";
+                     }
+                     else{
+                          hf.innerHTML = r.nm;
+                          hf.href = "javascript:getGDCData('"+tostr+"', '"+r.nm+"');";
+                     }
+
+                  }
+
+                  inner_td.appendChild(hf);
+                  if(r.cd !== undefined){
+                      let txt = document.createTextNode(" ("+r.cd+")");
+                      inner_td.appendChild(txt);
+                  }
+                  inner_tr.appendChild(inner_td);
+
+              }
+              else{
+                  let text = document.createTextNode('No Values');
+                  inner_td.appendChild(text);
+                  inner_tr.appendChild(inner_td);
+              }
+              //Matched GDC Value
+
+              //GDC Synonyms
+              inner_td = document.createElement("td");
+              inner_td.width = "25%";
+              let gdc_syn_html = "";
+              if(r.syns !==undefined && r.list_syns !== undefined){
+                  if(r.syns.indexOf("<table>") === 0){
+                      gdc_syn_html = r.syns;
+                  }
+                  else{
+                      r.syns.split('#').forEach(function(syn){
+                          gdc_syn_html += syn + "<br>";
+                      });
+                      gdc_syn_html = gdc_syn_html.substr(0, gdc_syn_html.length -4);
+                  }
+
+              }
+              else{
+                  gdc_syn_html = "--";
+              }
+              inner_td.innerHTML = gdc_syn_html;
+              inner_tb.appendChild(inner_tr);
+              inner_tr.appendChild(inner_td);
+              //End GDC Synonyms
+
+              //NCIt Code and Synonym
+              inner_td = document.createElement("td");
+              inner_td.width = "25%";
+              gdc_syn_html = "";
+              if(r.syns !==undefined && r.list_syns === undefined){
+                  if(r.syns.indexOf("<table>") === 0){
+                      gdc_syn_html = r.syns;
+                  }
+                  else{
+                      r.syns.split('#').forEach(function(syn){
+                          gdc_syn_html += syn + "<br>";
+                      });
+                      gdc_syn_html = gdc_syn_html.substr(0, gdc_syn_html.length -4);
+                  }
+
+              }
+              else{
+                  gdc_syn_html = "--";
+              }
+              inner_td.innerHTML = gdc_syn_html;
+              inner_tb.appendChild(inner_tr);
+              inner_tr.appendChild(inner_td);
+              //End NCIt Code and Synonym
+
+            }); // <-- End New Value forEach
+
+
+            //Compare with User List
+            let br = document.createElement("BR");
+            td.appendChild(br);
+            br = document.createElement("BR");
+            td.appendChild(br);
+            if(nr.vs.length > 4) {
+              hf = document.createElement("a");
+              hf.className = "table-td-link show-more-less";
+              hf.style.marginLeft = "10px"
+              hf.href = "javascript:void(0);";
+              hf.innerHTML = "Show More";
+              td.appendChild(hf)
+            }
+            br = document.createElement("BR");
+            td.appendChild(br);
+            br = document.createElement("BR");
+            td.appendChild(br);
+            hf = document.createElement("a");
+            hf.className = "table-td-link";
+            hf.style.marginLeft = "10px";
+            hf.href = "javascript:toCompare('"+tostr+"');";
+            hf.innerHTML = "Compare with User List";
+            td.appendChild(hf);
+
+            //See All synonyms
+            let r = nr;
+            if(r.pn =='biospecimen_anatomic_site' || r.pn == 'new_event_anatomic_site' || r.pn == 'treatment_anatomic_site' || r.pn == 'primary_diagnosis'){
+                let synstostr = JSON.stringify(r.list_syns);
+                synstostr = synstostr.replace(/'/g, '#');
+                let txt = document.createTextNode(" , ");
+                td.appendChild(txt);
+                hf = document.createElement("a");
+                hf.className = "table-td-link";
+                hf.href = "javascript:getGDCSynonyms('"+synstostr+"');";
+                hf.innerHTML = "See All synonyms";
+                td.appendChild(hf);
+            }
+
+            //CDE Reference Table Content
+            td = document.createElement("td");
+            td.style.padding = "0em";
+            td.style.cssFloat = "left";
+            let inner_d = document.createElement("div");
+            inner_d.className = "inner-data-div";
+            td.appendChild(inner_d);
+            tr.appendChild(td);
+            tb.appendChild(tr);
+
+            //CDE Reference
+            if(r.lk !== "--" && r.lk ==='caDSR' && r.uid !== "--"){
+                let txt = document.createTextNode("caDSR: ");
+                inner_d.appendChild(txt);
+                let hf = document.createElement("a");
+                hf.className = "table-td-link";
+                hf.href = "https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId="+r.uid+"&version=1.0";
+                hf.target = "_blank";
+                hf.innerHTML = "CDE";
+                inner_d.appendChild(hf);
+                if(tostr !== ""){
                     let br = document.createElement("BR");
-                    td.appendChild(br);
+                    inner_d.appendChild(br);
                     br = document.createElement("BR");
-                    td.appendChild(br);
+                    inner_d.appendChild(br);
                     hf = document.createElement("a");
                     hf.className = "table-td-link";
-                    hf.href = "javascript:toCompare('"+tostr+"');";
-                    hf.innerHTML = "Compare with User List";
-                    td.appendChild(hf);
-                    if(r.pn =='biospecimen_anatomic_site' || r.pn == 'new_event_anatomic_site' || r.pn == 'treatment_anatomic_site' || r.pn == 'primary_diagnosis'){
-                        let synstostr = JSON.stringify(r.list_syns);
-                        synstostr = synstostr.replace(/'/g, '#');
-                        br = document.createElement("BR");
-                        td.appendChild(br);
-                        br = document.createElement("BR");
-                        td.appendChild(br);
-                        hf = document.createElement("a");
-                        hf.className = "table-td-link";
-                        hf.href = "javascript:getGDCSynonyms('"+synstostr+"');";
-                        hf.innerHTML = "See All synonyms";
-                        td.appendChild(hf);
+                    hf.href = "javascript:getExternalData('"+r.lk+"','"+r.uid+"');";
+                    hf.innerHTML = "Values";
+                    inner_d.appendChild(hf);
+                    txt = document.createTextNode(" , ");
+                    inner_d.appendChild(txt);
+                    hf = document.createElement("a");
+                    hf.className = "table-td-link";
+                    let evs = "";
+                    r.evs.forEach(function(ev){
+                        evs += ev.pv +"#";
+                    });
+                    if(evs !== ""){
+                        evs = evs.substr(0, evs.length -1);
                     }
-                    tr.appendChild(td);
+                    hf.href = "javascript:compareGDC('"+tostr+"','"+evs+"');";
+                    hf.innerHTML = "Compare with GDC";
+                    inner_d.appendChild(hf);
+                }
+                else{
+                    txt = document.createTextNode(" , ");
+                    inner_d.appendChild(txt);
+                    hf = document.createElement("a");
+                    hf.className = "table-td-link";
+                    hf.href = "javascript:getExternalData('"+r.lk+"','"+r.uid+"');";
+                    hf.innerHTML = "Values";
+                    inner_d.appendChild(hf);
+                }
 
-                }
-                else{
-                    let text = document.createTextNode('No Values');
-                    td.appendChild(text);
-                    tr.appendChild(td);
-                }
-                
-                //show GDC synonyms if exists
-                td = document.createElement("td");
-                td.width = "25%";
-                let gdc_syn_html = "";
-                if(r.syns !==undefined && r.list_syns !== undefined){
-                    if(r.syns.indexOf("<table>") === 0){
-                        gdc_syn_html = r.syns;
-                    }
-                    else{
-                        r.syns.split('#').forEach(function(syn){
-                            gdc_syn_html += syn + "<br>";
-                        });
-                        gdc_syn_html = gdc_syn_html.substr(0, gdc_syn_html.length -4);
-                    }
-                    
-                }
-                else{
-                    gdc_syn_html = "--";
-                }
-                td.innerHTML = gdc_syn_html;
-                tr.appendChild(td);
-                td = document.createElement("td");
-                td.width = "25%";
-                if(r.lk !== "--" && r.lk ==='caDSR' && r.uid !== "--"){
-                    let txt = document.createTextNode("caDSR: ");
-                    td.appendChild(txt);
-                    let hf = document.createElement("a");
-                    hf.className = "table-td-link";
-                    hf.href = "https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId="+r.uid+"&version=1.0";
-                    hf.target = "_blank";
-                    hf.innerHTML = "CDE";
-                    td.appendChild(hf);
-                    if(tostr !== ""){
-                        let br = document.createElement("BR");
-                        td.appendChild(br);
-                        br = document.createElement("BR");
-                        td.appendChild(br);
-                        hf = document.createElement("a");
-                        hf.className = "table-td-link";
-                        hf.href = "javascript:getExternalData('"+r.lk+"','"+r.uid+"');";
-                        hf.innerHTML = "Values";
-                        td.appendChild(hf);
-                        txt = document.createTextNode(" , ");
-                        td.appendChild(txt);
-                        hf = document.createElement("a");
-                        hf.className = "table-td-link";
-                        let evs = "";
-                        r.evs.forEach(function(ev){
-                            evs += ev.pv +"#";
-                        });
-                        if(evs !== ""){
-                            evs = evs.substr(0, evs.length -1);
-                        }
-                        hf.href = "javascript:compareGDC('"+tostr+"','"+evs+"');";
-                        hf.innerHTML = "Compare with GDC";
-                        td.appendChild(hf);
-                    }
-                    else{
-                        txt = document.createTextNode(" , ");
-                        td.appendChild(txt);
-                        hf = document.createElement("a");
-                        hf.className = "table-td-link";
-                        hf.href = "javascript:getExternalData('"+r.lk+"','"+r.uid+"');";
-                        hf.innerHTML = "Values";
-                        td.appendChild(hf);
-                    }
-                    
-                }
-                else if(r.lk !== "--"){
-                    let hf = document.createElement("a");
-                    hf.className = "table-td-link";
-                    hf.href = r.uid;
-                    hf.target = "_blank";
-                    hf.innerHTML = r.lk;
-                    td.appendChild(hf);
-                }
-                else{
-                    td.innerHTML = r.lk;
-                }
-                tr.appendChild(td);
-                td = document.createElement("td");
-                td.width = "25%";
-                let syn_html = "";
-                if(r.syns !==undefined && r.list_syns === undefined){
-                    if(r.syns.indexOf("<table>") === 0){
-                        syn_html = r.syns;
-                    }
-                    else{
-                        r.syns.split('#').forEach(function(syn){
-                            syn_html += syn + "<br>";
-                        });
-                        syn_html = syn_html.substr(0, syn_html.length -4);
-                    }
-                    
-                }
-                else{
-                    syn_html = "--";
-                }
-                td.innerHTML = syn_html;
-                tr.appendChild(td);
-                inner_tb.appendChild(tr);
-            });
+            }
+            else if(r.lk !== "--"){
+                let hf = document.createElement("a");
+                hf.className = "table-td-link";
+                hf.href = r.uid;
+                hf.target = "_blank";
+                hf.innerHTML = r.lk;
+                inner_d.appendChild(hf);
+            }
+            else{
+                inner_d.innerHTML = r.lk;
+            }
+            td.appendChild(inner_d);
+            //End CDE Reference
+
+            }); //<-- New Values End
+
+            //Values
+            // console.log(vs);
+            // vs.forEach(function(r){
+            //     if(current_p =="" || current_p != r.category +"/" +r.nd+"/" + r.pn){
+            //         current_p = r.category +"/" +r.nd+"/" + r.pn;
+            //         tr = document.createElement("tr");
+            //         tr.className = "data-table-row ";
+            //         td = document.createElement("td");
+            //         td.style.borderRight = "dashed 1px #BEBEBE";
+            //         let div = document.createElement("div");
+            //         div.innerHTML = r.category;
+            //         div.className = "tree-l-head";
+            //         td.appendChild(div);
+            //         div = document.createElement("div");
+            //         div.className = "tree-l-1";
+            //         let subdiv = document.createElement("div");
+            //         subdiv.className = "tree-l-link";
+            //         div.appendChild(subdiv);
+            //         subdiv = document.createElement("div");
+            //         subdiv.className = "tree-l-content";
+            //         subdiv.innerHTML = r.nd;
+            //         div.appendChild(subdiv);
+            //         td.appendChild(div);
+            //         div = document.createElement("div");
+            //         div.className = "tree-l-2";
+            //         subdiv = document.createElement("div");
+            //         subdiv.className = "tree-l-link";
+            //         div.appendChild(subdiv);
+            //         subdiv = document.createElement("div");
+            //         subdiv.className = "tree-l-content";
+            //         subdiv.innerHTML = r.pn;
+            //         div.appendChild(subdiv);
+            //         td.appendChild(div);
+            //         tr.appendChild(td);
+            //         td = document.createElement("td");
+            //         td.colSpan = 4;
+            //         td.style.padding = "0em";
+            //         let inner_t = document.createElement("table");
+            //         inner_t.border = "0";
+            //         inner_t.cellPadding = "0";
+            //         inner_t.cellSpacing = "0";
+            //         inner_t.width = "100%";
+            //         inner_t.style.display = "table";
+            //         inner_t.className = "inner-data-table";
+            //         inner_tb = document.createElement("tbody");
+            //         inner_t.appendChild(inner_tb);
+            //         td.appendChild(inner_t);
+            //         tr.appendChild(td);
+            //         tb.appendChild(tr);
+            //     }
+            //     tr = document.createElement("tr");
+            //     tr.className = "data-table-row ";
+            //     td = document.createElement("td");
+            //     td.width = "25%";
+            //     let tostr = "";
+            //     r.vs.forEach(function(v){
+            //         tostr += v + "#";
+            //     });
+            //     if(tostr !== ""){
+            //         tostr = tostr.substr(0, tostr.length-1);
+            //         let hf = document.createElement("a");
+            //
+            //         if(r.hl === undefined || r.hl){
+            //            hf.className = "table-td-link ";
+            //            if(r.nm.indexOf("<b>") >= 0){
+            //                 hf.innerHTML = r.nm;
+            //            }
+            //            else{
+            //                 hf.className += "underline";
+            //                 hf.innerHTML = "<b>"+r.nm+"</b>";
+            //            }
+            //
+            //            hf.href = "javascript:getGDCData('"+tostr+"', '"+r.nm+"');";
+            //         }
+            //         else{
+            //            hf.className = "table-td-link";
+            //            if(r.nm === '--'){
+            //                 hf.innerHTML = 'See All Values';
+            //                 hf.href = "javascript:getGDCData('"+tostr+"');";
+            //            }
+            //            else{
+            //                 hf.innerHTML = r.nm;
+            //                 hf.href = "javascript:getGDCData('"+tostr+"', '"+r.nm+"');";
+            //            }
+            //
+            //         }
+            //
+            //         td.appendChild(hf);
+            //         if(r.cd !== undefined){
+            //             let txt = document.createTextNode(" ("+r.cd+")");
+            //             td.appendChild(txt);
+            //         }
+            //         let br = document.createElement("BR");
+            //         td.appendChild(br);
+            //         br = document.createElement("BR");
+            //         td.appendChild(br);
+            //         hf = document.createElement("a");
+            //         hf.className = "table-td-link";
+            //         hf.href = "javascript:toCompare('"+tostr+"');";
+            //         hf.innerHTML = "Compare with User List";
+            //         td.appendChild(hf);
+            //         if(r.pn =='biospecimen_anatomic_site' || r.pn == 'new_event_anatomic_site' || r.pn == 'treatment_anatomic_site' || r.pn == 'primary_diagnosis'){
+            //             let synstostr = JSON.stringify(r.list_syns);
+            //             synstostr = synstostr.replace(/'/g, '#');
+            //             br = document.createElement("BR");
+            //             td.appendChild(br);
+            //             br = document.createElement("BR");
+            //             td.appendChild(br);
+            //             hf = document.createElement("a");
+            //             hf.className = "table-td-link";
+            //             hf.href = "javascript:getGDCSynonyms('"+synstostr+"');";
+            //             hf.innerHTML = "See All synonyms";
+            //             td.appendChild(hf);
+            //         }
+            //         tr.appendChild(td);
+            //
+            //     }
+            //     else{
+            //         let text = document.createTextNode('No Values');
+            //         td.appendChild(text);
+            //         tr.appendChild(td);
+            //     }
+            //
+            //     //show GDC synonyms if exists
+            //     td = document.createElement("td");
+            //     td.width = "25%";
+            //     let gdc_syn_html = "";
+            //     if(r.syns !==undefined && r.list_syns !== undefined){
+            //         if(r.syns.indexOf("<table>") === 0){
+            //             gdc_syn_html = r.syns;
+            //         }
+            //         else{
+            //             r.syns.split('#').forEach(function(syn){
+            //                 gdc_syn_html += syn + "<br>";
+            //             });
+            //             gdc_syn_html = gdc_syn_html.substr(0, gdc_syn_html.length -4);
+            //         }
+            //
+            //     }
+            //     else{
+            //         gdc_syn_html = "--";
+            //     }
+            //     td.innerHTML = gdc_syn_html;
+            //     tr.appendChild(td);
+            //
+            //
+            //     //CDE Reference
+            //     td = document.createElement("td");
+            //     td.width = "25%";
+            //     if(r.lk !== "--" && r.lk ==='caDSR' && r.uid !== "--"){
+            //         let txt = document.createTextNode("caDSR: ");
+            //         td.appendChild(txt);
+            //         let hf = document.createElement("a");
+            //         hf.className = "table-td-link";
+            //         hf.href = "https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId="+r.uid+"&version=1.0";
+            //         hf.target = "_blank";
+            //         hf.innerHTML = "CDE";
+            //         td.appendChild(hf);
+            //         if(tostr !== ""){
+            //             let br = document.createElement("BR");
+            //             td.appendChild(br);
+            //             br = document.createElement("BR");
+            //             td.appendChild(br);
+            //             hf = document.createElement("a");
+            //             hf.className = "table-td-link";
+            //             hf.href = "javascript:getExternalData('"+r.lk+"','"+r.uid+"');";
+            //             hf.innerHTML = "Values";
+            //             td.appendChild(hf);
+            //             txt = document.createTextNode(" , ");
+            //             td.appendChild(txt);
+            //             hf = document.createElement("a");
+            //             hf.className = "table-td-link";
+            //             let evs = "";
+            //             r.evs.forEach(function(ev){
+            //                 evs += ev.pv +"#";
+            //             });
+            //             if(evs !== ""){
+            //                 evs = evs.substr(0, evs.length -1);
+            //             }
+            //             hf.href = "javascript:compareGDC('"+tostr+"','"+evs+"');";
+            //             hf.innerHTML = "Compare with GDC";
+            //             td.appendChild(hf);
+            //         }
+            //         else{
+            //             txt = document.createTextNode(" , ");
+            //             td.appendChild(txt);
+            //             hf = document.createElement("a");
+            //             hf.className = "table-td-link";
+            //             hf.href = "javascript:getExternalData('"+r.lk+"','"+r.uid+"');";
+            //             hf.innerHTML = "Values";
+            //             td.appendChild(hf);
+            //         }
+            //
+            //     }
+            //     else if(r.lk !== "--"){
+            //         let hf = document.createElement("a");
+            //         hf.className = "table-td-link";
+            //         hf.href = r.uid;
+            //         hf.target = "_blank";
+            //         hf.innerHTML = r.lk;
+            //         td.appendChild(hf);
+            //     }
+            //     else{
+            //         td.innerHTML = r.lk;
+            //     }
+            //     tr.appendChild(td);
+            //
+            //     //NCIt Code and Synonyms
+            //     td = document.createElement("td");
+            //     td.width = "25%";
+            //     let syn_html = "";
+            //     if(r.syns !==undefined && r.list_syns === undefined){
+            //         if(r.syns.indexOf("<table>") === 0){
+            //             syn_html = r.syns;
+            //         }
+            //         else{
+            //             r.syns.split('#').forEach(function(syn){
+            //                 syn_html += syn + "<br>";
+            //             });
+            //             syn_html = syn_html.substr(0, syn_html.length -4);
+            //         }
+            //
+            //     }
+            //     else{
+            //         syn_html = "--";
+            //     }
+            //     td.innerHTML = syn_html;
+            //     tr.appendChild(td);
+            //     inner_tb.appendChild(tr);
+            // });
+
             d.appendChild(t);
             c.appendChild(d);
         }
@@ -1288,11 +1635,11 @@ function render(keyword,option, items){
                 }
                 let popup = '<div id="information"><div id="info-content" class="form-area"></div></div>';
                 $(document.body).append(popup);
-                $("#information").dialog({ 
+                $("#information").dialog({
                         modal: false,
                         position: {
-                                    my: 'center top+10', 
-                                    at: 'bottom', 
+                                    my: 'center top+10',
+                                    at: 'bottom',
                                     of: e
                         },
                         width:"20%",
@@ -1302,11 +1649,16 @@ function render(keyword,option, items){
                         },
                         close: function() {
                             $(this).remove();
-                        }  
+                        }
                 });
             });
         });
-         
+
+        console.log($(".show-more-less"));
+        $(".show-more-less").click(function () {
+          let target = $(this);
+          target.parent().find('.data-table-toggle').removeClass('data-table-toggle');
+        });
     }
 }
 
@@ -1314,7 +1666,7 @@ function popup(){
     let popup = '<div id="newTerm"><div id="term-form" class="form-area"></div></div>';
     $(document.body).append(popup);
     let tp = window.innerHeight * 0.2;
-    $("#newTerm").dialog({ 
+    $("#newTerm").dialog({
             modal: true,
             position: { my: "center top+"+tp, at: "center top", of:window},
             width:"30%",
@@ -1326,7 +1678,7 @@ function popup(){
                         +"<tr><td align=\"right\">Values</td><td><input class=\"input-box input-td\" type=\"input\" id=\"name\"/></td></tr>"
                         +"</table>"
                         +"<div><span id=\"suggestTerm\" class=\"btn btn-list btn-submit\">Submit</span><span id=\"cancelSuggestion\" class=\"btn btn-list btn-submit\">Cancel</span></div>";
-                
+
                 $('#term-form').html(html);
                 $('#cancelSuggestion').bind('click', function(){
                     $("#newTerm").dialog('close');
@@ -1334,7 +1686,7 @@ function popup(){
             },
             close: function() {
                 $(this).remove();
-            }  
+            }
     });
 }
 
@@ -1361,7 +1713,7 @@ $(document.body).ready(function(){
         if ((e.keyCode == 40 || e.keyCode == 38) && $(this).val().trim() !== "" && document.getElementById("suggestBox").style.display !== "none") {
             e.preventDefault();
             //focus to the first element
-                   
+
             displayBoxIndex += (e.keyCode == 40 ? 1 : -1);
             let oBoxCollection = $("#suggestBox").find("div");
             if (displayBoxIndex >= oBoxCollection.length)
@@ -1409,7 +1761,7 @@ $(document.body).ready(function(){
             displayBoxIndex = -1;
         }
     });
-    
+
     // $("#sm-table").treetable({expandable: true});
 
 });
@@ -1420,11 +1772,11 @@ var getExternalData = function(source, uid){
     }
     if(source === "caDSR"){
         $.getJSON('./search/external/caDSR', {uid:uid}, function(result){
-            
+
             let popup = '<div id="caDSR_data"><div class="data-option"><div class="option-right"><input type="checkbox" id="data-invariant"> Show Duplicates</div></div><div id="data-list" class="div-list"></div></div>';
             $(document.body).append(popup);
             let tp = window.innerHeight * 0.2;
-            $("#caDSR_data").dialog({ 
+            $("#caDSR_data").dialog({
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:window},
                     width:"60%",
@@ -1510,15 +1862,15 @@ var getExternalData = function(source, uid){
                                 //         code_html += '<a class=\"table-td-link\" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code='+c+'" target="_blank">'+c+'</a>' + ':<br>';
                                 //     });
                                 // }
-                                
+
                                 // if(code_html !== ""){
                                 //     code_html = code_html.substr(0, code_html.length-5);
-                                // }  
+                                // }
                                 html += "<tr class=\"data-table-row\"><td><b>"+(++count)+".</b></td><td>"+emt.pv+"</td><td>"+emt.pvd+"</td><td name=\"syn_area\">"+syn_html_invariant+"</td><td name=\"syn_invariant\" style=\"display:none;\">"+syn_html+"</td></tr>";
                             });
                             html += "</tbody></table>";
                         }
-                        
+
                         $('#data-list').html(html);
                         $('#data-invariant').bind('click', function(){
                             $("#data-list").find('td[name="syn_area"]').each(function(){
@@ -1531,7 +1883,7 @@ var getExternalData = function(source, uid){
                     },
                     close: function() {
                         $(this).remove();
-                    }  
+                    }
             });
         });
     }
@@ -1555,9 +1907,9 @@ var compareGDC = function(fromV, toV){
                 +'<div id="cpGDC_result_table">'+table+'</div>'
                 +'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
                 +'</div>';
-    
-    
-    $("#compareGDC_dialog").dialog({ 
+
+
+    $("#compareGDC_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:window},
             width:"50%",
@@ -1600,7 +1952,7 @@ var compareGDC = function(fromV, toV){
             },
             close: function() {
                 $(this).remove();
-            }  
+            }
     });
 };
 
@@ -1619,9 +1971,9 @@ var generateCompareGDCResult = function(fromV, toV, option){
             v_lowercase.push(v.trim().toLowerCase());
         });
     }
-    
+
     let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
-    
+
     from.forEach(function(v){
         let tmp = $.trim(v);
         if(tmp ===''){
@@ -1648,7 +2000,7 @@ var generateCompareGDCResult = function(fromV, toV, option){
         table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+to[i]+'</td></tr>';
     }
     table += "</tbody></table>";
-    
+
     return table;
 };
 
@@ -1661,7 +2013,7 @@ var getGDCSynonyms = function(values){
     let tp = window.innerHeight * 0.2;
     let data = values.replace(/#/g,"'");
     let result = JSON.parse(data);
-    $("#gdc_syn_data").dialog({ 
+    $("#gdc_syn_data").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:window},
             width:"30%",
@@ -1679,12 +2031,12 @@ var getGDCSynonyms = function(values){
                     html += "<tr class=\"data-table-row\"><td><b>"+(++count)+".</b></td><td>"+emt.pv+"</td><td>"+emt.pvc+"</td><td>"+syn_html+"</td></tr>";
                 });
                 html += "</tbody></table>";
-                
+
                 $('#gdc-syn-data-list').html(html);
             },
             close: function() {
                 $(this).remove();
-            }  
+            }
     });
 };
 
@@ -1697,7 +2049,7 @@ var getGDCData = function(values, item){
         $(document.body).append(popup);
         let tp = window.innerHeight * 0.2;
         let result = values.split("#");
-        $("#gdc_data").dialog({ 
+        $("#gdc_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
                 width:"30%",
@@ -1721,7 +2073,7 @@ var getGDCData = function(values, item){
                             html += "<div><b>"+(++count)+".</b> "+emt+"</div>";
                         });
                     }
-                    
+
                     $('#gdc-data-list').html(html);
                     if(target !== undefined){
                         $('#show_all').bind('click', function(){
@@ -1741,7 +2093,7 @@ var getGDCData = function(values, item){
                 },
                 close: function() {
                     $(this).remove();
-                }  
+                }
         });
 };
 
@@ -1771,7 +2123,7 @@ var toCompare = function(values){
     $(document.body).append(popup);
     let tp = window.innerHeight * 0.2;
     let result = values.split("#");
-    $("#compare_dialog").dialog({ 
+    $("#compare_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:window},
             width:"50%",
@@ -1783,7 +2135,7 @@ var toCompare = function(values){
                 result.forEach(function(emt){
                     html += "<div><b>"+(++count)+".</b> "+emt+"</div>"
                 });
-                
+
                 $('#cp_right').html(html);
                 $('#cp_result').css("display", "none");
                 $('#compare').bind('click', function(){
@@ -1795,7 +2147,7 @@ var toCompare = function(values){
             },
             close: function() {
                 $(this).remove();
-            }  
+            }
     });
 };
 
@@ -1877,9 +2229,9 @@ var generateCompareResult = function(fromV, toV, option){
             v_lowercase.push(v.trim().toLowerCase());
         });
     }
-    
+
     let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">User Defined Values</td><td width="50%" style="text-align:left;">Matched GDC Values</td></tr>';
-    
+
     fromV.forEach(function(v){
         let tmp = $.trim(v);
         if(tmp ===''){
@@ -1926,7 +2278,7 @@ var search = function(){
                 it.doc = hit._source;
                 it.highlight = hit.highlight;
                 items.push(it);
-            }); 
+            });
         }
         render(keyword, option, items);
         $("#centeredmenu ul a").bind("click", function(){
@@ -1940,9 +2292,9 @@ var search = function(){
             $("#"+t).css("display","block");
         });
         $("#type_table").treetable({expandable: true});
-        
+
     });
-    
+
 };
 
 //find the word with the first character capitalized
