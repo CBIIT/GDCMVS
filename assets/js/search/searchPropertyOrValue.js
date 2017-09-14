@@ -420,7 +420,7 @@ function render(keyword,option, items){
                                             tmp.cd = ss.code;
                                         }
                                     });
-                                }   
+                                }
                                 tmp.pn = p.title;
                                 tmp.category = item.category;
                                 tmp.nd = item.id;
@@ -959,7 +959,7 @@ function render(keyword,option, items){
                         tmp = tmp.substr(0, tmp.length - 4);
                     }
                     if(tmp =='biospecimen_anatomic_site' || tmp == 'new_event_anatomic_site' || tmp == 'treatment_anatomic_site' || tmp == 'primary_diagnosis' || tmp == 'morphology'){
-                        
+
                         br = document.createElement("BR");
                         td.appendChild(br);
                         br = document.createElement("BR");
@@ -1084,6 +1084,7 @@ function render(keyword,option, items){
             t.className = "data-table treetable";
             t.style.margin = "0";
             tb = document.createElement("tbody");
+            tb.className = "scroll";
             let offset = $('#container').offset().top;
             let h = window.innerHeight - offset - 111;
             tb.style.maxHeight = ""+ h+ "px";
@@ -2026,7 +2027,7 @@ var compareGDC = function(fromV, uid){
                 }
         });
     });
-    
+
 };
 
 var generateCompareGDCResult = function(fromV, toV, option){
@@ -2102,7 +2103,7 @@ var getGDCSynonyms = function(uid){
                                 });
                                 syn_html = syn_html.substr(0, syn_html.length -4);
                             }
-                            
+
                             html += "<tr class=\"data-table-row\"><td><b>"+(++count)+".</b></td><td>"+emt.pv+"</td><td>"+emt.pvc+"</td><td>"+syn_html+"</td></tr>";
                         });
                         html += "</tbody></table>";
@@ -2114,7 +2115,7 @@ var getGDCSynonyms = function(uid){
                     }
             });
     });
-    
+
 };
 
 var getGDCData = function(values, item){
