@@ -309,7 +309,7 @@ function render(keyword,option, items){
                     if(prop.syns !== undefined){
                         prop.syns.forEach(function(v){
                             if(v.syn !== undefined){
-                                let syn_str = "<table style=\"font-size:inherit;\"><tbody><tr class=\"\"><td><a class=\"table-td-link\" href=\"https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code="+v.pvc+"\" target=\"_blank\">"+v.pvc+"</a></td><td class=\"td-split\">";
+                                let syn_str = "<table style=\"font-size:inherit;border:none;\"><tbody><tr class=\"\"><td><a class=\"table-td-link\" href=\"https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code="+v.pvc+"\" target=\"_blank\">"+v.pvc+"</a></td><td class=\"td-split\">";
                                 let have = false;
                                 let cache = {};
                                 v.syn.forEach(function(sn){
@@ -345,7 +345,7 @@ function render(keyword,option, items){
                                 }
                             }
                             if(v.ss !== undefined && Object.keys(syns_ss).length > 0){
-                                let syn_str = "<table style=\"font-size:inherit;\"><tbody>";
+                                let syn_str = "<table style=\"font-size:inherit;border:none;\"><tbody>";
                                 let ctt = "", count = 0, have = false;
                                 v.ss.forEach(function(r){
                                     count++;
@@ -877,11 +877,11 @@ function render(keyword,option, items){
             th.appendChild(td);
 
             td = document.createElement("td");
-            td.width = "12%";
+            td.width = "22%";
             td.innerHTML = "Property";
             th.appendChild(td);
             td = document.createElement("td");
-            td.width = "44%";
+            td.width = "34%";
             td.innerHTML = "Description";
             th.appendChild(td);
             td = document.createElement("td");
@@ -896,7 +896,6 @@ function render(keyword,option, items){
             ps.forEach(function(r){
                 let tr = document.createElement("tr");
                 tr.className = "data-table-row ";
-
                 // let td = document.createElement("td");
                 // td.innerHTML = r.category;
                 // tr.appendChild(td);
@@ -922,11 +921,11 @@ function render(keyword,option, items){
                 tr.appendChild(td);
 
                 td = document.createElement("td");
-                td.width = "12%";
+                td.width = "22%";
                 td.innerHTML = r.nm;
                 tr.appendChild(td);
                 td = document.createElement("td");
-                td.width = "44%";
+                td.width = "34%";
                 td.innerHTML = r.desc;
                 tr.appendChild(td);
                 td = document.createElement("td");
@@ -1231,6 +1230,7 @@ function render(keyword,option, items){
               inner_t.cellSpacing = "0";
               inner_t.width = "100%";
               inner_t.style.display = "table";
+              inner_t.style.border = "none";
               inner_t.className = "inner-data-table";
               let inner_tb = document.createElement("tbody");
               inner_t.appendChild(inner_tb);
@@ -1247,7 +1247,7 @@ function render(keyword,option, items){
                 let inner_tr = document.createElement("tr");
                 inner_tr.className = "data-table-row";
                 inner_td = document.createElement("td");
-                inner_td.width = "25%";
+                inner_td.width = "33.3%";
                 if(cont > 4) {
                   inner_tr.className += " data-table-toggle";
                 }
@@ -1302,7 +1302,7 @@ function render(keyword,option, items){
 
               //GDC Synonyms
               inner_td = document.createElement("td");
-              inner_td.width = "25%";
+              inner_td.width = "33.3%";
               let gdc_syn_html = "";
               if(r.syns !==undefined && r.list_syns !== undefined){
                   if(r.syns.indexOf("<table>") === 0){
@@ -1326,7 +1326,7 @@ function render(keyword,option, items){
 
               //NCIt Code and Synonym
               inner_td = document.createElement("td");
-              inner_td.width = "25%";
+              inner_td.width = "33.3%";
               gdc_syn_html = "";
               if(r.syns !==undefined && r.list_syns === undefined){
                   if(r.syns.indexOf("<table>") === 0){
