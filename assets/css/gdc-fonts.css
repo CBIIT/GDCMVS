@@ -1,11 +1,11 @@
 /* Custom GDC Icons for revised portal */
 @font-face {
   font-family: 'gdc-icons';
-  src:    url('/fonts/gdc-icons.eot?cflv83');
-  src:    url('/fonts/gdc-icons.eot?cflv83#iefix') format('embedded-opentype'),
-  url('/fonts/gdc-icons.ttf?cflv83') format('truetype'),
-  url('/fonts/gdc-icons.woff?cflv83') format('woff'),
-  url('/fonts/gdc-icons.svg?cflv83#gdc-icons') format('svg');
+  src:    url('../fonts/gdc-icons.eot?cflv83');
+  src:    url('../fonts/gdc-icons.eot?cflv83#iefix') format('embedded-opentype'),
+  url('../fonts/gdc-icons.ttf?cflv83') format('truetype'),
+  url('../fonts/gdc-icons.woff?cflv83') format('woff'),
+  url('../fonts/gdc-icons.svg?cflv83#gdc-icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }

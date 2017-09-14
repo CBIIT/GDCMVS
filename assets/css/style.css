@@ -5,6 +5,7 @@ body{
 table{
   border-collapse: collapse;
 }
+table 
 p{
   text-align:center;
 }
@@ -48,6 +49,10 @@ a{
   width:65%;
   height:3.5em;
 }
+.super-header{
+    border-bottom: 1px solid #cdcdcd;
+    text-align: center;
+}
 .nav-bar{
   height:3em;
   background: linear-gradient(to bottom, #363636 0%, #4a4a4a 100%);
@@ -56,11 +61,11 @@ a{
   width:100%;
   float:left;
   display:block;
-  margin:1em 0 0.5em 0;
+  margin:1em 0 0 0;
 }
 .option-bar{
   width:40%;
-  margin-left: calc(50% - 13em);
+  margin-left: calc(50% - 10em);
   float:left;
   text-align:left;
 }
@@ -69,7 +74,12 @@ a{
   margin-right:0.5em;
 }
 .search-area{
-  margin-left: calc(50% - 23em);
+  margin-left: calc(50% - 17em);
+}
+.suggest-container{
+  position:relative;
+  float:left;
+  width:100%;
 }
 .search-label{
   width:6em;
@@ -78,6 +88,7 @@ a{
   line-height:1.8em;
   text-align:right;
   margin-right:1em;
+  font-size:16px;
 }
 .search-box{
   width:22em;
@@ -138,7 +149,7 @@ a{
   border:1px solid #3498db;
   transition: background 0.25s ease-in-out;
   cursor:pointer;
-  padding: 5px 10px 5px 10px;
+  padding: 3px 10px 3px 10px;
   margin-left:10px;
   border-radius:0.3em;
 }
@@ -205,6 +216,8 @@ a{
 .data-table-head td {
   font-weight:bold;
   text-align:left;
+  border-left: 1px solid #cdcdcd;
+  padding: 8px 5px;
 }
 .data-table-row{
   border-bottom:dashed 1px #BEBEBE;
@@ -269,15 +282,16 @@ a{
     vertical-align: top;
     box-shadow: 0 2px 3px 3px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
     transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
-    margin-left: calc(50% - 30.9em);
     position: absolute;
-    top: 4.1em;
+    top: 0;
+    left: calc(50%  - 10em);
     z-index:100;
 }
 .suggestArea div{
   line-height: 1.8em;
   font-size:0.9em;
   width:100%;
+  float:left;
 }
 .suggestArea div:hover{
   background-color: #f0f0f0;
@@ -286,6 +300,7 @@ a{
   float:right;
   font-weight:bold;
   margin-right:0.2em;
+  margin-bottom:0;
 }
 .suggestArea .selected{
   background-color: #f0f0f0;
@@ -543,13 +558,14 @@ a{
 .dropdown-head{
   min-width: 10em;
   display:block;
+  font-size: 0.9em;
 }
 /* The container <div> - needed to position the dropdown content */
-.dropdown {
+.dropdown-box {
     position: relative;
     display: inline-block;
     text-align:center;
-    /*margin-left:calc(25% - 14em);*/
+    margin-left:calc(25% - 14em);
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -557,6 +573,7 @@ a{
     display: none;
     position: absolute;
     background-color: #f9f9f9;
+    font-size: 0.9em;
     min-width: 10em;
     box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -572,14 +589,14 @@ a{
 .dropdown-content a:hover {background-color: #f1f1f1}
 
 /* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
+.dropdown-box:hover .dropdown-content {
     display: block;
 }
-.dropdown:hover .dropdown-head{
+.dropdown-box:hover .dropdown-head{
     display: block;
     background-color: #f1f1f1;
     min-width: 10em;
 }
-.dropdown:hover{
+.dropdown-box:hover{
   box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
 }

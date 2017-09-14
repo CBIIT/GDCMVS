@@ -711,6 +711,7 @@ function render(keyword,option, items){
 
         let t = document.createElement("table");
         t.className = "data-table treetable";
+        t.style.marginBottom = "0";
         let thb = document.createElement("thead");
         t.appendChild(thb);
         d.appendChild(t);
@@ -723,7 +724,7 @@ function render(keyword,option, items){
         t.width = "100%";
         t.style.display = "table";
         t.className = "data-table treetable";
-
+        t.style.margin = "0";
         let tb = document.createElement("tbody");
         let offset = $('#container').offset().top;
         let h = window.innerHeight - offset - 110;
@@ -837,6 +838,7 @@ function render(keyword,option, items){
             t.width = "100%";
             t.style.display = "table";
             t.className = "data-table treetable";
+            t.style.marginBottom = "0";
             thb = document.createElement("thead");
             t.appendChild(thb);
             d.appendChild(t);
@@ -848,6 +850,7 @@ function render(keyword,option, items){
             t.width = "100%";
             t.style.display = "table";
             t.className = "data-table treetable";
+            t.style.margin = "0";
             tb = document.createElement("tbody");
             let offset = $('#container').offset().top;
             let h = window.innerHeight - offset - 80;
@@ -1067,6 +1070,7 @@ function render(keyword,option, items){
             t.width = "100%";
             t.style.display = "table";
             t.className = "data-table treetable";
+            t.style.marginBottom = "0";
             thb = document.createElement("thead");
             t.appendChild(thb);
             d.appendChild(t);
@@ -1078,6 +1082,7 @@ function render(keyword,option, items){
             t.width = "100%";
             t.style.display = "table";
             t.className = "data-table treetable";
+            t.style.margin = "0";
             tb = document.createElement("tbody");
             let offset = $('#container').offset().top;
             let h = window.innerHeight - offset - 111;
@@ -1140,7 +1145,6 @@ function render(keyword,option, items){
             let tmp1 = {};
             let tmp2 = {};
             vs.forEach(function(r){
-                debugger;
               if(current_p =="" || current_p != r.category +"/" +r.nd+"/" + r.pn){
 
                 if(current_p != "") {

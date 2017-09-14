@@ -6,20 +6,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="canonical" href="#">
-<link rel="shortcut icon" href="/img/favicon.ico">
+<link rel="shortcut icon" href="./img/favicon.ico">
 
-<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="./img/apple-touch-icon.png">
 
 <title>GDC Metadata Validation Services</title>
 
-<link href="/css/bootstrap-custom.css" rel="stylesheet">
-<link href="/css/font-awesome-4.5.css" rel="stylesheet">
-<link rel="stylesheet" href="/css/highlight.css">
-<link href="/css/base.css" rel="stylesheet">
-<link href="/css/gdc-common.css" rel="stylesheet">
-<link href="/css/gdc-fonts.css" rel="stylesheet">
-<link href="/css/encyclopedia.css" rel="stylesheet">
-<link href="../../css/encyclopedia.css" rel="stylesheet">
+<link href="./css/bootstrap-custom.css" rel="stylesheet">
+<link href="./css/font-awesome-4.5.css" rel="stylesheet">
+<link rel="stylesheet" href="./css/highlight.css">
+<link href="./css/base.css" rel="stylesheet">
+<link href="./css/gdc-common.css" rel="stylesheet">
+<link href="./css/gdc-fonts.css" rel="stylesheet">
+<link href="./css/encyclopedia.css" rel="stylesheet">
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -74,8 +73,8 @@
         <!-- Collapsed navigation -->
         <div>
             <!-- Main title -->
-            <a class="navbar-brand" href="/../..">
-                <img src="/img/nih-header-logo-color.png" alt="NIH National Cancer Institute GDC Documentation">
+            <a class="navbar-brand" href="#">
+                <img src="./img/nih-header-logo-color.png" alt="NIH National Cancer Institute GDC Documentation">
                 <span class="hidden">NIH National Cancer Institute GDC Documentation</span>
             </a>
             <!-- Expander button -->
@@ -97,7 +96,7 @@
                   <div class="gdc-apps-menu-grid">
                     <div class="menu-column">
                       <a href="https://portal.gdc.cancer.gov/" title="Data Portal" target="_blank" class="menu-item">
-                        <img width="21px" src="/img/GDC-App-data-portal-blue.svg" class="icon icon-gdc-portal home" alt="GDC Data Portal">
+                        <img width="21px" src="./img/GDC-App-data-portal-blue.svg" class="icon icon-gdc-portal home" alt="GDC Data Portal">
                         <div>Data Portal</div>
                       </a>
                       <a href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api" title="GDC API" target="_blank" class="menu-item">
@@ -121,7 +120,7 @@
                     </div>
                     <div class="menu-column">
                       <a href="https://gdc.cancer.gov/" title="GDC Website" target="_blank" class="menu-item">
-                        <img width="21px" src="/img/GDC-App-website-blue.svg" class="icon icon-gdc-portal home" alt="GDC Website">
+                        <img width="21px" src="./img/GDC-App-website-blue.svg" class="icon icon-gdc-portal home" alt="GDC Website">
                         <div>Website</div>
                       </a>
                       <a href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool" class="menu-item" title="GDC Data Transfer Tool" target="_blank">
@@ -149,16 +148,16 @@
             <!-- Main navigation -->
             <ul class="nav navbar-nav nav-full">
               <li>
-                  <a href="/../..">Home</a>
+                  <a href="https://docs.gdc.cancer.gov/">Home</a>
               </li>
               <li class="dropdown">
                 <a href="#" title="API" class="dropdown-toggle" data-toggle="dropdown">API <b class="caret"></b></a>
                 <ul class="dropdown-menu">
 									<li>
-										<a href="../../API/Users_Guide/Getting_Started/">Getting Started</a>
+										<a href="https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/">Getting Started</a>
 									</li>
 									<li>
-										<a href="../../API/Users_Guide/Search_and_Retrieval/">Search and Retrieval</a>
+										<a href="https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/">Search and Retrieval</a>
 									</li>
 								</ul>
 							</li>
@@ -166,7 +165,7 @@
 								<a href="#">Data Portal</a>
 							</li>
 							<li>
-								<a href="/../../Encyclopedia/">Encyclopedia</a>
+								<a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/">Getting Started</a>
 							</li>
 							<li class="menu-bar" style="width: 0px; left: 138.363px;"></li>
 							<li>
@@ -181,7 +180,7 @@
 	</div>
 
 	<div id="docs-container" class="container">
-		<div id="body">
+		<div id="body" style="margin-top:1.4em">
 			<!-- GDC APP -->
 			<div class="search-bar">
 				<div class="search-area">
@@ -193,13 +192,19 @@
 						<span id="searchProperty" class="btn">Search</span>
 					</div>
 				</div>
-				<div class="dropdown">
-				  <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
-				  <div class="dropdown-content">
-				    <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="btn-a">Search in caDSR</a>
-					<a href="https://ncit.nci.nih.gov/" target="_blank" class="btn-a">Search in NCIt</a>
-				  </div>
-				</div>
+        <div class="dropdown-box">
+          <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
+          <div class="dropdown-content">
+            <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="btn-a">Search in caDSR</a>
+          <a href="https://ncit.nci.nih.gov/" target="_blank" class="btn-a">Search in NCIt</a>
+          </div>
+        </div>
+        <div class="suggest-container">
+          <div id="suggestBox" class="suggestArea">
+            
+          </div>
+        </div>
+				
 			</div>
 			<div class="option-bar">
 				<div><input type="radio" name="i_match" checked="checked" value="exact"> Exact Match</div>
@@ -209,7 +214,7 @@
 				<div><input type="checkbox" id="i_desc"> Property Description</div>
 				<div><input type="checkbox" id="i_syn"> Synonyms</div>
 			</div>
-			<div id="suggestBox" class="suggestArea"></div>
+
 
 			<div id="container">
 			</div>
@@ -243,22 +248,22 @@
 	  </div>
 	</footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
-	<script src="/js/jquery-1.12.0.min.js"></script>
+	<script src="./js/jquery-1.12.0.min.js"></script>
 
 	<script type="text/javascript" src="./js/jquery.treetable.js"></script>
 	<script type="text/javascript" src="./js/search/searchPropertyOrValue.js"></script>
 	<script type="text/javascript" src="./js/jquery-ui.js"></script>
 
 
-	<script src="/js/jQuery-FontSpy.js"></script>
-	<script src="/js/bootstrap-3.3.6.min.js"></script>
-	<script src="/js/highlight.pack.js"></script>
-	<script src="/js/lunr-0.5.7.min.js"></script>
-	<script src="/js/jquery.highlight-4.closure.js"></script>
-	<script src="/js/jquery.bootstrap-autohidingnavbar.min.js"></script>
-	<script src="/js/jquery.scrollUp.min.js"></script>
-	<script src="/js/gdc-common.js"></script>
-	<script src="/js/gdc-notifications.js"></script>
+	<script src="./js/jQuery-FontSpy.js"></script>
+	<script src="./js/bootstrap-3.3.6.min.js"></script>
+	<script src="./js/highlight.pack.js"></script>
+	<script src="./js/lunr-0.5.7.min.js"></script>
+	<script src="./js/jquery.highlight-4.closure.js"></script>
+	<script src="./js/jquery.bootstrap-autohidingnavbar.min.js"></script>
+	<script src="./js/jquery.scrollUp.min.js"></script>
+	<script src="./js/gdc-common.js"></script>
+	<script src="./js/gdc-notifications.js"></script>
 	<script language="JavaScript" type="text/javascript" src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"></script>
 	<script>var base_url = '../..';</script>
 	</div>
