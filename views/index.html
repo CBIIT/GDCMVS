@@ -1,669 +1,266 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title>GDC Metadata Validation Services</title>
-	<!-- <script type="text/javascript" src="js/react.min.js"></script> -->
-	<link rel="stylesheet" type="text/css" href="./css/jquery.treetable.css" />
-	<link rel="stylesheet" type="text/css" href="./css/jquery.treetable.theme.default.css" />
-	<link rel="stylesheet" type="text/css" href="./css/jquery-ui.css" />
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- <script type="text/javascript" src="./js/react.js"></script>
-	<script type="text/javascript" src="./js/react-dom.js"></script> -->
-	<script type="text/javascript" src="./js/jquery.min.js"></script>
+<link rel="canonical" href="#">
+<link rel="shortcut icon" href="/img/favicon.ico">
+
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+<title>GDC Metadata Validation Services</title>
+
+<link href="/css/bootstrap-custom.css" rel="stylesheet">
+<link href="/css/font-awesome-4.5.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/highlight.css">
+<link href="/css/base.css" rel="stylesheet">
+<link href="/css/gdc-common.css" rel="stylesheet">
+<link href="/css/gdc-fonts.css" rel="stylesheet">
+<link href="/css/encyclopedia.css" rel="stylesheet">
+<link href="../../css/encyclopedia.css" rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+
+<!-- GDC CSS -->
+
+<link rel="stylesheet" type="text/css" href="./css/jquery.treetable.css" />
+<link rel="stylesheet" type="text/css" href="./css/jquery.treetable.theme.default.css" />
+<link rel="stylesheet" type="text/css" href="./css/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="./css/style.css" />
+
+</head>
+<body style="" class="">
+	<a class="skip-main" href="#main">Skip to main content</a>
+	<div id="search-modal" class="modal fade bs-search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      	<div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="search-modal-label">GDC Document Keyword Search Modal</h4>
+            </div>
+            <div class="modal-body">
+                <label for="gdc-search-query" class="inline">
+                    <span class="searchbox-icon searchbox-submit">
+                        <span aria-hidden="true" class="fa fa-search search-bttn"></span>
+                    </span>
+                    <span class="search-label">Search</span>
+                </label>
+                <input id="gdc-search-query" type="search" role="search" placeholder="e.g. Submission Portal" autocomplete="off" name="search" class="searchbox-input">
+                <span class="searchbox-icon searchbox-cancel">
+                    <i class="fa fa-close search-cancel-bttn"></i>
+                </span>
+                <div class="row search-results-container">
+                    <div class="col-md-12 results">
+                        <div class="search-body search-result-caption"></div>
+                        <div class="search-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	</div>
+  <!-- div id="sliding-drawer-container" class="sliding-drawer-container">
+  </div -->
+  <div class="parent-container">
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation" aria-label="Site Navigation">
+			<div id="notifications">
+			</div>
+    	<div class="container">
+        <!-- Collapsed navigation -->
+        <div>
+            <!-- Main title -->
+            <a class="navbar-brand" href="/../..">
+                <img src="/img/nih-header-logo-color.png" alt="NIH National Cancer Institute GDC Documentation">
+                <span class="hidden">NIH National Cancer Institute GDC Documentation</span>
+            </a>
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <!-- GDC Apps -->
+            <div class="pull-right">
+              <div class="gdc-app-list">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-label="GDC Apps Menu">
+                  <span class="icon-gdc-apps-menu" aria-hidden="true"></span>
+                  <span data-translate="">GDC Apps</span>
+                </a>
+                <div data-dropdown-menu="" class="dropdown-menu gdc-apps-menu-container" role="menu">
+                  <div class="gdc-apps-menu-grid">
+                    <div class="menu-column">
+                      <a href="https://portal.gdc.cancer.gov/" title="Data Portal" target="_blank" class="menu-item">
+                        <img width="21px" src="/img/GDC-App-data-portal-blue.svg" class="icon icon-gdc-portal home" alt="GDC Data Portal">
+                        <div>Data Portal</div>
+                      </a>
+                      <a href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api" title="GDC API" target="_blank" class="menu-item">
+                        <span class="icon icon-gdc-portal-api">
+                          <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                          </span>
+                        <div>API</div>
+                      </a>
+                      <a href="https://docs.gdc.cancer.gov/" title="GDC Docs" target="_blank" class="active menu-item">
+                        <span class="icon icon-gdc-docs">
+                          <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span><span class="path11"></span><span class="path12"></span><span class="path13"></span><span class="path14"></span>
+                        </span>
+                        <div>Documentation</div>
+                      </a>
+                      <a href="https://portal.gdc.cancer.gov/legacy-archive" title="GDC Legacy Archive" target="_blank" class="menu-item">
+                        <span class="icon icon-gdc-legacy-archive">
+                          <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                        </span>
+                        <div>Legacy Archive</div>
+                      </a>
+                    </div>
+                    <div class="menu-column">
+                      <a href="https://gdc.cancer.gov/" title="GDC Website" target="_blank" class="menu-item">
+                        <img width="21px" src="/img/GDC-App-website-blue.svg" class="icon icon-gdc-portal home" alt="GDC Website">
+                        <div>Website</div>
+                      </a>
+                      <a href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool" class="menu-item" title="GDC Data Transfer Tool" target="_blank">
+                        <span class="icon icon-gdc-data-transer-tool">
+                          <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span>
+                        </span>
+                        <div>Data Transfer Tool</div>
+                      </a>
+                      <a href="https://portal.gdc.cancer.gov/submission/" title="GDC Submission Portal" target="_blank" class="menu-item">
+                        <span class="icon icon-gdc-submission-portal">
+                          <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                        </span>
+                        <div>Data Submission Portal</div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- -->
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav nav-full">
+              <li>
+                  <a href="/../..">Home</a>
+              </li>
+              <li class="dropdown">
+                <a href="#" title="API" class="dropdown-toggle" data-toggle="dropdown">API <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+									<li>
+										<a href="../../API/Users_Guide/Getting_Started/">Getting Started</a>
+									</li>
+									<li>
+										<a href="../../API/Users_Guide/Search_and_Retrieval/">Search and Retrieval</a>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<a href="#">Data Portal</a>
+							</li>
+							<li>
+								<a href="/../../Encyclopedia/">Encyclopedia</a>
+							</li>
+							<li class="menu-bar" style="width: 0px; left: 138.363px;"></li>
+							<li>
+								<a aria-label="Search" id="gdc-search-button" title="Click Search the GDC Documentation" href="javascript:$gdcApp.searchModal.show()">
+									<span class="fa fa-search" aria-hidden="true"></span>&nbsp;
+									<span class="hidden">Quick Search</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+			</div>
+	</div>
+
+	<div id="docs-container" class="container">
+		<div id="body">
+			<!-- GDC APP -->
+			<div class="search-bar">
+				<div class="search-area">
+					<div class="search-label">Keyword:</div>
+					<div class="search-box">
+						<input class="input-box" id="keywords" placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" />
+					</div>
+					<div class="search-button">
+						<span id="searchProperty" class="btn">Search</span>
+					</div>
+				</div>
+				<div class="dropdown">
+				  <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
+				  <div class="dropdown-content">
+				    <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="btn-a">Search in caDSR</a>
+					<a href="https://ncit.nci.nih.gov/" target="_blank" class="btn-a">Search in NCIt</a>
+				  </div>
+				</div>
+			</div>
+			<div class="option-bar">
+				<div><input type="radio" name="i_match" checked="checked" value="exact"> Exact Match</div>
+				<div><input type="radio" name="i_match" value="partial"> Partial Match</div>
+			</div>
+			<div class="option-bar" style="width:22em;border-top: 1px solid black;">
+				<div><input type="checkbox" id="i_desc"> Property Description</div>
+				<div><input type="checkbox" id="i_syn"> Synonyms</div>
+			</div>
+			<div id="suggestBox" class="suggestArea"></div>
+
+			<div id="container">
+			</div>
+			<!-- END GDC APP -->
+		</div>
+	</div>
+
+	<footer id="docs-footer">
+	  <div class="row">
+	      <div class="col-md-12 footer-caption" role="contentinfo">
+	          <div>
+	              <a href="https://gdc-portal.nci.nih.gov/projects/t" target="_blank">Site Home</a>
+	              | <a href="http://www.cancer.gov/global/web/policies" target="_blank">Policies</a>
+	              | <a href="http://www.cancer.gov/global/web/policies/accessibility" target="_blank">Accessibility</a>
+	              | <a href="http://www.cancer.gov/global/web/policies/foia" target="_blank">FOIA</a>
+	          </div>
+	          <div>
+	              <a href="http://www.hhs.gov" target="_blank">U.S. Department of Health and Human Services</a>
+	              | <a href="http://www.nih.gov" target="_blank">National Institutes of Health</a>
+	              | <a href="http://www.cancer.gov" target="_blank">National Cancer Institute</a>
+	              | <a href="http://www.usa.gov" target="_blank">USA.gov</a>
+	          </div>
+	          <div>
+	              NIH... Turning Discovery Into Health ®
+	          </div>
+
+	          <div class="version-caption">
+	              GDC Docs Version 1.0
+	          </div>
+	      </div>
+	  </div>
+	</footer>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"></script>
+	<script src="/js/jquery-1.12.0.min.js"></script>
+
 	<script type="text/javascript" src="./js/jquery.treetable.js"></script>
 	<script type="text/javascript" src="./js/search/searchPropertyOrValue.js"></script>
-
 	<script type="text/javascript" src="./js/jquery-ui.js"></script>
 
-	<style>
-		body{
-			margin:0px;
-			font-size:16px;
-		}
-		table{
-			border-collapse: collapse;
-		}
-		p{
-			text-align:center;
-		}
-		b{
-			color:#4486F3;
-		}
-		a{
-			color: black;
-		}
-		::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-		    color:    #bbb;
-		    font-size:0.9em;
-		    padding-left:0.1em;
-		}
-		:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-		   color:    #bbb;
-		   opacity:  1;
-		   padding-left:0.1em;
-		}
-		::-moz-placeholder { /* Mozilla Firefox 19+ */
-		   color:    #bbb;
-		   opacity:  1;
-		   padding-left:0.1em;
-		}
-		:-ms-input-placeholder { /* Internet Explorer 10-11 */
-		   color:    #bbb;
-		   padding-left:0.1em;
-		}
-		::-ms-input-placeholder { /* Microsoft Edge */
-		   color:    #bbb;
-		   padding-left:0.1em;
-		}
-		.header{
-		    width: 60%;
-		    text-align: left;
-		    margin-left: 10em;
-		    margin-top: 1em;
-		    margin-bottom: 1.5em;
-		}
-		.header img{
-			width:65%;
-			height:3.5em;
-		}
-		.nav-bar{
-			height:3em;
-			background: linear-gradient(to bottom, #363636 0%, #4a4a4a 100%);
-		}
-		.search-bar{
-			width:100%;
-			float:left;
-			display:block;
-			margin:1em 0 0 0;
-		}
-		.option-bar{
-			width:40%;
-			margin-left: calc(50% - 10em);
-			float:left;
-			text-align:left;
-		}
-		.option-bar div{
-			float:left;
-			margin-right:0.5em;
-		}
-		.search-area{
-			margin-left: calc(50% - 17em);
-		}
-		.search-label{
-			width:6em;
-			float:left;
-			font-weight:bold;
-			line-height:1.8em;
-			text-align:right;
-			margin-right:1em;
-		}
-		.search-box{
-			width:22em;
-			float:left;
-			border-radius: 2px;
-		    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
-		    transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
-		}
-		.search-button{
-			width:5em;
-			float:left;
-			line-height: 1.8em;
-		}
-		.link_area{
-			/*position: absolute;
-		    top: 10em;
-		    right: 1em;*/
-		    width:30%;
-		    float:right;
-		}
-		.link_area a{
-			float:left;
-			display:block;
-			width:33%;
-			font-size:0.9em;
-			text-align:center;
-		}
-		.navigation{
-			margin-left:35%;
-			height:3em;
-			width:30%;
-		}
-		.nav-item{
-			width:100%;
-			height:100%;
-			text-align: center;
-			line-height: 3em;
-			font-family: Montserrat,Arial,sans-serif;
-			color:#fff;
-		}
-		.nav-item:hover{
-			background-color:white;
-			color:#2f2f2f;
-			cursor:pointer;
-		}
-		.input-box{
-			width:22em;
-			height:28px;
-			font-size:15px;
-			outline: none;
-		}
-		.input-td{
-			width:85%;
-		}
-		.btn{
-			color:white;
-			background-color:#4486F3;
-			border:1px solid #4486F3;
-			transition: background 0.25s ease-in-out;
-			cursor:pointer;
-			padding: 5px 10px 5px 10px;
-			margin-left:10px;
-			border-radius:0.3em;
-		}
-		.btn:hover{
-			background-color: #4168f4;
-			border-color:#4168f4;
-		}
-		.btn-list{
-			margin:0.5em 0 0.5em 0.7em;
-			float:left;
-			font-size:0.8em;
-		}
-		.btn-submit{
-			margin:1em 1em 1em 0em;
-		}
-		.btn-submit-large{
-			color:white;
-			background-color:#4486F3;
-			border:1px solid #4486F3;
-			transition: background 0.25s ease-in-out;
-			cursor:pointer;
-			padding: 5px 10px 5px 10px;
-			border-radius:0.3em;
-			line-height: 3em;
-			margin-left: 5em;
-		}
-		.btn-a{
-			color:#4486F3;
-		    line-height: 2em;
-		    text-decoration:none;
-		}
-		.btn-a:hover{
-			text-decoration:underline;
-		}
-		.div-list{
-			height:30em;
-			width:100%;
-			float:left;
-			width:100%;
-		}
-		.div-list div{
-			float:left;
-			width:100%;
-			display:block;
-		}
-		.div-list table{
-			font-size:1em;
-		}
 
-		#container{
-			width:100%;
-			float:left;
-			margin-top:1em;
-		}
-		table.treetable {
-			margin: 0;
-		}
-		table.treetable tbody tr td {
-			padding: .3em 0;
-		}
-		.data-table {
-			border:1px solid #cdcdcd;
-		}
-		.inner-data-table{
-			font-size: inherit;
-		    width: 100%;
-		}
-		.data-table td:first-child {
-			/*padding:8px 5px; */
-		}
-		.data-table-head {
-			background-color:#f0f0f0;
-		}
-		.data-table-head td {
-			font-weight:bold;
-			border-left: 1px solid #cdcdcd;
-			padding: 8px 5px;
-		}
-		.data-table-row{
-			border-bottom:dashed 1px #BEBEBE;
-		}
-
-		.data-table-toggle {
-			display: none;
-		}
-
-		.center{
-			text-align:center;
-		}
-		.row-highlight{
-			font-weight:bold;
-			color:#4486F3;
-		}
-		.data-table tr:last-child {
-			border-bottom:dashed 0px #BEBEBE;
-		}
-		.data-table-row:hover {
-			background-color:#FAFAFA;
-		}
-		.td-split{
-			border-left:dashed 1px #BEBEBE;
-		}
-		.active{
-			font-weight:bold;
-			display:block;
-		}
-		.info{
-			text-align:center;
-		}
-		.info_1{
-		    text-align: left;
-		    width: 100%;
-		    padding: 2em;
-		    float: left;
-		}
-		.table-td-link:hover{
-			color:#4486F3;
-		}
-		.underline{
-			text-decoration: underline;
-		    -moz-text-decoration-color: #4486F3; /* Code for Firefox */
-		    text-decoration-color: #4486F3;
-		}
-		.form-area{
-			font-size:1em;
-			float:left;
-			width:100%;
-		}
-		.form-area div{
-			float:left;
-			margin-bottom:1em;
-			padding-left:35%;
-		}
-		.form-area table{
-			font-size:1em;
-			width:100%;
-		}
-		.suggestArea{
-			float:left;
-			width:22em;
-			height: auto;
-			display:none;
-			background-color: #fff;
-		    vertical-align: top;
-		    box-shadow: 0 2px 3px 3px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
-		    transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
-		    margin-left:calc(50% - 10em);
-		    position:absolute;
-		    top:11.8em;
-		    z-index:100;
-		}
-		.suggestArea div{
-			line-height: 1.8em;
-			font-size:0.9em;
-			width:100%;
-		}
-		.suggestArea div:hover{
-			background-color: #f0f0f0;
-		}
-		.suggestArea label{
-			float:right;
-			font-weight:bold;
-			margin-right:0.2em;
-		}
-		.suggestArea .selected{
-			background-color: #f0f0f0;
-			float:left;
-		}
-		.left_label{
-			float:left;
-			width:45%;
-			font-weight: bold;
-			height:1.5em;
-		}
-		.right_label{
-			float:left;
-			margin-left: calc(9% + 1px);
-			font-weight:bold;
-			height:1.5em;
-		}
-		.div-message{
-			float:left;
-			height:2em;
-			width:100%;
-			color: red;
-			text-align: center;
-			line-height: 2em;
-		}
-		.div-result{
-			width:100%;
-			height:auto;
-			float:left;
-		}
-		.cp_result_title{
-			width:100%;
-			float:left;
-			text-align: center;
-			font-weight: bold;
-		}
-		.chk-filter{
-			float: left;
-    		line-height: 3em;
-    		margin-right: calc(50% - 128px - 12em);
-		}
-		.chk-filter-GDC{
-			float: left;
-    		line-height: 3em;
-		}
-		.tab-num{
-			font-size:0.9em;
-			line-height: 1.3em;
-		}
-		.tip-info{
-		    display: inline-block;
-		    width: 16px;
-		    height: 16px;
-		    background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAVFBMVEVHcExNTU1OTk5PT09LS0tLS0tPT09BQUFPT09KSkpISEhPT09QUFBNTU1NTU1NTU1ISEhNTU1KSkpMTExOTk5RUVFQUFBJSUlMTExMTExMTExLS0s4rL6yAAAAHHRSTlMAFtG5lo6BAeIrBGSpIP4UCNmB3WWxEDvo8ulwgh/GowAAAIpJREFUeF5ljwcKwzAMRZ/nkJM0s/P+9yxyaigEEJI+/AWA8L9ICVNDqEYv/SFm573LUR+dwRaAYgcFhGhhzE7ARgRMLlCmZRZKNkB1JLk/CklwFQgemddlGxF8+AHIc+qAUoR5U0App2giTzdUtNt+3q+127ZgRjAtWI9+eH+06L3cHsJ+lrvU/wKN5wUNEJ+ebQAAAABJRU5ErkJggg==') no-repeat;
-		    cursor:pointer;
-		    vertical-align: -0.5em;
-		}
-		.option-left{
-			float:left;
-		}
-		.option-right{
-			float:right;
-		}
-		.row-undisplay{
-			display:none;
-		}
-		.data-option{
-			float:left;
-			width:100%;
-		}
-		.tree-l-head{
-			height: 2em;
-    		line-height: 2em;
-		}
-		.tree-l-1{
-			height: 2em;
-		    line-height: 2em;
-		    width: 100%;
-		    margin-left: 0.3em;
-		}
-		.tree-l-2{
-			height: 2em;
-		    line-height: 2em;
-		    width: 100%;
-		    margin-left: 1.9em;
-		}
-		.tree-l-link{
-		    border-left: 1px dashed black;
-		    border-bottom: 1px dashed black;
-		    width: 1em;
-		    height: 1.2em;
-		    float: left;
-		}
-		.tree-l-content{
-			float:left;
-			height:100%;
-			margin-left: 0.3em;
-		}
-		.super-header{
-			border-bottom: 1px solid #cdcdcd;
-			text-align: center;
-		}
-
-		#compare_result{
-			height:33em;
-		}
-		#compareGDC_result{
-			height:33em;
-		}
-		#cp_result_table{
-			width:100%;
-			float:left;
-			height:20em;
-			overflow: auto;
-		}
-		#cpGDC_result_table{
-			width:100%;
-			float:left;
-			/*height:20em;*/
-			overflow: auto;
-		}
-		#cp_result_option{
-			width:100%;
-			float:left;
-		}
-		#cpGDC_result_option{
-			width:100%;
-			float:left;
-		}
-		#cp_result_table table{
-			font-size:1em;
-			text-align: center;
-		}
-		#cpGDC_result_table table{
-			font-size:1em;
-			text-align: center;
-		}
-		#cp_result_massage{
-			width:100%;
-			float:left;
-			height:10em;
-			overflow: auto;
-		}
-		#cp_result_massage label{
-			width:100%;
-			float:left;
-			line-height: 2em;
-			font-weight: bold;
-			text-align: center;
-		}
-		#cp_result_massage div{
-			width:33%;
-			float:left;
-		}
-		#cp_result_bottom{
-			float:left;
-			height:3em;
-			padding-left:calc(50% - 10px - 7em);
-		}
-		#cpGDC_result_bottom{
-			float:left;
-			height:3em;
-			width:100%;
-		}
-		#cp_title{
-			width:100%;
-			float:left;
-		}
-		#cp_top{
-			width:100%;
-			float:left;
-			height:30em;
-		}
-		#cp_left{
-			width:45%;
-			float:left;
-			height:100%;
-		}
-		#cp_left textarea{
-			height:28.5em;
-			width:98%;
-			outline:none;
-			resize:none;
-		}
-		#cp_middle{
-			width:4%;
-			float:left;
-			height:28.5em;
-			margin-right:5%;
-			border-right: 1px dashed #bbb;
-		}
-		#cp_right{
-			width:45%;
-			float:left;
-			height:calc(28.5em - 2px);
-			overflow: auto;
-			border:1px solid #888;
-		}
-		#cp_bottom{
-			height:3em;
-			float:left;
-			padding-left: calc(50% - 12em - 20px);
-		}
-
-
-		#keywords{
-			width:100%;
-			border: 0px solid;
-		}
-		#centeredmenu {
-		   float:left;
-		   width:100%;
-		   background:#fff;
-		   border-bottom:1px solid #4a4a4a;
-		   overflow:hidden;
-		   position:relative;
-		}
-		#centeredmenu ul {
-		   clear:left;
-		   float:left;
-		   list-style:none;
-		   margin:0;
-		   padding:0;
-		   position:relative;
-		}
-		#centeredmenu ul li {
-		   display:block;
-		   float:left;
-		   list-style:none;
-		   margin:0;
-		   padding-left:0.5em;
-		   position:relative;
-		   width: 10em;
-    	   text-align: center;
-		}
-		#centeredmenu ul li a {
-		   display:block;
-		   margin:0 0 0 1px;
-		   padding:3px 10px;
-		   background:#ddd;
-		   color:#000;
-		   text-decoration:none;
-		   line-height:1.3em;
-		   border-left:1px solid #4a4a4a;
-		   border-right:1px solid #4a4a4a;
-		   border-top:1px solid #4a4a4a;
-		   border-radius: 5px 5px 0px 0px;
-		}
-		#centeredmenu ul li a:hover {
-		   background:#4a4a4a;
-		   color:#fff;
-		}
-		#centeredmenu ul li a.active,
-		#centeredmenu ul li a.active:hover {
-		   color:#fff;
-		   background:#4a4a4a;
-		   font-weight:bold;
-		}
-
-		.dropdown-head{
-			min-width: 10em;
-			display:block;
-		}
-		/* The container <div> - needed to position the dropdown content */
-		.dropdown {
-		    position: relative;
-		    display: inline-block;
-		    text-align:center;
-		    margin-left:calc(25% - 14em);
-		}
-
-		/* Dropdown Content (Hidden by Default) */
-		.dropdown-content {
-		    display: none;
-		    position: absolute;
-		    background-color: #f9f9f9;
-		    min-width: 10em;
-		    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
-		    z-index: 1;
-		}
-
-		/* Links inside the dropdown */
-		.dropdown-content a {
-		    /*padding: 12px 16px;*/
-		    display: block;
-		}
-
-		/* Change color of dropdown links on hover */
-		.dropdown-content a:hover {background-color: #f1f1f1}
-
-		/* Show the dropdown menu on hover */
-		.dropdown:hover .dropdown-content {
-		    display: block;
-		}
-		.dropdown:hover .dropdown-head{
-		    display: block;
-		    background-color: #f1f1f1;
-		    min-width: 10em;
-		}
-		.dropdown:hover{
-			box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
-		}
-	</style>
-</head>
-<body>
-	<div class="header">
-	 	<a href="https://www.cancer.gov/"><img src="https://www.cancer.gov/publishedcontent/images/images/design-elements/logos/nci-logo-full.svg" alt="National Cancer Institute"></a>
-	</div>
-	<div class="nav-bar">
-		<div class="navigation">
-			<div id="prop_s" class="nav-item active">Property & Value Search</div>
-			<!-- <a class="tab active" href="./ui?idx=1"> -->
-			<!-- <div id="prop_value_s" class="nav-item">Suggest new term</div> -->
-
-		</div>
-	</div>
-	<div class="search-bar">
-		<div class="search-area">
-			<div class="search-label">Keyword:</div>
-			<div class="search-box">
-				<input class="input-box" id="keywords" placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" />
-			</div>
-			<div class="search-button">
-				<span id="searchProperty" class="btn">Search</span>
-			</div>
-		</div>
-		<div class="dropdown">
-		  <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
-		  <div class="dropdown-content">
-		    <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="btn-a">Search in caDSR</a>
-			<a href="https://ncit.nci.nih.gov/" target="_blank" class="btn-a">Search in NCIt</a>
-		  </div>
-		</div>
-	</div>
-	<div class="option-bar">
-		<div><input type="radio" name="i_match" checked="checked" value="exact"> Exact Match</div>
-		<div><input type="radio" name="i_match" value="partial"> Partial Match</div>
-	</div>
-	<div class="option-bar" style="width:22em;border-top: 1px solid black;">
-		<div><input type="checkbox" id="i_desc"> Property Description</div>
-		<div><input type="checkbox" id="i_syn"> Synonyms</div>
-	</div>
-	<div id="suggestBox" class="suggestArea"></div>
-
-	<div id="container">
+	<script src="/js/jQuery-FontSpy.js"></script>
+	<script src="/js/bootstrap-3.3.6.min.js"></script>
+	<script src="/js/highlight.pack.js"></script>
+	<script src="/js/lunr-0.5.7.min.js"></script>
+	<script src="/js/jquery.highlight-4.closure.js"></script>
+	<script src="/js/jquery.bootstrap-autohidingnavbar.min.js"></script>
+	<script src="/js/jquery.scrollUp.min.js"></script>
+	<script src="/js/gdc-common.js"></script>
+	<script src="/js/gdc-notifications.js"></script>
+	<script language="JavaScript" type="text/javascript" src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"></script>
+	<script>var base_url = '../..';</script>
 	</div>
 </body>
 </html>
