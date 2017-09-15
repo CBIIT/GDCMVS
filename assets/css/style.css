@@ -225,6 +225,9 @@ a{
 .data-table-row{
   border-bottom:dashed 1px #BEBEBE;
 }
+.data-table-toggle{
+  display:none;
+}
 .center{
   text-align:center;
 }
