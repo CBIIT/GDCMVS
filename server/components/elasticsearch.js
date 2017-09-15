@@ -208,17 +208,30 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		}
 		else{
 			//has gdc synonyms
-			p.enum = [];
-			entry.syns.forEach(function(item){
-				let tmp = {};
-				tmp.n = item.pv;
-				if(item.code !== undefined){
-					tmp.i_c = item.code;
+			if((prop in conceptCode) || (prop in gdc_values)){
+				p.enum = [];
+				entry.syns.forEach(function(item){
+					let tmp = {};
+					tmp.n = item.pv;
+					if(item.code !== undefined){
+						tmp.i_c = item.code;
+					}
+					tmp.n_c = item.pvc;
+					tmp.s = item.syn;
+					p.enum.push(tmp);
+				});
+			}
+			else{
+				if(entry.enum !==undefined && entry.enum.length > 0){
+					p.enum = [];
+					entry.enum.forEach(function(item){
+						let tmp = {};
+						tmp.n = item;
+						p.enum.push(tmp);
+					});
 				}
-				tmp.n_c = item.pvc;
-				tmp.s = item.syn;
-				p.enum.push(tmp);
-			});
+			}
+			
 		}
 		allProperties.push(p);
 	}
