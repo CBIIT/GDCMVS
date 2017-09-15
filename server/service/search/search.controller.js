@@ -32,96 +32,6 @@ var suggestion = function(req, res){
 	})
 };
 
-var propertySearch = function(req, res){
-	let id = req.query.prop;
-	let query = {};
-	let highlight = null;
-	if(id.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
-	}
-	else{
-		let terms = id.split(",");
-		query.bool = {};
-		query.bool.should = [];
-		terms.forEach(function(t){
-			let m = {};
-			m.multi_match = {};
-			m.multi_match.query = t;
-			m.multi_match.fields = ["links.target_type",
-		                  "description",
-		                  "properties.name",
-		                  "id",
-		                  "properties.description",
-		                  "properties.term.description"];
-		    query.bool.should.push(m);
-		});
-
-		highlight = {
-				      "pre_tags" : ["<b>"],
-	        		  "post_tags" : ["</b>"],
-				      "fields":{
-				        "id":{},
-				        "properties.name":{},
-				        "*.target_type":{},
-				        "properties.description":{"number_of_fragments" : 0},
-				        "properties.term.description":{"number_of_fragments" : 0},
-				        "description":{"number_of_fragments" : 0}
-				    }
-			};
-	}
-
-	elastic.query(config.indexName, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
-};
-
-var valueSearch = function(req, res){
-	var val = req.query.val;
-	var values = [];
-	let query;
-	let highlight;
-	if(val.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
-	}
-	else{
-		val.split(",").forEach(function(v){
-			values.push(v.trim());
-		});
-		query = {bool: {
-	    	should:[
-	    		  {
-	    		    "terms": {"properties.enum" :values}
-	    		  },
-	    		  {
-	    		    "terms": {"properties.oneOf.enum": values}
-	    		  }
-	    		]
-	    }};
-	    highlight = {
-				      "pre_tags" : ["<b>"],
-	        		  "post_tags" : ["</b>"],
-				      "fields":{
-				        "properties.enum":{},
-				        "properties.oneOf.enum":{}
-				    }
-		};
-	}
-	
-	elastic.query(config.indexName, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
-};
-
 var search = function(req, res){
 	let keyword = req.query.keyword;
 	let option = JSON.parse(req.query.option);
@@ -220,6 +130,94 @@ var search = function(req, res){
 	}
 	
 	elastic.query(config.indexName, query, highlight, function(result){
+		if(result.hits === undefined){
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		res.json(data);
+	});
+};
+
+var searchP = function(req, res){
+	let keyword = req.query.keyword;
+	let option = JSON.parse(req.query.option);
+	let words = [];
+	let query = {};
+	let highlight;
+	if(keyword.trim() ===''){
+		query = {"match_all": {}};
+		highlight = null;
+	}
+	else{
+		query.bool = {};
+		query.bool.should = [];
+		let m = {};
+		m.multi_match = {};
+		m.multi_match.query = keyword;
+		if(option.match !=="exact"){
+			m.multi_match.fields = ["name.have"];
+		    if(option.desc){
+		    	m.multi_match.fields.push("desc");
+		    }
+		    if(option.syn){
+		    	m.multi_match.fields.push("enum.s.have");
+		    	m.multi_match.fields.push("cde_pv.ss.s.have");
+		    }
+		    m.multi_match.fields.push("enum.n.have");
+		    query.bool.should.push(m);
+		    highlight = {
+					      "pre_tags" : ["<b>"],
+		        		  "post_tags" : ["</b>"],
+					      "fields":{
+					        "name.have":{"number_of_fragments" : 0},
+					        "enum.n.have":{"number_of_fragments" : 0}
+					    }
+			};
+			if(option.desc){
+				highlight.fields["desc"] = {"number_of_fragments" : 0};
+			}
+			if(option.syn){
+				highlight.fields["enum.s.have"] = {"number_of_fragments" : 0};
+				highlight.fields["cde_pv.ss.s.have"] = {"number_of_fragments" : 0};
+			}
+		}
+		else{
+			m.multi_match.fields = ["name"];
+		    if(option.desc){
+		    	m.multi_match.fields.push("desc");
+		    }
+		    if(option.syn){
+		    	m.multi_match.fields.push("enum.s");
+		    	m.multi_match.fields.push("cde_pv.ss.s");
+		    }
+		    m.multi_match.fields.push("enum.n");
+		    query.bool.should.push(m);
+			// query.bool.should.push({
+			// 	"term": {"properties.enum" :keyword}
+			// });
+			// query.bool.should.push({
+		 //    	"term": {"properties.oneOf.enum": keyword}
+		 //    });
+		    highlight = {
+					      "pre_tags" : ["<b>"],
+		        		  "post_tags" : ["</b>"],
+					      "fields":{
+					        "name":{},
+					        "enum.n":{}
+					    }
+			};
+			if(option.desc){
+				highlight.fields["desc"] = {"number_of_fragments" : 0};
+			}
+			if(option.syn){
+				highlight.fields["enum.s"] = {};
+				highlight.fields["cde_pv.ss.s"] = {};
+			}
+		}
+		
+	}
+	
+	elastic.query(config.index_p, query, highlight, function(result){
 		if(result.hits === undefined){
 			return handleError.error(res, result);
 		}
@@ -334,6 +332,9 @@ var indexing = function(req, res){
 	                	"type":"keyword"
 	                },
 	                "category": {
+	                	"type":"keyword"
+	                },
+	                "node":{
 	                	"type":"keyword"
 	                },
 	                "name" : {
@@ -483,14 +484,6 @@ var getDataFromGDC = function(req, res){
 };
 
 var preload = function(req, res){
-	// elastic.preloadDataFromCaDSR(function(result){
-	// 	if(result === 1){
-	// 		res.json({"status":"success", "message":"preparing data..."});
-	// 	}
-	// 	else{
-	// 		res.json({"status":"failed", "message":"failed to loading data from caDSR."});
-	// 	}
-	// });
 	elastic.preloadDataAfter(function(result){
 		if(result === 1){
 			res.json({"status":"success", "message":"preparing data..."});
@@ -503,9 +496,8 @@ var preload = function(req, res){
 
 module.exports = {
 	suggestion,
-	propertySearch,
-	valueSearch,
 	search,
+	searchP,
 	getDataFromCDE,
 	getDataFromGDC,
 	preload,

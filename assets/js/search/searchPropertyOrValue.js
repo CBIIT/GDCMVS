@@ -2339,6 +2339,42 @@ var generateCompareResult = function(fromV, toV, option){
     return table;
 };
 
+// var search = function(){
+//     let keyword = $("#keywords").val();
+//     keyword = keyword.toLowerCase();
+//     let option = {};
+//     option.desc = $("#i_desc").prop('checked');
+//     option.syn = $("#i_syn").prop('checked');
+//     option.match = $("input[name=i_match]:checked").val();
+//     $("#suggestBox").css("display","none");
+//     displayBoxIndex = -1;
+//     $.getJSON('./search/all', {keyword:keyword, option: JSON.stringify(option)}, function(result){
+//         let items = [];
+//         if(result.length !== 0){
+//             result.forEach(function(hit){
+//                 let it = {};
+//                 it.doc = hit._source;
+//                 it.highlight = hit.highlight;
+//                 items.push(it);
+//             });
+//         }
+//         render(keyword, option, items);
+//         $("#centeredmenu ul a").bind("click", function(){
+//             $("#centeredmenu ul a").removeClass("active");
+//             $(this).addClass("active");
+//             tab_idx = $(this)[0].id;
+//             let t = "table_"+tab_idx;
+//             $("#table_results").css("display","none");
+//             $("#table_props").css("display","none");
+//             $("#table_values").css("display","none");
+//             $("#"+t).css("display","block");
+//         });
+//         $("#type_table").treetable({expandable: true});
+
+//     });
+
+// };
+
 var search = function(){
     let keyword = $("#keywords").val();
     keyword = keyword.toLowerCase();
@@ -2348,7 +2384,7 @@ var search = function(){
     option.match = $("input[name=i_match]:checked").val();
     $("#suggestBox").css("display","none");
     displayBoxIndex = -1;
-    $.getJSON('./search/all', {keyword:keyword, option: JSON.stringify(option)}, function(result){
+    $.getJSON('./search/all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
         let items = [];
         if(result.length !== 0){
             result.forEach(function(hit){

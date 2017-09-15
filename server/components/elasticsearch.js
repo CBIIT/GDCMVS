@@ -380,7 +380,7 @@ function query(index, dsl,highlight, next){
     if(highlight){
     	body.highlight = highlight;
     }
-    body.sort = [{"category":"asc"}];
+    body.sort = [{"category":"asc"},{"node":"asc"}];
     esClient.search({index: index, body: body}, function(err, data){
     	if(err){
     		console.log(err);
