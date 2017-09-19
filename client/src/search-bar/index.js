@@ -1,5 +1,5 @@
 import api from '../api';
-import render from '../render'
+import render from '../render';
 
 const func = {
     search(){
