@@ -714,7 +714,7 @@
 
             <div id="docs-container" class="container">
                 <div data-current-page="Home" id="body">
-                    <div class="col-md-12 main-container" role="main" id="main" tabindex="-1" style="border-left: none;">
+                    <div class="col-md-12 main-container" role="main" id="main" style="border-left: none;">
                         <!-- GDC APP -->
                         
                         <div class="search-box">
@@ -723,8 +723,11 @@
                                 <label>Keyword</label>
                                 <input id="keywords" type="text" class="form-control" placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="">
                               </div>
-                              <button id="searchProperty" type="button" class="btn btn-default">Search</button>
+                              <button id="search" type="button" class="btn btn-default">Search</button>
                             </form>
+                            <div class="suggest-container">
+                               <div id="suggestBox" class="suggestArea"></div>
+                            </div>
                             <div class="radio">
                               <label class="radio-inline">
                                 <input type="radio" name="i_match" id="i_ematch" checked="checked" value="exact"> Exact Match
@@ -742,8 +745,7 @@
                               </label>
                             </div>
                         </div>
-                        <div id="suggestBox" class="suggestArea"></div>
-
+                        
                         <div id="root"></div>
 
                         <!-- END GDC APP -->
