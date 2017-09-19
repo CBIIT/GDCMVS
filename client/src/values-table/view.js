@@ -1,6 +1,3 @@
-export default function vsRender(items) {
-  console.log(items);
-
 let tmpl = '<div class="table-row-thead row">' +
   '<div class="col-xs-3">' +
     '<div class="table-th">Category / Node / Property</div>' +
@@ -24,8 +21,4 @@ let tmpl = '<div class="table-row-thead row">' +
   '<div class="table-td col-xs-4">Content</div>' +
 '</div> {{/for}}';
 
-let html = $.templates(tmpl).render({items: items });
-
-return html;
-
-}
+export default tmpl;

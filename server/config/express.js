@@ -15,7 +15,7 @@ module.exports = function(app){
 
 	let env = config.env;
 
-	app.set('views', config.root + '/views');
+	app.set('views', config.root + '/client');
     app.engine('html', require('ejs').renderFile);
     app.set('view engine', 'html');
     app.use(compression());
