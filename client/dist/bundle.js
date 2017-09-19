@@ -117,7 +117,7 @@ function search(){
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-const baseUrl = 'http://ec2-54-152-84-22.compute-1.amazonaws.com/gdc/search/';
+const baseUrl = 'http://localhost:3000/search/';
 
 const api = {
   suggest(value, callback) {
@@ -130,16 +130,17 @@ const api = {
     });
   },
   searchAll(keyword, option, callback) {
-    $.getJSON(baseUrl + 'all', {keyword:keyword, option: JSON.stringify(option)}, function(result){
-        let items = [];
-        if(result.length !== 0){
-            result.forEach(function(hit){
-                let it = {};
-                it.doc = hit._source;
-                it.highlight = hit.highlight;
-                items.push(it);
-            });
-        }
+    $.getJSON(baseUrl + 'all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
+        // let items = [];
+        // if(result.length !== 0){
+        //     result.forEach(function(hit){
+        //         let it = {};
+        //         it.doc = hit._source;
+        //         it.highlight = hit.highlight;
+        //         items.push(it);
+        //     });
+        // }
+        let items = result;
         callback(keyword, option, items);
       });
   }
@@ -155,10 +156,13 @@ const api = {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = render;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__values_table_view__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tabs__ = __webpack_require__(6);
+
 
 
 function render(keyword, option, items){
-  let html = Object(__WEBPACK_IMPORTED_MODULE_0__values_table_view__["a" /* default */])(items);
+  //let html = vsRender(items);
+  let html = Object(__WEBPACK_IMPORTED_MODULE_1__tabs__["a" /* default */])();
   $("#root").html(html);
 }
 
@@ -168,38 +172,58 @@ function render(keyword, option, items){
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = vsRender;
+/* unused harmony export default */
 function vsRender(items) {
   console.log(items);
 
-let tmpl = '<div class="table-row-thead row">' +
-  '<div class="col-xs-3">' +
-    '<div class="table-th">Category / Node / Property</div>' +
-  '</div>' +
-  '<div class="col-xs-9">' +
-    '<div class="row">' +
-      '<div class="table-th col-xs-6">GDC Values and Synonyms</div>' +
-      '<div class="table-th col-xs-6">CDE references, permissible values and Synonyms</div>' +
+  let tmpl = '<div class="table-row-thead row">' +
+    '<div class="col-xs-3">' +
+      '<div class="table-th">Category / Node / Property</div>' +
     '</div>' +
-    '<div class="row">' +
-      '<div class="table-th col-xs-3">Matched GDC Value</div>' +
-      '<div class="table-th col-xs-3">GDC Synonyms</div>' +
-      '<div class="table-th col-xs-3">NCIt Code and Synonyms</div>' +
-      '<div class="table-th col-xs-3">CDE Reference</div>' +
+    '<div class="col-xs-9">' +
+      '<div class="row">' +
+        '<div class="table-th col-xs-6">GDC Values and Synonyms</div>' +
+        '<div class="table-th col-xs-6">CDE references, permissible values and Synonyms</div>' +
+      '</div>' +
+      '<div class="row">' +
+        '<div class="table-th col-xs-3">Matched GDC Value</div>' +
+        '<div class="table-th col-xs-3">GDC Synonyms</div>' +
+        '<div class="table-th col-xs-3">NCIt Code and Synonyms</div>' +
+        '<div class="table-th col-xs-3">CDE Reference</div>' +
+      '</div>' +
     '</div>' +
-  '</div>' +
-'</div> {{for items}}' +
-'<div class="table-row row">' +
-  '<div class="table-td col-xs-4">{{:doc.id}}</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-'</div> {{/for}}';
+  '</div> {{for items}}' +
+  '<div class="table-row row">' +
+    '<div class="table-td col-xs-4">{{:_id}}</div>' +
+    '<div class="table-td col-xs-4">Content</div>' +
+    '<div class="table-td col-xs-4">Content</div>' +
+  '</div> {{/for}}';
 
-let html = $.templates(tmpl).render({items: items });
+  let html = $.templates(tmpl).render({items: items });
 
-return html;
-
+  return html;
 }
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function (trsRender, psRender, vsRender) {
+
+  let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
+      '<li role="presentation" class="active"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results</a></li>' +
+      '<li role="presentation"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties</a></li>' +
+      '<li role="presentation"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values</a></li></ul>' +
+      '<div class="tab-content"><div role="tabpanel" class="tab-pane active" id="trsTab"><p>tbs results</p></div>' +
+      '<div role="tabpanel" class="tab-pane" id="psTab"><p>ps results</p></div>' +
+      '<div role="tabpanel" class="tab-pane" id="vsTab"><p>vs results</p></div></div></div>';
+
+  let html = $.templates(tmpl).render();
+
+  return html;
+});
 
 
 /***/ })
