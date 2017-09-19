@@ -1,8 +1,8 @@
 import tmpl from './view';
 
 const func = {
-  render() {
- 
+  render(items) {
+ 	//data preprocessing
     let html = $.templates(tmpl).render();
 
     return html;
