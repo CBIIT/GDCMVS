@@ -73,13 +73,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-$("#searchProperty").bind("click", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].search);
+$("#search").bind("click", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].search);
 
 $("#keywords").bind("keypress", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].gotoSearch);
 
 $("#keywords").bind("keydown", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].selectSuggestion);
 
 $("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].suggest);
+
+$(document).on('click',__WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].removeBox);
 
 
 
@@ -91,8 +93,12 @@ $("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* d
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__render__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(12);
 
 
+
+
+let displayBoxIndex = -1;
 
 const func = {
     search(){
@@ -103,20 +109,73 @@ const func = {
         option.syn = $("#i_syn").prop('checked');
         option.match = $("input[name=i_match]:checked").val();
         $("#suggestBox").css("display","none");
-        //displayBoxIndex = -1;
+        displayBoxIndex = -1;
         __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].searchAll(keyword, option, function(keyword, option, items) {
           //console.log(items);
           Object(__WEBPACK_IMPORTED_MODULE_1__render__["a" /* default */])(keyword, option, items);
         });
     },
-    gotoSearch(){
-        
+    gotoSearch(e){
+        if(e.keyCode == 13){
+            e.preventDefault();
+        }
+        if(e.keyCode == 13 && $("#suggestBox .selected").length !== 0){
+            // let idx = $("#suggestBox .selected").html().indexOf("<label>");
+            let t = $("#suggestBox .selected").text();
+            $("#keywords").val(t.substr(0,t.length-1));
+            $("#search").trigger("click");
+        }
+        else if (e.keyCode == 13) {
+            $("#search").trigger("click");
+        }
     },
-    selectSuggestion(){
+    selectSuggestion(e){
+        if ((e.keyCode == 40 || e.keyCode == 38) && $(this).val().trim() !== "" && document.getElementById("suggestBox").style.display !== "none") {
+            e.preventDefault();
+            //focus to the first element
 
+            displayBoxIndex += (e.keyCode == 40 ? 1 : -1);
+            let oBoxCollection = $("#suggestBox").find("div");
+            if (displayBoxIndex >= oBoxCollection.length)
+                 displayBoxIndex = 0;
+            if (displayBoxIndex < 0)
+                 displayBoxIndex = oBoxCollection.length - 1;
+            let cssClass = "selected";
+            oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
+        }
     },
     suggest(){
-        console.log("result comes back!!!");
+        let area = document.getElementById("suggestBox");
+        if($(this).val().trim() === ''){
+            area.style.display = "none";
+            displayBoxIndex = -1;
+            area.innerHTML = "";
+            return;
+        }
+        $.getJSON('./search/suggest', {keyword:$(this).val()}, function(result){
+            if(result.length === 0){
+                area.style.display = "none";
+                displayBoxIndex = -1;
+                area.innerHTML = "";
+                return;
+            }
+            
+            area.style.display = "block";
+            let html = $.templates(__WEBPACK_IMPORTED_MODULE_2__view__["a" /* default */]).render({options: result });;
+            displayBoxIndex = -1;
+            area.innerHTML = html;
+            area.onclick = function(e){
+                let t = $(e.target).text();
+                $("#keywords").val(t);
+                $("#keywords").focus();
+            };
+        });
+    },
+    removeBox(e){
+        if($(e.target) != $("#suggestBox")){
+            $("#suggestBox").css("display","none");
+            displayBoxIndex = -1;
+        }
     }
 }
 
@@ -168,10 +227,17 @@ const api = {
 
 
 function render(keyword, option, items){
-  let trsHtml = __WEBPACK_IMPORTED_MODULE_0__result_table___["a" /* default */].render();
-  let psHtml = __WEBPACK_IMPORTED_MODULE_1__props_table___["a" /* default */].render();
-  let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
-  let html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
+  let html = "";
+  if(items.length !== 0){
+  	let trsHtml = __WEBPACK_IMPORTED_MODULE_0__result_table___["a" /* default */].render(items);
+	let psHtml = __WEBPACK_IMPORTED_MODULE_1__props_table___["a" /* default */].render(items);
+	let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
+	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
+  }
+  else{
+  	html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+  }
+  
   $("#root").html(html);
 }
 
@@ -185,8 +251,8 @@ function render(keyword, option, items){
 
 
 const func = {
-  render() {
- 
+  render(items) {
+ 	//data preprocessing
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render();
 
     return html;
@@ -223,9 +289,24 @@ let tmpl = '<div class="container"><div class="table-row-thead row">' +
 
 
 const func = {
-  render() {
- 
-    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render();
+  render(items) {
+ 	//data preprocessing
+ 	let props = [];
+ 	items.forEach(function(item){
+ 		let hl = item.highlight;
+ 		let source = item._source;
+ 		if(("name" in hl) || ("desc") in hl){
+ 			let prop = {};
+ 			prop.nm = ("name" in hl) ? hl["name"] : source.name;
+ 			prop.nd = source.node;
+ 			prop.ct = source.category;
+ 			prop.desc = ("desc" in hl) ? hl["desc"] : source.desc;
+ 			prop.ref = source.name;
+ 			prop.cdeId = source.cde_id == undefined ? "" : source.cde_id;
+ 			props.push(prop);
+ 		}
+ 	});
+    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({props: props});
 
     return html;
 
@@ -241,14 +322,21 @@ const func = {
 "use strict";
 
 let tmpl = '<div class="container"><div class="table-row-thead row">' +
-  '<div class="table-th col-xs-6">GDC Values and Synonyms</div>' +
-  '<div class="table-th col-xs-6">CDE references, permissible values and Synonyms</div>' +
+  '<div class="table-th col-xs-1">Category / Node</div>' +
+  '<div class="table-th col-xs-2">Property</div>' +
+  '<div class="table-th col-xs-3">Description</div>' +
+  '<div class="table-th col-xs-3">GDC Property Values</div>' +
+  '<div class="table-th col-xs-3">CDE Reference</div>' +
 '</div>' +
+'{{for props}}'+
 '<div class="table-row row">' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-'</div></div>';
+  '<div class="table-td col-xs-1">{{:ct}} -- {{:nd}}</div>' +
+  '<div class="table-td col-xs-2">{{:nm}}</div>' +
+  '<div class="table-td col-xs-3">{{:desc}}</div>' +
+  '<div class="table-td col-xs-3">{{:ref}}</div>' +
+  '<div class="table-td col-xs-3">{{:cdeId}}</div>' +
+'</div>'+
+'{{/for}}</div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
@@ -262,7 +350,7 @@ let tmpl = '<div class="container"><div class="table-row-thead row">' +
 
 const func = {
   render(items) {
- 
+ 	//data preprocessing
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({items: items });
 
     return html;
@@ -335,6 +423,20 @@ let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
       '<div role="tabpanel" class="tab-pane" id="vsTab">{{:vsHtml}}</div></div></div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+let tmpl = '{{for options}}<div>'
+			+'<span style="width:96%;float:left;">{{:id}}</span>'
+			+'<label>{{:type}}</label>'
+			+'</div>{{/for}}';
+
+/* harmony default export */ __webpack_exports__["a"] = (tmpl);
+
 
 /***/ })
 /******/ ]);
