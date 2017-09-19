@@ -1,8 +1,8 @@
-import vsRender from './values-table/view';
+import vs from './values-table/';
 import navTabs from './tabs'
 
 export default function render(keyword, option, items){
-  let vsHtml = vsRender(items);
+  let vsHtml = vs.render(items);
   let html = navTabs();
   $("#root").html(html);
 }

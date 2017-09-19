@@ -69,7 +69,17 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__search_bar_view__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__search_bar___ = __webpack_require__(1);
+
+
+
+$("#searchProperty").bind("click", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].search);
+
+$("#keywords").bind("keypress", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].gotoSearch);
+
+$("#keywords").bind("keydown", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].selectSuggestion);
+
+$("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].suggest);
 
 
 
@@ -79,10 +89,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__index__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__render__ = __webpack_require__(3);
 
 
-$("#searchProperty").bind("click", __WEBPACK_IMPORTED_MODULE_0__index__["a" /* default */]);
+
+const func = {
+    search(){
+        let keyword = $("#keywords").val();
+        keyword = keyword.toLowerCase();
+        let option = {};
+        option.desc = $("#i_desc").prop('checked');
+        option.syn = $("#i_syn").prop('checked');
+        option.match = $("input[name=i_match]:checked").val();
+        $("#suggestBox").css("display","none");
+        //displayBoxIndex = -1;
+        __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].searchAll(keyword, option, function(keyword, option, items) {
+          //console.log(items);
+          Object(__WEBPACK_IMPORTED_MODULE_1__render__["a" /* default */])(keyword, option, items);
+        });
+    },
+    gotoSearch(){
+        
+    },
+    selectSuggestion(){
+
+    },
+    suggest(){
+        console.log("result comes back!!!");
+    }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (func);
 
 
 /***/ }),
@@ -90,39 +128,12 @@ $("#searchProperty").bind("click", __WEBPACK_IMPORTED_MODULE_0__index__["a" /* d
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = search;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__render__ = __webpack_require__(4);
-
-
-
-function search(){
-    let keyword = $("#keywords").val();
-    keyword = keyword.toLowerCase();
-    let option = {};
-    option.desc = $("#i_desc").prop('checked');
-    option.syn = $("#i_syn").prop('checked');
-    option.match = $("input[name=i_match]:checked").val();
-    $("#suggestBox").css("display","none");
-    //displayBoxIndex = -1;
-    __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].searchAll(keyword, option, function(keyword, option, items) {
-      //console.log(items);
-      Object(__WEBPACK_IMPORTED_MODULE_1__render__["a" /* default */])(keyword, option, items);
-    });
-}
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const baseUrl = 'http://localhost:3000/search/';
+const baseUrl = './search';
 
 const api = {
   suggest(value, callback) {
     $.getJSON({
-  	url: "http://ec2-54-152-84-22.compute-1.amazonaws.com/gdc/search/suggest?keyword=" + value,
+  	url: baseUrl + "/suggest?keyword=" + value,
   	success: function(data) {
   		//console.log(data);
   	  callback(data);
@@ -130,16 +141,8 @@ const api = {
     });
   },
   searchAll(keyword, option, callback) {
-    $.getJSON(baseUrl + 'all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
-        // let items = [];
-        // if(result.length !== 0){
-        //     result.forEach(function(hit){
-        //         let it = {};
-        //         it.doc = hit._source;
-        //         it.highlight = hit.highlight;
-        //         items.push(it);
-        //     });
-        // }
+    $.getJSON(baseUrl + '/all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
+        //preprocess the data
         let items = result;
         callback(keyword, option, items);
       });
@@ -150,31 +153,48 @@ const api = {
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = render;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__values_table_view__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__values_table___ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tabs__ = __webpack_require__(6);
 
 
 
 function render(keyword, option, items){
-  //let html = vsRender(items);
+  let vsHtml = __WEBPACK_IMPORTED_MODULE_0__values_table___["a" /* default */].render(items);
   let html = Object(__WEBPACK_IMPORTED_MODULE_1__tabs__["a" /* default */])();
   $("#root").html(html);
 }
 
 
 /***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(5);
+
+
+const func = {
+  render(items) {
+ 
+    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({items: items });
+
+    return html;
+
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (func);
+
+/***/ }),
 /* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export default */
-function vsRender(items) {
-  console.log(items);
 
   let tmpl = '<div class="table-row-thead row">' +
     '<div class="col-xs-3">' +
@@ -199,10 +219,8 @@ function vsRender(items) {
     '<div class="table-td col-xs-4">Content</div>' +
   '</div> {{/for}}';
 
-  let html = $.templates(tmpl).render({items: items });
+  /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
-  return html;
-}
 
 
 /***/ }),
@@ -210,9 +228,23 @@ function vsRender(items) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(7);
+
+
 /* harmony default export */ __webpack_exports__["a"] = (function (trsRender, psRender, vsRender) {
 
-  let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
+  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render();
+
+  return html;
+});
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
       '<li role="presentation" class="active"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results</a></li>' +
       '<li role="presentation"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties</a></li>' +
       '<li role="presentation"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values</a></li></ul>' +
@@ -220,11 +252,7 @@ function vsRender(items) {
       '<div role="tabpanel" class="tab-pane" id="psTab"><p>ps results</p></div>' +
       '<div role="tabpanel" class="tab-pane" id="vsTab"><p>vs results</p></div></div></div>';
 
-  let html = $.templates(tmpl).render();
-
-  return html;
-});
-
+/* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
 /***/ })
 /******/ ]);
