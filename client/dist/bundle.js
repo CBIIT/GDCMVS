@@ -230,15 +230,36 @@ function render(keyword, option, items){
   let html = "";
   if(items.length !== 0){
   	let trsHtml = __WEBPACK_IMPORTED_MODULE_0__result_table___["a" /* default */].render(items);
-	let psHtml = __WEBPACK_IMPORTED_MODULE_1__props_table___["a" /* default */].render(items);
-	let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
-	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
+  	let psHtml = __WEBPACK_IMPORTED_MODULE_1__props_table___["a" /* default */].render(items);
+  	let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
+  	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
   }
   else{
   	html = '<div class="info">No result found for keyword: '+keyword+'</div>';
   }
   
   $("#root").html(html);
+  if($("#tree_table").length){
+      $("#tree_table").treetable({expandable: true});
+      $("#collapse").bind("click", function(){
+          $("#tree_table").find('a[title="Collapse"]').each(function(){
+              $(this).trigger("click");
+          });
+      });
+
+      $("#expand").bind("click", function(){
+          $("#tree_table").find('a[title="Expand"]').each(function(){
+              $(this).trigger("click");
+          });
+          $("#tree_table").find('a[title="Expand"]').each(function(){
+              $(this).trigger("click");
+          });
+          $("#tree_table").find('a[title="Expand"]').each(function(){
+              $(this).trigger("click");
+          });
+      });
+  }
+  
 }
 
 
@@ -253,7 +274,128 @@ function render(keyword, option, items){
 const func = {
   render(items) {
  	//data preprocessing
-    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render();
+ 	//current category
+ 	let c_c = "";
+ 	//current node
+ 	let c_n = "";
+ 	//prefix for property and value id
+ 	let count = 0;
+ 	//data generated
+ 	let trs = [];
+ 	items.forEach(function(item){
+ 		let hl = item.highlight;
+ 		let source = item._source;
+ 		if(source.category != c_c){
+ 			//put category to tree table
+ 			c_c = source.category;
+	        let c = {};
+	        c.id = c_c;
+	        c.title = c_c;
+	        c.desc = "";
+	        c.data_tt_id = c.id;
+	        c.data_tt_parent_id = "--";
+	        c.type = "category";
+	        c.node = "branch";
+	        trs.push(c);
+ 		}
+ 		if(source.node != c_n){
+ 			//put node to tree table
+ 			c_n = source.node;
+ 			let n = {};
+ 			//link id
+ 			n.l_id = source.node;
+            n.id = source.node;
+            n.title = source.n_title;
+            n.desc = source.n_desc;
+            n.data_tt_id = n.id;
+            n.data_tt_parent_id = c_c;
+            n.type = "folder";
+            n.node = "branch";
+            trs.push(n);
+ 		}
+ 		//put property to tree table
+ 		let p = {};
+ 		count++;
+ 		p.id = count + "_" + source.name;
+ 		//may have highlighted terms in p.title and p.desc
+        p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : source.name;
+        p.desc = ("desc" in hl) ? hl["desc"] : source.desc;
+ 		p.data_tt_id = p.id;
+        p.data_tt_parent_id = c_n;
+        p.type="property";
+        //put value to tree table
+        if(source.enum !== undefined){
+        	p.node = "branch";
+        	trs.push(p);
+        	//show values, need to highlight if necessary
+        	let list = [];
+            if(("enum.n" in hl) || ("enum.n.have" in hl)){
+                list = hl["enum.n"] || hl["enum.n.have"];
+            }
+            let enums = {};
+            list.forEach(function(em){
+                let e = em.replace(/<b>/g,"").replace(/<\/b>/g, "");
+                enums[e] = em;
+            });
+            let values = source.enum;
+            values.forEach(function(v){
+            	count++;
+            	let e = {}; 
+            	e.id = count + "_"+ v.n;
+            	//may be highlighted
+            	e.title = (v.n in enums) ? enums[v.n] : v.n;
+            	e.desc = "";
+            	e.data_tt_id = e.id;
+            	e.data_tt_parent_id = p.id;
+            	e.type = "value";
+            	e.node = "leaf";
+            	trs.push(e);
+            });
+        }
+        else if(source.cde_id !== undefined){
+        	p.node = "branch";
+        	trs.push(p);
+        	//show caDSR reference
+        	count++;
+            let l = {};
+            l.id = count + "_l";
+            l.l_id = source.cde_id;
+            l.l_type = "cde";
+            l.desc = "";
+            l.data_tt_id = l.id;
+            l.data_tt_parent_id = p.id;
+            l.type = "link";
+            l.node = "leaf";
+            trs.push(l);
+        }
+        else if(source.ncit !== undefined){
+        	p.node = "branch";
+        	trs.push(p);
+        	//show NCIt reference
+        	count++;
+            let l = {};
+            l.id = count + "_l";
+            l.l_id = source.ncit;
+            l.l_type = "ncit";
+            l.desc = "";
+            l.data_tt_id = l.id;
+            l.data_tt_parent_id = p.id;
+            l.type = "link";
+            l.node = "leaf";
+            trs.push(l);
+        }
+        else{
+        	p.node = "leaf";
+        	trs.push(p);
+        }
+ 	});
+
+ 	let offset = $('#root').offset().top;
+    let h = window.innerHeight - offset - 110;
+
+    console.log(h);
+
+    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
 
     return html;
 
@@ -268,15 +410,43 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
-  '<div class="table-th col-xs-6">Name</div>' +
-  '<div class="table-th col-xs-6">Description</div>' +
-'</div>' +
-'<div class="table-row row">' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-'</div></div>';
+let tmpl = '<div class="container table-container">'
+			+'<div id="table_results" style="display: block;">'
+				+'<span id="collapse" class="btn btn-list">Collapse all</span>'
+				+'<span id="expand" class="btn btn-list">Expand all</span>'
+				+'<div class="table-row-thead row">' 
+					+'<div class="table-th col-xs-4">name</div>' 
+					+'<div class="table-th col-xs-8">Description</div>'
+				+'</div>'
+				+'<div>'
+					+'<table class="data-table treetable" id="tree_table" border ="0" cellPadding="0" cellSpacing="0" width="100%" style="display:table; margin: 0px;">'
+						+'<tbody style="max-height: {{:mh}}px; overflow-y: auto; width:100%; display:block;">'
+						+'{{for trs}}'
+						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}}" style="width:100%; float:left;">'
+						+'<td width="33%" style="width:33%; float:left;">'
+						+'<span class="{{:type}}">'
+						+'{{if type == "folder"}}'
+						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
+						+'{{else type == "link"}}'
+							+'{{if l_type == "cde"}}'
+							+'No values in GDC, reference values in <a href="javascript:getCDEData("{{:l_id}}");" class="table-td-link">caDSR</a>'
+							+'{{else}}'
+							+'No values in GDC, concept referenced in <a target="_blank" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:l_id}}" class="table-td-link">NCIt</a>'
+							+'{{/if}}'
+			            +'{{else}}'
+			            +'{{:title}}'
+			            +'{{/if}}'
+			            +'</td>'
+			            +'<td width="66%" style="width:66%; float:left;">'
+			            +'{{:desc}}'
+			            +'</td>'
+			            +'</tr>'
+						+'{{/for}}'
+						+'</tbody>'
+					+'</table>'
+				+'</div>'
+			+'</div>'
+		+'</div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
@@ -295,9 +465,9 @@ const func = {
  	items.forEach(function(item){
  		let hl = item.highlight;
  		let source = item._source;
- 		if(("name" in hl) || ("desc") in hl){
+ 		if(("name" in hl) || ("name.have" in hl) || ("desc" in hl)){
  			let prop = {};
- 			prop.nm = ("name" in hl) ? hl["name"] : source.name;
+ 			prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : source.name;
  			prop.nd = source.node;
  			prop.ct = source.category;
  			prop.desc = ("desc" in hl) ? hl["desc"] : source.desc;
@@ -306,8 +476,15 @@ const func = {
  			props.push(prop);
  		}
  	});
-    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({props: props});
-
+ 	let html = "";
+ 	if(props.length == 0){
+ 		let keyword = $("#keywords").val();
+ 		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+ 	}
+ 	else{
+ 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({props: props});
+ 	}
+    
     return html;
 
   }
