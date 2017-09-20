@@ -1,5 +1,5 @@
 
-let tmpl = '<div class="container"><div class="table-row-thead row">' +
+let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
   '<div class="col-xs-3">' +
     '<div class="table-th">Category / Node / Property</div>' +
   '</div>' +
