@@ -119,7 +119,12 @@ const func = {
         }
  	});
 
-    let html = $.templates(tmpl).render({mh:400,trs: trs});
+ 	let offset = $('#root').offset().top;
+    let h = window.innerHeight - offset - 110;
+
+    console.log(h);
+
+    let html = $.templates(tmpl).render({mh:h,trs: trs});
 
     return html;
 
