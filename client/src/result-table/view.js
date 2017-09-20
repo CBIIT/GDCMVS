@@ -1,5 +1,5 @@
 
-let tmpl = '<div class="container">'
+let tmpl = '<div class="container table-container">'
 			+'<div id="table_results" style="display: block;">'
 				+'<span id="collapse" class="btn btn-list">Collapse all</span>'
 				+'<span id="expand" class="btn btn-list">Expand all</span>'
@@ -36,6 +36,5 @@ let tmpl = '<div class="container">'
 				+'</div>'
 			+'</div>'
 		+'</div>';
-
 
 export default tmpl;
