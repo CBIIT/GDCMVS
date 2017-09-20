@@ -1,12 +1,41 @@
 
-let tmpl = '<div class="container"><div class="table-row-thead row">' +
-  '<div class="table-th col-xs-6">Name</div>' +
-  '<div class="table-th col-xs-6">Description</div>' +
-'</div>' +
-'<div class="table-row row">' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-  '<div class="table-td col-xs-4">Content</div>' +
-'</div></div>';
+let tmpl = '<div class="container">'
+			+'<div id="table_results" style="display: block;">'
+				+'<span id="collapse" class="btn btn-list">Collapse all</span>'
+				+'<span id="expand" class="btn btn-list">Expand all</span>'
+				+'<div class="table-row-thead row">' 
+					+'<div class="table-th col-xs-4">name</div>' 
+					+'<div class="table-th col-xs-8">Description</div>'
+				+'</div>'
+				+'<div>'
+					+'<table class="data-table treetable" id="tree_table" border ="0" cellPadding="0" cellSpacing="0" width="100%" style="display:table; margin: 0px;">'
+						+'<tbody style="maxHeight: {{:mh}}px; overflowY: auto; width:100%; display:block;">'
+						+'{{for trs}}'
+						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}}" style="width:100%; float:left;">'
+						+'<td width="33%" style="width:33%; float:left;">'
+						+'<span class="{{:type}}">'
+						+'{{if type == "folder"}}'
+						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
+						+'{{else type == "link"}}'
+							+'{{if l_type == "cde"}}'
+							+'No values in GDC, reference values in <a href="javascript:getCDEData("{{:l_id}}");" class="table-td-link">caDSR</a>'
+							+'{{else}}'
+							+'No values in GDC, concept referenced in <a target="_blank" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:l_id}}" class="table-td-link">NCIt</a>'
+							+'{{/if}}'
+			            +'{{else}}'
+			            +'{{:title}}'
+			            +'{{/if}}'
+			            +'</td>'
+			            +'<td width="66%" style="width:66%; float:left;">'
+			            +'{{:desc}}'
+			            +'</td>'
+			            +'</tr>'
+						+'{{/for}}'
+						+'</tbody>'
+					+'</table>'
+				+'</div>'
+			+'</div>'
+		+'</div>';
+
 
 export default tmpl;
