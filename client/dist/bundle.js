@@ -268,7 +268,7 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container"><div class="table-row-thead row">' +
+let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
   '<div class="table-th col-xs-6">Name</div>' +
   '<div class="table-th col-xs-6">Description</div>' +
 '</div>' +
@@ -321,7 +321,7 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container"><div class="table-row-thead row">' +
+let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
   '<div class="table-th col-xs-1">Category / Node</div>' +
   '<div class="table-th col-xs-2">Property</div>' +
   '<div class="table-th col-xs-3">Description</div>' +
@@ -366,7 +366,7 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container"><div class="table-row-thead row">' +
+let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
   '<div class="col-xs-3">' +
     '<div class="table-th">Category / Node / Property</div>' +
   '</div>' +
