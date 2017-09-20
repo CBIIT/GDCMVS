@@ -98,6 +98,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 							p.cde_pv.push(tmp);
 						});
 					}
+					else if(entry.term.termDef.source ==='NCIt'){
+						p.ncit = entry.term.termDef.cde_id;
+					}
 				}
 			}
 			else{
@@ -182,6 +185,8 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		//generate property index
 		p.name = entry.name;
 		p.node = fileJson.id;
+		p.n_desc = fileJson.description;
+		p.n_title = fileJson.title;
 		p.category = fileJson.category;
 		if(entry.description === undefined){
 			if(entry.term !== undefined && entry.term.description !== undefined){
@@ -295,7 +300,7 @@ function bulkIndex(next){
 		if(file.indexOf('_') !== 0){
 			count++;
 			let fileJson = yaml.load(folderPath+'/'+file);
-			if(fileJson.category !=="TBD"){
+			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema"){
 				let doc = helper(fileJson, termsJson, defJson, ccode, syns);
 				bulkBody.push({
 					index: {
