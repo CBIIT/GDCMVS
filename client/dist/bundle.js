@@ -734,18 +734,20 @@ const func = {
 
 					vs["n"] = dict_enum_n[em.n];
 					vs["n_c"] = em.n_c;
-
 					vs["s"] = [];
-					em.s.forEach(function(s){
-						if(s in dict_enum_s){
-							vs["s"].push(dict_enum_s[s])
-							//value.vs.push({n:em.n, n_c: em.n_c ,s: em.s});
-						}
-						else{
-							vs["s"].push(s);
-						}
-					});				
-					//check if there are any matches in the synonyms
+
+					if(em.s){
+						
+						em.s.forEach(function(s){
+							if(s in dict_enum_s){
+								vs["s"].push(dict_enum_s[s])
+							}
+							else{
+								vs["s"].push(s);
+							}
+						});				
+					}
+
 					value.vs.push(vs);
 
 				}
@@ -757,8 +759,6 @@ const func = {
 							if(s in dict_enum_s){
 								exist = true;
 								tmp.push(dict_enum_s[s]);
-								// value.vs.push({n:em.n, n_c: em.n_c ,s: em.s});
-								// break
 							}
 							else{
 								tmp.push(s);
@@ -768,69 +768,10 @@ const func = {
 							value.vs.push({n:em.n, n_c: em.n_c ,s:tmp});
 						}					
 					}
-
-					
-					//ceck synonyms
 				}
 
 			});
 		}
-
-		// for (var key_enum_n in dict_enum_n) {
-		//     // skip loop if the property is from prototype
-		//     if (!dict_enum_n.hasOwnProperty(key_enum_n)) continue;
-		//     //let nm = [];
-
-		// 	if(source.enum){
-		// 		source.enum.forEach(function(e){
-		// 			if(e.n == key_enum_n){
-		// 				//nm['nm'] = dict_enum_n[key_enum_n];
-		// 				value.nm.push({n:dict_enum_n[key_enum_n], n_c: e.n_c ,s: e.s});
-		// 			}//else{
-
-		// 			// 	for(var key_enum_s in dict_enum_s)
-		// 			// 		e.s.forEach(function(s){
-		// 			// 			if(s = key_enum_s){
-		// 			// 				nm[''] = e.s
-		// 			// 			}
-		// 			// 		})
-		// 			// }
-		// 			// nm['n'] = dict_enum_n[key_enum_n];
-		// 			// nm['s'] = [];
-
-		// 			// for(var key_enum_s in dict_enum_s){
-		// 			// 	e.s.forEach(function(s){
-		// 			// 		if(e.n == key_enum_n){
-		// 			// 			nm['n'] = dict_enum_n[key_enum_n];
-
-		// 			// 			if()
-
-		// 			// 			nm['s'].push(e)
-
-		// 			// 		}
-
-		// 			// 	});
-		// 			// }
-		// 		});
-		// 	}
-		// }
-
-
-		// for (var key_enum_s in dict_enum_s) {
-		//     // skip loop if the property is from prototype
-		//     if (!dict_enum_s.hasOwnProperty(key_enum_s)) continue;
-
-		// 	if(source.enum){
-		// 		source.enum.forEach(function(e){
-		// 			e.s.forEach(function(s){
-		// 				if(s == key_enum_s){
-		// 					console.log(s);
-		// 				}
-		// 			});
-					
-		// 		});
-		// 	}
-		// }
 
 		values.push(value);
 
@@ -872,10 +813,22 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 '</div> {{for values}}' +
 '<div class="table-row row">' +
   '<div class="table-td col-xs-3">{{:_id}}</div>' +
-  '<div class="table-td col-xs-3">{{for vs}}{{:n}}</br>{{/for}}</div>' +
-  '<div class="table-td col-xs-3">{{for vs}}{{:n_c}}</br>{{for s}}{{>}}</br>{{/for}}{{/for}}</div>' +
-  '<div class="table-td col-xs-3">Content</div>' +
+
+
+  '<div class="col-xs-7"> {{for vs}}' +
+    '<div class="row">' +
+      '<div class="table-td col-xs-4">{{:n}}</div>' +
+      '<div class="table-td col-xs-4">{{:n_c}}</br> {{for s}}{{:}}</br>{{/for}} </div>' +
+      '<div class="table-td col-xs-4">content</div>' +
+    '</div> {{/for}}' +
+  '</div>' +
+
+
+
+
+  '<div class="table-td col-xs-2">{{for vs}}{{:n}}</br>{{:n_c}}</br>{{for s}}{{>}}</br>{{/for}}{{/for}}</div>' +
 '</div> {{/for}} </div>';
+
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
