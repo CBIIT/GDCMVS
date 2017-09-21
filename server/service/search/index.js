@@ -15,5 +15,7 @@ router.get('/all', controller.search);
 
 //property based api
 router.get('/all/p', controller.searchP);
+router.get('/p/local/vs', controller.getGDCData);
+router.get('/p/cde/vs', controller.getCDEData);
 
 module.exports = router;
