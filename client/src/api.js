@@ -12,9 +12,18 @@ const api = {
   },
   searchAll(keyword, option, callback) {
     $.getJSON(baseUrl + '/all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
-        //preprocess the data
         let items = result;
         callback(keyword, option, items);
+      });
+  },
+  getGDCDataById(id, callback){
+    $.getJSON(baseUrl + '/p/local/vs', {id:id}, function(result){
+        callback(id,result);
+      });
+  },
+  getCDEDataById(id, callback){
+    $.getJSON(baseUrl + '/p/cde/vs', {id:id}, function(result){
+        callback(id,result);
       });
   }
 }

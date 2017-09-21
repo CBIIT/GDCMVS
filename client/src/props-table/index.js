@@ -13,7 +13,19 @@ const func = {
  			prop.nd = source.node;
  			prop.ct = source.category;
  			prop.desc = ("desc" in hl) ? hl["desc"] : source.desc;
- 			prop.ref = source.name;
+ 			prop.local = source.enum == undefined ? false : true;
+ 			prop.syn = false;
+ 			if(source.enum !== undefined){
+ 				//check if synonyms exists
+ 				source.enum.forEach(function(em){
+ 					if(prop.syn) return;
+
+ 					if(em.n_c !== undefined){
+ 						prop.syn = true;
+ 					}
+ 				});	
+ 			}
+ 			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde_id == undefined ? "" : source.cde_id;
  			props.push(prop);
  		}
