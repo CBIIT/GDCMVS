@@ -1108,7 +1108,7 @@ const func = {
         $("#gdc_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
-                width:"30%",
+                width:"35%",
                 title: "GDC Permissible Values ("+items.length+")",
                 open: function() {
 
@@ -1133,7 +1133,7 @@ const func = {
         $("#gdc_syn_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
-                width:"50%",
+                width:"55%",
                 title: "GDC Synonyms ("+items.length+")",
                 open: function() {
 
@@ -1157,7 +1157,7 @@ const func = {
         $("#compare_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:window},
-            width:"50%",
+            width:"60%",
             title: "Compare Your Values with GDC Permissible Values ",
             open: function() {
             	$('#cp_result').css("display", "none");
@@ -1359,7 +1359,7 @@ let tmpl = {
           +'</div>'
           +'</div>',
   gdc_synonyms: '<div id="gdc_syn_data"><div id="gdc-syn-data-list" class="div-list">'
-          +'<table><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
+          +'<table class="table"><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
             +'{{for items}}'
             +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
             +'{{for s}}'
@@ -1386,8 +1386,8 @@ let tmpl = {
                         +'<div id="cp_massage">'
                         +'</div>'
                         +'<div id="cp_bottom">'
-                            +'<span id="compare" class="btn-submit-large">Compare</span>'
-                            +'<span id="cancelCompare" class="btn-submit-large">Cancel</span>'
+                            +'<button id="compare" class="btn btn-default btn-submit-large">Compare</button>'
+                            +'<button id="cancelCompare" class="btn btn-default btn-submit-large">Cancel</button>'
                         +'</div>'
                     +'</div>'
                     +'<div id="compare_result"></div>'

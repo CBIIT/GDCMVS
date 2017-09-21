@@ -31,7 +31,7 @@ const func = {
         $("#gdc_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
-                width:"30%",
+                width:"35%",
                 title: "GDC Permissible Values ("+items.length+")",
                 open: function() {
 
@@ -56,7 +56,7 @@ const func = {
         $("#gdc_syn_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
-                width:"50%",
+                width:"55%",
                 title: "GDC Synonyms ("+items.length+")",
                 open: function() {
 
@@ -80,7 +80,7 @@ const func = {
         $("#compare_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:window},
-            width:"50%",
+            width:"60%",
             title: "Compare Your Values with GDC Permissible Values ",
             open: function() {
             	$('#cp_result').css("display", "none");
