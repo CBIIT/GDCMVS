@@ -718,7 +718,7 @@
                         <form class="form-inline">
                           <div class="form-group">
                             <label>Keyword</label>
-                            <input id="keywords" type="text" class="form-control"  placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" style="width: 23.9em;">
+                            <input id="keywords" type="text" class="form-control"  placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" style="width: 21em;">
                           </div>
                           <button id="search" type="button" class="btn btn-default">Search</button>
                         </form>
@@ -732,21 +732,23 @@
                         <div class="suggest-container">
                            <div id="suggestBox" class="suggestArea"></div>
                         </div>
-                        <div class="radio">
-                          <label class="radio-inline">
-                            <input type="radio" name="i_match" id="i_ematch" checked="checked" value="exact"> Exact Match
-                          </label>
-                          <label class="radio-inline">
-                            <input type="radio" name="i_match" id="i_pmatch" value="partial"> Partial Match
-                          </label>
-                        </div>
-                        <div class="checkbox search-checkbox">
-                          <label class="checkbox-inline">
-                            <input type="checkbox" id="i_desc"> Property Description
-                          </label>
-                          <label class="checkbox-inline" >
-                            <input type="checkbox" id="i_syn"> Synonyms
-                          </label>
+                        <div class="search-options">
+                            <div class="radio search-radio">
+                              <label class="radio-inline">
+                                <input type="radio" name="i_match" id="i_ematch" checked="checked" value="exact"> Exact Match
+                              </label>
+                              <label class="radio-inline">
+                                <input type="radio" name="i_match" id="i_pmatch" value="partial"> Partial Match
+                              </label>
+                            </div>
+                            <div class="checkbox search-checkbox">
+                              <label class="checkbox-inline">
+                                <input type="checkbox" id="i_desc"> Property Description
+                              </label>
+                              <label class="checkbox-inline" >
+                                <input type="checkbox" id="i_syn"> Synonyms
+                              </label>
+                            </div>
                         </div>
                     </div>
                     
