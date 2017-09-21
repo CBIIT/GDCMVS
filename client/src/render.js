@@ -7,8 +7,20 @@ export default function render(keyword, option, items){
   let html = "";
   if(items.length !== 0){
   	let trsHtml = trs.render(items);
+    trsHtml.active = false;
   	let psHtml = ps.render(items);
+    psHtml.active = false;
   	let vsHtml = vs.render(items);
+    vsHtml.active = false;
+    if(option.activeTab == 0){
+        trsHtml.active = true;
+    }
+    else if(option.activeTab == 1){
+        psHtml.active = true;
+    }
+    else{
+        vsHtml.active = true;
+    }
   	html = tabs(trsHtml, psHtml, vsHtml);
   }
   else{
@@ -46,7 +58,7 @@ export default function render(keyword, option, items){
       targets.css({display: 'none'});
       target.text('Show More');
     } else {
-      targets.css({display: 'table-row'});
+      targets.css({display: 'block'});
       target.text('Show Less');
     }
   });
