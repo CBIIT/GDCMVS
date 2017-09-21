@@ -641,19 +641,21 @@ const func = {
 
 let tmpl = '<div class="container table-container">'
 			+'<div id="table_results" style="display: block;">'
-				+'<span id="collapse" class="btn btn-list">Collapse all</span>'
-				+'<span id="expand" class="btn btn-list">Expand all</span>'
-				+'<div class="table-row-thead row">' 
-					+'<div class="table-th col-xs-4">name</div>' 
-					+'<div class="table-th col-xs-8">Description</div>'
+				+'<div class="btn-container">'
+					+'<button id="collapse" class="btn btn-default btn-list" style="margin-right:5px;">Collapse all</button>'
+					+'<button id="expand" class="btn btn-default btn-list">Expand all</button>'
 				+'</div>'
-				+'<div>'
+				+'<div class="table-row-thead row">' 
+					+'<div class="col-xs-4"><div class="table-th">Name</div></div>' 
+					+'<div class="col-xs-8"><div class="table-th">Description</div></div>'
+				+'</div>'
+				+'<div class="row">'
 					+'<table class="data-table treetable" id="tree_table" border ="0" cellPadding="0" cellSpacing="0" width="100%" style="display:table; margin: 0px;">'
 						+'<tbody style="max-height: {{:mh}}px; overflow-y: auto; width:100%; display:block;">'
 						+'{{for trs}}'
 						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}}" style="width:100%; float:left;">'
 						+'<td width="33%" style="width:33%; float:left;">'
-						+'<span class="{{:type}}">'
+						+'<span class="{{:type}}" style="display:inline-block; width: 275px;">'
 						+'{{if type == "folder"}}'
 						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
 						+'{{else type == "link"}}'
@@ -666,7 +668,7 @@ let tmpl = '<div class="container table-container">'
 			            +'{{:title}}'
 			            +'{{/if}}'
 			            +'</td>'
-			            +'<td width="66%" style="width:66%; float:left;">'
+			            +'<td width="66%" style="width:66%; float:left; line-height: 22px;">'
 			            +'{{:desc}}'
 			            +'</td>'
 			            +'</tr>'
@@ -741,18 +743,18 @@ const func = {
 "use strict";
 
 let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
-  '<div class="table-th col-xs-1">Category / Node</div>' +
+  '<div class="table-th col-xs-2">Category / Node</div>' +
   '<div class="table-th col-xs-2">Property</div>' +
-  '<div class="table-th col-xs-3">Description</div>' +
-  '<div class="table-th col-xs-3">GDC Property Values</div>' +
-  '<div class="table-th col-xs-3">CDE Reference</div>' +
+  '<div class="table-th col-xs-5">Description</div>' +
+  '<div class="table-th col-xs-2">GDC Property Values</div>' +
+  '<div class="table-th col-xs-1">CDE Reference</div>' +
 '</div>' +
 '{{for props}}'+
 '<div class="table-row row">' +
-  '<div class="table-td col-xs-1">{{:ct}} -- {{:nd}}</div>' +
+  '<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>' +
   '<div class="table-td col-xs-2">{{:nm}}</div>' +
-  '<div class="table-td col-xs-3">{{:desc}}</div>' +
-  '<div class="table-td col-xs-3">'
+  '<div class="table-td col-xs-5">{{:desc}}</div>' +
+  '<div class="table-td col-xs-2">'
   +'{{if local}}'
   +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
   +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
@@ -764,7 +766,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   +'no values'
   +'{{/if}}'
   +'</div>' 
-  +'<div class="table-td col-xs-3">'
+  +'<div class="table-td col-xs-1">'
   +'{{if cdeId == ""}}'
   +''
   +'{{else}}'

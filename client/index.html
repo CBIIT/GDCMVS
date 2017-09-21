@@ -23,10 +23,10 @@
 <link href="./assets/css/encyclopedia.css" rel="stylesheet">
 
 <!-- GDC CSS-->
-<link href="./style.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="./assets/css/jquery.treetable.css" />
 <link rel="stylesheet" type="text/css" href="./assets/css/jquery.treetable.theme.default.css" />
 <link rel="stylesheet" type="text/css" href="./assets/css/jquery-ui.css" />
+<link href="./style.css" rel="stylesheet">
 
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -718,7 +718,7 @@
                         <form class="form-inline">
                           <div class="form-group">
                             <label>Keyword</label>
-                            <input id="keywords" type="text" class="form-control" placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="">
+                            <input id="keywords" type="text" class="form-control"  placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" style="width: 23.9em;">
                           </div>
                           <button id="search" type="button" class="btn btn-default">Search</button>
                         </form>
@@ -733,7 +733,7 @@
                             <input type="radio" name="i_match" id="i_pmatch" value="partial"> Partial Match
                           </label>
                         </div>
-                        <div class="checkbox" style="border-top: 1px solid black;">
+                        <div class="checkbox search-checkbox">
                           <label class="checkbox-inline">
                             <input type="checkbox" id="i_desc"> Property Description
                           </label>
