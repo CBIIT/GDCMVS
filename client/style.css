@@ -1,6 +1,9 @@
 .container {
   font-size: 1.3rem;
 }
+ul {
+    padding: 0 0 0 20px;
+}
 
 .btn{
   font-size: 14px;
@@ -32,7 +35,7 @@
   text-align: left;
   padding: 8px;
   line-height: 1.428571;
-  border-bottom: 1px solid #ddd;
+  /*border-bottom: 1px solid #ddd;*/
 }
 
 .table-row {
@@ -92,7 +95,7 @@
 
 .suggestArea{
   float:left;
-  width:22em;
+  width:22.35em;
   height: auto;
   display:none;
   background-color: #fff;
@@ -101,7 +104,7 @@
   transition: box-shadow 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
   position: absolute;
   top: 0;
-  left: calc(50%  - 12em);
+  left: calc(50%  - 12.2em);
   z-index:100;
 }
 
@@ -213,6 +216,12 @@
 .border-r{
   border-right: 1px solid rgba(0,0,0,0.065);
 }
+.border-b{
+  border-bottom: 1px solid rgba(0,0,0,0.065);
+}
+.border-t{
+  border-top: 1px solid rgba(0,0,0,0.065);
+}
 table.treetable {
     font-size: 1em;
 }
@@ -245,6 +254,9 @@ table.treetable div.value {
 }
 .data-table-row:nth-of-type(odd) {
   background: #f1f1f1;
+}
+.row-flex{
+  display:flex;
 }
 .row-toggle{
   display:none;
@@ -294,6 +306,21 @@ table.treetable div.value {
 }
 .dropdown-box:hover{
   box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+}
+.w20{
+  width:20%;
+}
+.w50{
+  width:50%;
+}
+.w60{
+  width:60%;
+}
+.w80{
+  width:80%;
+}
+.w100{
+  width:100%;
 }
 
 

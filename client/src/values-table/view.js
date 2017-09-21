@@ -1,30 +1,30 @@
 
 let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
-  '<div class="col-xs-3">' +
+  '<div class="w20">' +
     '<div class="table-th">Category / Node / Property</div>' +
   '</div>' +
-  '<div class="col-xs-9">' +
-    '<div class="row">' +
+  '<div class="w80">' +
+    '<div class="">' +
       '<div class="table-th col-xs-6">GDC Values and Synonyms</div>' +
       '<div class="table-th col-xs-6">CDE references, permissible values and Synonyms</div>' +
     '</div>' +
-    '<div class="row">' +
-      '<div class="table-th col-xs-4">Matched GDC Value</div>' +
+    '<div class="">' +
+      '<div class="table-th col-xs-3">Matched GDC Value</div>' +
       '<div class="table-th col-xs-3">GDC Synonyms</div>' +
       '<div class="table-th col-xs-3">NCIt Code and Synonyms</div>' +
-      '<div class="table-th col-xs-2">CDE Reference</div>' +
+      '<div class="table-th col-xs-3">CDE Reference</div>' +
     '</div>' +
   '</div>' +
 '</div> {{for values}}' +
 '<div class="table-row row">' +
-  '<div class="col-xs-3 table-td">'+
+  '<div class="w20 table-td">'+
       '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
   '</div>'+
-  '<div class="col-xs-7 border-l border-r"> {{for vs}}' +
-    '<div class="row {{if #getIndex() > 4}}row-toggle{{else}}{{/if}}" style="display: flex;">' +
-      '<div class="table-td col-xs-5 border-r">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
-      '<div class="table-td col-xs-4 border-r"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
-      '<div class="table-td col-xs-3">'
+  '<div class="w60 border-l border-r"> {{for vs}}' +
+    '<div class="{{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}" style="">' +
+      '<div class="table-td col-xs-4 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
+      '<div class="table-td col-xs-4 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
+      '<div class="table-td col-xs-4 border-b">'
         +'{{for cde_s}}'
         +'<div class="row">'
           +'<div class="col-xs-3">{{:c}}</div>'
@@ -46,7 +46,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
       +'{{/if}}'
     +'</div>' +
   '</div>' +
-  '<div class="table-td col-xs-2">'
+  '<div class="table-td w20">'
   +'{{if cdeId == ""}}'
   +''
   +'{{else}}'

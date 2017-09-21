@@ -58,7 +58,7 @@ export default function render(keyword, option, items){
       targets.css({display: 'none'});
       target.text('Show More');
     } else {
-      targets.css({display: 'block'});
+      targets.css({display: 'flex'});
       target.text('Show Less');
     }
   });

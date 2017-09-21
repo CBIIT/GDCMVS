@@ -357,15 +357,25 @@ window.findWord = findWord;
 
 
 let displayBoxIndex = -1;
+let activeTab = 0;
 
 const func = {
     search(){
         let keyword = $("#keywords").val();
         keyword = keyword.toLowerCase();
+        //get selected tab
+        let count = 0;
+        $("li[role='presentation']").each(function(){
+            if($(this).hasClass("active")){
+                activeTab = count;
+            }
+            count++;
+        });
         let option = {};
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("input[name=i_match]:checked").val();
+        option.activeTab = activeTab;
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
         __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].searchAll(keyword, option, function(keyword, option, items) {
@@ -459,8 +469,20 @@ function render(keyword, option, items){
   let html = "";
   if(items.length !== 0){
   	let trsHtml = __WEBPACK_IMPORTED_MODULE_0__result_table___["a" /* default */].render(items);
+    trsHtml.active = false;
   	let psHtml = __WEBPACK_IMPORTED_MODULE_1__props_table___["a" /* default */].render(items);
+    psHtml.active = false;
   	let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
+    vsHtml.active = false;
+    if(option.activeTab == 0){
+        trsHtml.active = true;
+    }
+    else if(option.activeTab == 1){
+        psHtml.active = true;
+    }
+    else{
+        vsHtml.active = true;
+    }
   	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
   }
   else{
@@ -498,7 +520,7 @@ function render(keyword, option, items){
       targets.css({display: 'none'});
       target.text('Show More');
     } else {
-      targets.css({display: 'table-row'});
+      targets.css({display: 'flex'});
       target.text('Show Less');
     }
   });
@@ -983,31 +1005,31 @@ const func = {
 "use strict";
 
 let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
-  '<div class="col-xs-3">' +
+  '<div class="w20">' +
     '<div class="table-th">Category / Node / Property</div>' +
   '</div>' +
-  '<div class="col-xs-9">' +
-    '<div class="row">' +
+  '<div class="w80">' +
+    '<div class="">' +
       '<div class="table-th col-xs-6">GDC Values and Synonyms</div>' +
       '<div class="table-th col-xs-6">CDE references, permissible values and Synonyms</div>' +
     '</div>' +
-    '<div class="row">' +
-      '<div class="table-th col-xs-4">Matched GDC Value</div>' +
+    '<div class="">' +
+      '<div class="table-th col-xs-3">Matched GDC Value</div>' +
       '<div class="table-th col-xs-3">GDC Synonyms</div>' +
       '<div class="table-th col-xs-3">NCIt Code and Synonyms</div>' +
-      '<div class="table-th col-xs-2">CDE Reference</div>' +
+      '<div class="table-th col-xs-3">CDE Reference</div>' +
     '</div>' +
   '</div>' +
 '</div> {{for values}}' +
 '<div class="table-row row">' +
-  '<div class="col-xs-3 table-td">'+
+  '<div class="w20 table-td">'+
       '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
   '</div>'+
-  '<div class="col-xs-7 border-l border-r"> {{for vs}}' +
-    '<div class="row {{if #getIndex() > 4}}row-toggle{{else}}{{/if}}" style="display: flex;">' +
-      '<div class="table-td col-xs-5 border-r">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
-      '<div class="table-td col-xs-4 border-r"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
-      '<div class="table-td col-xs-3">'
+  '<div class="w60 border-l border-r"> {{for vs}}' +
+    '<div class="{{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}" style="">' +
+      '<div class="table-td col-xs-4 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
+      '<div class="table-td col-xs-4 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
+      '<div class="table-td col-xs-4 border-b">'
         +'{{for cde_s}}'
         +'<div class="row">'
           +'<div class="col-xs-3">{{:c}}</div>'
@@ -1029,7 +1051,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
       +'{{/if}}'
     +'</div>' +
   '</div>' +
-  '<div class="table-td col-xs-2">'
+  '<div class="table-td w20">'
   +'{{if cdeId == ""}}'
   +''
   +'{{else}}'
@@ -1060,7 +1082,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 
 /* harmony default export */ __webpack_exports__["a"] = (function (trsHtml, psHtml, vsHtml) {
 
-  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({trsHtml: trsHtml.html, ps_len: psHtml.len, psHtml: psHtml.html, vs_len: vsHtml.len, vsHtml: vsHtml.html});
+  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({trs_active:trsHtml.active, trsHtml: trsHtml.html, ps_active:psHtml.active,ps_len: psHtml.len, psHtml: psHtml.html, vs_active:vsHtml.active, vs_len: vsHtml.len, vsHtml: vsHtml.html});
 
   return html;
 });
@@ -1072,12 +1094,12 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 
 "use strict";
 let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
-      '<li role="presentation" class="active"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results</a></li>' +
-      '<li role="presentation"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
-      '<li role="presentation"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li></ul>' +
-      '<div class="tab-content"><div role="tabpanel" class="tab-pane active" id="trsTab">{{:trsHtml}}</div>' +
-      '<div role="tabpanel" class="tab-pane" id="psTab">{{:psHtml}}</div>' +
-      '<div role="tabpanel" class="tab-pane" id="vsTab">{{:vsHtml}}</div></div></div>';
+      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results</a></li>' +
+      '<li role="presentation" class="{{if ps_active}}active{{else}}{{/if}}"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
+      '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li></ul>' +
+      '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div>' +
+      '<div role="tabpanel" class="tab-pane {{if ps_active}}active{{else}}{{/if}}" id="psTab">{{:psHtml}}</div>' +
+      '<div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div></div></div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
