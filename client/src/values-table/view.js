@@ -23,7 +23,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
     '</div>' +
   '</div>'+
   '<div class="col-xs-7"> {{for vs}}' +
-    '<div class="row">' +
+    '<div class="row {{if #getIndex() > 4}}row-toggle{{else}}{{/if}}">' +
       '<div class="table-td col-xs-5">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
       '<div class="table-td col-xs-4"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
       '<div class="table-td col-xs-3">'
@@ -35,7 +35,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
         +'{{/for}}'
       +'</div>'
     +'</div> {{/for}}' 
-    +'<div class="show-more"></div>'
+    +'<div class="show-more">{{if vs.length > 5}}<a class="table-td-link show-more-less" href="javascript:void(0);">Show More</a>{{else}}{{/if}}</div>'
     +'<div class="links">'
       +'{{if local}}'
       +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
