@@ -95,6 +95,11 @@ const api = {
     $.getJSON(baseUrl + '/p/cde/vs', {id:id}, function(result){
         callback(id,result);
       });
+  },
+  getGDCandCDEDataById(ids, callback){
+    $.getJSON(baseUrl + '/p/both/vs', {local:ids.local, cde: ids.cde}, function(result){
+        callback(ids,result);
+      });
   }
 }
 
@@ -258,11 +263,85 @@ function generateCompareResult(fromV, toV, option){
 
 window.generateCompareResult = generateCompareResult;
 
-function compareGDC(prop){
+function generateCompareGDCResult(fromV, toV, option){
+    let v_lowercase = [], v_matched = [];
+    let from_num = 0;
+    if(option.sensitive){
+        toV.forEach(function(v){
+            v_lowercase.push(v.trim());
+        });
+    }
+    else{
+        toV.forEach(function(v){
+            v_lowercase.push(v.trim().toLowerCase());
+        });
+    }
 
+    let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
+
+    fromV.forEach(function(v){
+        let tmp = $.trim(v);
+        if(tmp ===''){
+            return;
+        }
+        let text = '';
+        let idx = option.sensitive ? v_lowercase.indexOf(tmp) : v_lowercase.indexOf(tmp.toLowerCase());
+        if(idx >= 0){
+            text = toV[idx];
+            v_matched.push(idx);
+        }
+        if(text ===''){
+            text = '<div style="color:red;">--</div>';
+            table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
+        }
+        else{
+            table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
+        }
+    });
+    for(var i = 0; i< toV.length; i++){
+        if(v_matched.indexOf(i) >= 0){
+            continue;
+        }
+        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
+    }
+    table += "</tbody></table>";
+
+    return table;
+};
+
+window.generateCompareGDCResult = generateCompareGDCResult;
+
+function getCDEData(cdeId){
+    __WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].getCDEData(cdeId);
+}
+
+window.getCDEData = getCDEData;
+
+function compareGDC(prop, cdeId){
+    let uid = prop.replace(/@/g, '/');
+    __WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].compareGDC(uid, cdeId);
 };
 
 window.compareGDC = compareGDC;
+
+//find the word with the first character capitalized
+function findWord (words){
+    let word = "";
+    words.forEach(function(w){
+        if(word !== ""){
+            return;
+        }
+        if(/^[A-Z]/.test(w)){
+            word = w;
+        }
+    });
+    if(word == ""){
+        word = words[0];
+    }
+    return word;
+};
+
+window.findWord = findWord;
 
 
 /***/ }),
@@ -634,7 +713,8 @@ const func = {
  				});	
  			}
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
- 			prop.cdeId = source.cde_id == undefined ? "" : source.cde_id;
+ 			prop.cdeId = source.cde_id !== undefined ? source.cde_id : "";
+ 			prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
  			props.push(prop);
  		}
  	});
@@ -683,8 +763,21 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   +'{{else}}'
   +'no values'
   +'{{/if}}'
+  +'</div>' 
+  +'<div class="table-td col-xs-3">'
+  +'{{if cdeId == ""}}'
+  +''
+  +'{{else}}'
+  +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+    +'{{if local && cdeLen}}'
+    +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+    +'{{else cdeLen}}'
+    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
+    +'{{else}}'
+    +''
+    +'{{/if}}'
+  +'{{/if}}'
   +'</div>' +
-  '<div class="table-td col-xs-3">{{:cdeId}}</div>' +
 '</div>'+
 '{{/for}}</div>';
 
@@ -735,18 +828,19 @@ const func = {
 				let vs = {}
 				if(em.n in dict_enum_n){
 
-					vs["n"] = dict_enum_n[em.n];
-					vs["n_c"] = em.n_c;
-					vs["s"] = [];
+					vs.n = dict_enum_n[em.n];
+					vs.n_c = em.n_c;
+					vs.syn = true;
+					vs.s = [];
 
 					if(em.s){
 						
 						em.s.forEach(function(s){
 							if(s in dict_enum_s){
-								vs["s"].push(dict_enum_s[s])
+								vs.s.push(dict_enum_s[s])
 							}
 							else{
-								vs["s"].push(s);
+								vs.s.push(s);
 							}
 						});				
 					}
@@ -768,7 +862,7 @@ const func = {
 							}
 						});
 						if(exist){
-							value.vs.push({n:em.n, n_c: em.n_c ,s:tmp});
+							value.vs.push({n:em.n, n_c: em.n_c, syn: true,s:tmp});
 						}					
 					}
 				}
@@ -990,11 +1084,151 @@ const func = {
       	
     });
   },
-  compare(){
+  getCDEData(uid){
+        __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getCDEDataById(uid, function(id, items) {
+            //data precessing
+            let tmp = [];
+            items.forEach(function(item){
+                let t = {};
+                t.pv = item.n;
+                t.pvd = item.d;
+                t.i_rows = [];
+                t.rows = [];
+                item.ss.forEach(function(s){
+                    let i_r = {};
+                    let r = {};
+                    i_r.pvc = s.c;
+                    r.pvc = s.c;
+                    r.s = s.s;
+                    i_r.s = [];
+                    //remove duplicate
+                    let cache = {};
+                    s.s.forEach(function(w){
+                        let lc = w.trim().toLowerCase();
+                        if(!(lc in cache)){
+                            cache[lc] = [];
+                        }
+                        cache[lc].push(w);
+                    });
+                    for(let idx in cache){
+                        //find the term with the first character capitalized
+                        let word = findWord(cache[idx]);
+                        i_r.s.push(word);
+                    }
+                    t.i_rows.push(i_r);
+                    t.rows.push(r);
+                });
+                tmp.push(t);
+            });
+            if($('#caDSR_data').length){
+                $('#caDSR_data').remove();
+            }
 
+            let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].cde_data).render({items: tmp });
+            let tp = window.innerHeight * 0.2;
+            //display result in a table
+            $(document.body).append(html);
+            $("#caDSR_data").dialog({
+                    modal: false,
+                    position: { my: "center top+"+tp, at: "center top", of:window},
+                    width:"60%",
+                    title: "CaDSR Permissible Values ("+tmp.length+")",
+                    open: function() {
+                        $('#data-invariant').bind('click', function(){
+                            $("#data-list").find('td[name="syn_area"]').each(function(){
+                                let rp = $(this).html();
+                                let invariant = $(this).parent().children('td[name="syn_invariant"]');
+                                $(this).html(invariant[0].innerHTML);
+                                invariant[0].innerHTML = rp;
+                            });
+                        });
+                    },
+                    close: function() {
+                        $(this).remove();
+                    }
+            });
+            
+        });
   },
-  compareGDC(){
+  compareGDC(prop, uid){
+    let ids = {};
+    ids.local = prop;
+    ids.cde = uid;
+    __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCandCDEDataById(ids, function(ids, items) {
+        console.log
+        if($('#compareGDC_dialog').length){
+            $('#compareGDC_dialog').remove();
+        }
+        let popup = '<div id="compareGDC_dialog">'
+                        +'<div id="compareGDC_result"></div>'
+                    +'</div>';
+        $(document.body).append(popup);
+        let tp = window.innerHeight * 0.2;
+        let toV = [];
+        let fromV = [];
+        let opt = {};
+        opt.sensitive = false;
+        opt.unmatched = false;
+        items.to.forEach(function(t){
+            toV.push(t.n);
+        });
+        items.from.forEach(function(f){
+            fromV.push(f.n);
+        });
+        let table = generateCompareGDCResult(fromV, toV, opt);
+        let html = '<div class="cp_result_title">Compare Result</div>'
+                    +'<div id="cpGDC_result_option"><div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div>'
+                    +'<div id="cpGDC_result_table">'+table+'</div>'
+                    +'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
+                    +'</div>';
 
+
+        $("#compareGDC_dialog").dialog({
+                modal: false,
+                position: { my: "center top+"+tp, at: "center top", of:window},
+                width:"50%",
+                title: "Compare GDC Values with caDSR Values ",
+                open: function() {
+                    //display result in a table
+                    $('#compareGDC_result').html(html);
+                    let height = $('#cpGDC_result_table table:first-child').height() +1;
+                    if(height >= 30 * 12.8){
+                        height = 384;
+                    }
+                    $('#cpGDC_result_table').height(height+'px');
+                    $('#closeCompareGDC').bind('click', function(){
+                        $("#compareGDC_dialog").dialog('close');
+                    });
+                    $('#compareGDC_filter').bind('click', function(){
+                        let options = {};
+                        options.sensitive = $("#compareGDC_filter").prop('checked');
+                        options.unmatched = $("#compareGDC_unmatched").prop('checked');
+                        let table_new = generateCompareGDCResult(fromV, toV, options);
+                        $('#cpGDC_result_table').html(table_new);
+                        let h = $('#cpGDC_result_table table:first-child').height() +1;
+                        if(h >= 30 * 12.8){
+                            h = 384;
+                        }
+                        $('#cpGDC_result_table').height(h+'px');
+                    });
+                    $('#compareGDC_unmatched').bind('click', function(){
+                        let options = {};
+                        options.sensitive = $("#compareGDC_filter").prop('checked');
+                        options.unmatched = $("#compareGDC_unmatched").prop('checked');
+                        let table_new = generateCompareGDCResult(fromV, toV, options);
+                        $('#cpGDC_result_table').html(table_new);
+                        let h = $('#cpGDC_result_table table:first-child').height() +1;
+                        if(h >= 30 * 12.8){
+                            h = 384;
+                        }
+                        $('#cpGDC_result_table').height(h+'px');
+                    });
+                },
+                close: function() {
+                    $(this).remove();
+                }
+        });
+    });
   }
 };
 
@@ -1062,7 +1296,38 @@ let tmpl = {
                         +'</div>'
                     +'</div>'
                     +'<div id="compare_result"></div>'
-                +'</div>'
+                +'</div>',
+  cde_data: '<div id="caDSR_data">'
+              +'<div class="data-option">'
+                +'<div class="option-right"><input type="checkbox" id="data-invariant"> Show Duplicates</div>'
+              +'</div>'
+              +'<div id="data-list" class="div-list">'
+              +'<table><tbody><tr class="data-table-head"><td width="5%"></td><td width="15%">PV</td><td width="40%">Description</td><td width="40%">NCIt Code and Synonyms</td></tr>'
+              +'{{for items}}'
+              +'<tr class="data-table-row"><td><b>{{:#getIndex()}}.</b></td><td>{{:pv}}</td><td>{{:pvd}}</td>'
+              +'<td name="syn_area"><table><tbody>'
+                +'{{for i_rows}}'
+                +'<tr class=""><td><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="td-split">'
+                +'{{for s}}'
+                +'{{>#data}}<br>'
+                +'{{/for}}'
+                +'</td></tr>'
+                +'{{/for}}'
+              +'</tbody></table></td>'
+              +'<td name="syn_invariant" style="display:none;">'
+              +'<table><tbody>'
+                +'{{for rows}}'
+                +'<tr class=""><td><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="td-split">'
+                +'{{for s}}'
+                +'{{>#data}}<br>'
+                +'{{/for}}'
+                +'</td></tr>'
+                +'{{/for}}'
+              +'</tbody></table>'
+              +'</td></tr>'
+              +'{{/for}}'
+              +'</tbody></table></div>'
+            +'</div>'
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
