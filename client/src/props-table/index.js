@@ -39,9 +39,12 @@ const func = {
  	else{
  		html = $.templates(tmpl).render({props: props});
  	}
+ 	
+    let result = {};
+    result.len = props.length;
+    result.html = html;
+    return result;
     
-    return html;
-
   }
 };
 

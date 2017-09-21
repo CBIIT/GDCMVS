@@ -488,6 +488,20 @@ function render(keyword, option, items){
           });
       });
   }
+
+  $(".show-more-less").click(function () {
+    let target = $(this);
+
+    let parentTable = $(this).parent().parent();
+    let targets = parentTable.find('.row-toggle');
+    if(target.text() == "Show Less"){
+      targets.css({display: 'none'});
+      target.text('Show More');
+    } else {
+      targets.css({display: 'table-row'});
+      target.text('Show Less');
+    }
+  });
   
 }
 
@@ -622,11 +636,11 @@ const func = {
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 110;
 
-    console.log(h);
-
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
-
-    return html;
+    let result = {};
+    result.len = 0;
+    result.html = html;
+    return result;
 
   }
 };
@@ -728,9 +742,12 @@ const func = {
  	else{
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({props: props});
  	}
+ 	
+    let result = {};
+    result.len = props.length;
+    result.html = html;
+    return result;
     
-    return html;
-
   }
 };
 
@@ -800,6 +817,10 @@ const func = {
 	let values = [];
 	items.forEach(function (item){
 	  	let hl = item.highlight;
+	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
+	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined){
+	  		return;
+		}
 	  	let source = item._source;
 	  	let dict_enum_n = {};
 		let dict_enum_s = {};
@@ -937,10 +958,18 @@ const func = {
 
 		values.push(row);
 	});
-	console.log(values);
-    let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({values: values});
-
-    return html;
+	let html = "";
+	if(values.length == 0){
+ 		let keyword = $("#keywords").val();
+ 		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+ 	}
+ 	else{
+ 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({values: values});
+ 	}
+    let result = {};
+    result.len = values.length;
+    result.html = html;
+    return result;
 
   }
 };
@@ -977,7 +1006,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
     '</div>' +
   '</div>'+
   '<div class="col-xs-7"> {{for vs}}' +
-    '<div class="row">' +
+    '<div class="row {{if #getIndex() > 4}}row-toggle{{else}}{{/if}}">' +
       '<div class="table-td col-xs-5">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
       '<div class="table-td col-xs-4"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
       '<div class="table-td col-xs-3">'
@@ -989,7 +1018,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
         +'{{/for}}'
       +'</div>'
     +'</div> {{/for}}' 
-    +'<div class="show-more"></div>'
+    +'<div class="show-more">{{if vs.length > 5}}<a class="table-td-link show-more-less" href="javascript:void(0);">Show More</a>{{else}}{{/if}}</div>'
     +'<div class="links">'
       +'{{if local}}'
       +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
@@ -1033,7 +1062,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 
 /* harmony default export */ __webpack_exports__["a"] = (function (trsHtml, psHtml, vsHtml) {
 
-  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({trsHtml: trsHtml, psHtml: psHtml, vsHtml: vsHtml});
+  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({trsHtml: trsHtml.html, ps_len: psHtml.len, psHtml: psHtml.html, vs_len: vsHtml.len, vsHtml: vsHtml.html});
 
   return html;
 });
@@ -1046,8 +1075,8 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 "use strict";
 let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
       '<li role="presentation" class="active"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results</a></li>' +
-      '<li role="presentation"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties</a></li>' +
-      '<li role="presentation"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values</a></li></ul>' +
+      '<li role="presentation"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
+      '<li role="presentation"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li></ul>' +
       '<div class="tab-content"><div role="tabpanel" class="tab-pane active" id="trsTab">{{:trsHtml}}</div>' +
       '<div role="tabpanel" class="tab-pane" id="psTab">{{:psHtml}}</div>' +
       '<div role="tabpanel" class="tab-pane" id="vsTab">{{:vsHtml}}</div></div></div>';
@@ -1085,7 +1114,6 @@ const func = {
             $('#gdc_data').remove();
         }
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-        console.log(target + "       done!");
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target,items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
@@ -1250,7 +1278,6 @@ const func = {
     ids.local = prop;
     ids.cde = uid;
     __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCandCDEDataById(ids, function(ids, items) {
-        console.log
         if($('#compareGDC_dialog').length){
             $('#compareGDC_dialog').remove();
         }

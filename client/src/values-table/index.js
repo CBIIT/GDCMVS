@@ -7,6 +7,10 @@ const func = {
 	let values = [];
 	items.forEach(function (item){
 	  	let hl = item.highlight;
+	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
+	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined){
+	  		return;
+		}
 	  	let source = item._source;
 	  	let dict_enum_n = {};
 		let dict_enum_s = {};
@@ -144,10 +148,18 @@ const func = {
 
 		values.push(row);
 	});
-	console.log(values);
-    let html = $.templates(tmpl).render({values: values});
-
-    return html;
+	let html = "";
+	if(values.length == 0){
+ 		let keyword = $("#keywords").val();
+ 		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+ 	}
+ 	else{
+ 		html = $.templates(tmpl).render({values: values});
+ 	}
+    let result = {};
+    result.len = values.length;
+    result.html = html;
+    return result;
 
   }
 };
