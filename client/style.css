@@ -202,6 +202,9 @@ table.treetable div.value {
 .data-table-row:nth-of-type(odd) {
   background: #f1f1f1;
 }
+.row-toggle{
+  display:none;
+}
 
 #compare_result{
   height:33em;
