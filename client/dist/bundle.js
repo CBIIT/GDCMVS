@@ -710,6 +710,9 @@ const func = {
 		let dict_enum_s ={};
 		let value = {};
 		value._id = item._id;
+		value.category = source.category;
+		value.node =  source.node;
+		value.name = source.name;
 	  	if(("enum.n" in hl || "enum.n.have" in hl || "enum.s" in hl || "enum.s.have" in hl || "cde_pv.ss.s" in hl )){
 			let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 			let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
@@ -812,21 +815,19 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   '</div>' +
 '</div> {{for values}}' +
 '<div class="table-row row">' +
-  '<div class="table-td col-xs-3">{{:_id}}</div>' +
-
-
+  '<div class="col-xs-3">'+
+    '<div class="table-td">'+
+      '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
+    '</div>' +
+  '</div>'+
   '<div class="col-xs-7"> {{for vs}}' +
     '<div class="row">' +
       '<div class="table-td col-xs-4">{{:n}}</div>' +
-      '<div class="table-td col-xs-4">{{:n_c}}</br> {{for s}}{{:}}</br>{{/for}} </div>' +
-      '<div class="table-td col-xs-4">content</div>' +
+      '<div class="table-td col-xs-4"><b>{{:n_c}}</b></br>{{for s}}{{:}}</br>{{/for}}</div>' +
+      '<div class="table-td col-xs-4">Content</div>' +
     '</div> {{/for}}' +
   '</div>' +
-
-
-
-
-  '<div class="table-td col-xs-2">{{for vs}}{{:n}}</br>{{:n_c}}</br>{{for s}}{{>}}</br>{{/for}}{{/for}}</div>' +
+  '<div class="table-td col-xs-2">Content</div>' +
 '</div> {{/for}} </div>';
 
 
