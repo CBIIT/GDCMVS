@@ -17,9 +17,11 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   '</div>' +
 '</div> {{for values}}' +
 '<div class="table-row row">' +
-  '<div class="table-td col-xs-3">{{:_id}}</div>' +
-
-
+  '<div class="col-xs-3">'+
+    '<div class="table-td">'+
+      '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
+    '</div>' +
+  '</div>'+
   '<div class="col-xs-7"> {{for vs}}' +
     '<div class="row">' +
       '<div class="table-td col-xs-4">{{:n}}</div>' +
