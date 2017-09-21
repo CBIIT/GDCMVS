@@ -25,6 +25,11 @@ const api = {
     $.getJSON(baseUrl + '/p/cde/vs', {id:id}, function(result){
         callback(id,result);
       });
+  },
+  getGDCandCDEDataById(ids, callback){
+    $.getJSON(baseUrl + '/p/both/vs', {local:ids.local, cde: ids.cde}, function(result){
+        callback(ids,result);
+      });
   }
 }
 

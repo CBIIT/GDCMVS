@@ -449,8 +449,8 @@ var getCDEData = function(req, res){
 		//load data file to memory
 		
 		let query = {};
-		query.terms = {};
-		query.terms.cde_id = uid;
+		query.term = {};
+		query.term.cde_id = uid;
 		elastic.query(config.index_p, query, null, function(result){
 			if(result.hits === undefined){
 				return handleError.error(res, result);
@@ -459,8 +459,13 @@ var getCDEData = function(req, res){
 			//cache the data and response
 			if(data.length > 0){
 				let p = data[0];
-				cdeData[uid] = p.cde_pv;
+				cdeData[uid] = p._source.cde_pv;
+				let pid = p._source.name + "/" + p._source.node + "/" + p._source.category;
+				if(!(pid in gdcData)){
+					gdcData[pid] = p._source.enum;	
+				}
 			}
+			
 			res.json(cdeData[uid]);
 		});
 	}
@@ -528,14 +533,59 @@ var getGDCData = function(req, res){
 			if(data.length > 0){
 				let p = data[0];
 				gdcData[uid] = p._source.enum;
-				console.log(gdcData[uid]);
+				let cde_id = p._source.cde_id;
+				if(cde_id !== undefined && !(cde_id in cdeData)){
+					cdeData[cde_id] = p._source.cde_pv;
+				}
 			}
+			
 			res.json(gdcData[uid]);
 		});
 	}
 	else{
 		res.json(gdcData[uid]);
 	}
+};
+
+var getGDCandCDEData = function(req, res){
+	let uid = req.query.local;
+	let cdeId = req.query.cde;
+	if(gdcData[uid] == undefined){
+		//load data file to memory
+		
+		let query = {};
+		query.terms = {};
+		query.terms._id = [];
+		query.terms._id.push(uid);
+		elastic.query(config.index_p, query, null, function(result){
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			//cache the data and response
+			
+			if(data.length > 0){
+				let p = data[0];
+				gdcData[uid] = p._source.enum;
+				let cde_id = p._source.cde_id;
+				if(cde_id !== undefined && !(cde_id in cdeData)){
+					cdeData[cde_id] = p._source.cde_pv;
+				}
+			}
+			
+			let tmp = {};
+			tmp.to = cdeData[cdeId];
+			tmp.from = gdcData[uid];
+			res.json(tmp);
+		});
+	}
+	else{
+		let result = {};
+		result.to = cdeData[cdeId];
+		result.from = gdcData[uid];
+		res.json(result);
+	}
+	
 };
 
 var preload = function(req, res){
@@ -557,6 +607,7 @@ module.exports = {
 	getCDEData,
 	getDataFromGDC,
 	getGDCData,
+	getGDCandCDEData,
 	preload,
 	indexing
 };

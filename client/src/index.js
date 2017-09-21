@@ -147,8 +147,82 @@ function generateCompareResult(fromV, toV, option){
 
 window.generateCompareResult = generateCompareResult;
 
-function compareGDC(prop){
+function generateCompareGDCResult(fromV, toV, option){
+    let v_lowercase = [], v_matched = [];
+    let from_num = 0;
+    if(option.sensitive){
+        toV.forEach(function(v){
+            v_lowercase.push(v.trim());
+        });
+    }
+    else{
+        toV.forEach(function(v){
+            v_lowercase.push(v.trim().toLowerCase());
+        });
+    }
 
+    let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
+
+    fromV.forEach(function(v){
+        let tmp = $.trim(v);
+        if(tmp ===''){
+            return;
+        }
+        let text = '';
+        let idx = option.sensitive ? v_lowercase.indexOf(tmp) : v_lowercase.indexOf(tmp.toLowerCase());
+        if(idx >= 0){
+            text = toV[idx];
+            v_matched.push(idx);
+        }
+        if(text ===''){
+            text = '<div style="color:red;">--</div>';
+            table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
+        }
+        else{
+            table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
+        }
+    });
+    for(var i = 0; i< toV.length; i++){
+        if(v_matched.indexOf(i) >= 0){
+            continue;
+        }
+        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
+    }
+    table += "</tbody></table>";
+
+    return table;
+};
+
+window.generateCompareGDCResult = generateCompareGDCResult;
+
+function getCDEData(cdeId){
+    dialog.getCDEData(cdeId);
+}
+
+window.getCDEData = getCDEData;
+
+function compareGDC(prop, cdeId){
+    let uid = prop.replace(/@/g, '/');
+    dialog.compareGDC(uid, cdeId);
 };
 
 window.compareGDC = compareGDC;
+
+//find the word with the first character capitalized
+function findWord (words){
+    let word = "";
+    words.forEach(function(w){
+        if(word !== ""){
+            return;
+        }
+        if(/^[A-Z]/.test(w)){
+            word = w;
+        }
+    });
+    if(word == ""){
+        word = words[0];
+    }
+    return word;
+};
+
+window.findWord = findWord;
