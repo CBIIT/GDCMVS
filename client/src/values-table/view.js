@@ -18,10 +18,18 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 '</div> {{for values}}' +
 '<div class="table-row row">' +
   '<div class="table-td col-xs-3">{{:_id}}</div>' +
-  '<div class="table-td col-xs-3">{{for vs}}{{:n}}</br>{{/for}}</div>' +
-  '<div class="table-td col-xs-3">{{for vs}}{{:n_c}}</br>{{for s}}{{>}}</br>{{/for}}{{/for}}</div>' +
-  '<div class="table-td col-xs-3">Content</div>' +
+
+
+  '<div class="col-xs-7"> {{for vs}}' +
+    '<div class="row">' +
+      '<div class="table-td col-xs-4">{{:n}}</div>' +
+      '<div class="table-td col-xs-4"><b>{{:n_c}}</b></br>{{for s}}{{:}}</br>{{/for}}</div>' +
+      '<div class="table-td col-xs-4">Content</div>' +
+    '</div> {{/for}}' +
+  '</div>' +
+  '<div class="table-td col-xs-2">Content</div>' +
 '</div> {{/for}} </div>';
+
 
 export default tmpl;
 
