@@ -8,6 +8,7 @@ const func = {
             $('#gdc_data').remove();
         }
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
+        console.log(target + "       done!");
         let html = $.templates(tmpl.gdc_data).render({target:target,items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
