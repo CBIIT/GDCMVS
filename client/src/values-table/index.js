@@ -12,6 +12,9 @@ const func = {
 		let dict_enum_s ={};
 		let value = {};
 		value._id = item._id;
+		value.category = source.category;
+		value.node =  source.node;
+		value.name = source.name;
 	  	if(("enum.n" in hl || "enum.n.have" in hl || "enum.s" in hl || "enum.s.have" in hl || "cde_pv.ss.s" in hl )){
 			let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 			let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
