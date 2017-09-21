@@ -36,5 +36,19 @@ export default function render(keyword, option, items){
           });
       });
   }
+
+  $(".show-more-less").click(function () {
+    let target = $(this);
+
+    let parentTable = $(this).parent().parent();
+    let targets = parentTable.find('.row-toggle');
+    if(target.text() == "Show Less"){
+      targets.css({display: 'none'});
+      target.text('Show More');
+    } else {
+      targets.css({display: 'table-row'});
+      target.text('Show Less');
+    }
+  });
   
 }
