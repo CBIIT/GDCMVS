@@ -37,18 +37,19 @@ const func = {
 				let vs = {}
 				if(em.n in dict_enum_n){
 
-					vs["n"] = dict_enum_n[em.n];
-					vs["n_c"] = em.n_c;
-					vs["s"] = [];
+					vs.n = dict_enum_n[em.n];
+					vs.n_c = em.n_c;
+					vs.syn = true;
+					vs.s = [];
 
 					if(em.s){
 						
 						em.s.forEach(function(s){
 							if(s in dict_enum_s){
-								vs["s"].push(dict_enum_s[s])
+								vs.s.push(dict_enum_s[s])
 							}
 							else{
-								vs["s"].push(s);
+								vs.s.push(s);
 							}
 						});				
 					}
@@ -70,7 +71,7 @@ const func = {
 							}
 						});
 						if(exist){
-							value.vs.push({n:em.n, n_c: em.n_c ,s:tmp});
+							value.vs.push({n:em.n, n_c: em.n_c, syn: true,s:tmp});
 						}					
 					}
 				}
