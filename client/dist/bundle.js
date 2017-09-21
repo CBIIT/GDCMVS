@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,8 +68,48 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const baseUrl = './search';
+
+const api = {
+  suggest(value, callback) {
+    $.getJSON({
+  	url: baseUrl + "/suggest?keyword=" + value,
+  	success: function(data) {
+  		//console.log(data);
+  	  callback(data);
+  	}
+    });
+  },
+  searchAll(keyword, option, callback) {
+    $.getJSON(baseUrl + '/all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
+        let items = result;
+        callback(keyword, option, items);
+      });
+  },
+  getGDCDataById(id, callback){
+    $.getJSON(baseUrl + '/p/local/vs', {id:id}, function(result){
+        callback(id,result);
+      });
+  },
+  getCDEDataById(id, callback){
+    $.getJSON(baseUrl + '/p/cde/vs', {id:id}, function(result){
+        callback(id,result);
+      });
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (api);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__search_bar___ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__search_bar___ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dialog___ = __webpack_require__(13);
+
 
 
 
@@ -83,15 +123,154 @@ $("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* d
 
 $(document).on('click',__WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].removeBox);
 
+function getGDCData(prop, target){
+	let uid = prop.replace(/@/g, '/');
+	__WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].getGDCData(uid, target);
+}
 
+window.getGDCData = getGDCData;
+
+function getGDCSynonyms(prop){
+	let uid = prop.replace(/@/g, '/');
+	__WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].getGDCSynonyms(uid);
+};
+
+window.getGDCSynonyms = getGDCSynonyms;
+
+function toCompare(prop){
+	let uid = prop.replace(/@/g, '/');
+	__WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].toCompare(uid);
+};
+
+window.toCompare = toCompare;
+
+function compare(gv){
+    if($('#cp_input').val().trim() === ''){
+        $('#cp_massage').css("display", "block");
+        $("#cp_massage").removeClass();
+        $('#cp_massage').addClass("div-message");
+        $('#cp_massage').html("Please type in user defined values.");
+        return;
+    }
+    else{
+        //compare and render
+        $('#cp_massage').css("display", "none");
+        $("#cp_massage").removeClass();
+        $('#cp_massage').html("");
+        $('#compare_form').css("display", "none");
+        $('#compare_result').css("display", "block");
+        let vs = $('#cp_input').val().split(/\n/);
+
+        let opt = {};
+        opt.sensitive = false;
+        opt.unmatched = false;
+        let table = generateCompareResult(vs, gv, opt);
+        let html = '<div class="cp_result_title">Compare Result</div>'
+                    +'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
+                    +'<div id="cp_result_table">'+table+'</div>'
+                    +'<div id="cp_result_bottom"><span id="back2Compare" class="btn-submit-large">Back</span></div>'
+                    +'</div>';
+        $('#compare_result').html(html);
+
+        let h = $('#cp_result_table table:first-child').height() +1;
+        if(h >= 30 * 12.8){
+            h = 384;
+        }
+        $('#cp_result_table').height(h+'px');
+        $('#compare_filter').bind('click', function(){
+            let options = {};
+            options.sensitive = $("#compare_filter").prop('checked');
+            options.unmatched = $("#compare_unmatched").prop('checked');
+            let table_new = generateCompareResult(vs, gv, options);
+            $('#cp_result_table').html(table_new);
+            let h = $('#cp_result_table table:first-child').height() +1;
+            if(h >= 30 * 12.8){
+                h = 384;
+            }
+            $('#cp_result_table').height(h+'px');
+        });
+        $('#compare_unmatched').bind('click', function(){
+            let options = {};
+            options.sensitive = $("#compare_filter").prop('checked');
+            options.unmatched = $("#compare_unmatched").prop('checked');
+            let table_new = generateCompareResult(vs, gv, options);
+            $('#cp_result_table').html(table_new);
+            let h = $('#cp_result_table table:first-child').height() +1;
+            if(h >= 30 * 12.8){
+                h = 384;
+            }
+            $('#cp_result_table').height(h+'px');
+        });
+        $('#back2Compare').bind('click', function(){
+            $('#compare_result').html("");
+            $('#compare_result').css("display", "none");
+            $('#compare_form').css("display", "block");
+        });
+
+    }
+};
+
+window.compare = compare;
+
+function generateCompareResult(fromV, toV, option){
+    let v_lowercase = [], v_matched = [];
+    if(option.sensitive){
+        toV.forEach(function(v){
+            v_lowercase.push(v.trim());
+        });
+    }
+    else{
+        toV.forEach(function(v){
+            v_lowercase.push(v.trim().toLowerCase());
+        });
+    }
+
+    let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">User Defined Values</td><td width="50%" style="text-align:left;">Matched GDC Values</td></tr>';
+
+    fromV.forEach(function(v){
+        let tmp = $.trim(v);
+        if(tmp ===''){
+            return;
+        }
+        let text = '';
+        let idx = option.sensitive ? v_lowercase.indexOf(tmp) : v_lowercase.indexOf(tmp.toLowerCase());
+        if(idx >= 0){
+            text = toV[idx];
+            v_matched.push(idx);
+        }
+        if(text ===''){
+            text = '<div style="color:red;">--</div>';
+            table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left">'+text+'</td></tr>';
+        }
+        else{
+            table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
+        }
+    });
+    for(var i = 0; i< toV.length; i++){
+        if(v_matched.indexOf(i) >= 0){
+            continue;
+        }
+        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
+    }
+    table += "</tbody></table>";
+    return table;
+};
+
+window.generateCompareResult = generateCompareResult;
+
+function compareGDC(prop){
+
+};
+
+window.compareGDC = compareGDC;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__render__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(12);
 
@@ -180,35 +359,6 @@ const func = {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (func);
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const baseUrl = './search';
-
-const api = {
-  suggest(value, callback) {
-    $.getJSON({
-  	url: baseUrl + "/suggest?keyword=" + value,
-  	success: function(data) {
-  		//console.log(data);
-  	  callback(data);
-  	}
-    });
-  },
-  searchAll(keyword, option, callback) {
-    $.getJSON(baseUrl + '/all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result){
-        //preprocess the data
-        let items = result;
-        callback(keyword, option, items);
-      });
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (api);
 
 
 /***/ }),
@@ -471,7 +621,19 @@ const func = {
  			prop.nd = source.node;
  			prop.ct = source.category;
  			prop.desc = ("desc" in hl) ? hl["desc"] : source.desc;
- 			prop.ref = source.name;
+ 			prop.local = source.enum == undefined ? false : true;
+ 			prop.syn = false;
+ 			if(source.enum !== undefined){
+ 				//check if synonyms exists
+ 				source.enum.forEach(function(em){
+ 					if(prop.syn) return;
+
+ 					if(em.n_c !== undefined){
+ 						prop.syn = true;
+ 					}
+ 				});	
+ 			}
+ 			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde_id == undefined ? "" : source.cde_id;
  			props.push(prop);
  		}
@@ -510,7 +672,18 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   '<div class="table-td col-xs-1">{{:ct}} -- {{:nd}}</div>' +
   '<div class="table-td col-xs-2">{{:nm}}</div>' +
   '<div class="table-td col-xs-3">{{:desc}}</div>' +
-  '<div class="table-td col-xs-3">{{:ref}}</div>' +
+  '<div class="table-td col-xs-3">'
+  +'{{if local}}'
+  +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
+  +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
+    +'{{if syn}}'
+    +'<br><a href="javascript:getGDCSynonyms(\'{{:ref}}\');">See All Synonyms</a>'
+    +'{{else}}'
+    +'{{/if}}'
+  +'{{else}}'
+  +'no values'
+  +'{{/if}}'
+  +'</div>' +
   '<div class="table-td col-xs-3">{{:cdeId}}</div>' +
 '</div>'+
 '{{/for}}</div>';
@@ -614,6 +787,193 @@ let tmpl = '{{for options}}<div>'
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api__ = __webpack_require__(0);
+
+
+
+const func = {
+  getGDCData(prop, item) {
+ 	__WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCDataById(prop, function(id, items) {
+ 		if($('#gdc_data').length){
+            $('#gdc_data').remove();
+        }
+        let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target,items: items });
+        let tp = window.innerHeight * 0.2;
+        //display result in a table
+        $(document.body).append(html);
+        if(target !== undefined){
+            $('#show_all').bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+                    $('#gdc-data-list div[style="display: none;"]').each(function(){
+                        $(this).css("display","block");
+                    });
+                }
+                else{
+                    $('#gdc-data-list div[style="display: block;"]').each(function(){
+                        $(this).css("display","none");
+                    });
+                }
+            });
+        }
+        $("#gdc_data").dialog({
+                modal: false,
+                position: { my: "center top+"+tp, at: "center top", of:window},
+                width:"30%",
+                title: "GDC Permissible Values ("+items.length+")",
+                open: function() {
+
+                },
+                close: function() {
+                    $(this).remove();
+                }
+        });
+      	
+    });
+    
+  },
+  getGDCSynonyms(uid){
+  	__WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCDataById(uid, function(id, items) {
+ 		if($('#gdc_syn_data').length){
+            $('#gdc_syn_data').remove();
+        }
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({items: items });
+        let tp = window.innerHeight * 0.2;
+        //display result in a table
+        $(document.body).append(html);
+        $("#gdc_syn_data").dialog({
+                modal: false,
+                position: { my: "center top+"+tp, at: "center top", of:window},
+                width:"50%",
+                title: "GDC Synonyms ("+items.length+")",
+                open: function() {
+
+                },
+                close: function() {
+                    $(this).remove();
+                }
+        });
+      	
+    });
+  },
+  toCompare(uid){
+  	__WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCDataById(uid, function(id, items) {
+ 		if($('#compare_dialog').length){
+            $('#compare_dialog').remove();
+        }
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].toCompare).render({items: items });
+        let tp = window.innerHeight * 0.2;
+        //display result in a table
+        $(document.body).append(html);
+        $("#compare_dialog").dialog({
+            modal: false,
+            position: { my: "center top+"+tp, at: "center top", of:window},
+            width:"50%",
+            title: "Compare Your Values with GDC Permissible Values ",
+            open: function() {
+            	$('#cp_result').css("display", "none");
+                $('#compare').bind('click', function(){
+                    let gv = [];
+                    items.forEach(function(item){
+                    	gv.push(item.n);
+                    });
+                    compare(gv);
+                });
+                $('#cancelCompare').bind('click', function(){
+                    $("#compare_dialog").dialog('close');
+                });
+            },
+            close: function() {
+                $(this).remove();
+            }
+        });
+      	
+    });
+  },
+  compare(){
+
+  },
+  compareGDC(){
+
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (func);
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+let tmpl = {
+  gdc_data: '<div id="gdc_data">'
+          +'{{if target !== null }}'
+          +'<div class="option-right"><input type="checkbox" id="show_all"> Show all GDC values</div>'
+          +'{{else}}'
+          +''
+          +'{{/if}}'
+          +'<div id="gdc-data-list" class="div-list">'
+          +'{{if target !== null }}'
+            +'{{for items}}'
+            +'{{if n == target }}'
+            +'<div><b>{{:#getIndex()}}.</b> {{:n}}</div>'
+            +'{{else}}'
+            +'<div style="display: none;"><b>{{:#getIndex()}}.</b>{{:n}}</div>'
+            +'{{/if}}'
+            +'{{/for}}'
+          +'{{else}}'
+            +'{{for items}}'
+            +'<div><b>{{:#getIndex()}}.</b> {{:n}}</div>'
+            +'{{/for}}'
+          +'{{/if}}'
+          +'</div>'
+          +'</div>',
+  gdc_synonyms: '<div id="gdc_syn_data"><div id="gdc-syn-data-list" class="div-list">'
+          +'<table><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
+            +'{{for items}}'
+            +'<tr class="data-table-row"><td><b>{{:#getIndex()}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
+            +'{{for s}}'
+            +'{{>#data}}<br>'
+            +'{{/for}}'
+            +'</td></tr>'
+            +'{{/for}}'
+          +'</tbody></table></div>'
+          +'</div>',
+  toCompare: '<div id="compare_dialog">'
+                    +'<div id="compare_form">'
+                        +'<div id="cp_top">'
+                            +'<label class="left_label">User Defined Values:</label>'
+                            +'<label class="right_label">GDC Values:</label>'
+                            +'<div id="cp_left">'
+                            +'<textarea id="cp_input" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>'
+                            +'<div id="cp_middle"></div>'
+                            +'<div id="cp_right">'
+                            +'{{for items}}'
+                            +'<div><b>{{:#getIndex()}}.</b>{{:n}}</div>'
+                            +'{{/for}}'
+                            +'</div>'
+                        +'</div>'
+                        +'<div id="cp_massage">'
+                        +'</div>'
+                        +'<div id="cp_bottom">'
+                            +'<span id="compare" class="btn-submit-large">Compare</span>'
+                            +'<span id="cancelCompare" class="btn-submit-large">Cancel</span>'
+                        +'</div>'
+                    +'</div>'
+                    +'<div id="compare_result"></div>'
+                +'</div>'
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
 /***/ })
 /******/ ]);
