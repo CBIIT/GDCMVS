@@ -22,8 +22,21 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   +'{{else}}'
   +'no values'
   +'{{/if}}'
+  +'</div>' 
+  +'<div class="table-td col-xs-3">'
+  +'{{if cdeId == ""}}'
+  +''
+  +'{{else}}'
+  +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+    +'{{if local && cdeLen}}'
+    +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+    +'{{else cdeLen}}'
+    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
+    +'{{else}}'
+    +''
+    +'{{/if}}'
+  +'{{/if}}'
   +'</div>' +
-  '<div class="table-td col-xs-3">{{:cdeId}}</div>' +
 '</div>'+
 '{{/for}}</div>';
 

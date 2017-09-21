@@ -17,5 +17,6 @@ router.get('/all', controller.search);
 router.get('/all/p', controller.searchP);
 router.get('/p/local/vs', controller.getGDCData);
 router.get('/p/cde/vs', controller.getCDEData);
+router.get('/p/both/vs', controller.getGDCandCDEData);
 
 module.exports = router;
