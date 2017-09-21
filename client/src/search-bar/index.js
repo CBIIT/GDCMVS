@@ -3,15 +3,25 @@ import render from '../render';
 import tmpl from './view';
 
 let displayBoxIndex = -1;
+let activeTab = 0;
 
 const func = {
     search(){
         let keyword = $("#keywords").val();
         keyword = keyword.toLowerCase();
+        //get selected tab
+        let count = 0;
+        $("li[role='presentation']").each(function(){
+            if($(this).hasClass("active")){
+                activeTab = count;
+            }
+            count++;
+        });
         let option = {};
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("input[name=i_match]:checked").val();
+        option.activeTab = activeTab;
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
         api.searchAll(keyword, option, function(keyword, option, items) {
