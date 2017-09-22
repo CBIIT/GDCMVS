@@ -25,6 +25,10 @@ ul {
   padding-left: 15px;
   padding-right: 15px;
 }
+.table-body{
+  overflow-y: auto;
+  max-height: 500px;
+}
 
 .table-th {
   font-weight: bold;

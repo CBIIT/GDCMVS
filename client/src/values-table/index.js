@@ -154,7 +154,10 @@ const func = {
  		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
  	}
  	else{
- 		html = $.templates(tmpl).render({values: values});
+ 		let offset = $('#root').offset().top;
+ 		let h = window.innerHeight - offset - 110;
+
+ 		html = $.templates(tmpl).render({mh:h, values:values});
  	}
     let result = {};
     result.len = values.length;
