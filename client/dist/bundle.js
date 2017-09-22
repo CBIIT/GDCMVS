@@ -762,7 +762,10 @@ const func = {
  		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
  	}
  	else{
- 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({props: props});
+ 		let offset = $('#root').offset().top;
+ 		let h = window.innerHeight - offset - 110;
+
+ 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,props: props});
  	}
  	
     let result = {};
@@ -788,6 +791,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   '<div class="table-th col-xs-2">GDC Property Values</div>' +
   '<div class="table-th col-xs-1">CDE Reference</div>' +
 '</div>' +
+'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'+
 '{{for props}}'+
 '<div class="table-row row">' +
   '<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>' +
@@ -820,7 +824,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   +'{{/if}}'
   +'</div>' +
 '</div>'+
-'{{/for}}</div>';
+'{{/for}}</div></div></div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
@@ -986,7 +990,10 @@ const func = {
  		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
  	}
  	else{
- 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({values: values});
+ 		let offset = $('#root').offset().top;
+ 		let h = window.innerHeight - offset - 110;
+
+ 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
  	}
     let result = {};
     result.len = values.length;
@@ -1020,7 +1027,8 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
       '<div class="table-th col-xs-3">CDE Reference</div>' +
     '</div>' +
   '</div>' +
-'</div> {{for values}}' +
+'</div>'+
+'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}' +
 '<div class="table-row row">' +
   '<div class="w20 table-td">'+
       '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
@@ -1065,7 +1073,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
     +'{{/if}}'
   +'{{/if}}'
   +'</div>' +
-'</div> {{/for}} </div>';
+'</div> {{/for}} </div></div></div>';
 
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
