@@ -1017,8 +1017,8 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   '</div>' +
   '<div class="w80">' +
     '<div class="">' +
-      '<div class="table-th col-xs-6">GDC Values and Synonyms</div>' +
-      '<div class="table-th col-xs-6">CDE references, permissible values and Synonyms</div>' +
+      '<div class="table-th table-header col-xs-6">GDC Values and Synonyms</div>' +
+      '<div class="table-th table-header col-xs-6">CDE references, permissible values and Synonyms</div>' +
     '</div>' +
     '<div class="">' +
       '<div class="table-th col-xs-3">Matched GDC Value</div>' +
