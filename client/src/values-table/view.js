@@ -10,8 +10,8 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
     '</div>' +
     '<div class="">' +
       '<div class="table-th col-xs-3">Matched GDC Value</div>' +
-      '<div class="table-th col-xs-3">GDC Synonyms</div>' +
-      '<div class="table-th col-xs-3">NCIt Code and Synonyms</div>' +
+      '<div class="table-th col-xs-3">GDC Values: NCIt Synonyms</div>' +
+      '<div class="table-th col-xs-3">CDE Values: NCIt Code and Synonyms</div>' +
       '<div class="table-th col-xs-3">CDE Reference</div>' +
     '</div>' +
   '</div>' +
