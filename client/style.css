@@ -70,13 +70,13 @@ ul {
 .search-box {
   max-width: 550px;
   text-align: center;
-  margin: 5px auto;
+  margin: 0 auto;
 }
 .search-options {
   /*border-top: 1px solid black;*/
   width: 270px;
   text-align: left;
-  margin-left: calc(50% - 12em);
+  margin-left: calc(50% - 12.2em);
 }
 .search-radio{
   margin: 0;
@@ -130,7 +130,11 @@ ul {
 .suggestArea .selected{
   background-color: #f0f0f0;
 }
-
+.ref-box{
+  position:absolute;
+  top:calc(2rem + 1em);
+  right:15%;
+}
 .btn-container{
   margin-top: 10px;
   margin-bottom: 10px;
@@ -261,6 +265,12 @@ table.treetable div.value {
 .row-toggle{
   display:none;
 }
+.links{
+  padding-left:8px;
+}
+.show-more{
+  padding-left:8px;
+}
 
 .dropdown-head{
   min-width: 10em;
@@ -272,7 +282,7 @@ table.treetable div.value {
     position: relative;
     display: inline-block;
     text-align:center;
-    margin-left:calc(25% - 14em);
+    /*margin-left:calc(25% - 14em);*/
 }
 
 /* Dropdown Content (Hidden by Default) */
