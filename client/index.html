@@ -717,18 +717,11 @@
                     <div class="search-box">
                         <form class="form-inline">
                           <div class="form-group">
-                            <label>Keyword</label>
+                            <label>Keyword: </label>
                             <input id="keywords" type="text" class="form-control"  placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" style="width: 21em;">
                           </div>
                           <button id="search" type="button" class="btn btn-default">Search</button>
                         </form>
-                        <!-- <div class="dropdown-box">
-                          <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
-                          <div class="dropdown-content">
-                            <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="btn-a">Search in caDSR</a>
-                          <a href="https://ncit.nci.nih.gov/" target="_blank" class="btn-a">Search in NCIt</a>
-                          </div>
-                        </div> -->
                         <div class="suggest-container">
                            <div id="suggestBox" class="suggestArea"></div>
                         </div>
@@ -751,7 +744,15 @@
                             </div>
                         </div>
                     </div>
-                    
+                    <div class="ref-box">
+                      <div class="dropdown-box">
+                        <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
+                        <div class="dropdown-content">
+                          <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="btn-a">Search in caDSR</a>
+                        <a href="https://ncit.nci.nih.gov/" target="_blank" class="btn-a">Search in NCIt</a>
+                        </div>
+                      </div>
+                    </div>
                     <div id="root"></div>
 
                     <!-- END GDC APP -->
