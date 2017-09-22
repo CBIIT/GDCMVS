@@ -15,7 +15,8 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
       '<div class="table-th col-xs-3">CDE Reference</div>' +
     '</div>' +
   '</div>' +
-'</div> {{for values}}' +
+'</div>'+
+'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}' +
 '<div class="table-row row">' +
   '<div class="w20 table-td">'+
       '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
@@ -60,7 +61,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
     +'{{/if}}'
   +'{{/if}}'
   +'</div>' +
-'</div> {{/for}} </div>';
+'</div> {{/for}} </div></div></div>';
 
 
 export default tmpl;
