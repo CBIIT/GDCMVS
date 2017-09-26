@@ -164,13 +164,15 @@ var searchP = function(req, res){
 		    	m.multi_match.fields.push("cde_pv.ss.s.have");
 		    }
 		    m.multi_match.fields.push("enum.n.have");
+		    m.multi_match.fields.push("enum.i_c.have");
 		    query.bool.should.push(m);
 		    highlight = {
 					      "pre_tags" : ["<b>"],
 		        		  "post_tags" : ["</b>"],
 					      "fields":{
 					        "name.have":{"number_of_fragments" : 0},
-					        "enum.n.have":{"number_of_fragments" : 0}
+					        "enum.n.have":{"number_of_fragments" : 0},
+					        "enum.i_c.have":{"number_of_fragments" : 0}
 					    }
 			};
 			if(option.desc){
@@ -191,6 +193,7 @@ var searchP = function(req, res){
 		    	m.multi_match.fields.push("cde_pv.ss.s");
 		    }
 		    m.multi_match.fields.push("enum.n");
+		    m.multi_match.fields.push("enum.i_c.c");
 		    query.bool.should.push(m);
 			// query.bool.should.push({
 			// 	"term": {"properties.enum" :keyword}
@@ -203,7 +206,8 @@ var searchP = function(req, res){
 		        		  "post_tags" : ["</b>"],
 					      "fields":{
 					        "name":{},
-					        "enum.n":{}
+					        "enum.n":{},
+					        "enum.i_c.c":{}
 					    }
 			};
 			if(option.desc){
@@ -371,6 +375,14 @@ var indexing = function(req, res){
 	                			"type": "text"
 	                		}
 	                	},
+	                	"analyzer": "case_insensitive"
+	                },
+	                "enum.i_c.c":{
+	                	"type": "string",
+	                	"analyzer": "case_insensitive"
+	                },
+	                "enum.i_c.have":{
+	                	"type": "string",
 	                	"analyzer": "case_insensitive"
 	                }
 	            }
