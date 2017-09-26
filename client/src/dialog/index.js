@@ -43,15 +43,44 @@ const func = {
     });
     
   },
-  getGDCSynonyms(uid){
+  getGDCSynonyms(uid, dict){
   	api.getGDCDataById(uid, function(id, items) {
  		if($('#gdc_syn_data').length){
             $('#gdc_syn_data').remove();
         }
-        let html = $.templates(tmpl.gdc_synonyms).render({items: items });
+
+        let targets  = dict.split("#"); 
+
+        items.forEach(function(item){
+            if (targets.indexOf(item.n) > -1){
+                item.e = true;
+            }
+        });
+
+
+        let html = $.templates(tmpl.gdc_synonyms).render({targets: targets,items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
+
+        if(targets !== undefined){
+            $('#show_all').bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+
+                    $('#gdc-syn-data-list tr[style="display: none;"]').each(function(){
+                        $(this).css("display","table-row");
+                    });
+                }
+                else{
+                    $('#gdc-syn-data-list tr[style="display: table-row;"]').each(function(){
+                        $(this).css("display","none");
+                    });
+                }
+            });
+        }
+
+
         $("#gdc_syn_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
