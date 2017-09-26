@@ -135,9 +135,9 @@ function getGDCData(prop, target){
 
 window.getGDCData = getGDCData;
 
-function getGDCSynonyms(prop){
+function getGDCSynonyms(prop, targets){
 	let uid = prop.replace(/@/g, '/');
-	__WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].getGDCSynonyms(uid);
+	__WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].getGDCSynonyms(uid, targets);
 };
 
 window.getGDCSynonyms = getGDCSynonyms;
@@ -873,6 +873,7 @@ const func = {
 		row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
 		//value informations in the subtable
 		row.vs = [];
+		row.dict = ""; //added
 	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
@@ -955,8 +956,14 @@ const func = {
 					}
 					
 				}
+
+				if(v.n !== undefined){
+					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
+					row.dict += tmp + "#";
+				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
+
 					let lc = em.n.toLowerCase();
 					if(lc in matched_pv){
 						v.cde_s = matched_pv[lc];
@@ -1022,8 +1029,8 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
     '</div>' +
     '<div class="">' +
       '<div class="table-th col-xs-3">Matched GDC Value</div>' +
-      '<div class="table-th col-xs-3">GDC Synonyms</div>' +
-      '<div class="table-th col-xs-3">NCIt Code and Synonyms</div>' +
+      '<div class="table-th col-xs-3">GDC Values: NCIt Synonyms</div>' +
+      '<div class="table-th col-xs-3">CDE Values: NCIt Code and Synonyms</div>' +
       '<div class="table-th col-xs-3">CDE Reference</div>' +
     '</div>' +
   '</div>' +
@@ -1033,11 +1040,11 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   '<div class="w20 table-td">'+
       '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
   '</div>'+
-  '<div class="w60 border-l border-r"> {{for vs}}' +
+  '<div class="w80 border-l border-r"> {{for vs}}' +
     '<div class="{{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}" style="">' +
-      '<div class="table-td col-xs-4 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
-      '<div class="table-td col-xs-4 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
-      '<div class="table-td col-xs-4 border-b">'
+      '<div class="table-td col-xs-3 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
+      '<div class="table-td col-xs-3 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
+      '<div class="table-td col-xs-6 border-b">'
         +'{{for cde_s}}'
         +'<div class="row">'
           +'<div class="col-xs-3">{{:c}}</div>'
@@ -1047,33 +1054,49 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
       +'</div>'
     +'</div> {{/for}}' 
     +'<div class="show-more">{{if vs.length > 5}}<a class="table-td-link show-more-less" href="javascript:void(0);">Show More</a>{{else}}{{/if}}</div>'
-    +'<div class="links">'
-      +'{{if local}}'
-      +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
-        +'{{if syn}}'
-        +' , <a href="javascript:getGDCSynonyms(\'{{:ref}}\');">See All Synonyms</a>'
-        +'{{else}}'
-        +'{{/if}}'
-      +'{{else}}'
-      +''
-      +'{{/if}}'
-    +'</div>' +
-  '</div>' +
-  '<div class="table-td w20">'
-  +'{{if cdeId == ""}}'
-  +''
-  +'{{else}}'
-  +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
-    +'{{if local && cdeLen}}'
-    +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
-    +'{{else cdeLen}}'
-    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
-    +'{{else}}'
-    +''
-    +'{{/if}}'
-  +'{{/if}}'
-  +'</div>' +
-'</div> {{/for}} </div></div></div>';
+      +'<div class="row-flex" style="">'
+        +'{{if local}}'
+            +'<div class="table-td col-xs-3 links"><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></div>'
+            +'{{if syn}}'
+            +'<div class="table-td col-xs-3 links"><a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:dict}}\');">See All Synonyms</a></div>'
+            +'{{else}}'
+              +'<div class="table-td col-xs-3 links"></div>'
+            +'{{/if}}'
+          +'{{else}}'
+          +'<div class="table-td col-xs-3 links"></div>'
+          +'{{/if}}'
+
+          +'{{if cdeId == ""}}'
+          +'<div class="table-td col-xs-6 links"></div>'
+          +'{{else}}'
+          +'<div class="table-td col-xs-6 links">caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+            +'{{if local && cdeLen}}'
+            +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+            +'{{else cdeLen}}'
+            +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
+            +'{{else}}'
+            +''
+            +'{{/if}}'
+          +'</div>'
+          +'{{/if}}'
+
+      +'</div>'
+  +'</div>'
+  // +'<div class="table-td w20">'
+  // +'{{if cdeId == ""}}'
+  // +''
+  // +'{{else}}'
+  // +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+  //   +'{{if local && cdeLen}}'
+  //   +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+  //   +'{{else cdeLen}}'
+  //   +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
+  //   +'{{else}}'
+  //   +''
+  //   +'{{/if}}'
+  // +'{{/if}}'
+  // +'</div>' +
++'</div> {{/for}} </div></div></div>';
 
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
@@ -1177,15 +1200,44 @@ const func = {
     });
     
   },
-  getGDCSynonyms(uid){
+  getGDCSynonyms(uid, dict){
   	__WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCDataById(uid, function(id, items) {
  		if($('#gdc_syn_data').length){
             $('#gdc_syn_data').remove();
         }
-        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({items: items });
+
+        let targets  = dict.split("#"); 
+
+        items.forEach(function(item){
+            if (targets.indexOf(item.n) > -1){
+                item.e = true;
+            }
+        });
+
+
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({targets: targets,items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
+
+        if(targets !== undefined){
+            $('#show_all').bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+
+                    $('#gdc-syn-data-list tr[style="display: none;"]').each(function(){
+                        $(this).css("display","table-row");
+                    });
+                }
+                else{
+                    $('#gdc-syn-data-list tr[style="display: table-row;"]').each(function(){
+                        $(this).css("display","none");
+                    });
+                }
+            });
+        }
+
+
         $("#gdc_syn_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
@@ -1413,14 +1465,27 @@ let tmpl = {
           +'{{/if}}'
           +'</div>'
           +'</div>',
-  gdc_synonyms: '<div id="gdc_syn_data"><div id="gdc-syn-data-list" class="div-list">'
-          +'<table class="table"><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
+  gdc_synonyms: '<div id="gdc_syn_data"><div class="div-list">'
+          +'{{if targets !== null }}'
+          +'<div class="option-right"><input type="checkbox" id="show_all"> Show all GDC values</div>'
+          +'{{else}}'
+          +''
+          +'{{/if}}'
+          +'<table id="gdc-syn-data-list" class="table"><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
             +'{{for items}}'
-            +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
-            +'{{for s}}'
-            +'{{>#data}}<br>'
-            +'{{/for}}'
-            +'</td></tr>'
+            +'{{if e == true }}'
+              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
+              +'{{for s}}'
+              +'{{>#data}}<br>'
+              +'{{/for}}'
+              +'</td></tr>'
+            +'{{else}}'
+              +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
+              +'{{for s}}'
+              +'{{>#data}}<br>'
+              +'{{/for}}'
+              +'</td></tr>'
+            +'{{/if}}'
             +'{{/for}}'
           +'</tbody></table></div>'
           +'</div>',

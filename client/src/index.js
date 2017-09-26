@@ -19,9 +19,9 @@ function getGDCData(prop, target){
 
 window.getGDCData = getGDCData;
 
-function getGDCSynonyms(prop){
+function getGDCSynonyms(prop, targets){
 	let uid = prop.replace(/@/g, '/');
-	dialog.getGDCSynonyms(uid);
+	dialog.getGDCSynonyms(uid, targets);
 };
 
 window.getGDCSynonyms = getGDCSynonyms;

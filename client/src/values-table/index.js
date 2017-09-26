@@ -37,6 +37,7 @@ const func = {
 		row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
 		//value informations in the subtable
 		row.vs = [];
+		row.dict = ""; //added
 	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
@@ -119,8 +120,14 @@ const func = {
 					}
 					
 				}
+
+				if(v.n !== undefined){
+					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
+					row.dict += tmp + "#";
+				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
+
 					let lc = em.n.toLowerCase();
 					if(lc in matched_pv){
 						v.cde_s = matched_pv[lc];
