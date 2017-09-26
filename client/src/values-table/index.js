@@ -37,7 +37,8 @@ const func = {
 		row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
 		//value informations in the subtable
 		row.vs = [];
-		row.dict = ""; //added
+		row.tgts_enum_n = ""; //added
+		row.tgts_cde_n = "";
 	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
@@ -77,6 +78,7 @@ const func = {
 				}
 				if(exist){
 					matched_pv[pv.n.toLowerCase()] = tmp_ss;
+					row.tgts_cde_n += pv.n + "#";
 				}
 			});
 		}
@@ -123,7 +125,7 @@ const func = {
 
 				if(v.n !== undefined){
 					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
-					row.dict += tmp + "#";
+					row.tgts_enum_n += tmp + "#";
 				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
