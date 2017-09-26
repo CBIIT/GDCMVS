@@ -121,6 +121,7 @@ const func = {
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 110;
+    h = (h < 550) ? 550 : h;
 
     let html = $.templates(tmpl).render({mh:h,trs: trs});
     let result = {};

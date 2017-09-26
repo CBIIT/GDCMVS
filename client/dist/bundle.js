@@ -657,6 +657,7 @@ const func = {
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 110;
+    h = (h < 550) ? 550 : h;
 
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
     let result = {};
@@ -764,6 +765,7 @@ const func = {
  	else{
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
+ 		h = (h < 550) ? 550 : h;
 
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,props: props});
  	}
@@ -999,6 +1001,7 @@ const func = {
  	else{
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
+ 		h = (h < 550) ? 550 : h;
 
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
  	}
