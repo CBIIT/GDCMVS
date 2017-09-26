@@ -28,6 +28,7 @@ const func = {
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde_id !== undefined ? source.cde_id : "";
  			prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
+ 			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
  			props.push(prop);
  		}
  	});

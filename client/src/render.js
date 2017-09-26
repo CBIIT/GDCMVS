@@ -54,12 +54,12 @@ export default function render(keyword, option, items){
 
     let parentTable = $(this).parent().parent();
     let targets = parentTable.find('.row-toggle');
-    if(target.text() == "Show Less"){
+    if(target.text() == " Show Less"){
       targets.css({display: 'none'});
-      target.text('Show More');
+      target.html('<i class="fa fa-angle-down"></i> Show More');
     } else {
       targets.css({display: 'flex'});
-      target.text('Show Less');
+      target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
   
