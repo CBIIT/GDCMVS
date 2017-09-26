@@ -195,8 +195,8 @@ function generateCompareGDCResult(fromV, toV, option){
 
 window.generateCompareGDCResult = generateCompareGDCResult;
 
-function getCDEData(cdeId){
-    dialog.getCDEData(cdeId);
+function getCDEData(cdeId, targets){
+    dialog.getCDEData(cdeId, targets);
 }
 
 window.getCDEData = getCDEData;
