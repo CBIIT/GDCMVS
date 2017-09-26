@@ -220,7 +220,33 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 					let tmp = {};
 					tmp.n = item.pv;
 					if(item.code !== undefined){
-						tmp.i_c = item.code;
+						tmp.i_c = {};
+						tmp.i_c.c = item.code;
+						let ts = [];
+						//check if it's a range in level 2
+						if(item.code.indexOf("-") >= 0){
+							let r = item.code.split("-");
+							let start = parseInt(r[0]);
+							let end = parseInt(r[1]);
+							for(let i = start; i <= end; i++){
+								ts.push(i);
+							}
+
+						}
+						else if(item.code.indexOf("/") >= 0){
+							//check if it has "/" in the code
+							let idx = item.code.indexOf("/");
+							let l3 = item.code.substr(0, idx);
+							let l4 = item.code;
+							let l2 = l3.substr(0, l3.length - 1);
+							ts.push(l2);
+							ts.push(l3);
+							ts.push(l4);
+						}
+						else{
+							ts.push(item.code);
+						}
+						tmp.i_c.have = ts;
 					}
 					tmp.n_c = item.pvc;
 					tmp.s = item.syn;
