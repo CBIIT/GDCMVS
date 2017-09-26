@@ -182,6 +182,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 				allTerm[em] = t;
 			}
 		});
+
 		//generate property index
 		p.name = entry.name;
 		p.node = fileJson.id;
@@ -237,6 +238,13 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 				}
 			}
 			
+		}
+		//property type
+		if(entry.enum !==undefined && entry.enum.length > 0){
+			p.type = "enum";
+		}
+		else{
+			p.type = entry.type !== undefined ? entry.type : "object";
 		}
 		allProperties.push(p);
 	}
