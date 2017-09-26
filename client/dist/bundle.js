@@ -1515,7 +1515,7 @@ let tmpl = {
           +'<div class="div-list">'
           +'<table id="gdc-syn-data-list" class="table"><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
             +'{{for items}}'
-            +'{{if e == true || targets == null}}'
+            +'{{if e == true || ~root.targets == null}}'
               +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
               +'{{for s}}'
               +'{{>#data}}<br>'
@@ -1567,7 +1567,7 @@ let tmpl = {
               +'<table class="table"><tbody id="gde-syn-data-list"><tr class="data-table-head"><td width="5%"></td><td width="15%">PV</td><td width="40%">Description</td><td width="40%">NCIt Code and Synonyms</td></tr>'
               +'{{for items}}'
 
-              +'{{if e == true || targets == null}}'
+              +'{{if e == true || ~root.targets == null}}'
 
               +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}} {{:e}}</td><td>{{:pvd}}</td>'
               +'<td name="syn_area"><table><tbody>'
