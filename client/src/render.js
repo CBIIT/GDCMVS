@@ -28,6 +28,7 @@ export default function render(keyword, option, items){
   }
   
   $("#root").html(html);
+  
   if($("#tree_table").length){
       $("#tree_table").treetable({expandable: true});
       $("#collapse").bind("click", function(){

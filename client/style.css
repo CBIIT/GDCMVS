@@ -256,6 +256,8 @@ ul {
 
 table {
   border: none;
+  table-layout: fixed;
+  word-wrap: break-word;
 }
 table.treetable {
     font-size: 1em;
