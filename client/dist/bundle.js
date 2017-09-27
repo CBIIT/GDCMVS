@@ -379,12 +379,12 @@ const func = {
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
         //todo:show progress bar
-        $('#dictionary-loading-icon').fadeIn(100);
+        $('#gdc-loading-icon').fadeIn(100);
         __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].searchAll(keyword, option, function(keyword, option, items) {
           //console.log(items);
           Object(__WEBPACK_IMPORTED_MODULE_1__render__["a" /* default */])(keyword, option, items);
           //todo: close progress bar
-          $('#dictionary-loading-icon').fadeOut('fast');
+          $('#gdc-loading-icon').fadeOut('fast');
         });
     },
     gotoSearch(e){
@@ -494,6 +494,7 @@ function render(keyword, option, items){
   }
   
   $("#root").html(html);
+  
   if($("#tree_table").length){
       $("#tree_table").treetable({expandable: true});
       $("#collapse").bind("click", function(){
