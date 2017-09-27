@@ -24,9 +24,11 @@ const func = {
         option.activeTab = activeTab;
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
+        //todo:show progress bar
         api.searchAll(keyword, option, function(keyword, option, items) {
           //console.log(items);
           render(keyword, option, items);
+          //todo: close progress bar
         });
     },
     gotoSearch(e){
