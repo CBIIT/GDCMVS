@@ -52,7 +52,7 @@ export default function render(keyword, option, items){
   $(".show-more-less").click(function () {
     let target = $(this);
 
-    let parentTable = $(this).parent().parent();
+    let parentTable = $(this).parent().parent().parent();
     let targets = parentTable.find('.row-toggle');
     if(target.text() == " Show Less"){
       targets.css({display: 'none'});
