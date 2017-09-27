@@ -154,6 +154,7 @@ var searchP = function(req, res){
 		let m = {};
 		m.multi_match = {};
 		m.multi_match.query = keyword;
+		m.multi_match.analyzer = "keyword";
 		if(option.match !=="exact"){
 			m.multi_match.fields = ["name.have"];
 		    if(option.desc){
@@ -165,6 +166,7 @@ var searchP = function(req, res){
 		    }
 		    m.multi_match.fields.push("enum.n.have");
 		    m.multi_match.fields.push("enum.i_c.have");
+		    console.log(m);
 		    query.bool.should.push(m);
 		    highlight = {
 					      "pre_tags" : ["<b>"],
