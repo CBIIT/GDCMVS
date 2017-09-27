@@ -8,13 +8,16 @@ const func = {
 	items.forEach(function (item){
 	  	let hl = item.highlight;
 	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
-	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined){
+	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined 
+	  		&& hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined){
 	  		return;
 		}
 	  	let source = item._source;
 	  	let dict_enum_n = {};
 		let dict_enum_s = {};
 		let dict_cde_s = {};
+		let arr_enum_c = [];
+		let arr_enum_c_have = [];
 		//each row in the values tab will be put into values
 		let row = {};
 		row.category = source.category;
@@ -42,6 +45,8 @@ const func = {
 	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
+		let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
 		enum_n.forEach(function(n){
 			let tmp = n.replace(/<b>/g,"").replace(/<\/b>/g, "");
 			dict_enum_n[tmp] = n;
@@ -53,6 +58,18 @@ const func = {
 		cde_s.forEach(function(ps){
 			let tmp = ps.replace(/<b>/g,"").replace(/<\/b>/g, "");
 			dict_cde_s[tmp] = ps;
+		});
+		enum_c.forEach(function(c){
+			let tmp = c.replace(/<b>/g,"").replace(/<\/b>/g, "");
+			if(arr_enum_c.indexOf(tmp) == -1){
+				arr_enum_c.push(tmp);
+			}
+		});
+		enum_c_have.forEach(function(ch){
+			let tmp = ch.replace(/<b>/g,"").replace(/<\/b>/g, "");
+			if(arr_enum_c_have.indexOf(tmp) == -1){
+				arr_enum_c_have.push(tmp);
+			}
 		});
 
 		//check if there are any matches in the cde synonyms
@@ -102,7 +119,7 @@ const func = {
 				//value to be put into the subtable
 				let v = {};
 				if(exist){
-					//check if there is a match with the value name
+					//check if there is a match to the value name
 					if(em.n in dict_enum_n){
 						v.n = dict_enum_n[em.n];
 					}
@@ -121,6 +138,41 @@ const func = {
 						v.s = em.s;
 					}
 					
+				}
+
+				//check if it contains icd-0-3 codes.
+				if(em.i_c !== undefined){
+					if(arr_enum_c.indexOf(em.i_c.c) >= 0){
+						v.i_c = "<b>"+em.i_c.c+"</b>";
+						if(v.n == undefined){
+							v.n = em.n;
+							v.ref = row.ref;
+							v.n_c = em.n_c;
+							v.s = em.s;
+						}
+					}
+					else{
+						let has = false;
+						em.i_c.have.forEach(function(ch){
+							if(has) return;
+							if(arr_enum_c_have.indexOf(ch) >= 0){
+								has = true;
+							}
+						});
+						if(has){
+							v.i_c = "<b>"+em.i_c.c+"</b>";
+							if(v.n == undefined){
+								v.n = em.n;
+								v.ref = row.ref;
+								v.n_c = em.n_c;
+								v.s = em.s;
+							}
+						}
+						else{
+							v.i_c = em.i_c.c;
+						}
+					}
+
 				}
 
 				if(v.n !== undefined){
