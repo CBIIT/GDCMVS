@@ -166,7 +166,6 @@ var searchP = function(req, res){
 		    }
 		    m.multi_match.fields.push("enum.n.have");
 		    m.multi_match.fields.push("enum.i_c.have");
-		    console.log(m);
 		    query.bool.should.push(m);
 		    highlight = {
 					      "pre_tags" : ["<b>"],
