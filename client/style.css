@@ -48,30 +48,32 @@ ul {
 .table-th {
   font-weight: bold;
   text-align: left;
-  padding: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .table-td {
   text-align: left;
-  padding: 8px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   line-height: 1.428571;
-  /*border-bottom: 1px solid #ddd;*/
 }
-
 .table-header {
   text-align: center;
 }
-
 .table-row {
   color: #222;
   border-bottom: 1px solid rgba(0,0,0,0.065);
   display: flex;
 }
-
-.table-row-thead {
+.table-thead {
   display: flex;
   align-items: center;
   background: #847c7c;
   color: #fff;
+}
+.thead-row{
+  display: flex;
+  align-items: center;
 }
 
 .table-row:nth-of-type(odd) {
@@ -225,6 +227,7 @@ ul {
 }
 .option-left{
   float:left;
+  margin-left: 0.5em;
 }
 .option-right{
   float:right;
@@ -250,6 +253,10 @@ ul {
 .border-t{
   border-top: 1px solid rgba(0,0,0,0.065);
 }
+
+table {
+  border: none;
+}
 table.treetable {
     font-size: 1em;
 }
@@ -260,6 +267,11 @@ table.treetable tbody tr td {
 table.treetable div.value {
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAY1BMVEXR2jz/yUsAAAC2bQDtpwD3xVj7yV9HcEzuuWHxZgCjZgDEFADPoTDntj/hrCrrvkj53GX82V34xEb/kgD96nb/4WX+3X//3Xz/0nT/4nP+0FP/4G7+12L+0F//4IT/6nP/3XBhD2UQAAAAH3RSTlMB/AQVDU+HAAIIGQ1qllyc8e2LB/v36emC+P38/f32haIbSgAAAHxJREFUeF51jwcKwCAMRWPrSPfey/ufsiFaWoR+SfjvgYhggngBiPAViDws/Oq6p/NINc9KOmDW43mOWjoCMGqyQthJUSeBJtHLKsS66ISARTvsx7EPrRN0yubatqspga+QjYu67+sipupfSvOqylMPnCjLItfg3fD3uSA3pDoIuHIhHysAAAAASUVORK5CYII=');
 }
+
+.table .table {
+  background-color: transparent;
+}
+
 .ui-widget {
   font-size: 1.2em;
 }
