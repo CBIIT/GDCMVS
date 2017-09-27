@@ -49,17 +49,28 @@ const func = {
             $('#gdc_syn_data').remove();
         }
         let targets = null;
+        let icdo = false;
         if(tgts !== null && tgts !== undefined){
             targets = tgts.split("#"); 
 
             items.forEach(function(item){
+                if(item.i_c !== undefined){
+                    icdo = true;
+                }
                 if (targets.indexOf(item.n) > -1){
                     item.e = true;
                 }
             });
         }
+        else{
+            items.forEach(function(item){
+                if(item.i_c !== undefined){
+                    icdo = true;
+                }
+            });
+        }
 
-        let html = $.templates(tmpl.gdc_synonyms).render({targets: targets,items: items });
+        let html = $.templates(tmpl.gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
