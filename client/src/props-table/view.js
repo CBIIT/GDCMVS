@@ -1,5 +1,5 @@
 
-let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
+let tmpl = '<div class="container table-container"><div class="table-thead row">' +
   '<div class="table-th col-xs-2">Category / Node</div>' +
   '<div class="table-th col-xs-2">Property</div>' +
   '<div class="table-th col-xs-5">Description</div>' +
@@ -40,5 +40,5 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   +'</div>' +
 '</div>'+
 '{{/for}}</div></div></div>';
-
+  
 export default tmpl;

@@ -514,7 +514,7 @@ function render(keyword, option, items){
   $(".show-more-less").click(function () {
     let target = $(this);
 
-    let parentTable = $(this).parent().parent();
+    let parentTable = $(this).parent().parent().parent();
     let targets = parentTable.find('.row-toggle');
     if(target.text() == " Show Less"){
       targets.css({display: 'none'});
@@ -682,7 +682,7 @@ let tmpl = '<div class="container table-container">'
 					+'<button id="collapse" class="btn btn-default btn-list" style="margin-right:5px;">Collapse all</button>'
 					+'<button id="expand" class="btn btn-default btn-list">Expand all</button>'
 				+'</div>'
-				+'<div class="table-row-thead row">' 
+				+'<div class="table-thead row">' 
 					+'<div class="col-xs-4"><div class="table-th">Name</div></div>' 
 					+'<div class="col-xs-8"><div class="table-th">Description</div></div>'
 				+'</div>'
@@ -787,7 +787,7 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
+let tmpl = '<div class="container table-container"><div class="table-thead row">' +
   '<div class="table-th col-xs-2">Category / Node</div>' +
   '<div class="table-th col-xs-2">Property</div>' +
   '<div class="table-th col-xs-5">Description</div>' +
@@ -828,7 +828,7 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
   +'</div>' +
 '</div>'+
 '{{/for}}</div></div></div>';
-
+  
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
 /***/ }),
@@ -1024,16 +1024,16 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container table-container"><div class="table-row-thead row">' +
-  '<div class="w20">' +
+let tmpl = '<div class="container table-container"><div class="table-thead row">' +
+  '<div class="col-xs-3">' +
     '<div class="table-th">Category / Node / Property</div>' +
   '</div>' +
-  '<div class="w80">' +
-    '<div class="">' +
+  '<div class="col-xs-9">' +
+    '<div class="row">' +
       '<div class="table-th table-header col-xs-6">GDC Values and Synonyms</div>' +
       '<div class="table-th table-header col-xs-6">CDE references, permissible values and Synonyms</div>' +
     '</div>' +
-    '<div class="">' +
+    '<div class="row thead-row">' +
       '<div class="table-th col-xs-3">Matched GDC Value</div>' +
       '<div class="table-th col-xs-3">GDC Values: NCIt Synonyms</div>' +
       '<div class="table-th col-xs-3">CDE Values: NCIt Code and Synonyms</div>' +
@@ -1043,11 +1043,11 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
 '</div>'+
 '<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}' +
 '<div class="table-row row">' +
-  '<div class="w20 table-td">'+
+  '<div class="table-td col-xs-3">'+
       '{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'+
   '</div>'+
-  '<div class="w60 border-l border-r"> {{for vs}}' +
-    '<div class="{{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}" style="">' +
+  '<div class="col-xs-9 border-l"> {{for vs}}' +
+    '<div class="row {{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}" style="">' +
       '<div class="table-td col-xs-3 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
       '<div class="table-td col-xs-3 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
       '<div class="table-td col-xs-6 border-b">'
@@ -1059,23 +1059,29 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
         +'{{/for}}'
       +'</div>'
     +'</div> {{/for}}' 
-    +'<div class="show-more">{{if vs.length > 5}}<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More</a>{{else}}{{/if}}</div>'
-      +'<div class="row-flex" style="">'
-        +'{{if local}}'
-            +'<div class="table-td col-xs-3 links"><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></div>'
-            +'{{if syn}}'
-            +'<div class="table-td col-xs-3 links"><a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></div>'
-            +'{{else}}'
-              +'<div class="table-td col-xs-3 links"></div>'
-            +'{{/if}}'
-          +'{{else}}'
-          +'<div class="table-td col-xs-3 links"></div>'
-          +'{{/if}}'
+      +'{{if vs.length > 5}}'
+        +'<div class="row row-flex"><div class="col-xs-3 border-r">'
+         +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More</a>'
+        +'</div><div class="col-xs-3 border-r"></div><div class="col-xs-6"></div></div>'
+      +'{{/if}}'
+      +'<div class="row row-flex" style="">'
 
-          +'{{if cdeId == ""}}'
-          +'<div class="table-td col-xs-6 links"></div>'
-          +'{{else}}'
-          +'<div class="table-td col-xs-6 links">caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+        +'{{if local}}'
+          +'<div class="table-td col-xs-3 border-r"><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></div>'
+        +'{{else}}'
+          +'<div class="table-td col-xs-3 border-r"></div>'
+        +'{{/if}}'
+
+        +'{{if syn}}'
+          +'<div class="table-td col-xs-3 border-r"><a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></div>'
+        +'{{else}}'
+          +'<div class="table-td col-xs-3 border-r"></div>'
+        +'{{/if}}'
+
+        +'{{if cdeId == ""}}'
+          +'<div class="table-td col-xs-6"></div>'
+        +'{{else}}'
+          +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
             +'{{if local && cdeLen}}'
             +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
             +'{{else cdeLen}}'
@@ -1084,25 +1090,25 @@ let tmpl = '<div class="container table-container"><div class="table-row-thead r
             +''
             +'{{/if}}'
           +'</div>'
-          +'{{/if}}'
+        +'{{/if}}'
 
       +'</div>'
   +'</div>'
 
-  +'<div class="table-td w20">'
-  +'{{if cdeId == ""}}'
-  +''
-  +'{{else}}'
-  +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
-    +'{{if local && cdeLen}}'
-    +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
-    +'{{else cdeLen}}'
-    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
-    +'{{else}}'
-    +''
-    +'{{/if}}'
-  +'{{/if}}'
-  +'</div>'
+  // +'<div class="table-td w20">'
+  // +'{{if cdeId == ""}}'
+  // +''
+  // +'{{else}}'
+  // +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+  //   +'{{if local && cdeLen}}'
+  //   +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+  //   +'{{else cdeLen}}'
+  //   +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
+  //   +'{{else}}'
+  //   +''
+  //   +'{{/if}}'
+  // +'{{/if}}'
+  // +'</div>'
 
 +'</div> {{/for}} </div></div></div>';
 
@@ -1229,7 +1235,7 @@ const func = {
         //display result in a table
         $(document.body).append(html);
 
-        if(tgts !== null && tgts !== undefined){
+        if(tgts !== null && tgts !== undefined && tgts !== ""){
             $('#show_all').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
@@ -1335,7 +1341,7 @@ const func = {
             });
 
             let targets = null;
-            if(tgts !== null && tgts !== undefined){
+            if(tgts !== null && tgts !== undefined && tgts !== ""){
                 targets = tgts.split("#"); 
 
                 tmp.forEach(function(item){
@@ -1556,12 +1562,12 @@ let tmpl = {
                 +'</div>',
   cde_data: '<div id="caDSR_data">'
               +'<div class="data-option">'
+                +'<div class="option-left"><input type="checkbox" id="data-invariant"> Show Duplicates</div>'
                 +'{{if targets !== null }}'
                   +'<div class="option-right"><input type="checkbox" id="show_all"> Show all GDE values</div>'
                 +'{{else}}'
                   +''
                 +'{{/if}}'
-                +'<div class="option-right"><input type="checkbox" id="data-invariant"> Show Duplicates</div>'
               +'</div>'
               +'<div id="data-list" class="div-list">'
               +'<table class="table"><tbody id="gde-syn-data-list"><tr class="data-table-head"><td width="5%"></td><td width="15%">PV</td><td width="40%">Description</td><td width="40%">NCIt Code and Synonyms</td></tr>'
@@ -1569,10 +1575,10 @@ let tmpl = {
 
               +'{{if e == true || ~root.targets == null}}'
 
-              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}} {{:e}}</td><td>{{:pvd}}</td>'
-              +'<td name="syn_area"><table><tbody>'
+              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}}</td><td>{{:pvd}}</td>'
+              +'<td name="syn_area"><table class="table"><tbody>'
                 +'{{for i_rows}}'
-                +'<tr class=""><td><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="td-split">'
+                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
                 +'{{for s}}'
                 +'{{>#data}}<br>'
                 +'{{/for}}'
@@ -1580,9 +1586,9 @@ let tmpl = {
                 +'{{/for}}'
               +'</tbody></table></td>'
               +'<td name="syn_invariant" style="display:none;">'
-              +'<table><tbody>'
+              +'<table class="table"><tbody>'
                 +'{{for rows}}'
-                +'<tr class=""><td><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="td-split">'
+                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
                 +'{{for s}}'
                 +'{{>#data}}<br>'
                 +'{{/for}}'
@@ -1594,9 +1600,9 @@ let tmpl = {
               +'{{else}}'
 
               +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}} {{:e}}</td><td>{{:pvd}}</td>'
-              +'<td name="syn_area"><table><tbody>'
+              +'<td name="syn_area"><table class="table"><tbody>'
                 +'{{for i_rows}}'
-                +'<tr class=""><td><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="td-split">'
+                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
                 +'{{for s}}'
                 +'{{>#data}}<br>'
                 +'{{/for}}'
@@ -1604,9 +1610,9 @@ let tmpl = {
                 +'{{/for}}'
               +'</tbody></table></td>'
               +'<td name="syn_invariant" style="display:none;">'
-              +'<table><tbody>'
+              +'<table class="table"><tbody>'
                 +'{{for rows}}'
-                +'<tr class=""><td><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="td-split">'
+                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
                 +'{{for s}}'
                 +'{{>#data}}<br>'
                 +'{{/for}}'

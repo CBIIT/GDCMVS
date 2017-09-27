@@ -64,7 +64,7 @@ const func = {
         //display result in a table
         $(document.body).append(html);
 
-        if(tgts !== null && tgts !== undefined){
+        if(tgts !== null && tgts !== undefined && tgts !== ""){
             $('#show_all').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
@@ -170,7 +170,7 @@ const func = {
             });
 
             let targets = null;
-            if(tgts !== null && tgts !== undefined){
+            if(tgts !== null && tgts !== undefined && tgts !== ""){
                 targets = tgts.split("#"); 
 
                 tmp.forEach(function(item){
