@@ -378,9 +378,13 @@ const func = {
         option.activeTab = activeTab;
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
+        //todo:show progress bar
+        $('#dictionary-loading-icon').fadeIn(100);
         __WEBPACK_IMPORTED_MODULE_0__api__["a" /* default */].searchAll(keyword, option, function(keyword, option, items) {
           //console.log(items);
           Object(__WEBPACK_IMPORTED_MODULE_1__render__["a" /* default */])(keyword, option, items);
+          //todo: close progress bar
+          $('#dictionary-loading-icon').fadeOut('fast');
         });
     },
     gotoSearch(e){
@@ -847,13 +851,16 @@ const func = {
 	items.forEach(function (item){
 	  	let hl = item.highlight;
 	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
-	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined){
+	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined 
+	  		&& hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined){
 	  		return;
 		}
 	  	let source = item._source;
 	  	let dict_enum_n = {};
 		let dict_enum_s = {};
 		let dict_cde_s = {};
+		let arr_enum_c = [];
+		let arr_enum_c_have = [];
 		//each row in the values tab will be put into values
 		let row = {};
 		row.category = source.category;
@@ -881,6 +888,8 @@ const func = {
 	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
+		let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
 		enum_n.forEach(function(n){
 			let tmp = n.replace(/<b>/g,"").replace(/<\/b>/g, "");
 			dict_enum_n[tmp] = n;
@@ -892,6 +901,18 @@ const func = {
 		cde_s.forEach(function(ps){
 			let tmp = ps.replace(/<b>/g,"").replace(/<\/b>/g, "");
 			dict_cde_s[tmp] = ps;
+		});
+		enum_c.forEach(function(c){
+			let tmp = c.replace(/<b>/g,"").replace(/<\/b>/g, "");
+			if(arr_enum_c.indexOf(tmp) == -1){
+				arr_enum_c.push(tmp);
+			}
+		});
+		enum_c_have.forEach(function(ch){
+			let tmp = ch.replace(/<b>/g,"").replace(/<\/b>/g, "");
+			if(arr_enum_c_have.indexOf(tmp) == -1){
+				arr_enum_c_have.push(tmp);
+			}
 		});
 
 		//check if there are any matches in the cde synonyms
@@ -941,7 +962,7 @@ const func = {
 				//value to be put into the subtable
 				let v = {};
 				if(exist){
-					//check if there is a match with the value name
+					//check if there is a match to the value name
 					if(em.n in dict_enum_n){
 						v.n = dict_enum_n[em.n];
 					}
@@ -960,6 +981,41 @@ const func = {
 						v.s = em.s;
 					}
 					
+				}
+
+				//check if it contains icd-0-3 codes.
+				if(em.i_c !== undefined){
+					if(arr_enum_c.indexOf(em.i_c.c) >= 0){
+						v.i_c = "<b>"+em.i_c.c+"</b>";
+						if(v.n == undefined){
+							v.n = em.n;
+							v.ref = row.ref;
+							v.n_c = em.n_c;
+							v.s = em.s;
+						}
+					}
+					else{
+						let has = false;
+						em.i_c.have.forEach(function(ch){
+							if(has) return;
+							if(arr_enum_c_have.indexOf(ch) >= 0){
+								has = true;
+							}
+						});
+						if(has){
+							v.i_c = "<b>"+em.i_c.c+"</b>";
+							if(v.n == undefined){
+								v.n = em.n;
+								v.ref = row.ref;
+								v.n_c = em.n_c;
+								v.s = em.s;
+							}
+						}
+						else{
+							v.i_c = em.i_c.c;
+						}
+					}
+
 				}
 
 				if(v.n !== undefined){
@@ -1048,7 +1104,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   '</div>'+
   '<div class="col-xs-9 border-l"> {{for vs}}' +
     '<div class="row {{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}" style="">' +
-      '<div class="table-td col-xs-3 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a>{{/if}}</div>' +
+      '<div class="table-td col-xs-3 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a>{{/if}}</div>' +
       '<div class="table-td col-xs-3 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>' +
       '<div class="table-td col-xs-6 border-b">'
         +'{{for cde_s}}'
@@ -1094,21 +1150,6 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
       +'</div>'
   +'</div>'
-
-  // +'<div class="table-td w20">'
-  // +'{{if cdeId == ""}}'
-  // +''
-  // +'{{else}}'
-  // +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
-  //   +'{{if local && cdeLen}}'
-  //   +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
-  //   +'{{else cdeLen}}'
-  //   +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\');">Values</a>'
-  //   +'{{else}}'
-  //   +''
-  //   +'{{/if}}'
-  // +'{{/if}}'
-  // +'</div>'
 
 +'</div> {{/for}} </div></div></div>';
 
@@ -1220,17 +1261,28 @@ const func = {
             $('#gdc_syn_data').remove();
         }
         let targets = null;
+        let icdo = false;
         if(tgts !== null && tgts !== undefined){
             targets = tgts.split("#"); 
 
             items.forEach(function(item){
+                if(item.i_c !== undefined){
+                    icdo = true;
+                }
                 if (targets.indexOf(item.n) > -1){
                     item.e = true;
                 }
             });
         }
+        else{
+            items.forEach(function(item){
+                if(item.i_c !== undefined){
+                    icdo = true;
+                }
+            });
+        }
 
-        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({targets: targets,items: items });
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
@@ -1519,16 +1571,16 @@ let tmpl = {
           +''
           +'{{/if}}'
           +'<div class="div-list">'
-          +'<table id="gdc-syn-data-list" class="table"><tbody><tr class="data-table-head"><td width="5%"></td><td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td></tr>'
+          +'<table id="gdc-syn-data-list" class="table"><tbody><tr class="data-table-head"><td width="5%"></td>{{if icdo}}<td width="15%">ICDO_3_1 CODE</td><td width="25%">PV</td><td width="10%">NCIt</td><td width="45%">Synonyms</td>{{else}}<td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td>{{/if}}</tr>'
             +'{{for items}}'
             +'{{if e == true || ~root.targets == null}}'
-              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
+              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td>{{if ~root.icdo}}<td>{{:i_c.c}}</td>{{/if}}<td>{{:n}}</td><td>{{:n_c}}</td><td>'
               +'{{for s}}'
               +'{{>#data}}<br>'
               +'{{/for}}'
               +'</td></tr>'
             +'{{else}}'
-              +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:n}}</td><td>{{:n_c}}</td><td>'
+              +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td>{{if ~root.icdo}}<td>{{:i_c.c}}</td>{{/if}}<td>{{:n}}</td><td>{{:n_c}}</td><td>'
               +'{{for s}}'
               +'{{>#data}}<br>'
               +'{{/for}}'
