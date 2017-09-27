@@ -25,12 +25,12 @@ const func = {
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
         //todo:show progress bar
-        $('#dictionary-loading-icon').fadeIn(100);
+        $('#gdc-loading-icon').fadeIn(100);
         api.searchAll(keyword, option, function(keyword, option, items) {
           //console.log(items);
           render(keyword, option, items);
           //todo: close progress bar
-          $('#dictionary-loading-icon').fadeOut('fast');
+          $('#gdc-loading-icon').fadeOut('fast');
         });
     },
     gotoSearch(e){
