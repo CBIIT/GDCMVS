@@ -50,15 +50,20 @@ export default function render(keyword, option, items){
       });
   }
 
-  $(".show-more-less").click(function () {
+  let htmlShow = '';
+
+  $('.show-more-less').click(function () {
     let target = $(this);
 
     let parentTable = $(this).parent().parent().parent();
     let targets = parentTable.find('.row-toggle');
-    if(target.text() == " Show Less"){
+    if(target.hasClass('more')){
+      target.removeClass('more');
       targets.css({display: 'none'});
-      target.html('<i class="fa fa-angle-down"></i> Show More');
+      target.html(htmlShow == ''? '<i class="fa fa-angle-down"></i> Show More' : htmlShow);
     } else {
+      htmlShow = target.html();
+      target.addClass('more');
       targets.css({display: 'flex'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }

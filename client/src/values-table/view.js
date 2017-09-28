@@ -11,8 +11,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
     '<div class="row thead-row">' +
       '<div class="table-th col-xs-3">Matched GDC Value</div>' +
       '<div class="table-th col-xs-3">GDC Values: NCIt Synonyms</div>' +
-      '<div class="table-th col-xs-3">CDE Values: NCIt Code and Synonyms</div>' +
-      '<div class="table-th col-xs-3">CDE Reference</div>' +
+      '<div class="table-th table-header col-xs-6">CDE Values: NCIt Code and Synonyms</div>' +
     '</div>' +
   '</div>' +
 '</div>'+
@@ -36,7 +35,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
     +'</div> {{/for}}' 
       +'{{if vs.length > 5}}'
         +'<div class="row row-flex"><div class="col-xs-3 border-r">'
-         +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More</a>'
+         +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
         +'</div><div class="col-xs-3 border-r"></div><div class="col-xs-6"></div></div>'
       +'{{/if}}'
       +'<div class="row row-flex" style="">'
