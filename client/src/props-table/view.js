@@ -30,7 +30,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'{{else}}'
   +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
     +'{{if local && cdeLen}}'
-    +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
     +'{{else cdeLen}}'
     +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a>'
     +'{{else}}'
