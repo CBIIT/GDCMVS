@@ -79,7 +79,7 @@ const func = {
             $('#show_all').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
-
+                    console.log($('#gdc-syn-data-list div[style="display: none;"]'));
                     $('#gdc-syn-data-list div[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
@@ -145,7 +145,6 @@ const func = {
   getCDEData(uid, tgts){
         api.getCDEDataById(uid, function(id, items) {
             //data precessing
-            console.log(tgts);
             let tmp = [];
             items.forEach(function(item){
                 let t = {};
@@ -204,13 +203,12 @@ const func = {
                 $('#show_all').bind('click', function(){
                     let v = $(this).prop("checked");
                     if(v){
-
-                        $('#gde-syn-data-list tr[style="display: none;"]').each(function(){
-                            $(this).css("display","table-row");
+                        $('#gde-syn-data-list div.table-row[style="display: none;"]').each(function(){
+                            $(this).css("display","block");
                         });
                     }
                     else{
-                        $('#gde-syn-data-list tr[style="display: table-row;"]').each(function(){
+                        $('#gde-syn-data-list div.table-row[style="display: block;"]').each(function(){
                             $(this).css("display","none");
                         });
                     }
@@ -225,9 +223,9 @@ const func = {
                     title: "CaDSR Permissible Values ("+tmp.length+")",
                     open: function() {
                         $('#data-invariant').bind('click', function(){
-                            $("#data-list").find('td[name="syn_area"]').each(function(){
+                            $("#gde-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
-                                let invariant = $(this).parent().children('td[name="syn_invariant"]');
+                                let invariant = $(this).parent().children('div[name="syn_invariant"]');
                                 $(this).html(invariant[0].innerHTML);
                                 invariant[0].innerHTML = rp;
                             });
