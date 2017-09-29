@@ -14,13 +14,13 @@
 ul {
     padding: 0 0 0 20px;
 }
-.clearfix:after {
+/*.clearfix:after {
     content: " ";
     display: block;
     height: 0;
     clear: both;
     visibility: hidden;
-}
+}*/
 .btn{
   font-size: 14px;
   margin-right:5px;
@@ -278,7 +278,9 @@ table.treetable div.value {
 .ui-widget {
   font-size: 1.2em;
 }
-
+.ui-widget-content a {
+  color: #1a527a;
+}
 .ui-dialog .ui-dialog-titlebar-close {
   width: 25px;
   margin: -14px 0 0 0;
