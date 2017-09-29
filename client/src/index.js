@@ -161,7 +161,14 @@ function generateCompareGDCResult(fromV, toV, option){
         });
     }
 
-    let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
+    let table = '<div class="table-thead row">'
+                  +'<div class="table-th col-xs-6">GDC Values</div>'
+                  +'<div class="table-th col-xs-6">Matched caDSR Values</div>'
+                +'</div>'
+                +'<div class="table-body row" style="height: 350px;">'
+                  +'<div class="col-xs-12">';
+
+    //table += '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
 
     fromV.forEach(function(v){
         let tmp = $.trim(v);
@@ -176,19 +183,32 @@ function generateCompareGDCResult(fromV, toV, option){
         }
         if(text ===''){
             text = '<div style="color:red;">--</div>';
-            table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
+            table += '<div class="table-row row">'
+                      +'<div class="table-td td-slim col-xs-6"><b>'+(++from_num)+'.</b> '+v+'</div>'
+                      +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+                    +'</div>';
+            //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
         }
         else{
-            table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
+            table += '<div class="table-row row">'
+                      +'<div class="table-td td-slim col-xs-6"><b>'+(++from_num)+'.</b> '+v+'</div>'
+                      +'<div class="table-td td-slim col-xs-6"><b>'+(idx+1)+'.</b> '+text+'</div>'
+                    +'</div>';
+            //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
         }
     });
     for(var i = 0; i< toV.length; i++){
         if(v_matched.indexOf(i) >= 0){
             continue;
         }
-        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
+        table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
+                      +'<div class="table-td  td-slim col-xs-6"><div style="color:red;">--</div></div>'
+                      +'<div class="table-td td-slim col-xs-6"><b>'+(i+1)+'.</b> '+toV[i]+'</div>'
+                    +'</div>';
+        //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
     }
-    table += "</tbody></table>";
+    //table += "</tbody></table>";
+    table += '</div></div>'
 
     return table;
 };
