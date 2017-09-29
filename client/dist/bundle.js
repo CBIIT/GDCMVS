@@ -797,20 +797,20 @@ const func = {
 
 "use strict";
 
-let tmpl = '<div class="container table-container"><div class="table-thead row">' +
-  '<div class="table-th col-xs-2">Category / Node</div>' +
-  '<div class="table-th col-xs-2">Property</div>' +
-  '<div class="table-th col-xs-5">Description</div>' +
-  '<div class="table-th col-xs-2">GDC Property Values</div>' +
-  '<div class="table-th col-xs-1">CDE Reference</div>' +
-'</div>' +
-'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'+
-'{{for props}}'+
-'<div class="table-row row">' +
-  '<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>' +
-  '<div class="table-td col-xs-2">{{:nm}}</div>' +
-  '<div class="table-td col-xs-5">{{:desc}}</div>' +
-  '<div class="table-td col-xs-2">'
+let tmpl = '<div class="container table-container"><div class="table-thead row">'
+  +'<div class="table-th col-xs-2">Category / Node</div>'
+  +'<div class="table-th col-xs-2">Property</div>'
+  +'<div class="table-th col-xs-5">Description</div>'
+  +'<div class="table-th col-xs-2">GDC Property Values</div>'
+  +'<div class="table-th col-xs-1">CDE Reference</div>'
++'</div>'
++'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'
++'{{for props}}'
++'<div class="table-row row">'
+  +'<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>'
+  +'<div class="table-td col-xs-2">{{:nm}}</div>'
+  +'<div class="table-td col-xs-5">{{:desc}}</div>'
+  +'<div class="table-td col-xs-2">'
   +'{{if local}}'
   +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
   +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
@@ -828,16 +828,16 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'{{else}}'
   +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
     +'{{if local && cdeLen}}'
-    +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
     +'{{else cdeLen}}'
     +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a>'
     +'{{else}}'
     +''
     +'{{/if}}'
   +'{{/if}}'
-  +'</div>' +
-'</div>'+
-'{{/for}}</div></div></div>';
+  +'</div>'
++'</div>'
++'{{/for}}</div></div></div>';
   
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
@@ -1144,7 +1144,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'{{else}}'
           +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
             +'{{if local && cdeLen}}'
-            +'<br><a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+            +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
             +'{{else cdeLen}}'
             +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a>'
             +'{{else}}'
@@ -1297,12 +1297,12 @@ const func = {
                 let v = $(this).prop("checked");
                 if(v){
 
-                    $('#gdc-syn-data-list tr[style="display: none;"]').each(function(){
-                        $(this).css("display","table-row");
+                    $('#gdc-syn-data-list div[style="display: none;"]').each(function(){
+                        $(this).css("display","block");
                     });
                 }
                 else{
-                    $('#gdc-syn-data-list tr[style="display: table-row;"]').each(function(){
+                    $('#gdc-syn-data-list div[style="display: block;"]').each(function(){
                         $(this).css("display","none");
                     });
                 }
@@ -1571,28 +1571,60 @@ let tmpl = {
           +'</div>',
   gdc_synonyms: '<div id="gdc_syn_data">'
           +'{{if targets !== null }}'
-          +'<div class="option-right"><input type="checkbox" id="show_all"> Show all GDC values</div>'
+            +'<div class="option-right"><input type="checkbox" id="show_all"> Show all GDC values</div><div class="clearfix"></div>'
           +'{{else}}'
-          +''
+            +''
           +'{{/if}}'
-          +'<div class="div-list">'
-          +'<table id="gdc-syn-data-list" class="table"><tbody><tr class="data-table-head"><td width="5%"></td>{{if icdo}}<td width="15%">ICDO_3_1 CODE</td><td width="25%">PV</td><td width="10%">NCIt</td><td width="45%">Synonyms</td>{{else}}<td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td>{{/if}}</tr>'
-            +'{{for items}}'
-            +'{{if e == true || ~root.targets == null}}'
-              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td>{{if ~root.icdo}}<td>{{:i_c.c}}</td>{{/if}}<td>{{:n}}</td><td>{{:n_c}}</td><td>'
-              +'{{for s}}'
-              +'{{>#data}}<br>'
-              +'{{/for}}'
-              +'</td></tr>'
-            +'{{else}}'
-              +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td>{{if ~root.icdo}}<td>{{:i_c.c}}</td>{{/if}}<td>{{:n}}</td><td>{{:n_c}}</td><td>'
-              +'{{for s}}'
-              +'{{>#data}}<br>'
-              +'{{/for}}'
-              +'</td></tr>'
-            +'{{/if}}'
-            +'{{/for}}'
-          +'</tbody></table></div>'
+          +'<div id="gdc-syn-data-list" class="table-container">'
+            +'<div class="table-thead row">'
+              +'<div class="table-th col-xs-1"></div>'
+              +'{{if icdo}}<div class="table-th col-xs-2">ICDO_3_1 CODE</div>{{/if}}'
+              +'<div class="table-th col-xs-3">PV</div>'
+              +'<div class="table-th col-xs-3">NCIt</div>'
+              +'<div class="table-th col-xs-5">Synonyms</div>'
+            +'</div>'
+            +'<div class="table-body row" style="max-height: 450px;">'
+              +'<div class="col-xs-12">'
+                +'{{for items}}'
+                  +'{{if e == true || ~root.targets == null}}'
+                    +'<div class="table-row row">'
+                      +'<div class="table-td col-xs-1"><b>{{:#getIndex() + 1}}.</b></div>'
+                      +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
+                      +'<div class="table-td col-xs-3">{{:n}}</div>'
+                      +'<div class="table-td col-xs-3">{{:n_c}}</div>'
+                      +'<div class="table-td col-xs-5">{{for s}}{{>#data}}<br>{{/for}}</div>'
+                    +'</div>'
+                  +'{{else}}'
+                    +'<div class="table-row row" style="display: none;">'
+                      +'<div class="table-td col-xs-1"><b>{{:#getIndex() + 1}}.</b></div>'
+                      +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
+                      +'<div class="table-td col-xs-3">{{:n}}</div>'
+                      +'<div class="table-td col-xs-3">{{:n_c}}</div>'
+                      +'<div class="table-td col-xs-5">{{for s}}{{>#data}}<br>{{/for}}</div>'
+                    +'</div>'
+                  +'{{/if}}'
+                +'{{/for}}'
+              +'</div>'
+            +'</div>'
+          +'</div>'
+          // +'<div class="div-list">'
+          // +'<table id="gdc-syn-data-list" class="table"><tbody><tr class="data-table-head"><td width="5%"></td>{{if icdo}}<td width="15%">ICDO_3_1 CODE</td><td width="25%">PV</td><td width="10%">NCIt</td><td width="45%">Synonyms</td>{{else}}<td width="25%">PV</td><td width="25%">NCIt</td><td width="45%">Synonyms</td>{{/if}}</tr>'
+          //   +'{{for items}}'
+          //   +'{{if e == true || ~root.targets == null}}'
+          //     +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td>{{if ~root.icdo}}<td>{{:i_c.c}}</td>{{/if}}<td>{{:n}}</td><td>{{:n_c}}</td><td>'
+          //     +'{{for s}}'
+          //     +'{{>#data}}<br>'
+          //     +'{{/for}}'
+          //     +'</td></tr>'
+          //   +'{{else}}'
+          //     +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td>{{if ~root.icdo}}<td>{{:i_c.c}}</td>{{/if}}<td>{{:n}}</td><td>{{:n_c}}</td><td>'
+          //     +'{{for s}}'
+          //     +'{{>#data}}<br>'
+          //     +'{{/for}}'
+          //     +'</td></tr>'
+          //   +'{{/if}}'
+          //   +'{{/for}}'
+          // +'</tbody></table></div>'
           +'</div>',
   toCompare: '<div id="compare_dialog">'
                     +'<div id="compare_form">'
