@@ -80,12 +80,12 @@ const func = {
                 let v = $(this).prop("checked");
                 if(v){
 
-                    $('#gdc-syn-data-list tr[style="display: none;"]').each(function(){
-                        $(this).css("display","table-row");
+                    $('#gdc-syn-data-list div[style="display: none;"]').each(function(){
+                        $(this).css("display","block");
                     });
                 }
                 else{
-                    $('#gdc-syn-data-list tr[style="display: table-row;"]').each(function(){
+                    $('#gdc-syn-data-list div[style="display: block;"]').each(function(){
                         $(this).css("display","none");
                     });
                 }
