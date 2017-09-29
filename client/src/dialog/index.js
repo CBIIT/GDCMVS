@@ -264,11 +264,14 @@ const func = {
         });
         let table = generateCompareGDCResult(fromV, toV, opt);
         let html = '<div class="cp_result_title">Compare Result</div>'
-                    +'<div id="cpGDC_result_option"><div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div>'
-                    +'<div id="cpGDC_result_table">'+table+'</div>'
-                    +'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
+                    +'<div id="cpGDC_result_option">'
+                        +'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
+                    +'<div id="cpGDC_result_table" class="table-container">'+table+'</div>'
+                    //+'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
                     +'</div>';
 
+        $('#compareGDC_result').html(html);
+        console.log($('#compareGDC_result'));
 
         $("#compareGDC_dialog").dialog({
                 modal: false,
@@ -277,26 +280,26 @@ const func = {
                 title: "Compare GDC Values with caDSR Values ",
                 open: function() {
                     //display result in a table
-                    $('#compareGDC_result').html(html);
-                    let height = $('#cpGDC_result_table table:first-child').height() +1;
-                    if(height >= 30 * 12.8){
-                        height = 384;
-                    }
-                    $('#cpGDC_result_table').height(height+'px');
-                    $('#closeCompareGDC').bind('click', function(){
-                        $("#compareGDC_dialog").dialog('close');
-                    });
+                    ///$('#compareGDC_result').html(html);
+                    // let height = $('#cpGDC_result_table').height() +1;
+                    // if(height >= 30 * 12.8){
+                    //     height = 384;
+                    // }
+                    // $('#cpGDC_result_table div.table-body').height(height+'px');
+                    // $('#closeCompareGDC').bind('click', function(){
+                    //     $("#compareGDC_dialog").dialog('close');
+                    // });
                     $('#compareGDC_filter').bind('click', function(){
                         let options = {};
                         options.sensitive = $("#compareGDC_filter").prop('checked');
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
                         let table_new = generateCompareGDCResult(fromV, toV, options);
                         $('#cpGDC_result_table').html(table_new);
-                        let h = $('#cpGDC_result_table table:first-child').height() +1;
-                        if(h >= 30 * 12.8){
-                            h = 384;
-                        }
-                        $('#cpGDC_result_table').height(h+'px');
+                        // let h = $('#cpGDC_result_table').height() +1;
+                        // if(h >= 30 * 12.8){
+                        //     h = 384;
+                        // }
+                        // $('#cpGDC_result_table div.table-body').height(h+'px');
                     });
                     $('#compareGDC_unmatched').bind('click', function(){
                         let options = {};
@@ -304,11 +307,11 @@ const func = {
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
                         let table_new = generateCompareGDCResult(fromV, toV, options);
                         $('#cpGDC_result_table').html(table_new);
-                        let h = $('#cpGDC_result_table table:first-child').height() +1;
-                        if(h >= 30 * 12.8){
-                            h = 384;
-                        }
-                        $('#cpGDC_result_table').height(h+'px');
+                        // let h = $('#cpGDC_result_table').height() +1;
+                        // if(h >= 30 * 12.8){
+                        //     h = 384;
+                        // }
+                        // $('#cpGDC_result_table div.table-body').height(h+'px');
                     });
                 },
                 close: function() {

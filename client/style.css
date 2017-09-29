@@ -59,6 +59,10 @@ ul {
   padding-bottom: 15px;
   line-height: 1.428571;
 }
+.td-slim{
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 .table-header {
   text-align: center;
 }
@@ -378,21 +382,21 @@ table.treetable div.value {
 #compare_result{
   height:33em;
 }
-#compareGDC_result{
+/*#compareGDC_result{
   height:33em;
-}
+}*/
 #cp_result_table{
   width:100%;
   float:left;
   height:20em;
   overflow: auto;
 }
-#cpGDC_result_table{
+/*#cpGDC_result_table{
   width:100%;
-  float:left;
-  /*height:20em;*/
+  float:left;*/
+  /*height:20em;
   overflow: auto;
-}
+}*/
 #cp_result_option{
   width:100%;
   float:left;
