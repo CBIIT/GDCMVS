@@ -1296,7 +1296,7 @@ const func = {
             $('#show_all').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
-
+                    console.log($('#gdc-syn-data-list div[style="display: none;"]'));
                     $('#gdc-syn-data-list div[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
@@ -1362,7 +1362,6 @@ const func = {
   getCDEData(uid, tgts){
         __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getCDEDataById(uid, function(id, items) {
             //data precessing
-            console.log(tgts);
             let tmp = [];
             items.forEach(function(item){
                 let t = {};
@@ -1421,13 +1420,12 @@ const func = {
                 $('#show_all').bind('click', function(){
                     let v = $(this).prop("checked");
                     if(v){
-
-                        $('#gde-syn-data-list tr[style="display: none;"]').each(function(){
-                            $(this).css("display","table-row");
+                        $('#gde-syn-data-list div.table-row[style="display: none;"]').each(function(){
+                            $(this).css("display","block");
                         });
                     }
                     else{
-                        $('#gde-syn-data-list tr[style="display: table-row;"]').each(function(){
+                        $('#gde-syn-data-list div.table-row[style="display: block;"]').each(function(){
                             $(this).css("display","none");
                         });
                     }
@@ -1442,9 +1440,9 @@ const func = {
                     title: "CaDSR Permissible Values ("+tmp.length+")",
                     open: function() {
                         $('#data-invariant').bind('click', function(){
-                            $("#data-list").find('td[name="syn_area"]').each(function(){
+                            $("#gde-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
-                                let invariant = $(this).parent().children('td[name="syn_invariant"]');
+                                let invariant = $(this).parent().children('div[name="syn_invariant"]');
                                 $(this).html(invariant[0].innerHTML);
                                 invariant[0].innerHTML = rp;
                             });
@@ -1658,63 +1656,127 @@ let tmpl = {
                   +''
                 +'{{/if}}'
               +'</div>'
-              +'<div id="data-list" class="div-list">'
-              +'<table class="table"><tbody id="gde-syn-data-list"><tr class="data-table-head"><td width="5%"></td><td width="15%">PV</td><td width="40%">Description</td><td width="40%">NCIt Code and Synonyms</td></tr>'
-              +'{{for items}}'
+              +'<div class="clearfix"></div>'
+              +'<div id="gde-syn-data-list" class="table-container">'
+                +'<div class="table-thead row">'
+                  +'<div class="table-th col-xs-1"></div>'
+                  +'<div class="table-th col-xs-2">PV</div>'
+                  +'<div class="table-th col-xs-2">PV Meaning</div>'
+                  +'<div class="table-th col-xs-4">Description</div>'
+                  +'<div class="table-th col-xs-3">NCIt Code and Synonyms</div>'
+                +'</div>'
+                +'<div class="table-body row" style="max-height: 450px;">'
+                  +'<div class="col-xs-12">'
+                  +'{{for items}}'
+                    +'{{if e == true || ~root.targets == null}}'
+                    +'<div class="table-row row">'
+                      +'<div class="table-td col-xs-1"><b>{{:#getIndex() + 1}}.</b></div>'
+                      +'<div class="table-td col-xs-2">{{:pv}}</div>'
+                      +'<div class="table-td col-xs-2">test</div>'
+                      +'<div class="table-td col-xs-4">{{:pvd}}</div>'
+                      +'<div name="syn_area" class="table-td col-xs-3">'
+                      +'{{for i_rows}}'
+                        +'<div class="row">'
+                          +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-xs-9">{{for s}}{{>#data}}<br>{{/for}}</div>'
+                        +'</div>' 
+                      +'{{/for}}'
+                      +'</div>'
+                      +'<div name="syn_invariant" class="table-td col-xs-3" style="display: none;">'
+                      +'{{for rows}}'
+                        +'<div class="row">'
+                          +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-xs-9">{{for s}}{{>#data}}<br>{{/for}}</div>'
+                        +'</div>' 
+                      +'{{/for}}'
+                      +'</div>'
+                    +'</div>'
+                    +'{{else}}'
+                    +'<div class="table-row row" style="display: none;">'
+                      +'<div class="table-td col-xs-1"><b>{{:#getIndex() + 1}}.</b></div>'
+                      +'<div class="table-td col-xs-2">{{:pv}}</div>'
+                      +'<div class="table-td col-xs-2">test</div>'
+                      +'<div class="table-td col-xs-4">{{:pvd}}</div>'
+                      +'<div name="syn_area" class="table-td col-xs-3">'
+                      +'{{for i_rows}}'
+                        +'<div class="row">'
+                          +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-xs-9">{{for s}}{{>#data}}<br>{{/for}}</div>'
+                        +'</div>' 
+                      +'{{/for}}'
+                      +'</div>'
+                      +'<div name="syn_invariant" class="table-td col-xs-3" style="display: none;">'
+                      +'{{for rows}}'
+                        +'<div class="row">'
+                          +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-xs-9">{{for s}}{{>#data}}<br>{{/for}}</div>'
+                        +'</div>' 
+                      +'{{/for}}'
+                      +'</div>'
+                    +'</div>'
+                    +'{{/if}}'
+                  +'{{/for}}'
+                  +'</div>'
+                +'</div>'
+              +'</div>'
+            // +'<div id="data-list" class="div-list">'
 
-              +'{{if e == true || ~root.targets == null}}'
+            //   +'<table class="table"><tbody id="gde-syn-data-list"><tr class="data-table-head"><td width="5%"></td><td width="15%">PV</td><td width="40%">Description</td><td width="40%">NCIt Code and Synonyms</td></tr>'
+            //   +'{{for items}}'
 
-              +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}}</td><td>{{:pvd}}</td>'
-              +'<td name="syn_area"><table class="table"><tbody>'
-                +'{{for i_rows}}'
-                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
-                +'{{for s}}'
-                +'{{>#data}}<br>'
-                +'{{/for}}'
-                +'</td></tr>'
-                +'{{/for}}'
-              +'</tbody></table></td>'
-              +'<td name="syn_invariant" style="display:none;">'
-              +'<table class="table"><tbody>'
-                +'{{for rows}}'
-                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
-                +'{{for s}}'
-                +'{{>#data}}<br>'
-                +'{{/for}}'
-                +'</td></tr>'
-                +'{{/for}}'
-              +'</tbody></table>'
-              +'</td></tr>'
+            //   +'{{if e == true || ~root.targets == null}}'
 
-              +'{{else}}'
+            //   +'<tr class="data-table-row"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}}</td><td>{{:pvd}}</td>'
+            //   +'<td name="syn_area"><table class="table"><tbody>'
+            //     +'{{for i_rows}}'
+            //     +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
+            //     +'{{for s}}'
+            //     +'{{>#data}}<br>'
+            //     +'{{/for}}'
+            //     +'</td></tr>'
+            //     +'{{/for}}'
+            //   +'</tbody></table></td>'
+            //   +'<td name="syn_invariant" style="display:none;">'
+            //   +'<table class="table"><tbody>'
+            //     +'{{for rows}}'
+            //     +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
+            //     +'{{for s}}'
+            //     +'{{>#data}}<br>'
+            //     +'{{/for}}'
+            //     +'</td></tr>'
+            //     +'{{/for}}'
+            //   +'</tbody></table>'
+            //   +'</td></tr>'
 
-              +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}} {{:e}}</td><td>{{:pvd}}</td>'
-              +'<td name="syn_area"><table class="table"><tbody>'
-                +'{{for i_rows}}'
-                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
-                +'{{for s}}'
-                +'{{>#data}}<br>'
-                +'{{/for}}'
-                +'</td></tr>'
-                +'{{/for}}'
-              +'</tbody></table></td>'
-              +'<td name="syn_invariant" style="display:none;">'
-              +'<table class="table"><tbody>'
-                +'{{for rows}}'
-                +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
-                +'{{for s}}'
-                +'{{>#data}}<br>'
-                +'{{/for}}'
-                +'</td></tr>'
-                +'{{/for}}'
-              +'</tbody></table>'
-              +'</td></tr>'
+            //   +'{{else}}'
+
+            //   +'<tr class="data-table-row" style="display: none;"><td><b>{{:#getIndex() + 1}}.</b></td><td>{{:pv}} {{:e}}</td><td>{{:pvd}}</td>'
+            //   +'<td name="syn_area"><table class="table"><tbody>'
+            //     +'{{for i_rows}}'
+            //     +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
+            //     +'{{for s}}'
+            //     +'{{>#data}}<br>'
+            //     +'{{/for}}'
+            //     +'</td></tr>'
+            //     +'{{/for}}'
+            //   +'</tbody></table></td>'
+            //   +'<td name="syn_invariant" style="display:none;">'
+            //   +'<table class="table"><tbody>'
+            //     +'{{for rows}}'
+            //     +'<tr class=""><td class="w20"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></td><td class="w80 td-split">'
+            //     +'{{for s}}'
+            //     +'{{>#data}}<br>'
+            //     +'{{/for}}'
+            //     +'</td></tr>'
+            //     +'{{/for}}'
+            //   +'</tbody></table>'
+            //   +'</td></tr>'
               
-              +'{{/if}}'
+            //   +'{{/if}}'
 
 
-              +'{{/for}}'
-              +'</tbody></table></div>'
+            //   +'{{/for}}'
+            //   +'</tbody></table></div>'
             +'</div>'
 };
 
