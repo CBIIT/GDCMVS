@@ -1,18 +1,18 @@
 
-let tmpl = '<div class="container table-container"><div class="table-thead row">' +
-  '<div class="table-th col-xs-2">Category / Node</div>' +
-  '<div class="table-th col-xs-2">Property</div>' +
-  '<div class="table-th col-xs-5">Description</div>' +
-  '<div class="table-th col-xs-2">GDC Property Values</div>' +
-  '<div class="table-th col-xs-1">CDE Reference</div>' +
-'</div>' +
-'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'+
-'{{for props}}'+
-'<div class="table-row row">' +
-  '<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>' +
-  '<div class="table-td col-xs-2">{{:nm}}</div>' +
-  '<div class="table-td col-xs-5">{{:desc}}</div>' +
-  '<div class="table-td col-xs-2">'
+let tmpl = '<div class="container table-container"><div class="table-thead row">'
+  +'<div class="table-th col-xs-2">Category / Node</div>'
+  +'<div class="table-th col-xs-2">Property</div>'
+  +'<div class="table-th col-xs-5">Description</div>'
+  +'<div class="table-th col-xs-2">GDC Property Values</div>'
+  +'<div class="table-th col-xs-1">CDE Reference</div>'
++'</div>'
++'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'
++'{{for props}}'
++'<div class="table-row row">'
+  +'<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>'
+  +'<div class="table-td col-xs-2">{{:nm}}</div>'
+  +'<div class="table-td col-xs-5">{{:desc}}</div>'
+  +'<div class="table-td col-xs-2">'
   +'{{if local}}'
   +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
   +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
@@ -37,8 +37,8 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
     +''
     +'{{/if}}'
   +'{{/if}}'
-  +'</div>' +
-'</div>'+
-'{{/for}}</div></div></div>';
+  +'</div>'
++'</div>'
++'{{/for}}</div></div></div>';
   
 export default tmpl;
