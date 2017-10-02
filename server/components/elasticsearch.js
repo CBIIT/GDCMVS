@@ -79,6 +79,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 						entry.syns.forEach(function(sn){
 							let tmp = {};
 							tmp.n = sn.pv;
+							tmp.m = sn.pvm;
 							tmp.d = sn.pvd;
 							tmp.ss = [];
 							if(sn.syn !== undefined){
@@ -99,7 +100,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 						});
 					}
 					else if(entry.term.termDef.source ==='NCIt'){
-						p.ncit = entry.term.termDef.cde_id;
+						p.ncit = {};
+						p.ncit.id =  entry.term.termDef.cde_id;
+						p.ncit.url = entry.term.termDef.term_url;
 					}
 				}
 			}
@@ -197,8 +200,11 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		else{
 			p.desc = entry.description;
 		}
-		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.cde_id !== undefined){
-			p.cde_id = entry.term.termDef.cde_id;
+		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source ==='caDSR' && entry.term.termDef.cde_id !== undefined){
+			p.cde = {};
+			p.cde.id = entry.term.termDef.cde_id;
+			p.cde.v = entry.term.termDef.cde_version;
+			p.cde.url = entry.term.termDef.term_url;
 		}
 		//generate enum
 		if(entry.syns == undefined){

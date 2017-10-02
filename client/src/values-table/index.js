@@ -36,7 +36,8 @@ const func = {
 			});	
 		}
 		row.ref = source.name +"@" +source.node +"@" + source.category;
-		row.cdeId = source.cde_id !== undefined ? source.cde_id : "";
+		row.cdeId = source.cde !== undefined ? source.cde.id : "";
+		row.cdeUrl = source.cde !== undefined ? source.cde.url : "";
 		row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
 		//value informations in the subtable
 		row.vs = [];
