@@ -12,7 +12,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'<div class="table-th col-xs-6">GDC Values: NCIt Synonyms</div>'
         +'</div>'
       +'</div>'
-      +'<div class="table-th table-header col-xs-6">CDE Values: NCIt Code and Synonyms</div>'
+      +'<div class="table-th table-header col-xs-6">CDE references, permissible values and Synonyms</div>'
     +'</div>'
   +'</div>'
 +'</div>'
