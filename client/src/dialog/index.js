@@ -149,6 +149,7 @@ const func = {
             items.forEach(function(item){
                 let t = {};
                 t.pv = item.n;
+                t.pvm = item.m;
                 t.pvd = item.d;
                 t.i_rows = [];
                 t.rows = [];

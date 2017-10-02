@@ -554,6 +554,23 @@ function render(keyword, option, items){
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
+
+  $('.cde-collapser').click(function(){
+    let target = $(this);
+    let parentTable = $(this).parent().parent().parent();
+
+    let gdeContainer = parentTable.find('#cde-content');
+
+    gdeContainer.slideToggle(500, function(){
+      if(gdeContainer.is(":visible")){
+        target.html('<i class="fa fa-minus"></i>');
+      }else{
+        target.html('<i class="fa fa-plus"></i>');
+      }
+    });
+
+    
+  })
   
 }
 
@@ -647,15 +664,16 @@ const func = {
             	trs.push(e);
             });
         }
-        else if(source.cde_id !== undefined){
+        else if(source.cde !== undefined){
         	p.node = "branch";
         	trs.push(p);
         	//show caDSR reference
         	count++;
             let l = {};
             l.id = count + "_l";
-            l.l_id = source.cde_id;
+            l.l_id = source.cde.id;
             l.l_type = "cde";
+            l.url = source.cde.url;
             l.desc = "";
             l.data_tt_id = l.id;
             l.data_tt_parent_id = p.id;
@@ -670,8 +688,9 @@ const func = {
         	count++;
             let l = {};
             l.id = count + "_l";
-            l.l_id = source.ncit;
+            l.l_id = source.ncit.id;
             l.l_type = "ncit";
+            l.url = source.ncit.url;
             l.desc = "";
             l.data_tt_id = l.id;
             l.data_tt_parent_id = p.id;
@@ -727,9 +746,9 @@ let tmpl = '<div class="container table-container">'
 						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
 						+'{{else type == "link"}}'
 							+'{{if l_type == "cde"}}'
-							+'No values in GDC, reference values in <a href="javascript:getCDEData("{{:l_id}}");" class="table-td-link">caDSR</a>'
+							+'No values in GDC, reference values in <a href="javascript:getCDEData(\'{{:l_id}}\');" class="table-td-link">caDSR</a>'
 							+'{{else}}'
-							+'No values in GDC, concept referenced in <a target="_blank" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:l_id}}" class="table-td-link">NCIt</a>'
+							+'No values in GDC, concept referenced in <a target="_blank" href="{{:url}}" class="table-td-link">NCIt</a>'
 							+'{{/if}}'
 			            +'{{else}}'
 			            +'{{:title}}'
@@ -782,7 +801,8 @@ const func = {
  				});	
  			}
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
- 			prop.cdeId = source.cde_id !== undefined ? source.cde_id : "";
+ 			prop.cdeId = source.cde !== undefined ? source.cde.id : "";
+ 			prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
  			prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
  			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
  			props.push(prop);
@@ -846,7 +866,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'{{if cdeId == ""}}'
   +''
   +'{{else}}'
-  +'caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+  +'caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
     +'{{if local && cdeLen}}'
     +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
     +'{{else cdeLen}}'
@@ -905,7 +925,8 @@ const func = {
 			});	
 		}
 		row.ref = source.name +"@" +source.node +"@" + source.category;
-		row.cdeId = source.cde_id !== undefined ? source.cde_id : "";
+		row.cdeId = source.cde !== undefined ? source.cde.id : "";
+		row.cdeUrl = source.cde !== undefined ? source.cde.url : "";
 		row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
 		//value informations in the subtable
 		row.vs = [];
@@ -963,7 +984,8 @@ const func = {
 					});
 				}
 				if(exist){
-					matched_pv[pv.n.toLowerCase()] = tmp_ss;
+					//matched_pv[pv.n.toLowerCase()] = tmp_ss;
+					matched_pv[pv.n.toLowerCase()] = {"pv":pv.n,"pvm":pv.m,"ss":tmp_ss};
 					row.tgts_cde_n += pv.n + "#";
 				}
 			});
@@ -1050,16 +1072,22 @@ const func = {
 				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
-					v.pv = em.n;
+					//v.pv = em.n;
 
 					let lc = em.n.toLowerCase();
 					if(lc in matched_pv){
-						v.cde_s = matched_pv[lc];
+						v.cde_s = matched_pv[lc].ss;
+						if(v.cde_s.length){
+							v.cde_pv = matched_pv[lc].pv;
+							v.cde_pvm = matched_pv[lc].pvm;
+						}
 						delete matched_pv[lc];
+
 					}
 					else{
 						v.cde_s = [];
 					}
+
 					row.vs.push(v);
 				}
 				
@@ -1073,7 +1101,11 @@ const func = {
 			v.ref = row.ref;
 			v.n_c = "";
 			v.s = [];
-			v.cde_s = matched_pv[idx];
+			v.cde_s = matched_pv[idx].ss;
+			if(v.cde_s.length){
+				v.cde_pv = matched_pv[idx].pv;
+				v.cde_pvm = matched_pv[idx].pvm;
+			}
 			row.vs.push(v);
 		}
 
@@ -1135,12 +1167,29 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'<div class="table-td col-xs-3 border-r border-b">{{if n == "See All Values"}}<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a>{{/if}}</div>'
       +'<div class="table-td col-xs-3 border-r border-b"><div class="row"><div class="col-xs-3">{{:n_c}}</div><div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div></div></div>'
       +'<div class="table-td col-xs-6 border-b">'
-        +'{{for cde_s}}'
+        +'{{if cde_s.length > 1}}'
         +'<div class="row">'
-          +'<div class="col-xs-3">{{:c}}</div>'
-          +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
-        +'</div>' 
-        +'{{/for}}'
+          +'<div class="col-xs-10">{{:cde_pv}}, {{:cde_pvm}}</div>'
+          +'<div class="col-xs-2"><a href="javascript:void(0);" class="cde-collapser"><i class="fa fa-plus"></i></a></div>'
+        +'</div>'
+        +'<div id="cde-content" class="table-td" style="display: none;">'
+          +'{{for cde_s}}'
+          +'<div class="row">'
+            +'<div class="col-xs-3">{{:c}}</div>'
+            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+          +'</div>' 
+          +'{{/for}}'
+        +'</div>'
+        +'{{else}}'
+        +'<div id="cde-content" class="cde-content">'
+          +'{{for cde_s}}'
+          +'<div class="row">'
+            +'<div class="col-xs-3">{{:c}}</div>'
+            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+          +'</div>' 
+          +'{{/for}}'
+        +'</div>'
+        +'{{/if}}'
       +'</div>'
     +'</div> {{/for}}' 
       +'{{if vs.length > 5}}'
@@ -1165,7 +1214,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'{{if cdeId == ""}}'
           +'<div class="table-td col-xs-6"></div>'
         +'{{else}}'
-          +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+          +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
             +'{{if local && cdeLen}}'
             +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
             +'{{else cdeLen}}'
@@ -1389,6 +1438,7 @@ const func = {
             items.forEach(function(item){
                 let t = {};
                 t.pv = item.n;
+                t.pvm = item.m;
                 t.pvd = item.d;
                 t.i_rows = [];
                 t.rows = [];
@@ -1680,7 +1730,7 @@ let tmpl = {
                     +'<div class="table-row row">'
                       +'<div class="table-td col-xs-1"><b>{{:#getIndex() + 1}}.</b></div>'
                       +'<div class="table-td col-xs-2">{{:pv}}</div>'
-                      +'<div class="table-td col-xs-2">test</div>'
+                      +'<div class="table-td col-xs-2">{{:pvm}}</div>'
                       +'<div class="table-td col-xs-4">{{:pvd}}</div>'
                       +'<div name="syn_area" class="table-td col-xs-3">'
                       +'{{for i_rows}}'
@@ -1703,7 +1753,7 @@ let tmpl = {
                     +'<div class="table-row row" style="display: none;">'
                       +'<div class="table-td col-xs-1"><b>{{:#getIndex() + 1}}.</b></div>'
                       +'<div class="table-td col-xs-2">{{:pv}}</div>'
-                      +'<div class="table-td col-xs-2">test</div>'
+                      +'<div class="table-td col-xs-2">{{:pvm}}</div>'
                       +'<div class="table-td col-xs-4">{{:pvd}}</div>'
                       +'<div name="syn_area" class="table-td col-xs-3">'
                       +'{{for i_rows}}'

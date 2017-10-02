@@ -68,5 +68,22 @@ export default function render(keyword, option, items){
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
+
+  $('.cde-collapser').click(function(){
+    let target = $(this);
+    let parentTable = $(this).parent().parent().parent();
+
+    let gdeContainer = parentTable.find('#cde-content');
+
+    gdeContainer.slideToggle(500, function(){
+      if(gdeContainer.is(":visible")){
+        target.html('<i class="fa fa-minus"></i>');
+      }else{
+        target.html('<i class="fa fa-plus"></i>');
+      }
+    });
+
+    
+  })
   
 }
