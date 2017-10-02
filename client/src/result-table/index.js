@@ -81,15 +81,16 @@ const func = {
             	trs.push(e);
             });
         }
-        else if(source.cde_id !== undefined){
+        else if(source.cde !== undefined){
         	p.node = "branch";
         	trs.push(p);
         	//show caDSR reference
         	count++;
             let l = {};
             l.id = count + "_l";
-            l.l_id = source.cde_id;
+            l.l_id = source.cde.id;
             l.l_type = "cde";
+            l.url = source.cde.url;
             l.desc = "";
             l.data_tt_id = l.id;
             l.data_tt_parent_id = p.id;
@@ -104,8 +105,9 @@ const func = {
         	count++;
             let l = {};
             l.id = count + "_l";
-            l.l_id = source.ncit;
+            l.l_id = source.ncit.id;
             l.l_type = "ncit";
+            l.url = source.ncit.url;
             l.desc = "";
             l.data_tt_id = l.id;
             l.data_tt_parent_id = p.id;
