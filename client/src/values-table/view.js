@@ -56,7 +56,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'{{if cdeId == ""}}'
           +'<div class="table-td col-xs-6"></div>'
         +'{{else}}'
-          +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{:cdeId}}&version=1.0" target="_blank">CDE</a>'
+          +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
             +'{{if local && cdeLen}}'
             +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
             +'{{else cdeLen}}'
