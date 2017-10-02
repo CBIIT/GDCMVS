@@ -181,6 +181,7 @@ const func = {
 				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
+					v.pv = em.n;
 
 					let lc = em.n.toLowerCase();
 					if(lc in matched_pv){
@@ -218,6 +219,7 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
  		h = (h < 550) ? 550 : h;
+ 		console.log(values);
 
  		html = $.templates(tmpl).render({mh:h, values:values});
  	}

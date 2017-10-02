@@ -1050,6 +1050,7 @@ const func = {
 				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
+					v.pv = em.n;
 
 					let lc = em.n.toLowerCase();
 					if(lc in matched_pv){
@@ -1087,6 +1088,7 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
  		h = (h < 550) ? 550 : h;
+ 		console.log(values);
 
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
  	}
@@ -1119,7 +1121,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'<div class="table-th col-xs-6">GDC Values: NCIt Synonyms</div>'
         +'</div>'
       +'</div>'
-      +'<div class="table-th table-header col-xs-6">CDE Values: NCIt Code and Synonyms</div>'
+      +'<div class="table-th table-header col-xs-6">CDE references, permissible values and Synonyms</div>'
     +'</div>'
   +'</div>'
 +'</div>'
