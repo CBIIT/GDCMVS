@@ -95,7 +95,8 @@ const func = {
 					});
 				}
 				if(exist){
-					matched_pv[pv.n.toLowerCase()] = tmp_ss;
+					//matched_pv[pv.n.toLowerCase()] = tmp_ss;
+					matched_pv[pv.n.toLowerCase()] = {"pv":pv.n,"pvm":pv.m,"ss":tmp_ss};
 					row.tgts_cde_n += pv.n + "#";
 				}
 			});
@@ -182,16 +183,22 @@ const func = {
 				}
 				//check if there are any matched cde_pvs can connect to this value
 				if(v.n !== undefined){
-					v.pv = em.n;
+					//v.pv = em.n;
 
 					let lc = em.n.toLowerCase();
 					if(lc in matched_pv){
-						v.cde_s = matched_pv[lc];
+						v.cde_s = matched_pv[lc].ss;
+						if(v.cde_s.length){
+							v.cde_pv = matched_pv[lc].pv;
+							v.cde_pvm = matched_pv[lc].pvm;
+						}
 						delete matched_pv[lc];
+
 					}
 					else{
 						v.cde_s = [];
 					}
+
 					row.vs.push(v);
 				}
 				
@@ -205,7 +212,11 @@ const func = {
 			v.ref = row.ref;
 			v.n_c = "";
 			v.s = [];
-			v.cde_s = matched_pv[idx];
+			v.cde_s = matched_pv[idx].ss;
+			if(v.cde_s.length){
+				v.cde_pv = matched_pv[idx].pv;
+				v.cde_pvm = matched_pv[idx].pvm;
+			}
 			row.vs.push(v);
 		}
 
