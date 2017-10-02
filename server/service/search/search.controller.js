@@ -463,7 +463,7 @@ var getCDEData = function(req, res){
 		
 		let query = {};
 		query.term = {};
-		query.term.cde_id = uid;
+		query.term["cde.id"] = uid;
 		elastic.query(config.index_p, query, null, function(result){
 			if(result.hits === undefined){
 				return handleError.error(res, result);
@@ -546,9 +546,9 @@ var getGDCData = function(req, res){
 			if(data.length > 0){
 				let p = data[0];
 				gdcData[uid] = p._source.enum;
-				let cde_id = p._source.cde_id;
-				if(cde_id !== undefined && !(cde_id in cdeData)){
-					cdeData[cde_id] = p._source.cde_pv;
+				let cde = p._source.cde;
+				if(cde !== undefined && !(cde.id in cdeData)){
+					cdeData[cde.id] = p._source.cde_pv;
 				}
 			}
 			
@@ -580,9 +580,9 @@ var getGDCandCDEData = function(req, res){
 			if(data.length > 0){
 				let p = data[0];
 				gdcData[uid] = p._source.enum;
-				let cde_id = p._source.cde_id;
-				if(cde_id !== undefined && !(cde_id in cdeData)){
-					cdeData[cde_id] = p._source.cde_pv;
+				let cde = p._source.cde;
+				if(cde !== undefined && !(cde.id in cdeData)){
+					cdeData[cde.id] = p._source.cde_pv;
 				}
 			}
 			
