@@ -1,26 +1,9 @@
-
-#body {
-    margin-top: 20px !important;
-}
-
-@media (min-width: 925px) and (max-width: 1415px) {
-   #body {
-    margin-top: 8rem !important;
-  }
-}
 .container {
   font-size: 1.3rem;
 }
 ul {
     padding: 0 0 0 20px;
 }
-/*.clearfix:after {
-    content: " ";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-}*/
 .btn{
   font-size: 14px;
   margin-right:5px;
