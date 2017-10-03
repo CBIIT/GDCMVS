@@ -128,12 +128,13 @@ $("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* d
 
 $(document).on('click',__WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].removeBox);
 
-var heightSlider = $('.navbar').height();
+var heightSlider = $('.navbar .container').height();
+$('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');
 
-console.log(heightSlider);
-
-$('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');//.style('margin-top', (heightSlider - 64) + 'px', 'important');//.css({ 'margin-top' : (heightSlider - 64) + 'px' });
-
+$(window).resize(function() {
+  heightSlider = $('.navbar .container').height();
+  $('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');
+});
 
 function getGDCData(prop, target){
 	let uid = prop.replace(/@/g, '/');
