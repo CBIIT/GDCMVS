@@ -128,6 +128,13 @@ $("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* d
 
 $(document).on('click',__WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].removeBox);
 
+var heightSlider = $('.navbar').height();
+
+console.log(heightSlider);
+
+$('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');//.style('margin-top', (heightSlider - 64) + 'px', 'important');//.css({ 'margin-top' : (heightSlider - 64) + 'px' });
+
+
 function getGDCData(prop, target){
 	let uid = prop.replace(/@/g, '/');
 	__WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].getGDCData(uid, target);

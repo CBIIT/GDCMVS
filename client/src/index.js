@@ -12,6 +12,13 @@ $("#keywords").bind("input", func.suggest);
 
 $(document).on('click',func.removeBox);
 
+var heightSlider = $('.navbar').height();
+
+console.log(heightSlider);
+
+$('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');//.style('margin-top', (heightSlider - 64) + 'px', 'important');//.css({ 'margin-top' : (heightSlider - 64) + 'px' });
+
+
 function getGDCData(prop, target){
 	let uid = prop.replace(/@/g, '/');
 	dialog.getGDCData(uid, target);
