@@ -67,9 +67,9 @@ ul {
 .table-row:nth-of-type(odd) {
   background: #f1f1f1;
 }
-/*.nav-tabs > li {
-  margin-bottom: -3px;
-}*/
+.row-botton {
+  background: #d9d9d9;
+}
 
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
