@@ -180,27 +180,28 @@ function compare(gv){
         let table = generateCompareResult(vs, gv, opt);
         let html = '<div class="cp_result_title">Compare Result</div>'
                     +'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
-                    +'<div id="cp_result_table">'+table+'</div>'
-                    +'<div id="cp_result_bottom"><span id="back2Compare" class="btn-submit-large">Back</span></div>'
+                    +'<div class="clearfix"></div>'
+                    +'<div id="cp_result_table" class="table-container">'+table+'</div>'
+                    +'<div id="cp_result_bottom"><button id="back2Compare" class="btn btn-default btn-submit-large">Back</button>'
                     +'</div>';
         $('#compare_result').html(html);
 
-        let h = $('#cp_result_table table:first-child').height() +1;
-        if(h >= 30 * 12.8){
-            h = 384;
-        }
-        $('#cp_result_table').height(h+'px');
+        // let h = $('#cp_result_table table:first-child').height() +1;
+        // if(h >= 30 * 12.8){
+        //     h = 384;
+        // }
+        //$('#cp_result_table').height(h+'px');
         $('#compare_filter').bind('click', function(){
             let options = {};
             options.sensitive = $("#compare_filter").prop('checked');
             options.unmatched = $("#compare_unmatched").prop('checked');
             let table_new = generateCompareResult(vs, gv, options);
             $('#cp_result_table').html(table_new);
-            let h = $('#cp_result_table table:first-child').height() +1;
-            if(h >= 30 * 12.8){
-                h = 384;
-            }
-            $('#cp_result_table').height(h+'px');
+            // let h = $('#cp_result_table table:first-child').height() +1;
+            // if(h >= 30 * 12.8){
+            //     h = 384;
+            // }
+            // $('#cp_result_table').height(h+'px');
         });
         $('#compare_unmatched').bind('click', function(){
             let options = {};
@@ -208,11 +209,11 @@ function compare(gv){
             options.unmatched = $("#compare_unmatched").prop('checked');
             let table_new = generateCompareResult(vs, gv, options);
             $('#cp_result_table').html(table_new);
-            let h = $('#cp_result_table table:first-child').height() +1;
-            if(h >= 30 * 12.8){
-                h = 384;
-            }
-            $('#cp_result_table').height(h+'px');
+            // let h = $('#cp_result_table table:first-child').height() +1;
+            // if(h >= 30 * 12.8){
+            //     h = 384;
+            // }
+            // $('#cp_result_table').height(h+'px');
         });
         $('#back2Compare').bind('click', function(){
             $('#compare_result').html("");
@@ -238,7 +239,14 @@ function generateCompareResult(fromV, toV, option){
         });
     }
 
-    let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">User Defined Values</td><td width="50%" style="text-align:left;">Matched GDC Values</td></tr>';
+        let table = '<div class="table-thead row">'
+                  +'<div class="table-th col-xs-6">User Defined Values</div>'
+                  +'<div class="table-th col-xs-6">Matched GDC Values</div>'
+                +'</div>'
+                +'<div class="table-body row" style="height: 350px;">'
+                  +'<div class="col-xs-12">';
+
+    //let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">User Defined Values</td><td width="50%" style="text-align:left;">Matched GDC Values</td></tr>';
 
     fromV.forEach(function(v){
         let tmp = $.trim(v);
@@ -253,19 +261,32 @@ function generateCompareResult(fromV, toV, option){
         }
         if(text ===''){
             text = '<div style="color:red;">--</div>';
-            table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left">'+text+'</td></tr>';
+            //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left">'+text+'</td></tr>';
+            table += '<div class="table-row row">'
+              +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
+              +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            +'</div>';
         }
         else{
-            table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
+            //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
+            table += '<div class="table-row row">'
+              +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
+              +'<div class="table-td td-slim col-xs-6"><b>'+(idx+1)+'.</b>'+text+'</div>'
+            +'</div>';
         }
     });
     for(var i = 0; i< toV.length; i++){
         if(v_matched.indexOf(i) >= 0){
             continue;
         }
-        table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
-    }
-    table += "</tbody></table>";
+        //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
+        table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
+              +'<div class="table-td td-slim col-xs-6"><div style="color:red;">--</div></div>'
+              +'<div class="table-td td-slim col-xs-6"><b>'+(i+1)+'.</b>'+toV[i]+'</div>'
+            +'</div>';
+    }       
+    table += '</div></div>'
+    //table += "</tbody></table>";
     return table;
 };
 
@@ -576,9 +597,34 @@ function render(keyword, option, items){
         target.html('<i class="fa fa-plus"></i>');
       }
     });
+  });
 
-    
-  })
+  // $('#table-body').scroll(function() {
+  //   console.log('true');
+
+  //   let vsTapTop = $('#vsTab').offset().top + 88;
+  //   let vsTapBotton=  vsTapTop + $('#vsTab').height();
+
+  //   $('.table-row').each(function(){
+  //     var t = $(this);
+  //     var thisTop = t.offset().top;
+  //     var thisBotton = thisTop + t.height();
+  //     var property =  t.find('.property');
+
+  //     console.log('vsTapTop' + vsTapTop + 'vsTapBotton' + vsTapBotton +  'thisTop' + thisTop + 'thisBotton' + thisBotton)
+  //     if(thisBotton > vsTapTop && thisBotton < vsTapBotton || thisTop < vsTapTop && thisTop > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton ){
+  //       console.log(property);
+  //       if(thisTop < vsTapTop || thisTop < vsTapTop && thisBotton > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton  )
+  //         property.attr('style','opacity: 100; position: relative; top: '+ (vsTapTop - thisTop )+'px;');
+  //       else{
+  //         property.attr('style','opacity: 100; position: relative; top: 0');
+  //       }
+  //     }
+  //     else{
+  //       property.attr('style','opacity: 0;'); //property.hide();
+  //     }
+  //   });
+  // });
   
 }
 
@@ -1165,9 +1211,9 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
     +'</div>'
   +'</div>'
 +'</div>'
-+'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
++'<div id="table-body" class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
 +'<div class="table-row row">'
-  +'<div class="table-td col-xs-3">'
+  +'<div class="property table-td col-xs-3">'
       +'{{:category}}<ul><li>{{:node}}<ul><li>{{:name}}</li></ul></li></ul>'
   +'</div>'
   +'<div class="col-xs-9 border-l"> {{for vs}}'
