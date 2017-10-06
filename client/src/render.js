@@ -82,8 +82,33 @@ export default function render(keyword, option, items){
         target.html('<i class="fa fa-plus"></i>');
       }
     });
+  });
 
-    
-  })
+  // $('#table-body').scroll(function() {
+  //   console.log('true');
+
+  //   let vsTapTop = $('#vsTab').offset().top + 88;
+  //   let vsTapBotton=  vsTapTop + $('#vsTab').height();
+
+  //   $('.table-row').each(function(){
+  //     var t = $(this);
+  //     var thisTop = t.offset().top;
+  //     var thisBotton = thisTop + t.height();
+  //     var property =  t.find('.property');
+
+  //     console.log('vsTapTop' + vsTapTop + 'vsTapBotton' + vsTapBotton +  'thisTop' + thisTop + 'thisBotton' + thisBotton)
+  //     if(thisBotton > vsTapTop && thisBotton < vsTapBotton || thisTop < vsTapTop && thisTop > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton ){
+  //       console.log(property);
+  //       if(thisTop < vsTapTop || thisTop < vsTapTop && thisBotton > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton  )
+  //         property.attr('style','opacity: 100; position: relative; top: '+ (vsTapTop - thisTop )+'px;');
+  //       else{
+  //         property.attr('style','opacity: 100; position: relative; top: 0');
+  //       }
+  //     }
+  //     else{
+  //       property.attr('style','opacity: 0;'); //property.hide();
+  //     }
+  //   });
+  // });
   
 }
