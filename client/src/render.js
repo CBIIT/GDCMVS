@@ -36,14 +36,6 @@ export default function render(keyword, option, items){
               $(this).trigger("click");
           });
 
-          // $('.data-table-row').each(function(){
-          //   if($(this).is(":visible")){
-          //     $(this).addClass('visible')
-          //   } else {
-          //     $(this).removeClass('visible');
-          //   }
-          // });
-
       });
 
       $("#expand").bind("click", function(){
@@ -57,13 +49,6 @@ export default function render(keyword, option, items){
               $(this).trigger("click");
           });
 
-          // $('.data-table-row').each(function(){
-          //   if($(this).is(":visible")){
-          //     $(this).addClass('visible');
-          //   } else {
-          //     $(this).removeClass('visible');
-          //   }
-          // });
       });
   }
 
