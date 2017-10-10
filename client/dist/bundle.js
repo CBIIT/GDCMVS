@@ -550,6 +550,15 @@ function render(keyword, option, items){
           $("#tree_table").find('a[title="Collapse"]').each(function(){
               $(this).trigger("click");
           });
+
+          // $('.data-table-row').each(function(){
+          //   if($(this).is(":visible")){
+          //     $(this).addClass('visible')
+          //   } else {
+          //     $(this).removeClass('visible');
+          //   }
+          // });
+
       });
 
       $("#expand").bind("click", function(){
@@ -562,6 +571,14 @@ function render(keyword, option, items){
           $("#tree_table").find('a[title="Expand"]').each(function(){
               $(this).trigger("click");
           });
+
+          // $('.data-table-row').each(function(){
+          //   if($(this).is(":visible")){
+          //     $(this).addClass('visible');
+          //   } else {
+          //     $(this).removeClass('visible');
+          //   }
+          // });
       });
   }
 
@@ -590,13 +607,21 @@ function render(keyword, option, items){
 
     let gdeContainer = parentTable.find('#cde-content');
 
-    gdeContainer.slideToggle(500, function(){
+    gdeContainer.slideToggle(400, function(){
       if(gdeContainer.is(":visible")){
         target.html('<i class="fa fa-minus"></i>');
       }else{
         target.html('<i class="fa fa-plus"></i>');
       }
     });
+  });
+
+
+  $('.gdc-details').click(function(){
+    let target = $(this);
+    let parentTarget = $(this).parent();
+    let gdcLinks = parentTarget.find('#gdc-links');
+    gdcLinks.slideToggle(400);
   });
 
   // $('#table-body').scroll(function() {
@@ -650,6 +675,12 @@ const func = {
  	let trs = [];
  	items.forEach(function(item){
  		let hl = item.highlight;
+        let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+        let arr_enum_s = [];
+        enum_s.forEach(function(s){
+            let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
+            arr_enum_s.push(tmp);
+        });
  		let source = item._source;
  		if(source.category != c_c){
  			//put category to tree table
@@ -708,6 +739,14 @@ const func = {
             	count++;
             	let e = {}; 
             	e.id = count + "_"+ v.n;
+
+                if(v.s !== undefined){
+                    v.s.forEach(function(syn){
+                        if(arr_enum_s.indexOf(syn) !== -1) {
+                            e.exist = true;
+                        }
+                    });
+                }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
             	e.desc = "";
@@ -762,6 +801,8 @@ const func = {
     let h = window.innerHeight - offset - 110;
     h = (h < 550) ? 550 : h;
 
+    console.log(trs);
+
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
     let result = {};
     result.len = 0;
@@ -793,7 +834,7 @@ let tmpl = '<div class="container table-container">'
 					+'<table class="data-table treetable" id="tree_table" border ="0" cellPadding="0" cellSpacing="0" width="100%" style="display:table; margin: 0px;">'
 						+'<tbody style="max-height: {{:mh}}px; overflow-y: auto; width:100%; display:block;">'
 						+'{{for trs}}'
-						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}}" style="width:100%; float:left;">'
+						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}} {{if exist != true && type == "value"}}hide-row{{/if}}" style="width:100%; float:left;">'
 						+'<td width="33%" style="width:33%; float:left;">'
 						+'<span class="{{:type}}" style="display:inline-block; width: 275px;">'
 						+'{{if type == "folder"}}'
@@ -986,7 +1027,7 @@ const func = {
 		row.vs = [];
 		row.tgts_enum_n = ""; //added
 		row.tgts_cde_n = "";
-	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+	  let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
 		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
@@ -1174,7 +1215,6 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
  		h = (h < 550) ? 550 : h;
- 		console.log(values);
 
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
  	}
@@ -1206,28 +1246,31 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'</div>'
 +'</div>'
 +'<div id="table-body" class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
-+'<div class="table-row row">'
++'<div class="table-row row row-flex">'
   +'<div class="property table-td col-xs-3">'
       +'{{:category}}<ul><li>{{:node}}<ul><li style="overflow-wrap: break-word;">{{:name}}</li></ul></li></ul>'
-      +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a></br>'
-      +'{{if local}}'
-        +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></br>'
-      +'{{/if}}'
-      +'{{if syn}}'
-        +'<a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></br>'
-      +'{{/if}}'
-      +'{{if cdeId == ""}}'
-        +''
-      +'{{else}}'
-        +'caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
-        +'{{if local && cdeLen}}'
-          +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
-        +'{{else cdeLen}}'
-          +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a>'
-        +'{{else}}'
-          +''
+      +'<a href="javascript:void(0)" class="gdc-details"><i class="fa fa-angle-down"></i> detail</a>'
+      +'<div id="gdc-links" style="display: none;">'
+        +'{{if local}}'
+          +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a></br>'
+          +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></br>'
         +'{{/if}}'
-      +'{{/if}}'
+        +'{{if syn}}'
+          +'<a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></br>'
+        +'{{/if}}'
+        +'{{if cdeId == ""}}'
+          +''
+        +'{{else}}'
+          +'caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
+          +'{{if local && cdeLen}}'
+            +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+          +'{{else cdeLen}}'
+            +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a>'
+          +'{{else}}'
+            +''
+          +'{{/if}}'
+        +'{{/if}}'
+      +'</div>'
   +'</div>'
   +'<div class="col-xs-9 border-l"> {{for vs}}'
     +'<div class="row {{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}">'
@@ -1257,35 +1300,6 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
          +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
         +'</div><div class="table-td col-xs-6"></div></div>'
       +'{{/if}}'
-      // +'<div class="row row-flex row-botton">'
-
-      //   +'{{if local}}'
-      //     +'<div class="table-td col-xs-3 border-r"><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></div>'
-      //   +'{{else}}'
-      //     +'<div class="table-td col-xs-3 border-r"></div>'
-      //   +'{{/if}}'
-
-      //   +'{{if syn}}'
-      //     +'<div class="table-td col-xs-3 border-r"><a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></div>'
-      //   +'{{else}}'
-      //     +'<div class="table-td col-xs-3 border-r"></div>'
-      //   +'{{/if}}'
-
-      //   +'{{if cdeId == ""}}'
-      //     +'<div class="table-td col-xs-6"></div>'
-      //   +'{{else}}'
-      //     +'<div class="table-td col-xs-6">caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
-      //       +'{{if local && cdeLen}}'
-      //       +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
-      //       +'{{else cdeLen}}'
-      //       +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\', \'{{:tgts_cde_n}}\');">Values</a>'
-      //       +'{{else}}'
-      //       +''
-      //       +'{{/if}}'
-      //     +'</div>'
-      //   +'{{/if}}'
-
-      // +'</div>'
   +'</div>'
 
 +'</div> {{/for}} </div></div></div>';
@@ -1317,7 +1331,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 "use strict";
 let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
-      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results</a></li>' +
+      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results - GDC Dictionary</a></li>' +
       '<li role="presentation" class="{{if ps_active}}active{{else}}{{/if}}"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
       '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li></ul>' +
       '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div>' +

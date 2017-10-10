@@ -13,6 +13,12 @@ const func = {
  	let trs = [];
  	items.forEach(function(item){
  		let hl = item.highlight;
+        let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+        let arr_enum_s = [];
+        enum_s.forEach(function(s){
+            let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
+            arr_enum_s.push(tmp);
+        });
  		let source = item._source;
  		if(source.category != c_c){
  			//put category to tree table
@@ -71,6 +77,14 @@ const func = {
             	count++;
             	let e = {}; 
             	e.id = count + "_"+ v.n;
+
+                if(v.s !== undefined){
+                    v.s.forEach(function(syn){
+                        if(arr_enum_s.indexOf(syn) !== -1) {
+                            e.exist = true;
+                        }
+                    });
+                }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
             	e.desc = "";
@@ -124,6 +138,8 @@ const func = {
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 110;
     h = (h < 550) ? 550 : h;
+
+    console.log(trs);
 
     let html = $.templates(tmpl).render({mh:h,trs: trs});
     let result = {};
