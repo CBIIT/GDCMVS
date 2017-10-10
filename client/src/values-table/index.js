@@ -43,7 +43,7 @@ const func = {
 		row.vs = [];
 		row.tgts_enum_n = ""; //added
 		row.tgts_cde_n = "";
-	  let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
 		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
@@ -112,6 +112,7 @@ const func = {
 				if(exist){
 					//matched_pv[pv.n.toLowerCase()] = tmp_ss;
 					matched_pv[pv.n.toLowerCase()] = {"pv":pv.n,"pvm":pv.m,"ss":tmp_ss};
+					pv.n = pv.n.replace(/\'/g, '^');
 					row.tgts_cde_n += pv.n + "#";
 				}
 			});
@@ -197,23 +198,47 @@ const func = {
 					row.tgts_enum_n += tmp + "#";
 				}
 				//check if there are any matched cde_pvs can connect to this value
+				// if(v.n !== undefined){
+				// 	//v.pv = em.n;
+
+				// 	let lc = em.n.toLowerCase();
+				// 	if(lc in matched_pv){
+				// 		v.cde_s = matched_pv[lc].ss;
+				// 		if(v.cde_s.length){
+				// 			v.cde_pv = matched_pv[lc].pv;
+				// 			v.cde_pvm = matched_pv[lc].pvm;
+				// 		}
+				// 		delete matched_pv[lc];
+
+				// 	}
+				// 	else{
+				// 		v.cde_s = [];
+				// 	}
+
+				// 	row.vs.push(v);
+				// }
+				let lc = em.n.toLowerCase();
+				if(lc in matched_pv){
+					if(v.n == undefined){
+						v.n = em.n;
+						v.ref = row.ref;
+						v.n_c = em.n_c;
+						v.s = em.s;
+					}
+					
+					v.cde_s = matched_pv[lc].ss;
+					if(v.cde_s.length){
+						v.cde_pv = matched_pv[lc].pv;
+						v.cde_pvm = matched_pv[lc].pvm;
+					}
+					delete matched_pv[lc];
+
+				}
+				else{
+					v.cde_s = [];
+				}
+
 				if(v.n !== undefined){
-					//v.pv = em.n;
-
-					let lc = em.n.toLowerCase();
-					if(lc in matched_pv){
-						v.cde_s = matched_pv[lc].ss;
-						if(v.cde_s.length){
-							v.cde_pv = matched_pv[lc].pv;
-							v.cde_pvm = matched_pv[lc].pvm;
-						}
-						delete matched_pv[lc];
-
-					}
-					else{
-						v.cde_s = [];
-					}
-
 					row.vs.push(v);
 				}
 				
