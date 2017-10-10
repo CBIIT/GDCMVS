@@ -35,6 +35,15 @@ export default function render(keyword, option, items){
           $("#tree_table").find('a[title="Collapse"]').each(function(){
               $(this).trigger("click");
           });
+
+          // $('.data-table-row').each(function(){
+          //   if($(this).is(":visible")){
+          //     $(this).addClass('visible')
+          //   } else {
+          //     $(this).removeClass('visible');
+          //   }
+          // });
+
       });
 
       $("#expand").bind("click", function(){
@@ -47,6 +56,14 @@ export default function render(keyword, option, items){
           $("#tree_table").find('a[title="Expand"]').each(function(){
               $(this).trigger("click");
           });
+
+          // $('.data-table-row').each(function(){
+          //   if($(this).is(":visible")){
+          //     $(this).addClass('visible');
+          //   } else {
+          //     $(this).removeClass('visible');
+          //   }
+          // });
       });
   }
 
@@ -75,13 +92,21 @@ export default function render(keyword, option, items){
 
     let gdeContainer = parentTable.find('#cde-content');
 
-    gdeContainer.slideToggle(500, function(){
+    gdeContainer.slideToggle(400, function(){
       if(gdeContainer.is(":visible")){
         target.html('<i class="fa fa-minus"></i>');
       }else{
         target.html('<i class="fa fa-plus"></i>');
       }
     });
+  });
+
+
+  $('.gdc-details').click(function(){
+    let target = $(this);
+    let parentTarget = $(this).parent();
+    let gdcLinks = parentTarget.find('#gdc-links');
+    gdcLinks.slideToggle(400);
   });
 
   // $('#table-body').scroll(function() {
