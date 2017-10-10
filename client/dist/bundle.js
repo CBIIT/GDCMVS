@@ -581,14 +581,6 @@ function render(keyword, option, items){
               $(this).trigger("click");
           });
 
-          // $('.data-table-row').each(function(){
-          //   if($(this).is(":visible")){
-          //     $(this).addClass('visible')
-          //   } else {
-          //     $(this).removeClass('visible');
-          //   }
-          // });
-
       });
 
       $("#expand").bind("click", function(){
@@ -602,13 +594,6 @@ function render(keyword, option, items){
               $(this).trigger("click");
           });
 
-          // $('.data-table-row').each(function(){
-          //   if($(this).is(":visible")){
-          //     $(this).addClass('visible');
-          //   } else {
-          //     $(this).removeClass('visible');
-          //   }
-          // });
       });
   }
 
@@ -830,8 +815,6 @@ const func = {
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 110;
     h = (h < 550) ? 550 : h;
-
-    console.log(trs);
 
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
     let result = {};
@@ -1057,7 +1040,7 @@ const func = {
 		row.vs = [];
 		row.tgts_enum_n = ""; //added
 		row.tgts_cde_n = "";
-	  let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
 		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
@@ -1126,6 +1109,7 @@ const func = {
 				if(exist){
 					//matched_pv[pv.n.toLowerCase()] = tmp_ss;
 					matched_pv[pv.n.toLowerCase()] = {"pv":pv.n,"pvm":pv.m,"ss":tmp_ss};
+					pv.n = pv.n.replace(/\'/g, '^');
 					row.tgts_cde_n += pv.n + "#";
 				}
 			});
@@ -1211,23 +1195,47 @@ const func = {
 					row.tgts_enum_n += tmp + "#";
 				}
 				//check if there are any matched cde_pvs can connect to this value
+				// if(v.n !== undefined){
+				// 	//v.pv = em.n;
+
+				// 	let lc = em.n.toLowerCase();
+				// 	if(lc in matched_pv){
+				// 		v.cde_s = matched_pv[lc].ss;
+				// 		if(v.cde_s.length){
+				// 			v.cde_pv = matched_pv[lc].pv;
+				// 			v.cde_pvm = matched_pv[lc].pvm;
+				// 		}
+				// 		delete matched_pv[lc];
+
+				// 	}
+				// 	else{
+				// 		v.cde_s = [];
+				// 	}
+
+				// 	row.vs.push(v);
+				// }
+				let lc = em.n.toLowerCase();
+				if(lc in matched_pv){
+					if(v.n == undefined){
+						v.n = em.n;
+						v.ref = row.ref;
+						v.n_c = em.n_c;
+						v.s = em.s;
+					}
+					
+					v.cde_s = matched_pv[lc].ss;
+					if(v.cde_s.length){
+						v.cde_pv = matched_pv[lc].pv;
+						v.cde_pvm = matched_pv[lc].pvm;
+					}
+					delete matched_pv[lc];
+
+				}
+				else{
+					v.cde_s = [];
+				}
+
 				if(v.n !== undefined){
-					//v.pv = em.n;
-
-					let lc = em.n.toLowerCase();
-					if(lc in matched_pv){
-						v.cde_s = matched_pv[lc].ss;
-						if(v.cde_s.length){
-							v.cde_pv = matched_pv[lc].pv;
-							v.cde_pvm = matched_pv[lc].pvm;
-						}
-						delete matched_pv[lc];
-
-					}
-					else{
-						v.cde_s = [];
-					}
-
 					row.vs.push(v);
 				}
 				
@@ -1340,9 +1348,9 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'</div>'
     +'</div> {{/for}}' 
       +'{{if vs.length > 5}}'
-        +'<div class="row row-flex"><div class="table-td col-xs-6 border-r">'
+        +'<div class="row row-flex"><div class="table-td col-xs-12 border-r">'
          +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
-        +'</div><div class="table-td col-xs-6"></div></div>'
+        +'</div></div>'
       +'{{/if}}'
   +'</div>'
 
@@ -1572,6 +1580,7 @@ const func = {
     });
   },
   getCDEData(uid, tgts){
+
         __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getCDEDataById(uid, function(id, items) {
             //data precessing
             let tmp = [];
@@ -1610,7 +1619,9 @@ const func = {
             });
 
             let targets = null;
+            
             if(tgts !== null && tgts !== undefined && tgts !== ""){
+                tgts = tgts.replace(/\^/g,'\'');
                 targets = tgts.split("#"); 
 
                 tmp.forEach(function(item){

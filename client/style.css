@@ -290,9 +290,9 @@ table.treetable div.value {
 /*.data-table-row.visible:nth-child(odd) {
   background: #f1f1f1;
 }*/
-.hide-row{
+/*.hide-row{
   display: none !important;
-}
+}*/
 .show-row{
   display: block !important;
 }

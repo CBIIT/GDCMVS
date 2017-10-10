@@ -165,6 +165,7 @@ const func = {
     });
   },
   getCDEData(uid, tgts){
+
         api.getCDEDataById(uid, function(id, items) {
             //data precessing
             let tmp = [];
@@ -203,7 +204,9 @@ const func = {
             });
 
             let targets = null;
+            
             if(tgts !== null && tgts !== undefined && tgts !== ""){
+                tgts = tgts.replace(/\^/g,'\'');
                 targets = tgts.split("#"); 
 
                 tmp.forEach(function(item){
