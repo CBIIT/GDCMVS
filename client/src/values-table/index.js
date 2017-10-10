@@ -43,7 +43,7 @@ const func = {
 		row.vs = [];
 		row.tgts_enum_n = ""; //added
 		row.tgts_cde_n = "";
-	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+	  let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
 		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
@@ -246,7 +246,6 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
  		h = (h < 550) ? 550 : h;
- 		
  		html = $.templates(tmpl).render({mh:h, values:values});
  	}
     let result = {};
