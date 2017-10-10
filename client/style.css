@@ -11,6 +11,16 @@ ul {
 .form-control{
   font-size: 14px;
 }
+.form-group {
+  margin-bottom: 0 !important;
+}
+div.col-md-9 {
+  padding-bottom: 0;
+}
+div.col-md-3 {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .table-container {
   background: #FFFFFF;
   background: -moz-linear-gradient(0deg, #F5F5F5 0%, #FFF 25%, #FFF 75%, #F5F5F5 100%);
@@ -33,8 +43,8 @@ ul {
 .table-th {
   font-weight: bold;
   text-align: left;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 .table-td {
   text-align: left;
@@ -79,7 +89,6 @@ ul {
   font-weight: bold;
   outline: none;
 }
-
 .search-box {
   max-width: 550px;
   text-align: center;
@@ -99,6 +108,10 @@ ul {
   border-top: 1px solid rgba(0,0,0,0.065);
   margin: 0;
   padding: 5px;
+}
+.form-control {
+  display: inline-block;
+  width: 21em;
 }
 .suggest-container {
   position: relative;
@@ -147,6 +160,11 @@ ul {
   position:absolute;
   top:calc(2rem + 1em);
   right:15%;
+}
+@media (max-width: 930px) {
+  .ref-box{
+    position: initial;
+  }
 }
 .btn-container{
   margin-top: 10px;
