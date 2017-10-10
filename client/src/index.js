@@ -155,7 +155,7 @@ function generateCompareResult(fromV, toV, option){
             //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
             table += '<div class="table-row row">'
               +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-              +'<div class="table-td td-slim col-xs-6"><b>'+(idx+1)+'.</b>'+text+'</div>'
+              +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
             +'</div>';
         }
     });
@@ -166,7 +166,7 @@ function generateCompareResult(fromV, toV, option){
         //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
         table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
               +'<div class="table-td td-slim col-xs-6"><div style="color:red;">--</div></div>'
-              +'<div class="table-td td-slim col-xs-6"><b>'+(i+1)+'.</b>'+toV[i]+'</div>'
+              +'<div class="table-td td-slim col-xs-6">'+toV[i]+'</div>'
             +'</div>';
     }       
     table += '</div></div>'
@@ -213,15 +213,15 @@ function generateCompareGDCResult(fromV, toV, option){
         if(text ===''){
             text = '<div style="color:red;">--</div>';
             table += '<div class="table-row row">'
-                      +'<div class="table-td td-slim col-xs-6"><b>'+(++from_num)+'.</b> '+v+'</div>'
+                      +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
                       +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
                     +'</div>';
             //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
         }
         else{
             table += '<div class="table-row row">'
-                      +'<div class="table-td td-slim col-xs-6"><b>'+(++from_num)+'.</b> '+v+'</div>'
-                      +'<div class="table-td td-slim col-xs-6"><b>'+(idx+1)+'.</b> '+text+'</div>'
+                      +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
+                      +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
                     +'</div>';
             //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
         }
@@ -232,7 +232,7 @@ function generateCompareGDCResult(fromV, toV, option){
         }
         table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
                       +'<div class="table-td  td-slim col-xs-6"><div style="color:red;">--</div></div>'
-                      +'<div class="table-td td-slim col-xs-6"><b>'+(i+1)+'.</b> '+toV[i]+'</div>'
+                      +'<div class="table-td td-slim col-xs-6">'+toV[i]+'</div>'
                     +'</div>';
         //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
     }
@@ -260,13 +260,43 @@ window.compareGDC = compareGDC;
 //find the word with the first character capitalized
 function findWord (words){
     let word = "";
+    if(words.length == 1){
+        return words[0];
+    }
     words.forEach(function(w){
         if(word !== ""){
             return;
         }
-        if(/^[A-Z]/.test(w)){
-            word = w;
+        let idx_space = w.indexOf(" ");
+        let idx_comma = w.indexOf(",");
+        if(idx_space == -1 && idx_comma == -1){
+            if(/^[A-Z][a-z0-9]{0,}$/.test(w)){
+                word = w;
+            }
         }
+        else if(idx_space !== -1 && idx_comma == -1){
+            if(/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))){
+                word = w;
+            }
+        }
+        else if(idx_space == -1 && idx_comma !== -1){
+            if(/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))){
+                word = w;
+            }
+        }
+        else{
+            if(idx_comma > idx_space){
+                if(/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))){
+                    word = w;
+                }
+            }
+            else{
+                if(/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))){
+                    word = w;
+                }
+            }
+        }
+        
     });
     if(word == ""){
         word = words[0];

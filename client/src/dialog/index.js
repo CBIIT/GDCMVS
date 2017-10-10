@@ -13,7 +13,7 @@ const func = {
         //display result in a table
         $(document.body).append(html);
         if(target !== undefined){
-            $('#show_all').bind('click', function(){
+            $('#show_all_gdc_data').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
                     $('#gdc-data-list div[style="display: none;"]').each(function(){
@@ -69,23 +69,38 @@ const func = {
                 }
             });
         }
-
+        items.forEach(function(it){
+            let cache = {};
+            let tmp_s = [];
+            it.s.forEach(function(s){
+                let lc = s.trim().toLowerCase();
+                if(!(lc in cache)){
+                    cache[lc] = [];
+                }
+                cache[lc].push(s);
+            });
+            for(let idx in cache){
+                //find the term with the first character capitalized
+                let word = findWord(cache[idx]);
+                tmp_s.push(word);
+            }
+            it.s_r = tmp_s;
+        }); 
         let html = $.templates(tmpl.gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
         let tp = window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
 
         if(tgts !== null && tgts !== undefined && tgts !== ""){
-            $('#show_all').bind('click', function(){
+            $('#show_all_gdc_syn').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
-                    console.log($('#gdc-syn-data-list div[style="display: none;"]'));
-                    $('#gdc-syn-data-list div[style="display: none;"]').each(function(){
+                    $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
                 }
                 else{
-                    $('#gdc-syn-data-list div[style="display: block;"]').each(function(){
+                    $('#gdc-syn-data-list div.table-row[style="display: block;"]').each(function(){
                         $(this).css("display","none");
                     });
                 }
@@ -99,7 +114,14 @@ const func = {
                 width:"55%",
                 title: "GDC Synonyms ("+items.length+")",
                 open: function() {
-
+                    $('#gdc-data-invariant').bind('click', function(){
+                            $("#gdc-syn-data-list").find('div[name="syn_area"]').each(function(){
+                                let rp = $(this).html();
+                                let invariant = $(this).parent().children('div[name="syn_invariant"]');
+                                $(this).html(invariant[0].innerHTML);
+                                invariant[0].innerHTML = rp;
+                            });
+                        });
                 },
                 close: function() {
                     $(this).remove();
@@ -201,15 +223,15 @@ const func = {
             $(document.body).append(html);
             
             if(targets !== undefined){
-                $('#show_all').bind('click', function(){
+                $('#show_all_cde_syn').bind('click', function(){
                     let v = $(this).prop("checked");
                     if(v){
-                        $('#gde-syn-data-list div.table-row[style="display: none;"]').each(function(){
+                        $('#cde-syn-data-list div.table-row[style="display: none;"]').each(function(){
                             $(this).css("display","block");
                         });
                     }
                     else{
-                        $('#gde-syn-data-list div.table-row[style="display: block;"]').each(function(){
+                        $('#cde-syn-data-list div.table-row[style="display: block;"]').each(function(){
                             $(this).css("display","none");
                         });
                     }
@@ -223,8 +245,8 @@ const func = {
                     width:"60%",
                     title: "CaDSR Permissible Values ("+tmp.length+")",
                     open: function() {
-                        $('#data-invariant').bind('click', function(){
-                            $("#gde-syn-data-list").find('div[name="syn_area"]').each(function(){
+                        $('#cde-data-invariant').bind('click', function(){
+                            $("#cde-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
                                 let invariant = $(this).parent().children('div[name="syn_invariant"]');
                                 $(this).html(invariant[0].innerHTML);
@@ -272,8 +294,7 @@ const func = {
                     +'</div>';
 
         $('#compareGDC_result').html(html);
-        console.log($('#compareGDC_result'));
-
+        
         $("#compareGDC_dialog").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:window},
