@@ -81,17 +81,32 @@ const func = {
 				let tmp_ss = [];
 				if(pv.ss !== undefined && pv.ss.length > 0){
 					pv.ss.forEach(function(ss){
-						let tmp_s = []
+						let tmp_s = [];
+						let tmp_s_h = [];   
+		                //remove duplicate
+		                let cache = {};
 						ss.s.forEach(function(s){
-							if(s in dict_cde_s){
+							let lc = s.trim().toLowerCase();
+	                        if(!(lc in cache)){
+	                            cache[lc] = [];
+	                        }
+	                        cache[lc].push(s);
+						});
+						for(let idx in cache){
+	                        //find the term with the first character capitalized
+	                        let word = findWord(cache[idx]);
+	                        tmp_s.push(word);
+	                    }
+	                    tmp_s.forEach(function(s){
+	                    	if(s in dict_cde_s){
 								exist = true;
-								tmp_s.push(dict_cde_s[s])
+								tmp_s_h.push(dict_cde_s[s]);
 							}
 							else{
-								tmp_s.push(s);
+								tmp_s_h.push(s);
 							}
-						});
-						tmp_ss.push({c: ss.c, s: tmp_s});
+	                    });
+						tmp_ss.push({c: ss.c, s: tmp_s_h});
 					});
 				}
 				if(exist){
@@ -231,8 +246,7 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 110;
  		h = (h < 550) ? 550 : h;
- 		console.log(values);
-
+ 		
  		html = $.templates(tmpl).render({mh:h, values:values});
  	}
     let result = {};
