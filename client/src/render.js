@@ -94,6 +94,19 @@ export default function render(keyword, option, items){
     gdcLinks.slideToggle(400);
   });
 
+  let hiddenRows = $('#tree_table').find('.data-hide');
+  $('#trs-checkbox').click(function(){
+    if(this.checked){
+      hiddenRows.each(function(){
+        $(this).removeClass('hide');
+      });
+    }else{
+      hiddenRows.each(function(){
+        $(this).addClass('hide');
+      });
+    }
+  });
+
   // $('#table-body').scroll(function() {
   //   console.log('true');
 
