@@ -13,13 +13,45 @@ const func = {
  	let trs = [];
  	items.forEach(function(item){
  		let hl = item.highlight;
+        let source = item._source;
         let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+        let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+        let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
         let arr_enum_s = [];
+        let arr_enum_n = [];
+        let arr_cde_s = [];
+        let matched_pv = [];
         enum_s.forEach(function(s){
             let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
             arr_enum_s.push(tmp);
         });
- 		let source = item._source;
+        enum_n.forEach(function(n){
+            let tmp = n.replace(/<b>/g,"").replace(/<\/b>/g, "");
+            arr_enum_n.push(tmp);
+        });
+        cde_s.forEach(function(ps){
+            let tmp = ps.replace(/<b>/g,"").replace(/<\/b>/g, "");
+            arr_cde_s.push(tmp);
+        });
+
+ 		if(source.cde_pv !== undefined && source.cde_pv.length > 0){
+            source.cde_pv.forEach(function(pv){
+                let exist = false;
+                if(pv.ss !== undefined && pv.ss.length > 0){
+                    pv.ss.forEach(function(ss){
+                        ss.s.forEach(function(s){
+                            if(arr_cde_s.indexOf(s) !== -1) {
+                                exist = true;
+                            }
+                        })
+                    });
+                }
+                if(exist){
+                    matched_pv.push(pv.n);
+                }
+            });
+        }
+
  		if(source.category != c_c){
  			//put category to tree table
  			c_c = source.category;
@@ -78,12 +110,20 @@ const func = {
             	let e = {}; 
             	e.id = count + "_"+ v.n;
 
-                if(v.s !== undefined){
+                if(arr_enum_n.indexOf(v.n) !== -1 || matched_pv.indexOf(v.n) !== -1) {
+                    e.exist = true;
+                }
+
+                if(v.s !== undefined && e.exist != true){
                     v.s.forEach(function(syn){
                         if(arr_enum_s.indexOf(syn) !== -1) {
                             e.exist = true;
                         }
                     });
+                }
+
+                if(e.exist){
+                    p.node = "branch novalues";
                 }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
