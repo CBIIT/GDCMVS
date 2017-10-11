@@ -21,6 +21,7 @@ const func = {
         let arr_enum_n = [];
         let arr_cde_s = [];
         let matched_pv = [];
+        let cde2local = false;
         enum_s.forEach(function(s){
             let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
             arr_enum_s.push(tmp);
@@ -48,6 +49,17 @@ const func = {
                 }
                 if(exist){
                     matched_pv.push(pv.n);
+                    if(source.enum !== undefined){
+                        source.enum.forEach(function(em){
+                            if(cde2local){
+                                return;
+                            }
+                            if(em.n == pv.n){
+                                cde2local = true;
+                            }
+                        });
+                    }
+                    
                 }
             });
         }
@@ -91,7 +103,12 @@ const func = {
         p.data_tt_parent_id = c_n;
         p.type="property";
         //put value to tree table
-        if(source.enum !== undefined){
+        if(enum_n.length == 0 && enum_s.length == 0 && !cde2local){
+            //if no values show in the values tab
+            p.node = "leaf";
+            trs.push(p);
+        }
+        else if(source.enum !== undefined){
         	p.node = "branch";
         	trs.push(p);
         	//show values, need to highlight if necessary
@@ -122,9 +139,9 @@ const func = {
                     });
                 }
 
-                if(e.exist){
-                    p.node = "branch novalues";
-                }
+                // if(e.exist){
+                //     p.node = "branch novalues";
+                // }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
             	e.desc = "";
