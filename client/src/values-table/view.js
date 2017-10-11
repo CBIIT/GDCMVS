@@ -13,7 +13,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 +'<div id="table-body" class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
 +'<div class="table-row row row-flex">'
   +'<div class="property table-td col-xs-3">'
-      +'{{:category}}<ul><li>{{:node}}<ul><li style="overflow-wrap: break-word;">{{:name}}</li></ul></li></ul>'
+      +'{{:category}}<ul><li class="word-break">{{:node}}<ul><li class="word-break">{{:name}}</li></ul></li></ul>'
       +'<a href="javascript:void(0)" class="gdc-details"><i class="fa fa-angle-down"></i> detail</a>'
       +'<div id="gdc-links" style="display: none;">'
         +'{{if local}}'

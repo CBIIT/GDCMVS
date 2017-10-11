@@ -291,6 +291,7 @@ table.treetable div.value {
 /*.data-table-row:nth-of-type(odd) {
   background: #f1f1f1;
 }*/
+
 .row-flex{
   display:flex;
   align-items: stretch;
@@ -298,6 +299,9 @@ table.treetable div.value {
 }
 .row-toggle{
   display:none;
+}
+.word-break{
+  word-wrap: break-word;
 }
 .links{
   padding-left:8px;

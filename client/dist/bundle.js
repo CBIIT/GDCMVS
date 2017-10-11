@@ -711,6 +711,7 @@ const func = {
         let arr_enum_n = [];
         let arr_cde_s = [];
         let matched_pv = [];
+        let cde2local = false;
         enum_s.forEach(function(s){
             let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
             arr_enum_s.push(tmp);
@@ -738,6 +739,17 @@ const func = {
                 }
                 if(exist){
                     matched_pv.push(pv.n);
+                    if(source.enum !== undefined){
+                        source.enum.forEach(function(em){
+                            if(cde2local){
+                                return;
+                            }
+                            if(em.n == pv.n){
+                                cde2local = true;
+                            }
+                        });
+                    }
+                    
                 }
             });
         }
@@ -781,7 +793,12 @@ const func = {
         p.data_tt_parent_id = c_n;
         p.type="property";
         //put value to tree table
-        if(source.enum !== undefined){
+        if(enum_n.length == 0 && enum_s.length == 0 && !cde2local){
+            //if no values show in the values tab
+            p.node = "leaf";
+            trs.push(p);
+        }
+        else if(source.enum !== undefined){
         	p.node = "branch";
         	trs.push(p);
         	//show values, need to highlight if necessary
@@ -812,9 +829,9 @@ const func = {
                     });
                 }
 
-                if(e.exist){
-                    p.node = "branch novalues";
-                }
+                // if(e.exist){
+                //     p.node = "branch novalues";
+                // }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
             	e.desc = "";
@@ -902,8 +919,8 @@ let tmpl = '<div class="container table-container">'
 						+'<tbody style="max-height: {{:mh}}px; overflow-y: auto; width:100%; display:block;">'
 						+'{{for trs}}'
 						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}} {{if exist != true && type == "value"}}data-hide hide{{/if}}" style="width:100%; float:left;">'
-						+'<td width="33%" style="width:33%; float:left;">'
-						+'<span class="{{:type}}" style="display:inline-block; width: 275px;">'
+						+'<td width="33%" style="width:33%; float:left; display:flex; align-items: center;">'
+						+'<span class="{{:type}}" style="display:inline-block; width: 70%;">'
 						+'{{if type == "folder"}}'
 						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
 						+'{{else type == "link"}}'
@@ -1009,8 +1026,8 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 +'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'
 +'{{for props}}'
 +'<div class="table-row row">'
-  +'<div class="table-td col-xs-2">{{:ct}}<ul><li>{{:nd}}</li></ul></div>'
-  +'<div class="table-td col-xs-2">{{:nm}}</div>'
+  +'<div class="table-td col-xs-2">{{:ct}}<ul><li class="word-break">{{:nd}}</li></ul></div>'
+  +'<div class="table-td col-xs-2 word-break">{{:nm}}</div>'
   +'<div class="table-td col-xs-5">{{:desc}}</div>'
   +'<div class="table-td col-xs-2">'
   +'{{if local}}'
@@ -1354,7 +1371,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 +'<div id="table-body" class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
 +'<div class="table-row row row-flex">'
   +'<div class="property table-td col-xs-3">'
-      +'{{:category}}<ul><li>{{:node}}<ul><li style="overflow-wrap: break-word;">{{:name}}</li></ul></li></ul>'
+      +'{{:category}}<ul><li class="word-break">{{:node}}<ul><li class="word-break">{{:name}}</li></ul></li></ul>'
       +'<a href="javascript:void(0)" class="gdc-details"><i class="fa fa-angle-down"></i> detail</a>'
       +'<div id="gdc-links" style="display: none;">'
         +'{{if local}}'
