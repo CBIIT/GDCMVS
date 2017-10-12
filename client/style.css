@@ -371,6 +371,13 @@ table.treetable div.value {
 .w100{
   width:100%;
 }
+.alert.alert-email{
+  position: fixed;
+  top: 13rem;
+  right: 1%;
+  background-color: #daf2fb;
+  z-index: 999;
+}
 #compare_result{
   height:33em;
 }
