@@ -107,6 +107,14 @@ export default function render(keyword, option, items){
     }
   });
 
+
+  $('.cde-email').click(function(){
+    $('#alert-email').fadeIn('slow');
+    setTimeout(function() {
+      $('#alert-email').fadeOut('slow');
+    }, 4000);
+  });
+
   // $('#table-body').scroll(function() {
   //   console.log('true');
 
