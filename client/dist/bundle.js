@@ -652,6 +652,14 @@ function render(keyword, option, items){
     }
   });
 
+
+  $('.cde-email').click(function(){
+    $('#alert-email').fadeIn('slow');
+    setTimeout(function() {
+      $('#alert-email').fadeOut('slow');
+    }, 4000);
+  });
+
   // $('#table-body').scroll(function() {
   //   console.log('true');
 
@@ -1402,11 +1410,14 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'{{if cde_s.length }}'
         +'<div class="row">'
           +'<div class="col-xs-10">{{:cde_pv}}</div>'
-          +'<div class="col-xs-2"><a href="javascript:void(0);" class="cde-collapser"><i class="fa fa-plus"></i></a></div>'
+          +'<div class="col-xs-2">'
+            +'<a href="javascript:void(0);" class="cde-collapser"><i class="fa fa-plus"></i></a>'
+            +'{{if n == "no match"}}<a href="javascript:void(0);" class="cde-email" style="float: right;"><i class="fa fa-exclamation-circle"></i></a>{{/if}}'
+          +'</div>'
         +'</div>'
         +'<div id="cde-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="col-xs-12">PV Meaning: {{:cde_pvm}}</div>'
+            +'<div class="table-td col-xs-12">PV Meaning: {{:cde_pvm}}</div>'
           +'</div>' 
           +'{{for cde_s}}'
           +'<div class="row">'
@@ -1425,7 +1436,11 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'{{/if}}'
   +'</div>'
 
-+'</div> {{/for}} </div></div></div>';
++'</div> {{/for}} </div></div></div>'
+
++'<div id="alert-email" class="alert alert-email alert-info alert-dismissible" role="alert" style="display: none;">'
+  +'An email will be sucessfully sent to <strong>GDC</strong> and <strong>EVS</strong> team.'
++'</div>';
 
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
