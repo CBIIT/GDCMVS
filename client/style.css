@@ -371,7 +371,16 @@ table.treetable div.value {
 .w100{
   width:100%;
 }
-.alert.alert-email{
+.cde-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.cde-suggest {
+  font-size: 0.8em;
+  padding-left: 1em;
+}
+.alert.alert-suggest{
   position: fixed;
   top: 13rem;
   right: 1%;
