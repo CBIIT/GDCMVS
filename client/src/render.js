@@ -108,10 +108,10 @@ export default function render(keyword, option, items){
   });
 
 
-  $('.cde-email').click(function(){
-    $('#alert-email').fadeIn('slow');
+  $('.cde-suggest').click(function(){
+    $('#alert-suggest').fadeIn('slow');
     setTimeout(function() {
-      $('#alert-email').fadeOut('slow');
+      $('#alert-suggest').fadeOut('slow');
     }, 4000);
   });
 

@@ -653,10 +653,10 @@ function render(keyword, option, items){
   });
 
 
-  $('.cde-email').click(function(){
-    $('#alert-email').fadeIn('slow');
+  $('.cde-suggest').click(function(){
+    $('#alert-suggest').fadeIn('slow');
     setTimeout(function() {
-      $('#alert-email').fadeOut('slow');
+      $('#alert-suggest').fadeOut('slow');
     }, 4000);
   });
 
@@ -1405,14 +1405,14 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'</div>'
   +'<div class="col-xs-9 border-l"> {{for vs}}'
     +'<div class="row {{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}">'
-      +'<div class="table-td col-xs-6 border-r border-b">{{if n == "no match"}}no match{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a>{{/if}}</div>'
-      +'<div class="table-td col-xs-6 border-b">'
+      +'<div class="table-td col-xs-5 border-r border-b">{{if n == "no match"}}no match{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a>{{/if}}</div>'
+      +'<div class="table-td col-xs-7 border-b">'
         +'{{if cde_s.length }}'
         +'<div class="row">'
-          +'<div class="col-xs-10">{{:cde_pv}}</div>'
-          +'<div class="col-xs-2">'
+          +'<div class="col-xs-9">{{:cde_pv}}</div>'
+          +'<div class="col-xs-3 cde-links">'
             +'<a href="javascript:void(0);" class="cde-collapser"><i class="fa fa-plus"></i></a>'
-            +'{{if n == "no match"}}<a href="javascript:void(0);" class="cde-email" style="float: right;"><i class="fa fa-exclamation-circle"></i></a>{{/if}}'
+            +'{{if n == "no match"}}<a href="javascript:void(0);" class="cde-suggest" style="float: right;">Suggest Item</a>{{/if}}'
           +'</div>'
         +'</div>'
         +'<div id="cde-content" class="table-td" style="display: none;">'
@@ -1438,7 +1438,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 +'</div> {{/for}} </div></div></div>'
 
-+'<div id="alert-email" class="alert alert-email alert-info alert-dismissible" role="alert" style="display: none;">'
++'<div id="alert-suggest" class="alert alert-suggest alert-info alert-dismissible" role="alert" style="display: none;">'
   +'An email will be sucessfully sent to <strong>GDC</strong> and <strong>EVS</strong> team.'
 +'</div>';
 
