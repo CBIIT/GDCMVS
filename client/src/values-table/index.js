@@ -5,9 +5,11 @@ const func = {
  	//data preprocessing
 
 	let values = [];
+	let len = 0;
 	items.forEach(function (item){
 	  	let hl = item.highlight;
 	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
+	  		&& hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined 
 	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined 
 	  		&& hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined){
 	  		return;
@@ -15,6 +17,7 @@ const func = {
 	  	let source = item._source;
 	  	let dict_enum_n = {};
 		let dict_enum_s = {};
+		let dict_cde_n = {};
 		let dict_cde_s = {};
 		let arr_enum_c = [];
 		let arr_enum_c_have = [];
@@ -45,6 +48,7 @@ const func = {
 		row.tgts_cde_n = "";
 	  	let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
 		let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+		let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
 		let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
 		let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
 		let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
@@ -55,6 +59,10 @@ const func = {
 		enum_s.forEach(function(s){
 			let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
 			dict_enum_s[tmp] = s;
+		});
+		cde_n.forEach(function(pn){
+			let tmp = pn.replace(/<b>/g,"").replace(/<\/b>/g, "");
+			dict_cde_n[tmp] = pn;
 		});
 		cde_s.forEach(function(ps){
 			let tmp = ps.replace(/<b>/g,"").replace(/<\/b>/g, "");
@@ -109,9 +117,10 @@ const func = {
 						tmp_ss.push({c: ss.c, s: tmp_s_h});
 					});
 				}
+				exist = exist || (pv.n in dict_cde_n);
 				if(exist){
 					//matched_pv[pv.n.toLowerCase()] = tmp_ss;
-					matched_pv[pv.n.toLowerCase()] = {"pv":pv.n,"pvm":pv.m,"ss":tmp_ss};
+					matched_pv[pv.n.toLowerCase()] = {"pv":(pv.n in dict_cde_n ? dict_cde_n[pv.n] : pv.n),"pvm":pv.m,"ss":tmp_ss};
 					pv.n = pv.n.replace(/\'/g, '^');
 					row.tgts_cde_n += pv.n + "#";
 				}
@@ -259,7 +268,7 @@ const func = {
 			}
 			row.vs.push(v);
 		}
-
+		len += row.vs.length;
 		values.push(row);
 	});
 	let html = "";
@@ -274,7 +283,7 @@ const func = {
  		html = $.templates(tmpl).render({mh:h, values:values});
  	}
     let result = {};
-    result.len = values.length;
+    result.len = len;
     result.html = html;
     return result;
 
