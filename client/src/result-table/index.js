@@ -16,9 +16,11 @@ const func = {
         let source = item._source;
         let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
         let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+        let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
         let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
         let arr_enum_s = [];
         let arr_enum_n = [];
+        let arr_cde_n = [];
         let arr_cde_s = [];
         let matched_pv = [];
         let cde2local = false;
@@ -29,6 +31,10 @@ const func = {
         enum_n.forEach(function(n){
             let tmp = n.replace(/<b>/g,"").replace(/<\/b>/g, "");
             arr_enum_n.push(tmp);
+        });
+        cde_n.forEach(function(pn){
+            let tmp = pn.replace(/<b>/g,"").replace(/<\/b>/g, "");
+            arr_cde_n.push(tmp);
         });
         cde_s.forEach(function(ps){
             let tmp = ps.replace(/<b>/g,"").replace(/<\/b>/g, "");
@@ -47,6 +53,7 @@ const func = {
                         })
                     });
                 }
+                exist = exist || (arr_cde_n.indexOf(pv.n) >= 0);
                 if(exist){
                     matched_pv.push(pv.n);
                     if(source.enum !== undefined){

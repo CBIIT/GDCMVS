@@ -338,22 +338,12 @@ function bulkIndex(next){
 	let bulkBody = [];
 	fs.readdirSync(folderPath).forEach(file =>{
 		if(file.indexOf('_') !== 0){
-			count++;
 			let fileJson = yaml.load(folderPath+'/'+file);
 			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema"){
-				let doc = helper(fileJson, termsJson, defJson, ccode, syns);
-				bulkBody.push({
-					index: {
-						_index: config.indexName,
-						_type: 'nodes',
-						_id: doc.id
-					}
-				});
-				bulkBody.push(doc);
+				helper(fileJson, termsJson, defJson, ccode, syns);
 			}
 			
 		}
-		total++;
 
 	});
 	//build suggestion index
@@ -385,43 +375,30 @@ function bulkIndex(next){
 		});
 		propertyBody.push(doc);
 	});
-	esClient.bulk({body: bulkBody}, function(err, data){
-		if(err){
-			return next(err);
+	esClient.bulk({body: propertyBody}, function(err_p, data_p){
+		if(err_p){
+			return next(err_p);
 		}
-		let errorCount = 0;
-		data.items.forEach(item => {
+		let errorCount_p = 0;
+		data_p.items.forEach(item => {
 			if (item.index && item.index.error) {
-			  console.log(++errorCount, item.index.error);
+			  console.log(++errorCount_p, item.index.error);
 			}
 		});
-		esClient.bulk({body: propertyBody}, function(err_p, data_p){
-			if(err_p){
-				return next(err_p);
+		esClient.bulk({body: suggestionBody}, function(err_s, data_s){
+			if(err_s){
+				return next(err_s);
 			}
-			let errorCount_p = 0;
-			data_p.items.forEach(item => {
-				if (item.index && item.index.error) {
-				  console.log(++errorCount_p, item.index.error);
+			let errorCount_s = 0;
+			data_s.items.forEach(itm => {
+				if (itm.index && itm.index.error) {
+				  console.log(++errorCount_s, itm.index.error);
 				}
 			});
-			esClient.bulk({body: suggestionBody}, function(err_s, data_s){
-				if(err_s){
-					return next(err_s);
-				}
-				let errorCount_s = 0;
-				data_s.items.forEach(itm => {
-					if (itm.index && itm.index.error) {
-					  console.log(++errorCount_s, itm.index.error);
-					}
-				});
-				next({indexed: (count - errorCount), 
-						total: count, 
-						property_indexed: (propertyBody.length - errorCount_p),
-						property_total: propertyBody.length,
-						suggestion_indexed: (suggestionBody.length - errorCount_s), 
-						suggestion_total: suggestionBody.length});
-			});
+			next({property_indexed: (propertyBody.length - errorCount_p),
+					property_total: propertyBody.length,
+					suggestion_indexed: (suggestionBody.length - errorCount_s), 
+					suggestion_total: suggestionBody.length});
 		});
 	});
 	
@@ -470,28 +447,20 @@ function suggest(index, suggest, next){
 exports.suggest = suggest;
 
 function createIndexes(params, next){
-	esClient.indices.create(params[0], function(err_1, result_1){
-		if(err_1){
-			console.log(err_1);
-			next(err_1);
+	esClient.indices.create(params[0], function(err_2, result_2){
+		if(err_2){
+			console.log(err_2);
+			next(err_2);
 		}
 		else{
-			esClient.indices.create(params[1], function(err_2, result_2){
-				if(err_2){
-					console.log(err_2);
-					next(err_2);
+			esClient.indices.create(params[1], function(err_3, result_3){
+				if(err_3){
+					console.log(err_3);
+					next(err_3);
 				}
 				else{
-					esClient.indices.create(params[2], function(err_3, result_3){
-						if(err_3){
-							console.log(err_3);
-							next(err_3);
-						}
-						else{
-							console.log("have built node, property and suggestion indexes.");
-							next(result_3);
-						}
-					});
+					console.log("have built property and suggestion indexes.");
+					next(result_3);
 				}
 			});
 		}

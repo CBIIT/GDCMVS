@@ -20,7 +20,7 @@ const func = {
         let option = {};
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
-        option.match = $("input[name=i_match]:checked").val();
+        option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
         option.activeTab = activeTab;
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
