@@ -441,6 +441,13 @@ let activeTab = 0;
 const func = {
     search(){
         let keyword = $("#keywords").val();
+
+        if(keyword == ""){
+            $('#form-search').addClass('has-error');
+            $('#form-search .invalid-feedback').css({'display': 'block'});
+            return;
+        }
+
         keyword = keyword.toLowerCase();
         //get selected tab
         let count = 0;
@@ -497,6 +504,12 @@ const func = {
     },
     suggest(){
         let area = document.getElementById("suggestBox");
+        
+        if($("#form-search").hasClass('has-error')){
+            $("#form-search").removeClass('has-error');
+            $('#form-search .invalid-feedback').removeAttr('style');
+        }
+
         if($(this).val().trim() === ''){
             area.style.display = "none";
             displayBoxIndex = -1;
@@ -652,12 +665,24 @@ function render(keyword, option, items){
     }
   });
 
-
+  
   $('.cde-suggest').click(function(){
-    $('#alert-suggest').fadeIn('slow');
-    setTimeout(function() {
-      $('#alert-suggest').fadeOut('slow');
-    }, 4000);
+    var navbar = $('.navbar .container');
+    var position = (navbar.position().top <= 6) ? 64  : 0;
+    var heightSlider = navbar.height() - position;
+
+    var alertSuggest = $('#alert-suggest');
+    alertSuggest.removeClass('animated fadeInDown fadeOutUp');
+    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+    alertSuggest.css({'display': 'block', 'top': (heightSlider + 20 ) + 'px'}).addClass('animated fadeInDown').one(animationEnd, function() {
+      $(this).removeClass('animated fadeInDown');
+
+      setTimeout(function(){
+        alertSuggest.addClass('animated fadeOutUp').one(animationEnd, function() {
+          $(this).css({'display': 'none'}).removeClass('animated fadeOutUp');
+        });
+      }, 3000);
+    });
   });
 
   // $('#table-body').scroll(function() {
@@ -1960,9 +1985,9 @@ let tmpl = {
               +'<div id="cde-syn-data-list" class="table-container">'
                 +'<div class="table-thead row">'
                   +'<div class="table-th col-xs-2">PV</div>'
-                  +'<div class="table-th col-xs-3">PV Meaning</div>'
+                  +'<div class="table-th col-xs-2">PV Meaning</div>'
                   +'<div class="table-th col-xs-4">Description</div>'
-                  +'<div class="table-th col-xs-3">NCIt Code and Synonyms</div>'
+                  +'<div class="table-th col-xs-4">NCIt Code and Synonyms</div>'
                 +'</div>'
                 +'<div class="table-body row" style="max-height: 450px;">'
                   +'<div class="col-xs-12">'
@@ -1970,9 +1995,9 @@ let tmpl = {
                     +'{{if e == true || ~root.targets == null}}'
                     +'<div class="table-row row">'
                       +'<div class="table-td col-xs-2">{{:pv}}</div>'
-                      +'<div class="table-td col-xs-3">{{:pvm}}</div>'
+                      +'<div class="table-td col-xs-2">{{:pvm}}</div>'
                       +'<div class="table-td col-xs-4">{{:pvd}}</div>'
-                      +'<div name="syn_area" class="table-td col-xs-3">'
+                      +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
@@ -1980,7 +2005,7 @@ let tmpl = {
                         +'</div>' 
                       +'{{/for}}'
                       +'</div>'
-                      +'<div name="syn_invariant" class="table-td col-xs-3" style="display: none;">'
+                      +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
@@ -1992,9 +2017,9 @@ let tmpl = {
                     +'{{else}}'
                     +'<div class="table-row row" style="display: none;">'
                       +'<div class="table-td col-xs-2">{{:pv}}</div>'
-                      +'<div class="table-td col-xs-3">{{:pvm}}</div>'
+                      +'<div class="table-td col-xs-2">{{:pvm}}</div>'
                       +'<div class="table-td col-xs-4">{{:pvd}}</div>'
-                      +'<div name="syn_area" class="table-td col-xs-3">'
+                      +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
@@ -2002,7 +2027,7 @@ let tmpl = {
                         +'</div>' 
                       +'{{/for}}'
                       +'</div>'
-                      +'<div name="syn_invariant" class="table-td col-xs-3" style="display: none;">'
+                      +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'

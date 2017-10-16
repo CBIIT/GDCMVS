@@ -715,16 +715,17 @@
                     <!-- GDC APP -->
                     
                     <div class="search-box">
-                        <form class="form-inline">
+                        <form id="form-search" class="form-inline">
                           <div class="form-group">
                             <label>Keyword: </label>
                             <input id="keywords" type="text" class="form-control"  placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" style="width: 21em;">
                             <button id="search" type="button" class="btn btn-default">Search</button>
+                            <div class="suggest-container">
+                              <div id="suggestBox" class="suggestArea"></div>
+                            </div>
+                            <div class="invalid-feedback">Please enter a valid keyword.</div>
                           </div>
                         </form>
-                        <div class="suggest-container">
-                           <div id="suggestBox" class="suggestArea"></div>
-                        </div>
                         <div class="ref-box">
                           <div class="dropdown-box">
                             <a href="javascript:void(0);" id="pop_window_newTerm" class="btn-a dropdown-head">Suggest a term</a>
