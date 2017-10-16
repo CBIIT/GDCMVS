@@ -107,11 +107,22 @@ export default function render(keyword, option, items){
     }
   });
 
-  
+  var _prevScrollOffset = 0;
+
   $('.cde-suggest').click(function(){
     var navbar = $('.navbar .container');
-    var position = (navbar.position().top <= 6) ? 64  : 0;
-    var heightSlider = navbar.height() - position;
+    //var position = (navbar.position().top <= 6) ? 64  : 0;
+    var heightSlider = navbar.height();// - position;
+    var currentScrollOffset = $(window).scrollTop();
+    var delta = currentScrollOffset - _prevScrollOffset;
+
+    if(delta > 0) {
+      heightSlider = navbar.height() - 64;
+      _prevScrollOffset = currentScrollOffset;
+    } else {
+      heightSlider = navbar.height();
+      _prevScrollOffset = currentScrollOffset;
+    }
 
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDown fadeOutUp');
