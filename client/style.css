@@ -18,6 +18,8 @@ ul {
   display: none; 
   margin-top: .25rem;
   color: #dc3545;
+  /* margin-left: calc(50% - 12.2em); */
+  /* text-align: left; */
 }
 div.col-md-9 {
   padding-bottom: 0;
