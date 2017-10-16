@@ -14,6 +14,11 @@ ul {
 .form-group {
   margin-bottom: 0 !important;
 }
+.invalid-feedback {
+  display: none; 
+  margin-top: .25rem;
+  color: #dc3545;
+}
 div.col-md-9 {
   padding-bottom: 0;
 }
@@ -383,9 +388,11 @@ table.treetable div.value {
 .alert.alert-suggest{
   position: fixed;
   top: 13rem;
-  right: 1%;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #daf2fb;
   z-index: 999;
+  -webkit-animation-duration: 1s;
 }
 #compare_result{
   height:33em;
@@ -487,4 +494,36 @@ table.treetable div.value {
   height:3em;
   float:left;
   padding-left: calc(50% - 12em - 20px);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.fadeInDown {
+  animation-name: fadeInDown;
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+}
+
+.fadeOutUp {
+  animation-name: fadeOutUp;
 }

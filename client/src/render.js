@@ -107,12 +107,24 @@ export default function render(keyword, option, items){
     }
   });
 
-
+  
   $('.cde-suggest').click(function(){
-    $('#alert-suggest').fadeIn('slow');
-    setTimeout(function() {
-      $('#alert-suggest').fadeOut('slow');
-    }, 4000);
+    var navbar = $('.navbar .container');
+    var position = (navbar.position().top <= 6) ? 64  : 0;
+    var heightSlider = navbar.height() - position;
+
+    var alertSuggest = $('#alert-suggest');
+    alertSuggest.removeClass('animated fadeInDown fadeOutUp');
+    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+    alertSuggest.css({'display': 'block', 'top': (heightSlider + 20 ) + 'px'}).addClass('animated fadeInDown').one(animationEnd, function() {
+      $(this).removeClass('animated fadeInDown');
+
+      setTimeout(function(){
+        alertSuggest.addClass('animated fadeOutUp').one(animationEnd, function() {
+          $(this).css({'display': 'none'}).removeClass('animated fadeOutUp');
+        });
+      }, 3000);
+    });
   });
 
   // $('#table-body').scroll(function() {
