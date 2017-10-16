@@ -8,6 +8,13 @@ let activeTab = 0;
 const func = {
     search(){
         let keyword = $("#keywords").val();
+
+        if(keyword == ""){
+            $('#form-search').addClass('has-error');
+            $('#form-search .invalid-feedback').css({'display': 'block'});
+            return;
+        }
+
         keyword = keyword.toLowerCase();
         //get selected tab
         let count = 0;
@@ -64,6 +71,12 @@ const func = {
     },
     suggest(){
         let area = document.getElementById("suggestBox");
+        
+        if($("#form-search").hasClass('has-error')){
+            $("#form-search").removeClass('has-error');
+            $('#form-search .invalid-feedback').removeAttr('style');
+        }
+
         if($(this).val().trim() === ''){
             area.style.display = "none";
             displayBoxIndex = -1;
