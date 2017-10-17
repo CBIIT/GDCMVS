@@ -32,141 +32,55 @@ var suggestion = function(req, res){
 	})
 };
 
-var search = function(req, res){
-	let keyword = req.query.keyword;
-	let option = JSON.parse(req.query.option);
-	let words = [];
-	let query = {};
-	let highlight;
-	if(keyword.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
-	}
-	else{
-		query.bool = {};
-		query.bool.should = [];
-		let m = {};
-		m.multi_match = {};
-		m.multi_match.query = keyword;
-		if(option.match !=="exact"){
-			m.multi_match.fields = ["links.target_type",
-	                  "properties.name.have"];
-		    if(option.desc){
-		    	m.multi_match.fields.push("properties.description");
-		    	m.multi_match.fields.push("properties.term.description");
-		    }
-		    if(option.syn){
-		    	m.multi_match.fields.push("properties.syns.syn.have");
-		    	m.multi_match.fields.push("properties.syns.ss.syn.have");
-		    }
-		    m.multi_match.fields.push("properties.enum.have");
-		    m.multi_match.fields.push("properties.oneOf.enum.have");
-		    query.bool.should.push(m);
-			// query.bool.should.push({
-			// 	"term": {"properties.enum.raw" :keyword}
-			// });
-			// query.bool.should.push({
-		 //    	"term": {"properties.oneOf.enum.raw": keyword}
-		 //    });
-		    highlight = {
-					      "pre_tags" : ["<b>"],
-		        		  "post_tags" : ["</b>"],
-					      "fields":{
-					        "properties.name.have":{"number_of_fragments" : 0},
-					        "links.target_type":{},
-					        "properties.enum.have":{"number_of_fragments" : 0},
-					        "properties.oneOf.enum.have":{"number_of_fragments" : 0}
-					    }
-			};
-			if(option.desc){
-				highlight.fields["properties.description"] = {"number_of_fragments" : 0};
-				highlight.fields["properties.term.description"] = {"number_of_fragments" : 0};
-			}
-			if(option.syn){
-				highlight.fields["properties.syns.syn.have"] = {"number_of_fragments" : 0};
-				highlight.fields["properties.syns.ss.syn.have"] = {"number_of_fragments" : 0};
-			}
-		}
-		else{
-			m.multi_match.fields = ["links.target_type",
-	                  "properties.name"];
-		    if(option.desc){
-		    	m.multi_match.fields.push("properties.description");
-		    	m.multi_match.fields.push("properties.term.description");
-		    }
-		    if(option.syn){
-		    	m.multi_match.fields.push("properties.syns.syn");
-		    	m.multi_match.fields.push("properties.syns.ss.syn");
-		    }
-		    m.multi_match.fields.push("properties.enum");
-		    m.multi_match.fields.push("properties.oneOf.enum");
-		    query.bool.should.push(m);
-			// query.bool.should.push({
-			// 	"term": {"properties.enum" :keyword}
-			// });
-			// query.bool.should.push({
-		 //    	"term": {"properties.oneOf.enum": keyword}
-		 //    });
-		    highlight = {
-					      "pre_tags" : ["<b>"],
-		        		  "post_tags" : ["</b>"],
-					      "fields":{
-					        "properties.name":{},
-					        "links.target_type":{},
-					        "properties.enum":{},
-					        "properties.oneOf.enum":{}
-					    }
-			};
-			if(option.desc){
-				highlight.fields["properties.description"] = {"number_of_fragments" : 0};
-				highlight.fields["properties.term.description"] = {"number_of_fragments" : 0};
-			}
-			if(option.syn){
-				highlight.fields["properties.syns.syn"] = {};
-				highlight.fields["properties.syns.ss.syn"] = {};
-			}
-		}
-		
-	}
-	
-	elastic.query(config.indexName, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
-};
-
 var searchP = function(req, res){
 	let keyword = req.query.keyword;
-	let option = JSON.parse(req.query.option);
-	let words = [];
-	let query = {};
-	let highlight;
 	if(keyword.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
+		res.json([]);
+		// query = {"match_all": {}};
+		// highlight = null;
 	}
 	else{
+		let option = JSON.parse(req.query.option);
+		let words = [];
+		let query = {};
+		let highlight;
 		query.bool = {};
 		query.bool.should = [];
-		let m = {};
-		m.multi_match = {};
-		m.multi_match.query = keyword;
-		m.multi_match.analyzer = "keyword";
 		if(option.match !=="exact"){
-			m.multi_match.fields = ["name.have"];
-		    if(option.desc){
-		    	m.multi_match.fields.push("desc");
+			let m = {};
+			m.match_phrase = {};
+			m.match_phrase["name.have"] = keyword;
+			query.bool.should.push(m);
+			if(option.desc){
+		    	m = {};
+				m.match_phrase = {};
+				m.match_phrase["desc"] = keyword;
+				query.bool.should.push(m);
 		    }
 		    if(option.syn){
-		    	m.multi_match.fields.push("enum.s.have");
-		    	m.multi_match.fields.push("cde_pv.ss.s.have");
+		    	m = {};
+				m.match_phrase = {};
+				m.match_phrase["enum.s.have"] = keyword;
+				query.bool.should.push(m);
+				m = {};
+				m.match_phrase = {};
+				m.match_phrase["cde_pv.n.have"] = keyword;
+				query.bool.should.push(m);
+		    	m = {};
+				m.match_phrase = {};
+				m.match_phrase["cde_pv.ss.s.have"] = keyword;
+				query.bool.should.push(m);
 		    }
-		    m.multi_match.fields.push("enum.n.have");
-		    m.multi_match.fields.push("enum.i_c.have");
-		    query.bool.should.push(m);
+		    m = {};
+			m.match_phrase = {};
+			m.match_phrase["enum.n.have"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match = {};
+			m.match["enum.i_c.have"] = {};
+			m.match["enum.i_c.have"].query = keyword;
+			m.match["enum.i_c.have"].analyzer = "keyword";
+			query.bool.should.push(m);
 		    highlight = {
 					      "pre_tags" : ["<b>"],
 		        		  "post_tags" : ["</b>"],
@@ -181,27 +95,27 @@ var searchP = function(req, res){
 			}
 			if(option.syn){
 				highlight.fields["enum.s.have"] = {"number_of_fragments" : 0};
+				highlight.fields["cde_pv.n.have"] = {"number_of_fragments" : 0};
 				highlight.fields["cde_pv.ss.s.have"] = {"number_of_fragments" : 0};
 			}
 		}
 		else{
+			let m = {};
+			m.multi_match = {};
+			m.multi_match.query = keyword;
+			m.multi_match.analyzer = "keyword";
 			m.multi_match.fields = ["name"];
 		    if(option.desc){
 		    	m.multi_match.fields.push("desc");
 		    }
 		    if(option.syn){
 		    	m.multi_match.fields.push("enum.s");
+		    	m.multi_match.fields.push("cde_pv.n");
 		    	m.multi_match.fields.push("cde_pv.ss.s");
 		    }
 		    m.multi_match.fields.push("enum.n");
 		    m.multi_match.fields.push("enum.i_c.c");
 		    query.bool.should.push(m);
-			// query.bool.should.push({
-			// 	"term": {"properties.enum" :keyword}
-			// });
-			// query.bool.should.push({
-		 //    	"term": {"properties.oneOf.enum": keyword}
-		 //    });
 		    highlight = {
 					      "pre_tags" : ["<b>"],
 		        		  "post_tags" : ["</b>"],
@@ -216,104 +130,22 @@ var searchP = function(req, res){
 			}
 			if(option.syn){
 				highlight.fields["enum.s"] = {};
+				highlight.fields["cde_pv.n"] = {};
 				highlight.fields["cde_pv.ss.s"] = {};
 			}
 		}
-		
+		elastic.query(config.index_p, query, highlight, function(result){
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			res.json(data);
+		});
 	}
-	
-	elastic.query(config.index_p, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
 };
 
 var indexing = function(req, res){
 	let configs = [];
-	let config_node = {};
-	config_node.index = config.indexName;
-	config_node.body = {
-		"settings": {
-	      "analysis": {
-	         "analyzer": {
-	            "case_insensitive": {
-	               "tokenizer": "keyword",
-	               "filter": [
-	                  "lowercase"
-	               ]
-	            },
-	            "case_sensitive": {
-	               "tokenizer": "keyword",
-	               "filter": [
-	                  "lowercase"
-	               ]
-	            }
-	         }
-	      }
-		},
-		"mappings" : {
-	        "nodes" : {
-	            "properties" : {
-	                "id": {
-	                	"type":"keyword"
-	                },
-	                "category": {
-	                	"type":"keyword"
-	                },
-	                "properties.name" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.enum" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.oneOf.enum":{
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.syns.syn" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.syns.ss.syn" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                }
-	            }
-	        }
-	    }
-	};
-
-	configs.push(config_node);
 	//config property index
 	let config_property = {};
 	config_property.index = config.index_p;
@@ -326,8 +158,19 @@ var indexing = function(req, res){
 	               "filter": [
 	                  "lowercase"
 	               ]
-	            }
-	         }
+	            },
+	            "my_standard": {
+                	"tokenizer" : "standard",
+                	"char_filter" : ["my_filter"],
+                	"filter" : ["standard", "lowercase"]
+		        }
+	         },
+			"char_filter" : {
+				"my_filter" : {
+                    "type" : "mapping",
+                    "mappings" : ["_=>-"]
+                }
+			}
 	      }
 		},
 		"mappings" : {
@@ -346,7 +189,8 @@ var indexing = function(req, res){
 	                	"type": "string",
 	                	"fields":{
 	                		"have":{
-	                			"type": "text"
+	                			"type": "text",
+	                			"analyzer": "my_standard"
 	                		}
 	                	},
 	                	"analyzer": "case_insensitive"
@@ -361,6 +205,15 @@ var indexing = function(req, res){
 	                	"analyzer": "case_insensitive"
 	                },
 	                "enum.s" : {
+	                	"type": "string",
+	                	"fields":{
+	                		"have":{
+	                			"type": "text"
+	                		}
+	                	},
+	                	"analyzer": "case_insensitive"
+	                },
+	                "cde_pv.n" : {
 	                	"type": "string",
 	                	"fields":{
 	                		"have":{
@@ -614,7 +467,6 @@ var preload = function(req, res){
 
 module.exports = {
 	suggestion,
-	search,
 	searchP,
 	getDataFromCDE,
 	getCDEData,

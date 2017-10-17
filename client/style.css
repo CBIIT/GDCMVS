@@ -100,7 +100,7 @@ div.col-md-3 {
 }
 .search-options {
   /*border-top: 1px solid black;*/
-  width: 270px;
+  width: 400px;
   text-align: left;
   margin-left: calc(50% - 12.2em);
 }
@@ -109,7 +109,6 @@ div.col-md-3 {
   padding: 5px;
 }
 .search-checkbox{
-  border-top: 1px solid rgba(0,0,0,0.065);
   margin: 0;
   padding: 5px;
 }
