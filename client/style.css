@@ -394,7 +394,7 @@ table.treetable div.value {
   transform: translateX(-50%);
   background-color: #daf2fb;
   z-index: 999;
-  -webkit-animation-duration: 1s;
+  -webkit-animation-duration: 4s;
 }
 #compare_result{
   height:33em;
@@ -498,24 +498,18 @@ table.treetable div.value {
   padding-left: calc(50% - 12em - 20px);
 }
 
-@keyframes fadeInDown {
+@keyframes fadeInDownUp {
   from {
     opacity: 0;
     transform: translate3d(-50%, -100%, 0);
   }
 
-  to {
+  20% {
     opacity: 1;
     transform: translate3d(-50%, 0, 0);
   }
-}
 
-.fadeInDown {
-  animation-name: fadeInDown;
-}
-
-@keyframes fadeOutUp {
-  from {
+  80% {
     opacity: 1;
     transform: translate3d(-50%, 0, 0);
   }
@@ -526,6 +520,6 @@ table.treetable div.value {
   }
 }
 
-.fadeOutUp {
-  animation-name: fadeOutUp;
+.fadeInDownUp {
+  animation-name: fadeInDownUp;
 }
