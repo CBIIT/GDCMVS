@@ -34,8 +34,6 @@ ul {
   display: none; 
   margin-top: .25rem;
   color: #dc3545;
-  /* margin-left: calc(50% - 12.2em); */
-  /* text-align: left; */
 }
 div.col-md-9 {
   padding-bottom: 0;
@@ -119,7 +117,6 @@ div.col-md-3 {
   margin: 0 auto;
 }
 .search-options {
-  /*border-top: 1px solid black;*/
   max-width: 400px;
   text-align: left;
   margin-left: calc(50% - 12.2em);
@@ -178,11 +175,6 @@ div.col-md-3 {
   position:absolute;
   top:calc(2rem + 1em);
   right:15%;
-}
-@media (max-width: 930px) {
-  .ref-box{
-    position: initial;
-  }
 }
 .btn-container{
   margin-top: 10px;
