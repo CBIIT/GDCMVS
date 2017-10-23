@@ -501,7 +501,7 @@ const func = {
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
-        option.activeTab = activeTab;
+        option.activeTab = option.desc ? 1 : activeTab;
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
         //todo:show progress bar
