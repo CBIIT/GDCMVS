@@ -13,11 +13,11 @@ $("#keywords").bind("input", func.suggest);
 $(document).on('click',func.removeBox);
 
 var heightSlider = $('.navbar .container').height();
-$('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');
+$('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
 
 $(window).resize(function() {
   heightSlider = $('.navbar .container').height();
-  $('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');
+  $('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
 });
 
 function getGDCData(prop, target){

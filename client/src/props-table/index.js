@@ -40,8 +40,8 @@ const func = {
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 110;
- 		h = (h < 550) ? 550 : h;
+ 		let h = window.innerHeight - offset - 260;
+ 		h = (h < 540) ? 540 : h;
 
  		html = $.templates(tmpl).render({mh:h,props: props});
  	}
