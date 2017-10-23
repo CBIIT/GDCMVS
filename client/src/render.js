@@ -2,6 +2,7 @@ import trs from './result-table/';
 import ps from './props-table/';
 import vs from './values-table/';
 import tabs from './tabs/'
+import shared from './shared'
 
 export default function render(keyword, option, items){
   let html = "";
@@ -71,14 +72,14 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('.cde-collapser').click(function(){
+  $('.collapser').click(function(){
     let target = $(this);
     let parentTable = $(this).parent().parent().parent();
 
-    let gdeContainer = parentTable.find('#cde-content');
+    let dataContainer = parentTable.find('#data-content');
 
-    gdeContainer.slideToggle(400, function(){
-      if(gdeContainer.is(":visible")){
+    dataContainer.slideToggle(400, function(){
+      if(dataContainer.is(":visible")){
         target.html('<i class="fa fa-minus"></i>');
       }else{
         target.html('<i class="fa fa-plus"></i>');
@@ -91,7 +92,7 @@ export default function render(keyword, option, items){
     let target = $(this);
     let parentTarget = $(this).parent();
     let gdcLinks = parentTarget.find('#gdc-links');
-    gdcLinks.slideToggle(400);
+    gdcLinks.slideToggle(350);
   });
 
   let hiddenRows = $('#tree_table').find('.data-hide');
@@ -107,35 +108,31 @@ export default function render(keyword, option, items){
     }
   });
 
-  var _prevScrollOffset = 0;
-  var heightSlider = $('.navbar .container').height();
-  var windowEl = $(window);
-  var headerOffset = heightSlider;
-
-  function _onScroll() {
-    var currentScrollOffset = windowEl.scrollTop();
-    var delta = currentScrollOffset - _prevScrollOffset;
-
-    if(delta > 0) {
-      headerOffset = heightSlider - 64;
-      _prevScrollOffset = currentScrollOffset;
-    } else {
-      headerOffset = heightSlider;
-      _prevScrollOffset = currentScrollOffset;
-    }
-
-  }
-
-  windowEl.scroll(_onScroll);
-
   $('.cde-suggest').click(function(){
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({'display': 'none'});
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertSuggest.css({'display': 'block', 'top': (headerOffset + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+    alertSuggest.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
       alertSuggest.css({'display': 'none'})
     });
   });
+  
+  var windowEl = $(window);
+
+  windowEl.resize(function() {
+    var heightSlider = $('.navbar .container').height();
+    var dialogs = $('#gdc_data, #gdc_syn_data, #compare_dialog, #caDSR_data, #compareGDC_dialog');
+    dialogs.each(function(){
+      var target = $(this).parent();
+      if(target.offset().top < heightSlider){
+        target.css('top', (heightSlider+10)+"px");
+      }else if(windowEl.width() < (target.offset().left + target.width())){
+        target.css('left', (windowEl.width() - target.width() - 10)+"px");
+      }
+    });
+  });
+
+  $('.tooltip-box').tooltip();
 
   // $('#table-body').scroll(function() {
   //   console.log('true');

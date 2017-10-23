@@ -1,5 +1,6 @@
 import tmpl from './view';
 import api from '../api';
+import shared from '../shared'
 
 const func = {
   getGDCData(prop, item) {
@@ -9,7 +10,7 @@ const func = {
         }
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
         let html = $.templates(tmpl.gdc_data).render({target:target,items: items });
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         if(target !== undefined){
@@ -28,16 +29,24 @@ const func = {
             });
         }
         $("#gdc_data").dialog({
+            width:"600px",
+        });
+        $("#gdc_data").dialog({
                 modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:window},
+                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"35%",
                 title: "GDC Permissible Values ("+items.length+")",
                 open: function() {
-
+                    var target = $(this).parent();
+                    if(target.offset().top < shared.headerOffset()){
+                        target.css('top', (shared.headerOffset()+20)+"px");
+                    }
                 },
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
       	
     });
@@ -87,7 +96,7 @@ const func = {
             it.s_r = tmp_s;
         }); 
         let html = $.templates(tmpl.gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
 
@@ -110,10 +119,15 @@ const func = {
 
         $("#gdc_syn_data").dialog({
                 modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:window},
+                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"55%",
                 title: "GDC Synonyms ("+items.length+")",
                 open: function() {
+                    var target = $(this).parent();
+                    if(target.offset().top < shared.headerOffset()){
+                        target.css('top', (shared.headerOffset()+20)+"px");
+                    }
+
                     $('#gdc-data-invariant').bind('click', function(){
                             $("#gdc-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
@@ -126,6 +140,8 @@ const func = {
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
       	
     });
@@ -136,15 +152,21 @@ const func = {
             $('#compare_dialog').remove();
         }
         let html = $.templates(tmpl.toCompare).render({items: items });
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         $("#compare_dialog").dialog({
             modal: false,
-            position: { my: "center top+"+tp, at: "center top", of:window},
+            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width:"60%",
             title: "Compare Your Values with GDC Permissible Values ",
             open: function() {
+
+                var target = $(this).parent();
+                if(target.offset().top < shared.headerOffset()){
+                    target.css('top', (shared.headerOffset()+20)+"px");
+                }
+
             	$('#cp_result').css("display", "none");
                 $('#compare').bind('click', function(){
                     let gv = [];
@@ -160,6 +182,8 @@ const func = {
             close: function() {
                 $(this).remove();
             }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
       	
     });
@@ -221,7 +245,7 @@ const func = {
             }
 
             let html = $.templates(tmpl.cde_data).render({targets: targets, items: tmp });
-            let tp = window.innerHeight * 0.2;
+            let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
             //display result in a table
             $(document.body).append(html);
             
@@ -244,10 +268,15 @@ const func = {
 
             $("#caDSR_data").dialog({
                     modal: false,
-                    position: { my: "center top+"+tp, at: "center top", of:window},
+                    position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                     width:"60%",
                     title: "CaDSR Permissible Values ("+tmp.length+")",
                     open: function() {
+                        var target = $(this).parent();
+                        if(target.offset().top < shared.headerOffset()){
+                            target.css('top', (shared.headerOffset()+20)+"px");
+                        }
+
                         $('#cde-data-invariant').bind('click', function(){
                             $("#cde-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
@@ -260,6 +289,8 @@ const func = {
                     close: function() {
                         $(this).remove();
                     }
+            }).parent().draggable({
+                containment: '#docs-container'
             });
             
         });
@@ -276,7 +307,7 @@ const func = {
                         +'<div id="compareGDC_result"></div>'
                     +'</div>';
         $(document.body).append(popup);
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         let toV = [];
         let fromV = [];
         let opt = {};
@@ -293,38 +324,28 @@ const func = {
                     +'<div id="cpGDC_result_option">'
                         +'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
                     +'<div id="cpGDC_result_table" class="table-container">'+table+'</div>'
-                    //+'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
                     +'</div>';
 
         $('#compareGDC_result').html(html);
         
         $("#compareGDC_dialog").dialog({
                 modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:window},
+                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"50%",
                 title: "Compare GDC Values with caDSR Values ",
                 open: function() {
-                    //display result in a table
-                    ///$('#compareGDC_result').html(html);
-                    // let height = $('#cpGDC_result_table').height() +1;
-                    // if(height >= 30 * 12.8){
-                    //     height = 384;
-                    // }
-                    // $('#cpGDC_result_table div.table-body').height(height+'px');
-                    // $('#closeCompareGDC').bind('click', function(){
-                    //     $("#compareGDC_dialog").dialog('close');
-                    // });
+
+                    var target = $(this).parent();
+                    if(target.offset().top < shared.headerOffset()){
+                        target.css('top', (shared.headerOffset()+20)+"px");
+                    }
+
                     $('#compareGDC_filter').bind('click', function(){
                         let options = {};
                         options.sensitive = $("#compareGDC_filter").prop('checked');
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
                         let table_new = generateCompareGDCResult(fromV, toV, options);
                         $('#cpGDC_result_table').html(table_new);
-                        // let h = $('#cpGDC_result_table').height() +1;
-                        // if(h >= 30 * 12.8){
-                        //     h = 384;
-                        // }
-                        // $('#cpGDC_result_table div.table-body').height(h+'px');
                     });
                     $('#compareGDC_unmatched').bind('click', function(){
                         let options = {};
@@ -332,16 +353,13 @@ const func = {
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
                         let table_new = generateCompareGDCResult(fromV, toV, options);
                         $('#cpGDC_result_table').html(table_new);
-                        // let h = $('#cpGDC_result_table').height() +1;
-                        // if(h >= 30 * 12.8){
-                        //     h = 384;
-                        // }
-                        // $('#cpGDC_result_table div.table-body').height(h+'px');
                     });
                 },
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
     });
   }
