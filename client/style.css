@@ -1,5 +1,21 @@
+body {
+  min-width: 970px;
+}
+#body {
+  margin-top: 0 !important;
+  margin-bottom: 130px;
+}
+.parent-container{
+  min-height: calc(100% - 10px);
+}
 .container {
   font-size: 1.3rem;
+}
+footer{
+  min-width: 970px;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
 }
 ul {
   padding: 0 0 0 20px;
@@ -75,6 +91,10 @@ div.col-md-3 {
   background: #847c7c;
   color: #fff;
 }
+.table-thead a.tooltip-box {
+  color: white;
+  padding-left: 10px;
+}
 .thead-row{
   display: flex;
   align-items: center;
@@ -100,7 +120,7 @@ div.col-md-3 {
 }
 .search-options {
   /*border-top: 1px solid black;*/
-  width: 400px;
+  max-width: 400px;
   text-align: left;
   margin-left: calc(50% - 12.2em);
 }
@@ -281,6 +301,13 @@ table.treetable div.value {
   color: #ffffff;
   background-color: #798d8f;
   border-color: #566566;
+}
+.ui-dialog .ui-dialog-content{
+  width: 100% !important;
+  height: calc(100% - 38px) !important;
+}
+.ui-tooltip {
+  font-size: 0.8em;
 }
 .data-table-head{
   background: #847c7c;

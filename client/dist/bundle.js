@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -111,9 +111,49 @@ const api = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
+var _prevScrollOffset = 0;
+var heightSlider = $('.navbar .container').height();
+var windowEl = $(window);
+var headerOffset = heightSlider;
+
+function _onScroll() {
+  var currentScrollOffset = windowEl.scrollTop();
+  var delta = currentScrollOffset - _prevScrollOffset;
+
+  if(delta > 0) {
+    headerOffset = heightSlider - 64;
+    _prevScrollOffset = currentScrollOffset;
+  } else {
+    headerOffset = heightSlider;
+    _prevScrollOffset = currentScrollOffset;
+  }
+}
+
+
+function _onResize() {
+  heightSlider = $('.navbar .container').height();
+  headerOffset = heightSlider;
+}
+
+windowEl.scroll(_onScroll);
+
+windowEl.resize(_onResize);
+
+const func = {
+  headerOffset() { return headerOffset },
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (func);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__search_bar___ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dialog___ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__search_bar___ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dialog___ = __webpack_require__(14);
 
 
 
@@ -129,11 +169,11 @@ $("#keywords").bind("input", __WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* d
 $(document).on('click',__WEBPACK_IMPORTED_MODULE_0__search_bar___["a" /* default */].removeBox);
 
 var heightSlider = $('.navbar .container').height();
-$('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');
+$('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
 
 $(window).resize(function() {
   heightSlider = $('.navbar .container').height();
-  $('#body').attr('style', 'margin-top: '+ (heightSlider - 44) +'px !important');
+  $('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
 });
 
 function getGDCData(prop, target){
@@ -424,13 +464,13 @@ window.findWord = findWord;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__api__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__render__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__render__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(13);
 
 
 
@@ -547,15 +587,17 @@ const func = {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = render;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__result_table___ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__props_table___ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__values_table___ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tabs___ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__result_table___ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__props_table___ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__values_table___ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tabs___ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared__ = __webpack_require__(1);
+
 
 
 
@@ -629,14 +671,14 @@ function render(keyword, option, items){
     }
   });
 
-  $('.cde-collapser').click(function(){
+  $('.collapser').click(function(){
     let target = $(this);
     let parentTable = $(this).parent().parent().parent();
 
-    let gdeContainer = parentTable.find('#cde-content');
+    let dataContainer = parentTable.find('#data-content');
 
-    gdeContainer.slideToggle(400, function(){
-      if(gdeContainer.is(":visible")){
+    dataContainer.slideToggle(400, function(){
+      if(dataContainer.is(":visible")){
         target.html('<i class="fa fa-minus"></i>');
       }else{
         target.html('<i class="fa fa-plus"></i>');
@@ -649,7 +691,7 @@ function render(keyword, option, items){
     let target = $(this);
     let parentTarget = $(this).parent();
     let gdcLinks = parentTarget.find('#gdc-links');
-    gdcLinks.slideToggle(400);
+    gdcLinks.slideToggle(350);
   });
 
   let hiddenRows = $('#tree_table').find('.data-hide');
@@ -665,35 +707,31 @@ function render(keyword, option, items){
     }
   });
 
-  var _prevScrollOffset = 0;
-  var heightSlider = $('.navbar .container').height();
-  var windowEl = $(window);
-  var headerOffset = heightSlider;
-
-  function _onScroll() {
-    var currentScrollOffset = windowEl.scrollTop();
-    var delta = currentScrollOffset - _prevScrollOffset;
-
-    if(delta > 0) {
-      headerOffset = heightSlider - 64;
-      _prevScrollOffset = currentScrollOffset;
-    } else {
-      headerOffset = heightSlider;
-      _prevScrollOffset = currentScrollOffset;
-    }
-
-  }
-
-  windowEl.scroll(_onScroll);
-
   $('.cde-suggest').click(function(){
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({'display': 'none'});
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertSuggest.css({'display': 'block', 'top': (headerOffset + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+    alertSuggest.css({'display': 'block', 'top': (__WEBPACK_IMPORTED_MODULE_4__shared__["a" /* default */].headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
       alertSuggest.css({'display': 'none'})
     });
   });
+  
+  var windowEl = $(window);
+
+  windowEl.resize(function() {
+    var heightSlider = $('.navbar .container').height();
+    var dialogs = $('#gdc_data, #gdc_syn_data, #compare_dialog, #caDSR_data, #compareGDC_dialog');
+    dialogs.each(function(){
+      var target = $(this).parent();
+      if(target.offset().top < heightSlider){
+        target.css('top', (heightSlider+10)+"px");
+      }else if(windowEl.width() < (target.offset().left + target.width())){
+        target.css('left', (windowEl.width() - target.width() - 10)+"px");
+      }
+    });
+  });
+
+  $('.tooltip-box').tooltip();
 
   // $('#table-body').scroll(function() {
   //   console.log('true');
@@ -726,11 +764,11 @@ function render(keyword, option, items){
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(6);
 
 
 const func = {
@@ -933,8 +971,8 @@ const func = {
  	});
 
  	let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 110;
-    h = (h < 550) ? 550 : h;
+    let h = window.innerHeight - offset - 290;
+    h = (h < 500) ? 500 : h;
 
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
     let result = {};
@@ -948,7 +986,7 @@ const func = {
 /* harmony default export */ __webpack_exports__["a"] = (func);
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -997,11 +1035,11 @@ let tmpl = '<div class="container table-container">'
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(8);
 
 
 const func = {
@@ -1044,8 +1082,8 @@ const func = {
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 110;
- 		h = (h < 550) ? 550 : h;
+ 		let h = window.innerHeight - offset - 260;
+ 		h = (h < 540) ? 540 : h;
 
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,props: props});
  	}
@@ -1061,7 +1099,7 @@ const func = {
 /* harmony default export */ __webpack_exports__["a"] = (func);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1111,11 +1149,11 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(10);
 
 
 const func = {
@@ -1396,7 +1434,7 @@ const func = {
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 110;
+ 		let h = window.innerHeight - offset - 240;
  		h = (h < 550) ? 550 : h;
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
  	}
@@ -1411,7 +1449,7 @@ const func = {
 /* harmony default export */ __webpack_exports__["a"] = (func);
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1422,8 +1460,8 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'</div>'
   +'<div class="col-xs-9">'
     +'<div class="row table-thead">'
-      +'<div class="table-th col-xs-5">Matched GDC Values</div>'
-      +'<div class="table-th col-xs-7">CDE Permissible Values</div>'
+      +'<div class="table-th col-xs-6">Matched GDC Values <a class="tooltip-box" data-toggle="tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sollicitudin lacus vitae lorem pellentesque malesuada."><i class="fa fa-info-circle"></i></a></div>'
+      +'<div class="table-th col-xs-6">CDE Permissible Values <a class="tooltip-box" data-toggle="tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sollicitudin lacus vitae lorem pellentesque malesuada."><i class="fa fa-info-circle"></i></a></div>'
     +'</div>'
   +'</div>'
 +'</div>'
@@ -1456,17 +1494,30 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'</div>'
   +'<div class="col-xs-9 border-l"> {{for vs}}'
     +'<div class="row {{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}">'
-      +'<div class="table-td col-xs-5 border-r border-b">{{if n == "no match"}}no match{{else}}<a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a>{{/if}}</div>'
-      +'<div class="table-td col-xs-7 border-b">'
+      +'<div class="table-td col-xs-6 border-r border-b">'
+      +'{{if n == "no match"}}no match{{else}}'
+        +'<div class="row">'
+          +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a></div>'
+          +'<div class="col-xs-2"><a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a></div>'
+        +'</div>'
+        +'<div id="data-content" class="table-td" style="display: none;">'
+          +'<div class="row">'
+            +'<div class="col-xs-3">{{:n_c}}</div>'
+            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+          +'</div>'
+        +'</div>'
+      +'{{/if}}'
+      +'</div>'
+      +'<div class="table-td col-xs-6 border-b">'
         +'{{if cde_s.length }}'
         +'<div class="row">'
           +'<div class="col-xs-9">{{:cde_pv}}</div>'
           +'<div class="col-xs-3 cde-links">'
-            +'<a href="javascript:void(0);" class="cde-collapser"><i class="fa fa-plus"></i></a>'
+            +'<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>'
             +'{{if n == "no match"}}<a href="javascript:void(0);" class="cde-suggest" style="float: right;">Suggest Item</a>{{/if}}'
           +'</div>'
         +'</div>'
-        +'<div id="cde-content" class="table-td" style="display: none;">'
+        +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
             +'<div class="table-td col-xs-12">PV Meaning: {{:cde_pvm}}</div>'
           +'</div>' 
@@ -1499,11 +1550,11 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(12);
 
 
 /* harmony default export */ __webpack_exports__["a"] = (function (trsHtml, psHtml, vsHtml) {
@@ -1515,7 +1566,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1530,7 +1581,7 @@ let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1544,12 +1595,14 @@ let tmpl = '{{for options}}<div>'
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__api__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared__ = __webpack_require__(1);
+
 
 
 
@@ -1561,7 +1614,7 @@ const func = {
         }
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target,items: items });
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? 0 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         if(target !== undefined){
@@ -1580,16 +1633,24 @@ const func = {
             });
         }
         $("#gdc_data").dialog({
+            width:"600px",
+        });
+        $("#gdc_data").dialog({
                 modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:window},
+                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"35%",
                 title: "GDC Permissible Values ("+items.length+")",
                 open: function() {
-
+                    var target = $(this).parent();
+                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    }
                 },
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
       	
     });
@@ -1639,7 +1700,7 @@ const func = {
             it.s_r = tmp_s;
         }); 
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
 
@@ -1662,10 +1723,15 @@ const func = {
 
         $("#gdc_syn_data").dialog({
                 modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:window},
+                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"55%",
                 title: "GDC Synonyms ("+items.length+")",
                 open: function() {
+                    var target = $(this).parent();
+                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    }
+
                     $('#gdc-data-invariant').bind('click', function(){
                             $("#gdc-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
@@ -1678,6 +1744,8 @@ const func = {
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
       	
     });
@@ -1688,15 +1756,21 @@ const func = {
             $('#compare_dialog').remove();
         }
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].toCompare).render({items: items });
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         $("#compare_dialog").dialog({
             modal: false,
-            position: { my: "center top+"+tp, at: "center top", of:window},
+            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width:"60%",
             title: "Compare Your Values with GDC Permissible Values ",
             open: function() {
+
+                var target = $(this).parent();
+                if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                }
+
             	$('#cp_result').css("display", "none");
                 $('#compare').bind('click', function(){
                     let gv = [];
@@ -1712,6 +1786,8 @@ const func = {
             close: function() {
                 $(this).remove();
             }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
       	
     });
@@ -1773,7 +1849,7 @@ const func = {
             }
 
             let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].cde_data).render({targets: targets, items: tmp });
-            let tp = window.innerHeight * 0.2;
+            let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
             //display result in a table
             $(document.body).append(html);
             
@@ -1796,10 +1872,15 @@ const func = {
 
             $("#caDSR_data").dialog({
                     modal: false,
-                    position: { my: "center top+"+tp, at: "center top", of:window},
+                    position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                     width:"60%",
                     title: "CaDSR Permissible Values ("+tmp.length+")",
                     open: function() {
+                        var target = $(this).parent();
+                        if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                            target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                        }
+
                         $('#cde-data-invariant').bind('click', function(){
                             $("#cde-syn-data-list").find('div[name="syn_area"]').each(function(){
                                 let rp = $(this).html();
@@ -1812,6 +1893,8 @@ const func = {
                     close: function() {
                         $(this).remove();
                     }
+            }).parent().draggable({
+                containment: '#docs-container'
             });
             
         });
@@ -1828,7 +1911,7 @@ const func = {
                         +'<div id="compareGDC_result"></div>'
                     +'</div>';
         $(document.body).append(popup);
-        let tp = window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         let toV = [];
         let fromV = [];
         let opt = {};
@@ -1845,38 +1928,28 @@ const func = {
                     +'<div id="cpGDC_result_option">'
                         +'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
                     +'<div id="cpGDC_result_table" class="table-container">'+table+'</div>'
-                    //+'<div id="cpGDC_result_bottom"><span id="closeCompareGDC" class="btn-submit-large" style="margin-left: calc(50% - 2em - 10px);">Close</span></div>'
                     +'</div>';
 
         $('#compareGDC_result').html(html);
         
         $("#compareGDC_dialog").dialog({
                 modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:window},
+                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"50%",
                 title: "Compare GDC Values with caDSR Values ",
                 open: function() {
-                    //display result in a table
-                    ///$('#compareGDC_result').html(html);
-                    // let height = $('#cpGDC_result_table').height() +1;
-                    // if(height >= 30 * 12.8){
-                    //     height = 384;
-                    // }
-                    // $('#cpGDC_result_table div.table-body').height(height+'px');
-                    // $('#closeCompareGDC').bind('click', function(){
-                    //     $("#compareGDC_dialog").dialog('close');
-                    // });
+
+                    var target = $(this).parent();
+                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    }
+
                     $('#compareGDC_filter').bind('click', function(){
                         let options = {};
                         options.sensitive = $("#compareGDC_filter").prop('checked');
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
                         let table_new = generateCompareGDCResult(fromV, toV, options);
                         $('#cpGDC_result_table').html(table_new);
-                        // let h = $('#cpGDC_result_table').height() +1;
-                        // if(h >= 30 * 12.8){
-                        //     h = 384;
-                        // }
-                        // $('#cpGDC_result_table div.table-body').height(h+'px');
                     });
                     $('#compareGDC_unmatched').bind('click', function(){
                         let options = {};
@@ -1884,16 +1957,13 @@ const func = {
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
                         let table_new = generateCompareGDCResult(fromV, toV, options);
                         $('#cpGDC_result_table').html(table_new);
-                        // let h = $('#cpGDC_result_table').height() +1;
-                        // if(h >= 30 * 12.8){
-                        //     h = 384;
-                        // }
-                        // $('#cpGDC_result_table div.table-body').height(h+'px');
                     });
                 },
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
         });
     });
   }
@@ -1902,7 +1972,7 @@ const func = {
 /* harmony default export */ __webpack_exports__["a"] = (func);
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1945,7 +2015,7 @@ let tmpl = {
               +'<div class="table-th col-xs-2">NCIt</div>'
               +'<div class="table-th col-xs-5">Synonyms</div>'
             +'</div>'
-            +'<div class="table-body row" style="max-height: 450px;">'
+            +'<div class="table-body row" style="max-height: 390px;">'
               +'<div class="col-xs-12">'
                 +'{{for items}}'
                   +'{{if e == true || ~root.targets == null}}'
@@ -2015,7 +2085,7 @@ let tmpl = {
                   +'<div class="table-th col-xs-4">Description</div>'
                   +'<div class="table-th col-xs-4">NCIt Code and Synonyms</div>'
                 +'</div>'
-                +'<div class="table-body row" style="max-height: 450px;">'
+                +'<div class="table-body row" style="max-height: 390px;">'
                   +'<div class="col-xs-12">'
                   +'{{for items}}'
                     +'{{if e == true || ~root.targets == null}}'
