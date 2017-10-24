@@ -9,10 +9,12 @@ var path = require('path');
 var elasticsearch = require('elasticsearch');
 var yaml = require('yamljs');
 var config = require('../config');
+var logger = require('./logger');
 var caDSR = require('./caDSR');
 var extend = require('util')._extend;
 var allTerm = {};
 var cdeData = '';
+var cdeDataType = '';
 var gdc_values = {};
 var allProperties = [];
 
@@ -205,6 +207,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 			p.cde.id = entry.term.termDef.cde_id;
 			p.cde.v = entry.term.termDef.cde_version;
 			p.cde.url = entry.term.termDef.term_url;
+			if(p.cde.id in cdeDataType){
+				p.cde.dt = cdeDataType[p.cde.id];
+			}
 		}
 		//generate enum
 		if(entry.syns == undefined){
@@ -307,6 +312,10 @@ function bulkIndex(next){
 	let content_2 = fs.readFileSync("./synonyms.js").toString();
 	content_2 = content_2.replace(/}{/g, ",");
 	cdeData = JSON.parse(content_1);
+	let content_3 = fs.readFileSync("./cdeDataType.js").toString();
+	content_3 = content_3.replace(/}{/g, ",");
+	cdeDataType = JSON.parse(content_3);
+	cdeData = JSON.parse(content_1);
 	let syns = JSON.parse(content_2);
 	for(var c in cdeData){
 		let pvs = cdeData[c];
@@ -382,7 +391,7 @@ function bulkIndex(next){
 		let errorCount_p = 0;
 		data_p.items.forEach(item => {
 			if (item.index && item.index.error) {
-			  console.log(++errorCount_p, item.index.error);
+			  logger.error(++errorCount_p, item.index.error);
 			}
 		});
 		esClient.bulk({body: suggestionBody}, function(err_s, data_s){
@@ -392,7 +401,7 @@ function bulkIndex(next){
 			let errorCount_s = 0;
 			data_s.items.forEach(itm => {
 				if (itm.index && itm.index.error) {
-				  console.log(++errorCount_s, itm.index.error);
+				  logger.error(++errorCount_s, itm.index.error);
 				}
 			});
 			next({property_indexed: (propertyBody.length - errorCount_p),
@@ -418,7 +427,7 @@ function query(index, dsl,highlight, next){
     body.sort = [{"category":"asc"},{"node":"asc"}];
     esClient.search({index: index, body: body}, function(err, data){
     	if(err){
-    		console.log(err);
+    		logger.error(err);
     		next(err);
     	}
     	else{
@@ -435,7 +444,7 @@ function suggest(index, suggest, next){
 	body.suggest = suggest;
 	esClient.search({index: index,"_source": true, body: body}, function(err, data){
 		if(err){
-			console.log(err);
+			logger.error(err);
     		next(err);
 		}
 		else{
@@ -449,17 +458,17 @@ exports.suggest = suggest;
 function createIndexes(params, next){
 	esClient.indices.create(params[0], function(err_2, result_2){
 		if(err_2){
-			console.log(err_2);
+			logger.error(err_2);
 			next(err_2);
 		}
 		else{
 			esClient.indices.create(params[1], function(err_3, result_3){
 				if(err_3){
-					console.log(err_3);
+					logger.error(err_3);
 					next(err_3);
 				}
 				else{
-					console.log("have built property and suggestion indexes.");
+					logger.debug("have built property and suggestion indexes.");
 					next(result_3);
 				}
 			});
@@ -486,6 +495,23 @@ function preloadDataFromCaDSR(next){
 }
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
+
+function preloadDataTypeFromCaDSR(next){
+	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeDataJson = JSON.parse(content_1);
+	let ids = [];
+	for(var term in cdeDataJson){
+		let detail = cdeDataJson[term];
+		if(detail.length == 0){
+			ids.push(term);
+		}
+	}
+	caDSR.loadDataType(ids);
+	next(1);
+}
+
+exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
 function preloadDataAfter(next){
 	caDSR.loadDataAfter();
