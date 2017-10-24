@@ -226,22 +226,13 @@ function compare(gv){
                     +'</div>';
         $('#compare_result').html(html);
 
-        // let h = $('#cp_result_table table:first-child').height() +1;
-        // if(h >= 30 * 12.8){
-        //     h = 384;
-        // }
-        //$('#cp_result_table').height(h+'px');
         $('#compare_filter').bind('click', function(){
             let options = {};
             options.sensitive = $("#compare_filter").prop('checked');
             options.unmatched = $("#compare_unmatched").prop('checked');
             let table_new = generateCompareResult(vs, gv, options);
             $('#cp_result_table').html(table_new);
-            // let h = $('#cp_result_table table:first-child').height() +1;
-            // if(h >= 30 * 12.8){
-            //     h = 384;
-            // }
-            // $('#cp_result_table').height(h+'px');
+
         });
         $('#compare_unmatched').bind('click', function(){
             let options = {};
@@ -249,11 +240,7 @@ function compare(gv){
             options.unmatched = $("#compare_unmatched").prop('checked');
             let table_new = generateCompareResult(vs, gv, options);
             $('#cp_result_table').html(table_new);
-            // let h = $('#cp_result_table table:first-child').height() +1;
-            // if(h >= 30 * 12.8){
-            //     h = 384;
-            // }
-            // $('#cp_result_table').height(h+'px');
+
         });
         $('#back2Compare').bind('click', function(){
             $('#compare_result').html("");
@@ -1463,8 +1450,8 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'</div>'
   +'<div class="col-xs-9">'
     +'<div class="row table-thead">'
-      +'<div class="table-th col-xs-6">Matched GDC Values <a class="tooltip-box" data-toggle="tooltip" title="Text will be provided to inform users on how to interpret content of columns."><i class="fa fa-info-circle"></i></a></div>'
-      +'<div class="table-th col-xs-6">CDE Permissible Values <a class="tooltip-box" data-toggle="tooltip" title="Text will be provided to inform users on how to interpret content of columns."><i class="fa fa-info-circle"></i></a></div>'
+      +'<div class="table-th col-xs-6">Matched GDC Values <a class="tooltip-box" data-toggle="tooltip" data-placement="bottom" title="Text will be provided to inform users on how to interpret content of columns."><i class="fa fa-info-circle"></i></a></div>'
+      +'<div class="table-th col-xs-6">CDE Permissible Values <a class="tooltip-box" data-toggle="tooltip" data-placement="bottom" title="Text will be provided to inform users on how to interpret content of columns."><i class="fa fa-info-circle"></i></a></div>'
     +'</div>'
   +'</div>'
 +'</div>'
@@ -1501,7 +1488,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'{{if n == "no match"}}no match{{else}}'
         +'<div class="row">'
           +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a></div>'
-          +'<div class="col-xs-2"><a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a></div>'
+          +'<div class="col-xs-2">{{if s !== undefined}}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
