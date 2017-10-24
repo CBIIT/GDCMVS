@@ -30,6 +30,9 @@ const func = {
  			prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
  			prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
  			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
+ 			if(source.cde !== undefined && source.cde.dt !== undefined){
+ 				prop.type = source.cde.dt;
+ 			}
  			props.push(prop);
  		}
  	});
