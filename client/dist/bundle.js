@@ -1072,6 +1072,9 @@ const func = {
  			prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
  			prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
  			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
+ 			if(source.cde !== undefined && source.cde.dt !== undefined){
+ 				prop.type = source.cde.dt;
+ 			}
  			props.push(prop);
  		}
  	});
@@ -1107,16 +1110,16 @@ const func = {
 let tmpl = '<div class="container table-container"><div class="table-thead row">'
   +'<div class="table-th col-xs-2">Category / Node</div>'
   +'<div class="table-th col-xs-2">Property</div>'
-  +'<div class="table-th col-xs-5">Description</div>'
+  +'<div class="table-th col-xs-4">Description</div>'
   +'<div class="table-th col-xs-2">GDC Property Values</div>'
-  +'<div class="table-th col-xs-1">CDE Reference</div>'
+  +'<div class="table-th col-xs-2">CDE Reference</div>'
 +'</div>'
 +'<div class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">'
 +'{{for props}}'
 +'<div class="table-row row">'
   +'<div class="table-td col-xs-2">{{:ct}}<ul><li class="word-break">{{:nd}}</li></ul></div>'
   +'<div class="table-td col-xs-2 word-break">{{:nm}}</div>'
-  +'<div class="table-td col-xs-5">{{:desc}}</div>'
+  +'<div class="table-td col-xs-4">{{:desc}}</div>'
   +'<div class="table-td col-xs-2">'
   +'{{if local}}'
   +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
@@ -1129,7 +1132,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'type: {{:type}}'
   +'{{/if}}'
   +'</div>' 
-  +'<div class="table-td col-xs-1">'
+  +'<div class="table-td col-xs-2">'
   +'{{if cdeId == ""}}'
   +''
   +'{{else}}'
