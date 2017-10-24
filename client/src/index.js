@@ -70,22 +70,13 @@ function compare(gv){
                     +'</div>';
         $('#compare_result').html(html);
 
-        // let h = $('#cp_result_table table:first-child').height() +1;
-        // if(h >= 30 * 12.8){
-        //     h = 384;
-        // }
-        //$('#cp_result_table').height(h+'px');
         $('#compare_filter').bind('click', function(){
             let options = {};
             options.sensitive = $("#compare_filter").prop('checked');
             options.unmatched = $("#compare_unmatched").prop('checked');
             let table_new = generateCompareResult(vs, gv, options);
             $('#cp_result_table').html(table_new);
-            // let h = $('#cp_result_table table:first-child').height() +1;
-            // if(h >= 30 * 12.8){
-            //     h = 384;
-            // }
-            // $('#cp_result_table').height(h+'px');
+
         });
         $('#compare_unmatched').bind('click', function(){
             let options = {};
@@ -93,11 +84,7 @@ function compare(gv){
             options.unmatched = $("#compare_unmatched").prop('checked');
             let table_new = generateCompareResult(vs, gv, options);
             $('#cp_result_table').html(table_new);
-            // let h = $('#cp_result_table table:first-child').height() +1;
-            // if(h >= 30 * 12.8){
-            //     h = 384;
-            // }
-            // $('#cp_result_table').height(h+'px');
+
         });
         $('#back2Compare').bind('click', function(){
             $('#compare_result').html("");
