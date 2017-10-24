@@ -91,7 +91,7 @@ div.col-md-3 {
 }
 .table-thead a.tooltip-box {
   color: white;
-  padding-left: 10px;
+  margin-left: 10px;
 }
 .thead-row{
   display: flex;
@@ -297,9 +297,6 @@ table.treetable div.value {
 .ui-dialog .ui-dialog-content{
   width: 100% !important;
   height: calc(100% - 38px) !important;
-}
-.ui-tooltip {
-  font-size: 0.8em;
 }
 .data-table-head{
   background: #847c7c;
