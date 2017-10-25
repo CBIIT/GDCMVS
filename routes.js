@@ -4,6 +4,8 @@
 
 'use strict';
 
+var config = require('./server/config');
+
 module.exports = function(app){
 
 	//allows CrossDomainAccess to API
@@ -19,25 +21,25 @@ module.exports = function(app){
 
 	app.use('/search', require('./server/service/search'));
 	
-	app.use('/ui', function(req, res){
-		let idx = req.query.idx;
-		if(idx == 1){
-			res.sendfile(app.get('viewPath') + '/index.html');
-		}
-		else{
-			res.sendfile(app.get('viewPath') + '/index_1.html');
-		}
-	})
+	// app.use('/ui', function(req, res){
+	// 	let idx = req.query.idx;
+	// 	if(idx == 1){
+	// 		res.sendFile(app.get('viewPath') + '/index.html');
+	// 	}
+	// 	else{
+	// 		res.sendFile(app.get('viewPath') + '/index_1.html');
+	// 	}
+	// })
 
 	//put all the routers here
-	app.use('/', function(req, res){
-		res.sendfile(app.get('viewPath') + '/index.html');
-	});
+	// app.use('/', function(req, res){
+	// 	res.sendFile(app.get('views') + '/index.html');
+	// });
 	
 
 	// All other routes should redirect to error page
-    app.route('/*')
+    app.route('*')
         .get(function(req, res) {
-            res.sendfile(app.get('viewPath') + '/404.html');
+            res.sendFile(app.get('views') + '/404.html');
         });
 };

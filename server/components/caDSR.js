@@ -8,12 +8,13 @@ var fs = require('fs');
 var https = require('https');
 var http = require('http');
 var config = require('../config');
+var logger = require('./logger');
 var datas = {};
 var syns = {};
 
 var loadData = function(ids){
 	if(ids.length > 0){
-		console.log(ids.length);
+		logger.debug(ids.length);
 		let ncitids = [];
 		let count = 0, has = 0;
 		ids.forEach(function(uid){
@@ -49,7 +50,7 @@ var loadData = function(ids){
 					   			if(value.pvc !== null){
 					   				if(value.pvc.indexOf(':') >= 0){
 					   					let cs = value.pvc.split(":");
-					   					console.log("get synonyms for :" + cs);
+					   					logger.debug("get synonyms for :" + cs);
 					   					cs.forEach(function(c){
 					   						if(ncitids.indexOf(c) === -1){
 							   					ncitids.push(c);
@@ -70,32 +71,77 @@ var loadData = function(ids){
 				   			str[uid] = data;
 				   			fs.appendFile("./cdeData.js", JSON.stringify(str), function(err) {
 							    if(err) {
-							        return console.log(err);
+							        return logger.error(err);
 							    }
 
-							    console.log(" "+data.length+" PVs for caDSR :" +uid );
+							    logger.debug(" "+data.length+" PVs for caDSR :" +uid );
 							});
 					   		count++;
-					   		console.log("finished number:" + count);
+					   		logger.debug("finished number:" + count);
 					   		if(count >= ids.length){
-					   			console.log("will search "+ ncitids.length + " NCIt element for synonyms.");
+					   			logger.debug("will search "+ ncitids.length + " NCIt element for synonyms.");
 					   			synchronziedLoadSynonmys(ncitids, 0);
 					   		}
 					   	});
 					}).on('error', (e) => {
-						console.log(e);
+						logger.error(e);
 					});
 			    }
 			  	
 			  });
 
 			}).on('error', (e) => {
-			  console.log(e);
+			  logger.error(e);
 			});
 
 		});
 	}
 	
+};
+
+var loadDataType = function(ids){
+	if(ids.length > 0){
+		logger.debug(ids.length);
+		ids.forEach(function(uid){
+			https.get(config.caDSR_url[0]+uid, (response) => {
+			  let info = '';
+			  response.on('data', (d) => {
+				info += d;
+			  });
+			  response.on('end', function(){
+			  	let parsed = JSON.parse(info);
+			  	if(parsed.length > 0){
+			    	https.get(config.caDSR_url[1]+parsed[0].deIdseq, (result) => {
+					   	let body = '';
+					   	result.on('data',(r) =>{
+					   		body += r;
+					   	});
+					   	result.on('end', function(){
+					   		let b = JSON.parse(body);
+					   		let dataType = b.valueDomain.valueDomainDetails.dataType;
+				   			let str = {};
+				   			str[uid] = dataType;
+				   			fs.appendFile("./cdeDataType.js", JSON.stringify(str), function(err) {
+							    if(err) {
+							        return logger.error(err);
+							    }
+
+							    logger.debug(" dataType for caDSR ("+ uid +") :" + dataType );
+							});
+					   	});
+					}).on('error', (e) => {
+						logger.error(e);
+					});
+			    }
+			  	
+			  });
+
+			}).on('error', (e) => {
+			  logger.error(e);
+			});
+
+		});
+	}
 };
 
 
@@ -122,7 +168,7 @@ var synchronziedLoadSynonmys = function(ncitids, idx){
 	if(idx >= ncitids.length){
 		return;
 	}
-	console.log("searching synonyms using code: "+ ncitids[idx]);
+	logger.debug("searching synonyms using code: "+ ncitids[idx]);
 	let syn = [];
 	http.get(config.NCIt_url[2]+ncitids[idx], (rsp) => {
 		  let html = '';
@@ -168,14 +214,14 @@ var synchronziedLoadSynonmys = function(ncitids, idx){
 				  		str[ncitids[idx]] = syn;
 				  		fs.appendFile("./synonyms.js", JSON.stringify(str), function(err) {
 						    if(err) {
-						        return console.log(err);
+						        return logger.error(err);
 						    }
 
-						    console.log("#########synonyms for " +ncitids[idx] +": " + syn.toString());
+						    logger.debug("#########synonyms for " +ncitids[idx] +": " + syn.toString());
 						});
 			  		}
 			  		else{
-			  			console.log("!!!!!!!!!!!! no synonyms for " +ncitids[idx]);
+			  			logger.debug("!!!!!!!!!!!! no synonyms for " +ncitids[idx]);
 			  		}
 			  		
 			  	}
@@ -184,7 +230,7 @@ var synchronziedLoadSynonmys = function(ncitids, idx){
   			});
 
 	}).on('error', (e) => {
-	  console.log(e);
+	  logger.debug(e);
 	});
 };
 
@@ -205,6 +251,7 @@ var getSynonyms = function(){
 
 module.exports = {
 	loadData,
+	loadDataType,
 	loadDataAfter,
 	getData,
 	getSynonyms

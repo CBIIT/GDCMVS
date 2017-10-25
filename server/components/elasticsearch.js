@@ -9,10 +9,12 @@ var path = require('path');
 var elasticsearch = require('elasticsearch');
 var yaml = require('yamljs');
 var config = require('../config');
+var logger = require('./logger');
 var caDSR = require('./caDSR');
 var extend = require('util')._extend;
 var allTerm = {};
 var cdeData = '';
+var cdeDataType = '';
 var gdc_values = {};
 var allProperties = [];
 
@@ -79,6 +81,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 						entry.syns.forEach(function(sn){
 							let tmp = {};
 							tmp.n = sn.pv;
+							tmp.m = sn.pvm;
 							tmp.d = sn.pvd;
 							tmp.ss = [];
 							if(sn.syn !== undefined){
@@ -97,6 +100,11 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 							}
 							p.cde_pv.push(tmp);
 						});
+					}
+					else if(entry.term.termDef.source ==='NCIt'){
+						p.ncit = {};
+						p.ncit.id =  entry.term.termDef.cde_id;
+						p.ncit.url = entry.term.termDef.term_url;
 					}
 				}
 			}
@@ -179,9 +187,12 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 				allTerm[em] = t;
 			}
 		});
+
 		//generate property index
 		p.name = entry.name;
 		p.node = fileJson.id;
+		p.n_desc = fileJson.description;
+		p.n_title = fileJson.title;
 		p.category = fileJson.category;
 		if(entry.description === undefined){
 			if(entry.term !== undefined && entry.term.description !== undefined){
@@ -191,8 +202,14 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		else{
 			p.desc = entry.description;
 		}
-		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.cde_id !== undefined){
-			p.cde_id = entry.term.termDef.cde_id;
+		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source ==='caDSR' && entry.term.termDef.cde_id !== undefined){
+			p.cde = {};
+			p.cde.id = entry.term.termDef.cde_id;
+			p.cde.v = entry.term.termDef.cde_version;
+			p.cde.url = entry.term.termDef.term_url;
+			if(p.cde.id in cdeDataType){
+				p.cde.dt = cdeDataType[p.cde.id];
+			}
 		}
 		//generate enum
 		if(entry.syns == undefined){
@@ -208,17 +225,63 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		}
 		else{
 			//has gdc synonyms
-			p.enum = [];
-			entry.syns.forEach(function(item){
-				let tmp = {};
-				tmp.n = item.pv;
-				if(item.code !== undefined){
-					tmp.i_c = item.code;
+			if((prop in conceptCode) || (prop in gdc_values)){
+				p.enum = [];
+				entry.syns.forEach(function(item){
+					let tmp = {};
+					tmp.n = item.pv;
+					if(item.code !== undefined){
+						tmp.i_c = {};
+						tmp.i_c.c = item.code;
+						let ts = [];
+						//check if it's a range in level 2
+						if(item.code.indexOf("-") >= 0){
+							let r = item.code.split("-");
+							let start = parseInt(r[0]);
+							let end = parseInt(r[1]);
+							for(let i = start; i <= end; i++){
+								ts.push(i);
+							}
+
+						}
+						else if(item.code.indexOf("/") >= 0){
+							//check if it has "/" in the code
+							let idx = item.code.indexOf("/");
+							let l3 = item.code.substr(0, idx);
+							let l4 = item.code;
+							let l2 = l3.substr(0, l3.length - 1);
+							ts.push(l2);
+							ts.push(l3);
+							ts.push(l4);
+						}
+						else{
+							ts.push(item.code);
+						}
+						tmp.i_c.have = ts;
+					}
+					tmp.n_c = item.pvc;
+					tmp.s = item.syn;
+					p.enum.push(tmp);
+				});
+			}
+			else{
+				if(entry.enum !==undefined && entry.enum.length > 0){
+					p.enum = [];
+					entry.enum.forEach(function(item){
+						let tmp = {};
+						tmp.n = item;
+						p.enum.push(tmp);
+					});
 				}
-				tmp.n_c = item.pvc;
-				tmp.s = item.syn;
-				p.enum.push(tmp);
-			});
+			}
+			
+		}
+		//property type
+		if(entry.enum !==undefined && entry.enum.length > 0){
+			p.type = "enum";
+		}
+		else{
+			p.type = entry.type !== undefined ? entry.type : "object";
 		}
 		allProperties.push(p);
 	}
@@ -248,6 +311,10 @@ function bulkIndex(next){
 	content_1 = content_1.replace(/}{/g, ",");
 	let content_2 = fs.readFileSync("./synonyms.js").toString();
 	content_2 = content_2.replace(/}{/g, ",");
+	cdeData = JSON.parse(content_1);
+	let content_3 = fs.readFileSync("./cdeDataType.js").toString();
+	content_3 = content_3.replace(/}{/g, ",");
+	cdeDataType = JSON.parse(content_3);
 	cdeData = JSON.parse(content_1);
 	let syns = JSON.parse(content_2);
 	for(var c in cdeData){
@@ -280,22 +347,12 @@ function bulkIndex(next){
 	let bulkBody = [];
 	fs.readdirSync(folderPath).forEach(file =>{
 		if(file.indexOf('_') !== 0){
-			count++;
 			let fileJson = yaml.load(folderPath+'/'+file);
-			if(fileJson.category !=="TBD"){
-				let doc = helper(fileJson, termsJson, defJson, ccode, syns);
-				bulkBody.push({
-					index: {
-						_index: config.indexName,
-						_type: 'nodes',
-						_id: doc.id
-					}
-				});
-				bulkBody.push(doc);
+			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema"){
+				helper(fileJson, termsJson, defJson, ccode, syns);
 			}
 			
 		}
-		total++;
 
 	});
 	//build suggestion index
@@ -327,43 +384,30 @@ function bulkIndex(next){
 		});
 		propertyBody.push(doc);
 	});
-	esClient.bulk({body: bulkBody}, function(err, data){
-		if(err){
-			return next(err);
+	esClient.bulk({body: propertyBody}, function(err_p, data_p){
+		if(err_p){
+			return next(err_p);
 		}
-		let errorCount = 0;
-		data.items.forEach(item => {
+		let errorCount_p = 0;
+		data_p.items.forEach(item => {
 			if (item.index && item.index.error) {
-			  console.log(++errorCount, item.index.error);
+			  logger.error(++errorCount_p, item.index.error);
 			}
 		});
-		esClient.bulk({body: propertyBody}, function(err_p, data_p){
-			if(err_p){
-				return next(err_p);
+		esClient.bulk({body: suggestionBody}, function(err_s, data_s){
+			if(err_s){
+				return next(err_s);
 			}
-			let errorCount_p = 0;
-			data_p.items.forEach(item => {
-				if (item.index && item.index.error) {
-				  console.log(++errorCount_p, item.index.error);
+			let errorCount_s = 0;
+			data_s.items.forEach(itm => {
+				if (itm.index && itm.index.error) {
+				  logger.error(++errorCount_s, itm.index.error);
 				}
 			});
-			esClient.bulk({body: suggestionBody}, function(err_s, data_s){
-				if(err_s){
-					return next(err_s);
-				}
-				let errorCount_s = 0;
-				data_s.items.forEach(itm => {
-					if (itm.index && itm.index.error) {
-					  console.log(++errorCount_s, itm.index.error);
-					}
-				});
-				next({indexed: (count - errorCount), 
-						total: count, 
-						property_indexed: (propertyBody.length - errorCount_p),
-						property_total: propertyBody.length,
-						suggestion_indexed: (suggestionBody.length - errorCount_s), 
-						suggestion_total: suggestionBody.length});
-			});
+			next({property_indexed: (propertyBody.length - errorCount_p),
+					property_total: propertyBody.length,
+					suggestion_indexed: (suggestionBody.length - errorCount_s), 
+					suggestion_total: suggestionBody.length});
 		});
 	});
 	
@@ -380,10 +424,10 @@ function query(index, dsl,highlight, next){
     if(highlight){
     	body.highlight = highlight;
     }
-    body.sort = [{"category":"asc"}];
+    body.sort = [{"category":"asc"},{"node":"asc"}];
     esClient.search({index: index, body: body}, function(err, data){
     	if(err){
-    		console.log(err);
+    		logger.error(err);
     		next(err);
     	}
     	else{
@@ -400,7 +444,7 @@ function suggest(index, suggest, next){
 	body.suggest = suggest;
 	esClient.search({index: index,"_source": true, body: body}, function(err, data){
 		if(err){
-			console.log(err);
+			logger.error(err);
     		next(err);
 		}
 		else{
@@ -412,28 +456,20 @@ function suggest(index, suggest, next){
 exports.suggest = suggest;
 
 function createIndexes(params, next){
-	esClient.indices.create(params[0], function(err_1, result_1){
-		if(err_1){
-			console.log(err_1);
-			next(err_1);
+	esClient.indices.create(params[0], function(err_2, result_2){
+		if(err_2){
+			logger.error(err_2);
+			next(err_2);
 		}
 		else{
-			esClient.indices.create(params[1], function(err_2, result_2){
-				if(err_2){
-					console.log(err_2);
-					next(err_2);
+			esClient.indices.create(params[1], function(err_3, result_3){
+				if(err_3){
+					logger.error(err_3);
+					next(err_3);
 				}
 				else{
-					esClient.indices.create(params[2], function(err_3, result_3){
-						if(err_3){
-							console.log(err_3);
-							next(err_3);
-						}
-						else{
-							console.log("have built node, property and suggestion indexes.");
-							next(result_3);
-						}
-					});
+					logger.debug("have built property and suggestion indexes.");
+					next(result_3);
 				}
 			});
 		}
@@ -459,6 +495,23 @@ function preloadDataFromCaDSR(next){
 }
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
+
+function preloadDataTypeFromCaDSR(next){
+	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeDataJson = JSON.parse(content_1);
+	let ids = [];
+	for(var term in cdeDataJson){
+		let detail = cdeDataJson[term];
+		if(detail.length == 0){
+			ids.push(term);
+		}
+	}
+	caDSR.loadDataType(ids);
+	next(1);
+}
+
+exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
 function preloadDataAfter(next){
 	caDSR.loadDataAfter();
