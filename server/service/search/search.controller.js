@@ -139,6 +139,13 @@ var searchP = function(req, res){
 				return handleError.error(res, result);
 			}
 			let data = result.hits.hits;
+			data.forEach(function(entry){
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
+			});
 			res.json(data);
 		});
 	}
