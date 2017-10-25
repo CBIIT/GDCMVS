@@ -6,8 +6,8 @@ var elastic = require('../../components/elasticsearch');
 var handleError = require('../../components/handleError');
 var config = require('../../config');
 var fs = require('fs');
-var cdeData = '';
-var gdcData = '';
+var cdeData = {};
+var gdcData = {};
 
 var suggestion = function(req, res){
 	let term = req.query.keyword;
@@ -32,285 +32,120 @@ var suggestion = function(req, res){
 	})
 };
 
-var propertySearch = function(req, res){
-	let id = req.query.prop;
-	let query = {};
-	let highlight = null;
-	if(id.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
-	}
-	else{
-		let terms = id.split(",");
-		query.bool = {};
-		query.bool.should = [];
-		terms.forEach(function(t){
-			let m = {};
-			m.multi_match = {};
-			m.multi_match.query = t;
-			m.multi_match.fields = ["links.target_type",
-		                  "description",
-		                  "properties.name",
-		                  "id",
-		                  "properties.description",
-		                  "properties.term.description"];
-		    query.bool.should.push(m);
-		});
-
-		highlight = {
-				      "pre_tags" : ["<b>"],
-	        		  "post_tags" : ["</b>"],
-				      "fields":{
-				        "id":{},
-				        "properties.name":{},
-				        "*.target_type":{},
-				        "properties.description":{"number_of_fragments" : 0},
-				        "properties.term.description":{"number_of_fragments" : 0},
-				        "description":{"number_of_fragments" : 0}
-				    }
-			};
-	}
-
-	elastic.query(config.indexName, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
-};
-
-var valueSearch = function(req, res){
-	var val = req.query.val;
-	var values = [];
-	let query;
-	let highlight;
-	if(val.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
-	}
-	else{
-		val.split(",").forEach(function(v){
-			values.push(v.trim());
-		});
-		query = {bool: {
-	    	should:[
-	    		  {
-	    		    "terms": {"properties.enum" :values}
-	    		  },
-	    		  {
-	    		    "terms": {"properties.oneOf.enum": values}
-	    		  }
-	    		]
-	    }};
-	    highlight = {
-				      "pre_tags" : ["<b>"],
-	        		  "post_tags" : ["</b>"],
-				      "fields":{
-				        "properties.enum":{},
-				        "properties.oneOf.enum":{}
-				    }
-		};
-	}
-	
-	elastic.query(config.indexName, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
-};
-
-var search = function(req, res){
+var searchP = function(req, res){
 	let keyword = req.query.keyword;
-	let option = JSON.parse(req.query.option);
-	let words = [];
-	let query = {};
-	let highlight;
 	if(keyword.trim() ===''){
-		query = {"match_all": {}};
-		highlight = null;
+		res.json([]);
+		// query = {"match_all": {}};
+		// highlight = null;
 	}
 	else{
+		let option = JSON.parse(req.query.option);
+		let words = [];
+		let query = {};
+		let highlight;
 		query.bool = {};
 		query.bool.should = [];
-		let m = {};
-		m.multi_match = {};
-		m.multi_match.query = keyword;
 		if(option.match !=="exact"){
-			m.multi_match.fields = ["links.target_type",
-	                  "properties.name.have"];
-		    if(option.desc){
-		    	m.multi_match.fields.push("properties.description");
-		    	m.multi_match.fields.push("properties.term.description");
+			let m = {};
+			m.match_phrase = {};
+			m.match_phrase["name.have"] = keyword;
+			query.bool.should.push(m);
+			if(option.desc){
+		    	m = {};
+				m.match_phrase = {};
+				m.match_phrase["desc"] = keyword;
+				query.bool.should.push(m);
 		    }
 		    if(option.syn){
-		    	m.multi_match.fields.push("properties.syns.syn.have");
-		    	m.multi_match.fields.push("properties.syns.ss.syn.have");
+		    	m = {};
+				m.match_phrase = {};
+				m.match_phrase["enum.s.have"] = keyword;
+				query.bool.should.push(m);
+				m = {};
+				m.match_phrase = {};
+				m.match_phrase["cde_pv.n.have"] = keyword;
+				query.bool.should.push(m);
+		    	m = {};
+				m.match_phrase = {};
+				m.match_phrase["cde_pv.ss.s.have"] = keyword;
+				query.bool.should.push(m);
 		    }
-		    m.multi_match.fields.push("properties.enum.have");
-		    m.multi_match.fields.push("properties.oneOf.enum.have");
-		    query.bool.should.push(m);
-			// query.bool.should.push({
-			// 	"term": {"properties.enum.raw" :keyword}
-			// });
-			// query.bool.should.push({
-		 //    	"term": {"properties.oneOf.enum.raw": keyword}
-		 //    });
+		    m = {};
+			m.match_phrase = {};
+			m.match_phrase["enum.n.have"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match = {};
+			m.match["enum.i_c.have"] = {};
+			m.match["enum.i_c.have"].query = keyword;
+			m.match["enum.i_c.have"].analyzer = "keyword";
+			query.bool.should.push(m);
 		    highlight = {
 					      "pre_tags" : ["<b>"],
 		        		  "post_tags" : ["</b>"],
 					      "fields":{
-					        "properties.name.have":{"number_of_fragments" : 0},
-					        "links.target_type":{},
-					        "properties.enum.have":{"number_of_fragments" : 0},
-					        "properties.oneOf.enum.have":{"number_of_fragments" : 0}
+					        "name.have":{"number_of_fragments" : 0},
+					        "enum.n.have":{"number_of_fragments" : 0},
+					        "enum.i_c.have":{"number_of_fragments" : 0}
 					    }
 			};
 			if(option.desc){
-				highlight.fields["properties.description"] = {"number_of_fragments" : 0};
-				highlight.fields["properties.term.description"] = {"number_of_fragments" : 0};
+				highlight.fields["desc"] = {"number_of_fragments" : 0};
 			}
 			if(option.syn){
-				highlight.fields["properties.syns.syn.have"] = {"number_of_fragments" : 0};
-				highlight.fields["properties.syns.ss.syn.have"] = {"number_of_fragments" : 0};
+				highlight.fields["enum.s.have"] = {"number_of_fragments" : 0};
+				highlight.fields["cde_pv.n.have"] = {"number_of_fragments" : 0};
+				highlight.fields["cde_pv.ss.s.have"] = {"number_of_fragments" : 0};
 			}
 		}
 		else{
-			m.multi_match.fields = ["links.target_type",
-	                  "properties.name"];
+			let m = {};
+			m.multi_match = {};
+			m.multi_match.query = keyword;
+			m.multi_match.analyzer = "keyword";
+			m.multi_match.fields = ["name"];
 		    if(option.desc){
-		    	m.multi_match.fields.push("properties.description");
-		    	m.multi_match.fields.push("properties.term.description");
+		    	m.multi_match.fields.push("desc");
 		    }
 		    if(option.syn){
-		    	m.multi_match.fields.push("properties.syns.syn");
-		    	m.multi_match.fields.push("properties.syns.ss.syn");
+		    	m.multi_match.fields.push("enum.s");
+		    	m.multi_match.fields.push("cde_pv.n");
+		    	m.multi_match.fields.push("cde_pv.ss.s");
 		    }
-		    m.multi_match.fields.push("properties.enum");
-		    m.multi_match.fields.push("properties.oneOf.enum");
+		    m.multi_match.fields.push("enum.n");
+		    m.multi_match.fields.push("enum.i_c.c");
 		    query.bool.should.push(m);
-			// query.bool.should.push({
-			// 	"term": {"properties.enum" :keyword}
-			// });
-			// query.bool.should.push({
-		 //    	"term": {"properties.oneOf.enum": keyword}
-		 //    });
 		    highlight = {
 					      "pre_tags" : ["<b>"],
 		        		  "post_tags" : ["</b>"],
 					      "fields":{
-					        "properties.name":{},
-					        "links.target_type":{},
-					        "properties.enum":{},
-					        "properties.oneOf.enum":{}
+					        "name":{},
+					        "enum.n":{},
+					        "enum.i_c.c":{}
 					    }
 			};
 			if(option.desc){
-				highlight.fields["properties.description"] = {"number_of_fragments" : 0};
-				highlight.fields["properties.term.description"] = {"number_of_fragments" : 0};
+				highlight.fields["desc"] = {"number_of_fragments" : 0};
 			}
 			if(option.syn){
-				highlight.fields["properties.syns.syn"] = {};
-				highlight.fields["properties.syns.ss.syn"] = {};
+				highlight.fields["enum.s"] = {};
+				highlight.fields["cde_pv.n"] = {};
+				highlight.fields["cde_pv.ss.s"] = {};
 			}
 		}
-		
+		elastic.query(config.index_p, query, highlight, function(result){
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			res.json(data);
+		});
 	}
-	
-	elastic.query(config.indexName, query, highlight, function(result){
-		if(result.hits === undefined){
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		res.json(data);
-	});
 };
 
 var indexing = function(req, res){
 	let configs = [];
-	let config_node = {};
-	config_node.index = config.indexName;
-	config_node.body = {
-		"settings": {
-	      "analysis": {
-	         "analyzer": {
-	            "case_insensitive": {
-	               "tokenizer": "keyword",
-	               "filter": [
-	                  "lowercase"
-	               ]
-	            },
-	            "case_sensitive": {
-	               "tokenizer": "keyword",
-	               "filter": [
-	                  "lowercase"
-	               ]
-	            }
-	         }
-	      }
-		},
-		"mappings" : {
-	        "nodes" : {
-	            "properties" : {
-	                "id": {
-	                	"type":"keyword"
-	                },
-	                "category": {
-	                	"type":"keyword"
-	                },
-	                "properties.name" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.enum" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.oneOf.enum":{
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.syns.syn" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                },
-	                "properties.syns.ss.syn" : {
-	                	"type": "string",
-	                	"fields":{
-	                		"have":{
-	                			"type": "text"
-	                		}
-	                	},
-	                	"analyzer": "case_insensitive"
-	                }
-	            }
-	        }
-	    }
-	};
-
-	configs.push(config_node);
 	//config property index
 	let config_property = {};
 	config_property.index = config.index_p;
@@ -323,8 +158,19 @@ var indexing = function(req, res){
 	               "filter": [
 	                  "lowercase"
 	               ]
-	            }
-	         }
+	            },
+	            "my_standard": {
+                	"tokenizer" : "standard",
+                	"char_filter" : ["my_filter"],
+                	"filter" : ["standard", "lowercase"]
+		        }
+	         },
+			"char_filter" : {
+				"my_filter" : {
+                    "type" : "mapping",
+                    "mappings" : ["_=>-"]
+                }
+			}
 	      }
 		},
 		"mappings" : {
@@ -336,11 +182,15 @@ var indexing = function(req, res){
 	                "category": {
 	                	"type":"keyword"
 	                },
+	                "node":{
+	                	"type":"keyword"
+	                },
 	                "name" : {
 	                	"type": "string",
 	                	"fields":{
 	                		"have":{
-	                			"type": "text"
+	                			"type": "text",
+	                			"analyzer": "my_standard"
 	                		}
 	                	},
 	                	"analyzer": "case_insensitive"
@@ -363,6 +213,15 @@ var indexing = function(req, res){
 	                	},
 	                	"analyzer": "case_insensitive"
 	                },
+	                "cde_pv.n" : {
+	                	"type": "string",
+	                	"fields":{
+	                		"have":{
+	                			"type": "text"
+	                		}
+	                	},
+	                	"analyzer": "case_insensitive"
+	                },
 	                "cde_pv.ss.s" : {
 	                	"type": "string",
 	                	"fields":{
@@ -370,6 +229,14 @@ var indexing = function(req, res){
 	                			"type": "text"
 	                		}
 	                	},
+	                	"analyzer": "case_insensitive"
+	                },
+	                "enum.i_c.c":{
+	                	"type": "string",
+	                	"analyzer": "case_insensitive"
+	                },
+	                "enum.i_c.have":{
+	                	"type": "string",
 	                	"analyzer": "case_insensitive"
 	                }
 	            }
@@ -442,6 +309,37 @@ var getDataFromCDE = function(req, res){
 	res.json(cdeData[uid]);
 };
 
+var getCDEData = function(req, res){
+	let uid = req.query.id;
+	if(cdeData[uid] == undefined){
+		//load data file to memory
+		
+		let query = {};
+		query.term = {};
+		query.term["cde.id"] = uid;
+		elastic.query(config.index_p, query, null, function(result){
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			//cache the data and response
+			if(data.length > 0){
+				let p = data[0];
+				cdeData[uid] = p._source.cde_pv;
+				let pid = p._source.name + "/" + p._source.node + "/" + p._source.category;
+				if(!(pid in gdcData)){
+					gdcData[pid] = p._source.enum;	
+				}
+			}
+			
+			res.json(cdeData[uid]);
+		});
+	}
+	else{
+		res.json(cdeData[uid]);
+	}
+};
+
 var getDataFromGDC = function(req, res){
 	if(gdcData === ''){
 		//load data file to memory
@@ -482,8 +380,82 @@ var getDataFromGDC = function(req, res){
 	res.json(gdcData[uid]);
 };
 
+var getGDCData = function(req, res){
+	let uid = req.query.id;
+	if(gdcData[uid] == undefined){
+		//load data file to memory
+		
+		let query = {};
+		query.terms = {};
+		query.terms._id = [];
+		query.terms._id.push(uid);
+		elastic.query(config.index_p, query, null, function(result){
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			//cache the data and response
+			
+			if(data.length > 0){
+				let p = data[0];
+				gdcData[uid] = p._source.enum;
+				let cde = p._source.cde;
+				if(cde !== undefined && !(cde.id in cdeData)){
+					cdeData[cde.id] = p._source.cde_pv;
+				}
+			}
+			
+			res.json(gdcData[uid]);
+		});
+	}
+	else{
+		res.json(gdcData[uid]);
+	}
+};
+
+var getGDCandCDEData = function(req, res){
+	let uid = req.query.local;
+	let cdeId = req.query.cde;
+	if(gdcData[uid] == undefined){
+		//load data file to memory
+		
+		let query = {};
+		query.terms = {};
+		query.terms._id = [];
+		query.terms._id.push(uid);
+		elastic.query(config.index_p, query, null, function(result){
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			//cache the data and response
+			
+			if(data.length > 0){
+				let p = data[0];
+				gdcData[uid] = p._source.enum;
+				let cde = p._source.cde;
+				if(cde !== undefined && !(cde.id in cdeData)){
+					cdeData[cde.id] = p._source.cde_pv;
+				}
+			}
+			
+			let tmp = {};
+			tmp.to = cdeData[cdeId];
+			tmp.from = gdcData[uid];
+			res.json(tmp);
+		});
+	}
+	else{
+		let result = {};
+		result.to = cdeData[cdeId];
+		result.from = gdcData[uid];
+		res.json(result);
+	}
+	
+};
+
 var preload = function(req, res){
-	// elastic.preloadDataFromCaDSR(function(result){
+	// elastic.preloadDataAfter(function(result){
 	// 	if(result === 1){
 	// 		res.json({"status":"success", "message":"preparing data..."});
 	// 	}
@@ -491,23 +463,24 @@ var preload = function(req, res){
 	// 		res.json({"status":"failed", "message":"failed to loading data from caDSR."});
 	// 	}
 	// });
-	elastic.preloadDataAfter(function(result){
+	elastic.preloadDataTypeFromCaDSR(function(result){
 		if(result === 1){
-			res.json({"status":"success", "message":"preparing data..."});
+			res.json({"status":"success", "message":"preparing data type..."});
 		}
 		else{
-			res.json({"status":"failed", "message":"failed to loading data from caDSR."});
+			res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
 		}
 	});
 };
 
 module.exports = {
 	suggestion,
-	propertySearch,
-	valueSearch,
-	search,
+	searchP,
 	getDataFromCDE,
+	getCDEData,
 	getDataFromGDC,
+	getGDCData,
+	getGDCandCDEData,
 	preload,
 	indexing
 };
