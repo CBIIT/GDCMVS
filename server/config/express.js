@@ -15,7 +15,7 @@ module.exports = function(app){
 
 	let env = config.env;
 
-	app.set('views', config.root + '/views');
+	app.set('views', config.root + '/client');
     app.engine('html', require('ejs').renderFile);
     app.set('view engine', 'html');
     app.use(compression());
@@ -24,12 +24,12 @@ module.exports = function(app){
         extended: false
     }));
     app.use(bodyParser.json({
-        limit: '4mb' // 100kb default is too small        
+        limit: '4mb' // 100kb default is too small
     }));
     app.use(methodOverride());
     app.use(cookieParser());
-    app.use(express.static(path.join(config.root, 'assets')));
-    app.set('viewPath', 'views');
+    app.use(express.static(path.join(config.root, 'client')));
+    app.set('viewPath', 'client');
 
     if ('dev' === env) {
         app.use(morgan('dev'));
