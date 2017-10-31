@@ -82,6 +82,7 @@ const func = {
 	        c.data_tt_parent_id = "--";
 	        c.type = "category";
 	        c.node = "branch";
+            c.exist = true;
 	        trs.push(c);
  		}
  		if(source.node != c_n){
@@ -97,6 +98,7 @@ const func = {
             n.data_tt_parent_id = c_c;
             n.type = "folder";
             n.node = "branch";
+            n.exist = true;
             trs.push(n);
  		}
  		//put property to tree table
@@ -109,6 +111,7 @@ const func = {
  		p.data_tt_id = p.id;
         p.data_tt_parent_id = c_n;
         p.type="property";
+        p.exist = true;
         //put value to tree table
         if(enum_n.length == 0 && enum_s.length == 0 && !cde2local){
             //if no values show in the values tab
@@ -199,10 +202,18 @@ const func = {
         }
  	});
 
- 	let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 290;
-    h = (h < 500) ? 500 : h;
+    trs.forEach(function(item){
+        if(item.node == 'branch'){
+            item.len = trs.filter(function(n){
+                return item.data_tt_id == n.data_tt_parent_id && n.exist;                
+            }).length;
+        }
+    });
 
+
+ 	let offset = $('#root').offset().top;
+    let h = window.innerHeight - offset - 300;
+    h = (h < 500) ? 500 : h;
     let html = $.templates(tmpl).render({mh:h,trs: trs});
     let result = {};
     result.len = 0;

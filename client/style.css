@@ -429,6 +429,10 @@ table.treetable div.value {
   /*height:20em;
   overflow: auto;
 }*/
+
+#gdc_data {
+  min-height: 490px !important;
+}
 #cp_result_option{
   width:100%;
   float:left;
