@@ -96,14 +96,33 @@ export default function render(keyword, option, items){
   });
 
   let hiddenRows = $('#tree_table').find('.data-hide');
+  let propertiesRows =  $('#tree_table').find('span.property');
   $('#trs-checkbox').click(function(){
     if(this.checked){
       hiddenRows.each(function(){
         $(this).removeClass('hide');
       });
+      propertiesRows.each(function(){
+        let target = $(this);
+        let parentTarget = target.parent().parent();
+        let ttId = parentTarget.data('tt-id'); 
+        let len = $('*[data-tt-parent-id="'+ ttId +'"]').length;
+        target.text(function(index, text){
+          return text.replace(/\d+/g, len);
+        });
+      });
     }else{
       hiddenRows.each(function(){
         $(this).addClass('hide');
+      });
+      propertiesRows.each(function(){
+        let target = $(this);
+        let parentTarget = target.parent().parent();
+        let ttId = parentTarget.data('tt-id'); 
+        let len = $('*[data-tt-parent-id="'+ ttId +'"]').not('.data-hide' ).length;
+        target.text(function(index, text){
+          return text.replace(/\d+/g, len);
+        });
       });
     }
   });
@@ -132,33 +151,5 @@ export default function render(keyword, option, items){
     });
   });
 
-  $('.tooltip-box').tooltip();
-
-  // $('#table-body').scroll(function() {
-  //   console.log('true');
-
-  //   let vsTapTop = $('#vsTab').offset().top + 88;
-  //   let vsTapBotton=  vsTapTop + $('#vsTab').height();
-
-  //   $('.table-row').each(function(){
-  //     var t = $(this);
-  //     var thisTop = t.offset().top;
-  //     var thisBotton = thisTop + t.height();
-  //     var property =  t.find('.property');
-
-  //     console.log('vsTapTop' + vsTapTop + 'vsTapBotton' + vsTapBotton +  'thisTop' + thisTop + 'thisBotton' + thisBotton)
-  //     if(thisBotton > vsTapTop && thisBotton < vsTapBotton || thisTop < vsTapTop && thisTop > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton ){
-  //       console.log(property);
-  //       if(thisTop < vsTapTop || thisTop < vsTapTop && thisBotton > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton  )
-  //         property.attr('style','opacity: 100; position: relative; top: '+ (vsTapTop - thisTop )+'px;');
-  //       else{
-  //         property.attr('style','opacity: 100; position: relative; top: 0');
-  //       }
-  //     }
-  //     else{
-  //       property.attr('style','opacity: 0;'); //property.hide();
-  //     }
-  //   });
-  // });
-  
+  $('.tooltip-box').tooltip();  
 }

@@ -682,14 +682,33 @@ function render(keyword, option, items){
   });
 
   let hiddenRows = $('#tree_table').find('.data-hide');
+  let propertiesRows =  $('#tree_table').find('span.property');
   $('#trs-checkbox').click(function(){
     if(this.checked){
       hiddenRows.each(function(){
         $(this).removeClass('hide');
       });
+      propertiesRows.each(function(){
+        let target = $(this);
+        let parentTarget = target.parent().parent();
+        let ttId = parentTarget.data('tt-id'); 
+        let len = $('*[data-tt-parent-id="'+ ttId +'"]').length;
+        target.text(function(index, text){
+          return text.replace(/\d+/g, len);
+        });
+      });
     }else{
       hiddenRows.each(function(){
         $(this).addClass('hide');
+      });
+      propertiesRows.each(function(){
+        let target = $(this);
+        let parentTarget = target.parent().parent();
+        let ttId = parentTarget.data('tt-id'); 
+        let len = $('*[data-tt-parent-id="'+ ttId +'"]').not('.data-hide' ).length;
+        target.text(function(index, text){
+          return text.replace(/\d+/g, len);
+        });
       });
     }
   });
@@ -718,35 +737,7 @@ function render(keyword, option, items){
     });
   });
 
-  $('.tooltip-box').tooltip();
-
-  // $('#table-body').scroll(function() {
-  //   console.log('true');
-
-  //   let vsTapTop = $('#vsTab').offset().top + 88;
-  //   let vsTapBotton=  vsTapTop + $('#vsTab').height();
-
-  //   $('.table-row').each(function(){
-  //     var t = $(this);
-  //     var thisTop = t.offset().top;
-  //     var thisBotton = thisTop + t.height();
-  //     var property =  t.find('.property');
-
-  //     console.log('vsTapTop' + vsTapTop + 'vsTapBotton' + vsTapBotton +  'thisTop' + thisTop + 'thisBotton' + thisBotton)
-  //     if(thisBotton > vsTapTop && thisBotton < vsTapBotton || thisTop < vsTapTop && thisTop > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton ){
-  //       console.log(property);
-  //       if(thisTop < vsTapTop || thisTop < vsTapTop && thisBotton > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton  )
-  //         property.attr('style','opacity: 100; position: relative; top: '+ (vsTapTop - thisTop )+'px;');
-  //       else{
-  //         property.attr('style','opacity: 100; position: relative; top: 0');
-  //       }
-  //     }
-  //     else{
-  //       property.attr('style','opacity: 0;'); //property.hide();
-  //     }
-  //   });
-  // });
-  
+  $('.tooltip-box').tooltip();  
 }
 
 
@@ -840,6 +831,7 @@ const func = {
 	        c.data_tt_parent_id = "--";
 	        c.type = "category";
 	        c.node = "branch";
+            c.exist = true;
 	        trs.push(c);
  		}
  		if(source.node != c_n){
@@ -855,6 +847,7 @@ const func = {
             n.data_tt_parent_id = c_c;
             n.type = "folder";
             n.node = "branch";
+            n.exist = true;
             trs.push(n);
  		}
  		//put property to tree table
@@ -867,6 +860,7 @@ const func = {
  		p.data_tt_id = p.id;
         p.data_tt_parent_id = c_n;
         p.type="property";
+        p.exist = true;
         //put value to tree table
         if(enum_n.length == 0 && enum_s.length == 0 && !cde2local){
             //if no values show in the values tab
@@ -957,10 +951,18 @@ const func = {
         }
  	});
 
- 	let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 290;
-    h = (h < 500) ? 500 : h;
+    trs.forEach(function(item){
+        if(item.node == 'branch'){
+            item.len = trs.filter(function(n){
+                return item.data_tt_id == n.data_tt_parent_id && n.exist;                
+            }).length;
+        }
+    });
 
+
+ 	let offset = $('#root').offset().top;
+    let h = window.innerHeight - offset - 300;
+    h = (h < 500) ? 500 : h;
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
     let result = {};
     result.len = 0;
@@ -995,9 +997,9 @@ let tmpl = '<div class="container table-container">'
 						+'{{for trs}}'
 						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}} {{if exist != true && type == "value"}}data-hide hide{{/if}}" style="width:100%; float:left;">'
 						+'<td width="33%" style="width:33%; float:left; display:flex; align-items: center;">'
-						+'<span class="{{:type}}" style="display:inline-block; width: 70%;">'
+						+'<span class="{{:type}} title" style="display:inline-block; width: 70%;">'
 						+'{{if type == "folder"}}'
-						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
+						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}} {{if len !== undefined}}({{:len}}){{/if}}</a>'
 						+'{{else type == "link"}}'
 							+'{{if l_type == "cde"}}'
 							+'No values in GDC, reference values in <a href="javascript:getCDEData(\'{{:l_id}}\');" class="table-td-link">caDSR</a>'
@@ -1005,7 +1007,7 @@ let tmpl = '<div class="container table-container">'
 							+'No values in GDC, concept referenced in <a target="_blank" href="{{:url}}" class="table-td-link">NCIt</a>'
 							+'{{/if}}'
 			            +'{{else}}'
-			            +'{{:title}}'
+			            +'{{:title}} {{if len != undefinded}}({{:len}}){{/if}}'
 			            +'{{/if}}'
 			            +'</td>'
 			            +'<td width="66%" style="width:66%; float:left; line-height: 22px;">'
@@ -1492,7 +1494,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="col-xs-3">{{:n_c}}</div>'
+            +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:n_c}}&type=synonym" target="_blank">{{:n_c}}</a></div>'
             +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
         +'</div>'
@@ -1513,7 +1515,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'</div>' 
           +'{{for cde_s}}'
           +'<div class="row">'
-            +'<div class="col-xs-3">{{:c}}</div>'
+            +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:c}}&type=synonym" target="_blank">{{:c}}</a></div>'
             +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
           +'{{/for}}'
@@ -1602,9 +1604,18 @@ const func = {
  		if($('#gdc_data').length){
             $('#gdc_data').remove();
         }
+        let windowEl = $(window);
+        let icdo = false;
+        items.forEach(function(item){
+            if(item.i_c !== undefined){
+                icdo = true;
+            }
+        });
+        
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target,items: items });
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? 0 : window.innerHeight * 0.2;
+
         //display result in a table
         $(document.body).append(html);
         if(target !== undefined){
@@ -1614,6 +1625,8 @@ const func = {
                     $('#gdc-data-list div[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
+                    var setScroll = $('#gdc_data_match').offset().top - $('#gdc-data-list').offset().top;
+                    $('#gdc-data-list').scrollTop(setScroll - 120);
                 }
                 else{
                     $('#gdc-data-list div[style="display: block;"]').each(function(){
@@ -1622,23 +1635,22 @@ const func = {
                 }
             });
         }
-        $("#gdc_data").dialog({
-            width:"600px",
-        });
-        $("#gdc_data").dialog({
-                modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"35%",
-                title: "GDC Permissible Values ("+items.length+")",
-                open: function() {
-                    var target = $(this).parent();
-                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
-                    }
-                },
-                close: function() {
-                    $(this).remove();
+
+        $('#gdc_data').dialog({
+            modal: false,
+            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
+            width: '45%',
+            minWidht: '385px',
+            title: 'GDC Permissible Values ('+items.length+')',
+            open: function() {
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                 }
+            },
+            close: function() {
+                $(this).remove();
+            }
         }).parent().draggable({
             containment: '#docs-container'
         });
@@ -1653,6 +1665,7 @@ const func = {
         }
         let targets = null;
         let icdo = false;
+        let windowEl = $(window);
         if(tgts !== null && tgts !== undefined){
             targets = tgts.split("#"); 
 
@@ -1701,8 +1714,7 @@ const func = {
                     $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
-                }
-                else{
+                } else {
                     $('#gdc-syn-data-list div.table-row[style="display: block;"]').each(function(){
                         $(this).css("display","none");
                     });
@@ -1718,8 +1730,8 @@ const func = {
                 title: "GDC Synonyms ("+items.length+")",
                 open: function() {
                     var target = $(this).parent();
-                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                     }
 
                     $('#gdc-data-invariant').bind('click', function(){
@@ -1745,6 +1757,7 @@ const func = {
  		if($('#compare_dialog').length){
             $('#compare_dialog').remove();
         }
+        let windowEl = $(window);
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].toCompare).render({items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
@@ -1757,8 +1770,8 @@ const func = {
             open: function() {
 
                 var target = $(this).parent();
-                if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                    target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                 }
 
             	$('#cp_result').css("display", "none");
@@ -1822,6 +1835,7 @@ const func = {
             });
 
             let targets = null;
+            let windowEl = $(window);
             
             if(tgts !== null && tgts !== undefined && tgts !== ""){
                 tgts = tgts.replace(/\^/g,'\'');
@@ -1867,8 +1881,8 @@ const func = {
                     title: "CaDSR Permissible Values ("+tmp.length+")",
                     open: function() {
                         var target = $(this).parent();
-                        if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                            target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                        if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                            target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                         }
 
                         $('#cde-data-invariant').bind('click', function(){
@@ -1884,7 +1898,7 @@ const func = {
                         $(this).remove();
                     }
             }).parent().draggable({
-                containment: '#docs-container'
+              containment: '#docs-container'
             });
             
         });
@@ -1897,6 +1911,7 @@ const func = {
         if($('#compareGDC_dialog').length){
             $('#compareGDC_dialog').remove();
         }
+        let windowEl = $(window);
         let popup = '<div id="compareGDC_dialog">'
                         +'<div id="compareGDC_result"></div>'
                     +'</div>';
@@ -1930,8 +1945,8 @@ const func = {
                 open: function() {
 
                     var target = $(this).parent();
-                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                     }
 
                     $('#compareGDC_filter').bind('click', function(){
@@ -1974,22 +1989,40 @@ let tmpl = {
           +'{{else}}'
           +''
           +'{{/if}}'
-          +'<div id="gdc-data-list" class="div-list">'
-          +'{{if target !== null }}'
-            +'{{for items}}'
-            +'{{if n == ~root.target }}'
-            +'<div>{{:n}}</div>'
-            +'{{else}}'
-            +'<div style="display: none;">{{:n}}</div>'
-            +'{{/if}}'
-            +'{{/for}}'
-          +'{{else}}'
-            +'{{for items}}'
-            +'<div>{{:n}}</div>'
-            +'{{/for}}'
-          +'{{/if}}'
+          +'<div class="clearfix"></div>'
+          +'<div class="table-container">'
+            +'<div class="table-thead row">'
+              +'{{if icdo}}<div class="table-th col-xs-4">ICDO_3_1 CODE</div>{{/if}}'
+              +'<div class="table-th col-xs-8">ICD-O-3 Term</div>'
+            +'</div>'
+            +'<div id="gdc-data-list" class="table-body row" style="max-height: 390px;">'
+              +'<div class="col-xs-12">'
+                +'{{if target !== null }}'
+                  +'{{for items}}'
+                  +'{{if n == ~root.target }}'
+                    +'<div id="gdc_data_match" class="table-row row">'
+                      +'{{if ~root.icdo}}<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div>{{/if}}'
+                      +'<div id="gdc_data_match"class="table-td td-slim col-xs-8"><b>{{:n}}</b></div>'
+                    +'</div>'
+                  +'{{else}}'
+                    +'<div class="table-row row" style="display: none;">'
+                      +'{{if ~root.icdo}}<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div>{{/if}}'
+                      +'<div class="table-td td-slim col-xs-8">{{:n}}</div>'
+                    +'</div>'
+                  +'{{/if}}'
+                  +'{{/for}}'
+                +'{{else}}'
+                  +'{{for items}}'
+                    +'<div class="table-row row">'
+                      +'{{if ~root.icdo}}<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div>{{/if}}'
+                      +'<div class="table-td td-slim col-xs-8">{{:n}}</div>'
+                    +'</div>'
+                  +'{{/for}}'
+                +'{{/if}}'
+              +'</div>'
+            +'</div>'
           +'</div>'
-          +'</div>',
+        +'</div>',
   gdc_synonyms: '<div id="gdc_syn_data">'
           +'<div class="option-left"><input type="checkbox" id="gdc-data-invariant"> Show Duplicates</div>'
           +'{{if targets !== null }}'
@@ -2086,7 +2119,7 @@ let tmpl = {
                       +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2094,7 +2127,7 @@ let tmpl = {
                       +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2108,7 +2141,7 @@ let tmpl = {
                       +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2116,7 +2149,7 @@ let tmpl = {
                       +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
