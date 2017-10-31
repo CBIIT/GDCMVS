@@ -1280,8 +1280,23 @@ const func = {
 				//check if there are any matches in local synonyms
 				let exist = false;
 				let tmp_s = [];
+				let t_s = [];
 				if(em.s){
+					//remove depulicates in local synonyms
+					let cache = {};
 					em.s.forEach(function(s){
+						let lc = s.trim().toLowerCase();
+                        if(!(lc in cache)){
+                            cache[lc] = [];
+                        }
+                        cache[lc].push(s);
+					});
+					for(let idx in cache){
+                        //find the term with the first character capitalized
+                        let word = findWord(cache[idx]);
+                        t_s.push(word);
+                    }
+					t_s.forEach(function(s){
 						if(s in dict_enum_s){
 							exist = true;
 							tmp_s.push(dict_enum_s[s])
@@ -1354,26 +1369,7 @@ const func = {
 					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
 					row.tgts_enum_n += tmp + "#";
 				}
-				//check if there are any matched cde_pvs can connect to this value
-				// if(v.n !== undefined){
-				// 	//v.pv = em.n;
 
-				// 	let lc = em.n.toLowerCase();
-				// 	if(lc in matched_pv){
-				// 		v.cde_s = matched_pv[lc].ss;
-				// 		if(v.cde_s.length){
-				// 			v.cde_pv = matched_pv[lc].pv;
-				// 			v.cde_pvm = matched_pv[lc].pvm;
-				// 		}
-				// 		delete matched_pv[lc];
-
-				// 	}
-				// 	else{
-				// 		v.cde_s = [];
-				// 	}
-
-				// 	row.vs.push(v);
-				// }
 				let lc = em.n.toLowerCase();
 				if(lc in matched_pv){
 					if(v.n == undefined){
