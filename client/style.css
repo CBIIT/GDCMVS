@@ -56,7 +56,13 @@ div.col-md-3 {
   padding-right: 15px;
   margin-bottom: 15px;
 }
-.table-body{
+
+.table-container-blank {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 15px;
+}
+.table-body {
   overflow-y: auto;
   max-height: 500px;
 }
@@ -72,9 +78,13 @@ div.col-md-3 {
   padding-bottom: 15px;
   line-height: 1.428571;
 }
-.td-slim{
+.td-slim {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+.td-xs-slim {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 .table-header {
   text-align: center;
@@ -93,7 +103,7 @@ div.col-md-3 {
   color: white;
   margin-left: 10px;
 }
-.thead-row{
+.thead-row {
   display: flex;
   align-items: center;
 }
@@ -431,7 +441,7 @@ table.treetable div.value {
 }*/
 
 #gdc_data {
-  min-height: 490px !important;
+  min-height: 415px !important;
 }
 #cp_result_option{
   width:100%;
