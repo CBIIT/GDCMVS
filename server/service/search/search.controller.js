@@ -462,22 +462,22 @@ var getGDCandCDEData = function(req, res){
 };
 
 var preload = function(req, res){
-	// elastic.preloadDataAfter(function(result){
-	// 	if(result === 1){
-	// 		res.json({"status":"success", "message":"preparing data..."});
-	// 	}
-	// 	else{
-	// 		res.json({"status":"failed", "message":"failed to loading data from caDSR."});
-	// 	}
-	// });
-	elastic.preloadDataTypeFromCaDSR(function(result){
+	elastic.loadSynonyms(function(result){
 		if(result === 1){
-			res.json({"status":"success", "message":"preparing data type..."});
+			res.json({"status":"success", "message":"preparing data..."});
 		}
 		else{
-			res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
+			res.json({"status":"failed", "message":"failed to loading data from caDSR."});
 		}
 	});
+	// elastic.preloadDataTypeFromCaDSR(function(result){
+	// 	if(result === 1){
+	// 		res.json({"status":"success", "message":"preparing data type..."});
+	// 	}
+	// 	else{
+	// 		res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
+	// 	}
+	// });
 };
 
 module.exports = {
