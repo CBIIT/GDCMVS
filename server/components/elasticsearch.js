@@ -349,6 +349,7 @@ function bulkIndex(next){
 		if(file.indexOf('_') !== 0){
 			let fileJson = yaml.load(folderPath+'/'+file);
 			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema"){
+				logger.debug(folderPath+'/'+file);
 				helper(fileJson, termsJson, defJson, ccode, syns);
 			}
 			
@@ -481,15 +482,19 @@ exports.createIndexes = createIndexes;
 function preloadDataFromCaDSR(next){
 	let folderPath = path.join(__dirname, '..','data');
 	let termsJson = yaml.load(folderPath+'/_terms.yaml');
+	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeDataJson = JSON.parse(content_1);
 	let ids = [];
 	for(var term in termsJson){
 		let detail = termsJson[term];
 		if(detail.termDef !== undefined && detail.termDef.source !== undefined && detail.termDef.source === 'caDSR'){
-			if(detail.termDef.cde_id !== undefined){
+			if(detail.termDef.cde_id !== undefined && !(detail.termDef.cde_id in cdeDataJson)){
 				ids.push(detail.termDef.cde_id);
 			}
 		}
 	}
+	logger.debug(ids);
 	caDSR.loadData(ids);
 	next(1);
 }
@@ -513,9 +518,9 @@ function preloadDataTypeFromCaDSR(next){
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
-function preloadDataAfter(next){
-	caDSR.loadDataAfter();
+function loadSynonyms(next){
+	caDSR.loadSynonyms();
 	next(1);
 }
 
-exports.preloadDataAfter = preloadDataAfter;
+exports.loadSynonyms = loadSynonyms;
