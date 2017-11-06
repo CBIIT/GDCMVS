@@ -244,6 +244,12 @@ function compareGDC(prop, cdeId){
 
 window.compareGDC = compareGDC;
 
+function ncitDetails(uid){
+    dialog.ncitDetails(uid);
+}
+
+window.ncitDetails = ncitDetails;
+
 //find the word with the first character capitalized
 function findWord (words){
     let word = "";
