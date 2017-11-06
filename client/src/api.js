@@ -5,7 +5,6 @@ const api = {
     $.getJSON({
   	url: baseUrl + "/suggest?keyword=" + value,
   	success: function(data) {
-  		//console.log(data);
   	  callback(data);
   	}
     });
@@ -30,6 +29,26 @@ const api = {
     $.getJSON(baseUrl + '/p/both/vs', {local:ids.local, cde: ids.cde}, function(result){
         callback(ids,result);
       });
+  },
+  evsRestApi(id, callback){
+
+    $.ajax({
+      type: 'GET',
+      url: 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + id,
+      // headers: {
+      //   'Access-Control-Allow-Origin': '*'
+      // },
+      //crossDomain: true,
+      dataType: 'json',
+      success: function(result){
+        console.log(result);
+        //callback(id,result);
+      }
+    });
+
+    // $.getJSON('https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + id +'?callback=?', function(result){
+    //   callback(id,result);
+    // });
   }
 }
 

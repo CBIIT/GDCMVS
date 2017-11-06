@@ -75,7 +75,6 @@ const api = {
     $.getJSON({
   	url: baseUrl + "/suggest?keyword=" + value,
   	success: function(data) {
-  		//console.log(data);
   	  callback(data);
   	}
     });
@@ -100,6 +99,26 @@ const api = {
     $.getJSON(baseUrl + '/p/both/vs', {local:ids.local, cde: ids.cde}, function(result){
         callback(ids,result);
       });
+  },
+  evsRestApi(id, callback){
+
+    $.ajax({
+      type: 'GET',
+      url: 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + id,
+      // headers: {
+      //   'Access-Control-Allow-Origin': '*'
+      // },
+      //crossDomain: true,
+      dataType: 'json',
+      success: function(result){
+        console.log(result);
+        //callback(id,result);
+      }
+    });
+
+    // $.getJSON('https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + id +'?callback=?', function(result){
+    //   callback(id,result);
+    // });
   }
 }
 
@@ -399,6 +418,12 @@ function compareGDC(prop, cdeId){
 };
 
 window.compareGDC = compareGDC;
+
+function ncitDetails(uid){
+    __WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].ncitDetails(uid);
+}
+
+window.ncitDetails = ncitDetails;
 
 //find the word with the first character capitalized
 function findWord (words){
@@ -1235,7 +1260,9 @@ const func = {
 			source.cde_pv.forEach(function(pv){
 				let exist = false;
 				let tmp_ss = [];
+				//let tmp_tgt = ""; 
 				if(pv.ss !== undefined && pv.ss.length > 0){
+					//tmp_tgt = (ss.c.match(/^[E]/g)) ? "CTCAE" "NCIt"
 					pv.ss.forEach(function(ss){
 						let tmp_s = [];
 						let tmp_s_h = [];   
@@ -1424,7 +1451,8 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 240;
  		h = (h < 550) ? 550 : h;
- 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
+ 		html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */], allowCode: true}).render({mh:h, values:values});
+ 		//console.log($.templates());
  	}
     let result = {};
     result.len = len;
@@ -1490,7 +1518,10 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:n_c}}&type=synonym" target="_blank">{{:n_c}}</a></div>'
+            +'<div class="col-xs-3">'
+              +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');" target="_blank">{{:n_c}}</a> (NCIt)'
+              +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+            +'</div>'
             +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
         +'</div>'
@@ -1507,11 +1538,14 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="table-td col-xs-12">PV Meaning: {{:cde_pvm}}</div>'
+            +'<div class="table-td col-xs-12">PV Meaning (caDSR): {{:cde_pvm}}</div>'
           +'</div>' 
           +'{{for cde_s}}'
           +'<div class="row">'
-            +'<div class="col-xs-3"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:c}}&type=synonym" target="_blank">{{:c}}</a></div>'
+            +'<div class="col-xs-3">'
+            +'{{* if((/^C[1-9]/g).test(data.c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:c}}\');" target="_blank">{{:c}}</a> (NCIt)'
+            +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+            +'</div>'
             +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
           +'{{/for}}'
@@ -1967,6 +2001,39 @@ const func = {
             containment: '#docs-container'
         });
     });
+  },
+  ncitDetails(uid){
+    __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].evsRestApi(uid, function(id, items) {
+        console.log(items);
+        if($('#ncit_details').length){
+            $('#ncit_details').remove();
+        }
+
+        let windowEl = $(window);
+        let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].ncit_details).render();
+
+        $(document.body).append(html);
+
+        $('#ncit_details').dialog({
+            modal: false,
+            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
+            width: '45%',
+            title: 'Terms & Properties',
+            open: function() {
+
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
+                }
+            },
+            close: function() {
+                $(this).remove();
+            }
+        }).parent().draggable({
+            containment: '#docs-container'
+        });
+    });
   }
 };
 
@@ -2066,7 +2133,7 @@ let tmpl = {
                     +'<div class="table-row row">'
                       +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
-                      +'<div class="table-td col-xs-2">{{:n_c}}</div>'
+                      +'<div class="table-td col-xs-2"><a class="table-td-link" href="javascript:ncitDetails();">{{:n_c}}</a> (NCIt)</div>'
                       +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
                       +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
                       +'{{for s}}{{>#data}}<br>{{/for}}'
@@ -2076,7 +2143,7 @@ let tmpl = {
                     +'<div class="table-row row" style="display: none;">'
                       +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
-                      +'<div class="table-td col-xs-2">{{:n_c}}</div>'
+                      +'<div class="table-td col-xs-2"><a class="table-td-link" href="javascript:ncitDetails();">{{:n_c}}</a> (NCIt)</div>'
                       +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
                       +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
                       +'{{for s}}{{>#data}}<br>{{/for}}'
@@ -2140,7 +2207,7 @@ let tmpl = {
                       +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="javascript:ncitDetails();">{{:pvc}}</a> (NCIt)</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2148,7 +2215,7 @@ let tmpl = {
                       +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="javascript:ncitDetails();">{{:pvc}}</a> (NCIt)</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2162,7 +2229,7 @@ let tmpl = {
                       +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="javascript:ncitDetails();">{{:pvc}}</a> (NCIt)</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2170,7 +2237,7 @@ let tmpl = {
                       +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}&type=synonym" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="javascript:ncitDetails();">{{:pvc}}</a> (NCIt)</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2181,7 +2248,15 @@ let tmpl = {
                   +'</div>'
                 +'</div>'
               +'</div>'
-            +'</div>'
+            +'</div>',
+  ncit_details: '<div id="ncit_details">'
+      +'<h2>Terms &amp; Properties</h2>'
+      +'<p><b>Preferred Name:</b> Gastric Mucosa</p>'
+      +'<p><b>Definition:</b> An organ located under the diaphragm, between the liver and the spleen as well as between the esophagus and the small intestine. The stomach is the primary organ of food digestion.</p>'
+      +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code=C12391" target="_blank"">C32656</a></p>'
+      +'<p><b>Synonyms &amp; Abbreviations:</b></p><p>Gastric</br>Gastrointestinal Tract, Stomach</br>Stomach</br>STOMACH</br>stomach</p>'
+      +'<p><a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code=C12391" target="_blank"">more details</p>'
+      +'</div>'
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
