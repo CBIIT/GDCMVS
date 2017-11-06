@@ -9,6 +9,8 @@ router.get('/suggest', controller.suggestion);
 router.get('/preload', controller.preload);
 router.get('/external/caDSR', controller.getDataFromCDE);
 router.get('/local', controller.getDataFromGDC);
+//router.get('/export', controller.export2Excel);
+router.get('/ncit/detail', controller.getNCItInfo);
 
 //property based api
 router.get('/all/p', controller.searchP);
