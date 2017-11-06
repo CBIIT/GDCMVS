@@ -40,6 +40,7 @@ var all = {
 		'https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&type=synonym&code=',
 		'http://nciws-d790.nci.nih.gov:15080/evsrestapi2/api/v1/ctrp/concept/',
 		'https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=CTCAE&type=synonym&code=',
+		'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/'
 	]
 };
 
