@@ -106,7 +106,7 @@ const func = {
             }
             it.s_r = tmp_s;
         }); 
-        let html = $.templates(tmpl.gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
+        let html = $.templates({markup: tmpl.gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
@@ -256,7 +256,7 @@ const func = {
                 $('#caDSR_data').remove();
             }
 
-            let html = $.templates(tmpl.cde_data).render({targets: targets, items: tmp });
+            let html = $.templates({markup: tmpl.cde_data, allowCode: true}).render({targets: targets, items: tmp });
             let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
             //display result in a table
             $(document.body).append(html);
@@ -377,15 +377,21 @@ const func = {
     });
   },
   ncitDetails(uid){
-    api.evsRestApi(uid, function(id, items) {
-        console.log(items);
+    api.evsRestApi(uid, function(id, item) {
+        
+        let tmp = {};
+        tmp.code = item.code;
+        tmp.name = item.displayName
+        tmp.description = item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description;
+        tmp.synonyms = item.synonyms.map(function(syns){ return syns.termName });
+
         if($('#ncit_details').length){
             $('#ncit_details').remove();
         }
 
         let windowEl = $(window);
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
-        let html = $.templates(tmpl.ncit_details).render();
+        let html = $.templates(tmpl.ncit_details).render({item: tmp});
 
         $(document.body).append(html);
 
