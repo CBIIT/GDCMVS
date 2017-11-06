@@ -375,6 +375,39 @@ const func = {
             containment: '#docs-container'
         });
     });
+  },
+  ncitDetails(uid){
+    api.evsRestApi(uid, function(id, items) {
+        console.log(items);
+        if($('#ncit_details').length){
+            $('#ncit_details').remove();
+        }
+
+        let windowEl = $(window);
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+        let html = $.templates(tmpl.ncit_details).render();
+
+        $(document.body).append(html);
+
+        $('#ncit_details').dialog({
+            modal: false,
+            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
+            width: '45%',
+            title: 'Terms & Properties',
+            open: function() {
+
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+                }
+            },
+            close: function() {
+                $(this).remove();
+            }
+        }).parent().draggable({
+            containment: '#docs-container'
+        });
+    });
   }
 };
 

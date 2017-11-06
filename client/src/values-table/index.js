@@ -87,7 +87,9 @@ const func = {
 			source.cde_pv.forEach(function(pv){
 				let exist = false;
 				let tmp_ss = [];
+				//let tmp_tgt = ""; 
 				if(pv.ss !== undefined && pv.ss.length > 0){
+					//tmp_tgt = (ss.c.match(/^[E]/g)) ? "CTCAE" "NCIt"
 					pv.ss.forEach(function(ss){
 						let tmp_s = [];
 						let tmp_s_h = [];   
@@ -276,7 +278,8 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 240;
  		h = (h < 550) ? 550 : h;
- 		html = $.templates(tmpl).render({mh:h, values:values});
+ 		html = $.templates({markup: tmpl, allowCode: true}).render({mh:h, values:values});
+ 		//console.log($.templates());
  	}
     let result = {};
     result.len = len;
