@@ -383,7 +383,26 @@ const func = {
         tmp.code = item.code;
         tmp.name = item.displayName
         tmp.description = item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description;
-        tmp.synonyms = item.synonyms.map(function(syns){ return syns.termName });
+        let tmp_s = item.synonyms.map(function(syns){ return syns.termName });
+        tmp.synonyms = [];
+        //remove the duplicate
+
+        let cache = {};
+        if(tmp_s.length > 0){
+            tmp_s.forEach(function(s){
+                let lc = s.trim().toLowerCase();
+                if(!(lc in cache)){
+                    cache[lc] = [];
+                }
+                cache[lc].push(s);
+            });
+            for(let idx in cache){
+                //find the term with the first character capitalized
+                let word = findWord(cache[idx]);
+                tmp.synonyms.push(word);
+            }
+        }
+        
 
         if($('#ncit_details').length){
             $('#ncit_details').remove();
