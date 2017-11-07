@@ -381,8 +381,8 @@ const func = {
         
         let tmp = {};
         tmp.code = item.code;
-        tmp.name = item.displayName
-        tmp.description = item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description;
+        tmp.name = item.preferredName
+        tmp.definition = item.definitions.length ? item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description : undefined;
         let tmp_s = item.synonyms.map(function(syns){ return syns.termName });
         tmp.synonyms = [];
         //remove the duplicate
