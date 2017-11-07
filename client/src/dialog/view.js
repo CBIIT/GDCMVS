@@ -223,9 +223,9 @@ let tmpl = {
             +'</div>',
   ncit_details: '<div id="ncit_details">'
       +'<p><b>Preferred Name:</b> {{:item.name}}</p>'
-      +'<p><b>Definition:</b> {{:item.description}}</p>'
-      +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">{{:item.code }}</a></p>'
-      +'<p><b>Synonyms &amp; Abbreviations:</b></p><p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>'
+      +'{{if item.definition !== undefined}}<p><b>Definition:</b> {{:item.definition}}</p>{{/if}}'
+      +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code}}" target="_blank"">{{:item.code}}</a></p>'
+      +'{{if item.synonyms.length }}<p><b>Synonyms &amp; Abbreviations:</b></p><p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>{{/if}}'
       +'<p><a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">more details</p>'
       +'</div>'
 };
