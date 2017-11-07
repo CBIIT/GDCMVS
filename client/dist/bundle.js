@@ -1245,9 +1245,7 @@ const func = {
 			source.cde_pv.forEach(function(pv){
 				let exist = false;
 				let tmp_ss = [];
-				//let tmp_tgt = ""; 
 				if(pv.ss !== undefined && pv.ss.length > 0){
-					//tmp_tgt = (ss.c.match(/^[E]/g)) ? "CTCAE" "NCIt"
 					pv.ss.forEach(function(ss){
 						let tmp_s = [];
 						let tmp_s_h = [];   
@@ -1437,7 +1435,6 @@ const func = {
  		let h = window.innerHeight - offset - 240;
  		h = (h < 550) ? 550 : h;
  		html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */], allowCode: true}).render({mh:h, values:values});
- 		//console.log($.templates());
  	}
     let result = {};
     result.len = len;
@@ -1503,11 +1500,11 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="col-xs-3">'
+            +'<div class="col-xs-4">'
               +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');" target="_blank">{{:n_c}}</a> (NCIt)'
               +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
             +'</div>'
-            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+            +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
         +'</div>'
       +'{{/if}}'
@@ -1527,11 +1524,11 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'</div>' 
           +'{{for cde_s}}'
           +'<div class="row">'
-            +'<div class="col-xs-3">'
+            +'<div class="col-xs-4">'
             +'{{* if((/^C[1-9]/g).test(data.c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:c}}\');" target="_blank">{{:c}}</a> (NCIt)'
             +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
             +'</div>'
-            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+            +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
           +'{{/for}}'
         +'</div>'
@@ -1992,8 +1989,8 @@ const func = {
         
         let tmp = {};
         tmp.code = item.code;
-        tmp.name = item.displayName
-        tmp.description = item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description;
+        tmp.name = item.preferredName
+        tmp.definition = item.definitions.length ? item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description : undefined;
         let tmp_s = item.synonyms.map(function(syns){ return syns.termName });
         tmp.synonyms = [];
         //remove the duplicate
@@ -2279,9 +2276,9 @@ let tmpl = {
             +'</div>',
   ncit_details: '<div id="ncit_details">'
       +'<p><b>Preferred Name:</b> {{:item.name}}</p>'
-      +'<p><b>Definition:</b> {{:item.description}}</p>'
-      +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">{{:item.code }}</a></p>'
-      +'<p><b>Synonyms &amp; Abbreviations:</b></p><p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>'
+      +'{{if item.definition !== undefined}}<p><b>Definition:</b> {{:item.definition}}</p>{{/if}}'
+      +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code}}" target="_blank"">{{:item.code}}</a></p>'
+      +'{{if item.synonyms.length }}<p><b>Synonyms &amp; Abbreviations:</b></p><p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>{{/if}}'
       +'<p><a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">more details</p>'
       +'</div>'
 };
