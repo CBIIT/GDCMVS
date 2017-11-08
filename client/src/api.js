@@ -31,7 +31,7 @@ const api = {
       });
   },
   evsRestApi(id, callback){
-    $.getJSON(baseUrl + '/ncit/detail?code=' + id, function(result){
+    $.getJSON('./search/ncit/detail?code=' + id, function(result){
       callback(id,result);
     });
   }
