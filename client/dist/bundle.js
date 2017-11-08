@@ -101,7 +101,7 @@ const api = {
       });
   },
   evsRestApi(id, callback){
-    $.getJSON(baseUrl + '/ncit/detail?code=' + id, function(result){
+    $.getJSON('./search/ncit/detail?code=' + id, function(result){
       callback(id,result);
     });
   }
@@ -2026,6 +2026,8 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width: '45%',
+            //maxHeight: 800,
+            maxHeight: '385px',
             title: 'Terms & Properties',
             open: function() {
 
