@@ -177,8 +177,7 @@ const func = {
 						v.n = dict_enum_n[em.n];
 						v.ref = row.ref;
 						v.n_c = em.n_c;
-						//v.s = em.s;
-						v.s = tmp_s;
+						v.s = em.s;
 					}
 					
 				}
@@ -191,8 +190,7 @@ const func = {
 							v.n = em.n;
 							v.ref = row.ref;
 							v.n_c = em.n_c;
-							//v.s = em.s;
-							v.s = tmp_s;
+							v.s = em.s;
 						}
 					}
 					else{
@@ -209,8 +207,7 @@ const func = {
 								v.n = em.n;
 								v.ref = row.ref;
 								v.n_c = em.n_c;
-								//v.s = em.s;
-								v.s = tmp_s;
+								v.s = em.s;
 							}
 						}
 						else{
@@ -231,8 +228,7 @@ const func = {
 						v.n = em.n;
 						v.ref = row.ref;
 						v.n_c = em.n_c;
-						//v.s = em.s;
-						v.s = tmp_s;
+						v.s = em.s;
 					}
 					
 					v.cde_s = matched_pv[lc].ss;
