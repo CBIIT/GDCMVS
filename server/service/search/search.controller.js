@@ -464,7 +464,7 @@ var getGDCandCDEData = function(req, res){
 };
 
 var preload = function(req, res){
-	elastic.loadSynonyms(function(result){
+	elastic.loadSynonyms_continue(function(result){
 		if(result === 1){
 			res.json({"status":"success", "message":"preparing data..."});
 		}
