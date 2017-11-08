@@ -101,7 +101,7 @@ const api = {
       });
   },
   evsRestApi(id, callback){
-    $.getJSON(baseUrl + '/ncit/detail?code=' + id, function(result){
+    $.getJSON('./search/ncit/detail?code=' + id, function(result){
       callback(id,result);
     });
   }
@@ -1500,7 +1500,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'{{if n == "no match"}}no match{{else}}'
         +'<div class="row">'
           +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a></div>'
-          +'<div class="col-xs-2">{{if s !== undefined}}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
+          +'<div class="col-xs-2">{{if s.length }}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
