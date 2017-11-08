@@ -212,8 +212,40 @@ var loadSynonyms = function(){
 	logger.debug("length of NCIt codes: \n" + ncit.length);
 	logger.debug("length of CTCAE codes: \n" + ctcae.length);
 	//get data
-	//synchronziedLoadSynonmysfromNCIT(ncit, 0);
-	synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
+	synchronziedLoadSynonmysfromNCIT(ncit, 0);
+	//synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
+};
+
+var loadSynonyms_continue = function(){
+	let ncitids = [];
+	let content_2 = fs.readFileSync("./synonyms.js").toString();
+	content_2 = content_2.replace(/}{/g, ",");
+	let synonyms = JSON.parse(content_2);
+	//load ICD-0 codes
+	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let icdo = JSON.parse(gdcValues);
+	for(let ic in icdo){
+		let arr = icdo[ic];
+		arr.forEach(function(dict){
+			if(dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1){
+				ncitids.push(dict.n_c);
+			}
+		});
+		
+	}
+	let ncit = [];
+	
+	ncitids.forEach(function(id){
+		if(!(id in synonyms)){
+			ncit.push(id);
+		}
+		else{
+			logger.debug("in the synonyms:" + id );
+		}
+	});
+	logger.debug("length of NCIt codes: \n" + ncit.length);
+	//get data
+	synchronziedLoadSynonmysfromNCIT(ncit, 0);
 };
 
 
@@ -223,7 +255,7 @@ var synchronziedLoadSynonmysfromNCIT = function(ncitids, idx){
 	}
 	logger.debug("searching synonyms using NCIT code (#"+idx+"): "+ ncitids[idx]);
 	let syn = [];
-	http.get(config.NCIt_url[2]+ncitids[idx], (rsp) => {
+	https.get(config.NCIt_url[4]+ncitids[idx], (rsp) => {
 		  let html = '';
 		  rsp.on('data', (dt) => {
 			html += dt;
@@ -344,6 +376,7 @@ module.exports = {
 	loadData,
 	loadDataType,
 	loadSynonyms,
+	loadSynonyms_continue,
 	getData,
 	getSynonyms
 };
