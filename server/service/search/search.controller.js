@@ -4,6 +4,7 @@ var https = require('https');
 
 var elastic = require('../../components/elasticsearch');
 var handleError = require('../../components/handleError');
+var logger = require('../../components/logger');
 var config = require('../../config');
 var https = require('https');
 var fs = require('fs');
