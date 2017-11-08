@@ -3382,7 +3382,7 @@
 {"i_c":"C51.0","nm":"Labia majora, NOS","n_c":"C12306"},
 {"i_c":"C51.1","nm":"Labium minus","n_c":"C12307"},
 {"i_c":"C51.1","nm":"Labia minora","n_c":"C12307"},
-{"i_c":"C51.2","nm":"Clitoris","n_c":"C12308 @ itoris"},
+{"i_c":"C51.2","nm":"Clitoris","n_c":"C12308"},
 {"i_c":"C51.8","nm":"Overlapping lesion of vulva","n_c":""},
 {"i_c":"C51.9","nm":"Vulva, NOS","n_c":"C12408"},
 {"i_c":"C51.9","nm":"External female genitalia","n_c":""},
