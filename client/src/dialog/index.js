@@ -418,8 +418,6 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width: '45%',
-            //maxHeight: 800,
-            maxHeight: '385px',
             title: 'Terms & Properties',
             open: function() {
 
