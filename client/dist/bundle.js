@@ -1429,6 +1429,7 @@ const func = {
 		len += row.vs.length;
 		values.push(row);
 	});
+	console.log(values);
 	let html = "";
 	if(values.length == 0){
  		let keyword = $("#keywords").val();
@@ -1478,7 +1479,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></br>'
         +'{{/if}}'
         +'{{if syn}}'
-          +'<a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></br>'
+          +'<a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Terms</a></br>'
         +'{{/if}}'
         +'{{if cdeId == ""}}'
           +''
@@ -1499,14 +1500,14 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'<div class="table-td col-xs-6 border-r border-b">'
       +'{{if n == "no match"}}no match{{else}}'
         +'<div class="row">'
-          +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a></div>'
+          +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}{{:i_c}} {{:n}} (ICD-O-3){{else}}{{:n}}{{/if}}</a></div>'
           +'<div class="col-xs-2">{{if s.length }}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
             +'<div class="col-xs-4">'
               +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');" target="_blank">{{:n_c}}</a> (NCIt)'
-              +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+              +'{{* } else if (data.n_c !== undefined) { }} {{:c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
             +'</div>'
             +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
@@ -1530,7 +1531,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'<div class="row">'
             +'<div class="col-xs-4">'
             +'{{* if((/^C[1-9]/g).test(data.c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:c}}\');" target="_blank">{{:c}}</a> (NCIt)'
-            +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+            +'{{* } else if (data.c !== undefined) { }} {{:c}} {{*: (/^[E]/g).test(data.c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
             +'</div>'
             +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
@@ -1657,7 +1658,7 @@ const func = {
             position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
             width: '45%',
             minWidht: '385px',
-            title: 'GDC Permissible Values ('+items.length+')',
+            title: 'GDC Values ('+items.length+')',
             open: function() {
                 var target = $(this).parent();
                 if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
@@ -1743,7 +1744,7 @@ const func = {
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"55%",
-                title: "GDC Synonyms ("+items.length+")",
+                title: "GDC Terms ("+items.length+")",
                 open: function() {
                     var target = $(this).parent();
                     if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
@@ -1782,7 +1783,7 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width:"60%",
-            title: "Compare Your Values with GDC Permissible Values ",
+            title: "Compare Your Values with GDC Values ",
             open: function() {
 
                 var target = $(this).parent();
@@ -1894,7 +1895,7 @@ const func = {
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                     width:"60%",
-                    title: "CaDSR Permissible Values ("+tmp.length+")",
+                    title: "caDSR Values ("+tmp.length+")",
                     open: function() {
                         var target = $(this).parent();
                         if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
@@ -2030,7 +2031,7 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width: '45%',
-            title: 'Terms & Properties',
+            title: 'NCIt Terms & Properties',
             open: function() {
 
                 var target = $(this).parent();
@@ -2067,7 +2068,7 @@ let tmpl = {
           +'{{if icdo}}'
             +'<div class="table-container">'
               +'<div class="table-thead row">'
-                +'<div class="table-th col-xs-4">ICD-O-3 CODE</div>'
+                +'<div class="table-th col-xs-4">ICD-O-3 Code</div>'
                 +'<div class="table-th col-xs-8">ICD-O-3 Term</div>'
               +'</div>'
               +'<div id="gdc-data-list" class="table-body row" style="max-height: 390px;">'
@@ -2132,10 +2133,10 @@ let tmpl = {
           +'<div class="clearfix"></div>'
           +'<div id="gdc-syn-data-list" class="table-container">'
             +'<div class="table-thead row">'
-              +'{{if icdo}}<div class="table-th col-xs-2">ICD-O-3 CODE</div>{{/if}}'
+              +'{{if icdo}}<div class="table-th col-xs-2">ICD-O-3 Code</div>{{/if}}'
               +'<div class="table-th col-xs-3">ICD-O-3 Term</div>'
-              +'<div class="table-th col-xs-2">NCIt</div>'
-              +'<div class="table-th col-xs-5">Synonyms</div>'
+              +'<div class="table-th col-xs-2">NCIt Code</div>'
+              +'<div class="table-th col-xs-5">NCIt Terms</div>'
             +'</div>'
             +'<div class="table-body row" style="max-height: 390px;">'
               +'<div class="col-xs-12">'
@@ -2146,7 +2147,7 @@ let tmpl = {
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
                       +'<div class="table-td col-xs-2">'
                         +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');" target="_blank">{{:n_c}}</a> (NCIt)'
-                        +'{{* } else { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                        +'{{* } else if (data.n_c !== undefined) { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                       +'</div>'
                       +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
                       +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
@@ -2159,7 +2160,7 @@ let tmpl = {
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
                       +'<div class="table-td col-xs-2">'
                         +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');" target="_blank">{{:n_c}}</a> (NCIt)'
-                        +'{{* } else { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                        +'{{* } else if (data.n_c !== undefined) { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                       +'</div>'
                       +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
                       +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
@@ -2226,7 +2227,7 @@ let tmpl = {
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
                             +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');" target="_blank">{{:pvc}}</a> (NCIt)'
-                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                            +'{{* } else if (data.pvc !== undefined) { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
@@ -2237,7 +2238,7 @@ let tmpl = {
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
                             +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');" target="_blank">{{:pvc}}</a> (NCIt)'
-                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                            +'{{* } else if (data.pvc !== undefined) { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
@@ -2254,7 +2255,7 @@ let tmpl = {
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
                             +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');" target="_blank">{{:pvc}}</a> (NCIt)'
-                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                            +'{{* } else if (data.pvc !== undefined) { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
@@ -2265,7 +2266,7 @@ let tmpl = {
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
                             +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');" target="_blank">{{:pvc}}</a> (NCIt)'
-                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                            +'{{* } else if (data.pvc !== undefined) { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
