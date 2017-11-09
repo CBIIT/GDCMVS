@@ -45,7 +45,7 @@ const func = {
             position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
             width: '45%',
             minWidht: '385px',
-            title: 'GDC Permissible Values ('+items.length+')',
+            title: 'GDC Values ('+items.length+')',
             open: function() {
                 var target = $(this).parent();
                 if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
@@ -131,7 +131,7 @@ const func = {
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"55%",
-                title: "GDC Synonyms ("+items.length+")",
+                title: "GDC Terms ("+items.length+")",
                 open: function() {
                     var target = $(this).parent();
                     if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
@@ -170,7 +170,7 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width:"60%",
-            title: "Compare Your Values with GDC Permissible Values ",
+            title: "Compare Your Values with GDC Values ",
             open: function() {
 
                 var target = $(this).parent();
@@ -282,7 +282,7 @@ const func = {
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                     width:"60%",
-                    title: "CaDSR Permissible Values ("+tmp.length+")",
+                    title: "caDSR Values ("+tmp.length+")",
                     open: function() {
                         var target = $(this).parent();
                         if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
@@ -418,7 +418,7 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width: '45%',
-            title: 'Terms & Properties',
+            title: 'NCIt Terms & Properties',
             open: function() {
 
                 var target = $(this).parent();

@@ -271,6 +271,7 @@ const func = {
 		len += row.vs.length;
 		values.push(row);
 	});
+	console.log(values);
 	let html = "";
 	if(values.length == 0){
  		let keyword = $("#keywords").val();
