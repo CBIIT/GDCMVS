@@ -10,7 +10,8 @@ const func = {
  	//prefix for property and value id
  	let count = 0;
  	//data generated
- 	let trs = [];
+ 	let trs = [];    
+
  	items.forEach(function(item){
  		let hl = item.highlight;
         let source = item._source;
@@ -70,6 +71,19 @@ const func = {
                 }
             });
         }
+
+        // let count_n = 0;
+        // if(source.enum !== undefined && source.enum.length > 0){
+        //     source.enum.forEach(function(v, idx){
+        //         if(arr_enum_n.indexOf(v.n) !== -1 || matched_pv.indexOf(v.n) !== -1) {
+        //             count_n++;
+        //             delete matched_pv[matched_pv.indexOf(v.n)];
+        //         }
+
+        //     });
+        //     count_n += matched_pv.length;
+        // }
+        // console.log(count_n);
 
  		if(source.category != c_c){
  			//put category to tree table
@@ -149,9 +163,6 @@ const func = {
                     });
                 }
 
-                // if(e.exist){
-                //     p.node = "branch novalues";
-                // }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
             	e.desc = "";
@@ -162,6 +173,7 @@ const func = {
             	trs.push(e);
             });
         }
+        //else if(cde_pv !== undefined)
         else if(source.cde !== undefined){
         	p.node = "branch";
         	trs.push(p);
@@ -209,7 +221,6 @@ const func = {
             }).length;
         }
     });
-
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 300;
