@@ -610,13 +610,13 @@ function render(keyword, option, items){
   	let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
     vsHtml.active = false;
     if(option.activeTab == 0){
-        trsHtml.active = true;
+      vsHtml.active = true;
     }
     else if(option.activeTab == 1){
-        psHtml.active = true;
+      psHtml.active = true;
     }
     else{
-        vsHtml.active = true;
+      trsHtml.active = true;
     }
   	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
   }
@@ -769,7 +769,8 @@ const func = {
  	//prefix for property and value id
  	let count = 0;
  	//data generated
- 	let trs = [];
+ 	let trs = [];    
+
  	items.forEach(function(item){
  		let hl = item.highlight;
         let source = item._source;
@@ -829,6 +830,19 @@ const func = {
                 }
             });
         }
+
+        // let count_n = 0;
+        // if(source.enum !== undefined && source.enum.length > 0){
+        //     source.enum.forEach(function(v, idx){
+        //         if(arr_enum_n.indexOf(v.n) !== -1 || matched_pv.indexOf(v.n) !== -1) {
+        //             count_n++;
+        //             delete matched_pv[matched_pv.indexOf(v.n)];
+        //         }
+
+        //     });
+        //     count_n += matched_pv.length;
+        // }
+        // console.log(count_n);
 
  		if(source.category != c_c){
  			//put category to tree table
@@ -908,9 +922,6 @@ const func = {
                     });
                 }
 
-                // if(e.exist){
-                //     p.node = "branch novalues";
-                // }
             	//may be highlighted
             	e.title = (v.n in enums) ? enums[v.n] : v.n;
             	e.desc = "";
@@ -921,6 +932,7 @@ const func = {
             	trs.push(e);
             });
         }
+        //else if(cde_pv !== undefined)
         else if(source.cde !== undefined){
         	p.node = "branch";
         	trs.push(p);
@@ -968,7 +980,6 @@ const func = {
             }).length;
         }
     });
-
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 300;
@@ -1579,12 +1590,12 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 "use strict";
 let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
-      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results - GDC Dictionary</a></li>' +
+      '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li>' +
       '<li role="presentation" class="{{if ps_active}}active{{else}}{{/if}}"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
-      '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li></ul>' +
-      '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div>' +
+      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results - GDC Dictionary</a></li></ul>' +
+      '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div>' +
       '<div role="tabpanel" class="tab-pane {{if ps_active}}active{{else}}{{/if}}" id="psTab">{{:psHtml}}</div>' +
-      '<div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div></div></div>';
+      '<div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div></div></div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
