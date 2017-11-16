@@ -173,7 +173,8 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
                 }
             });
 		}
-		enums.forEach(function(em){
+		enums.forEach(function(enm){
+			let em = enm.toString().trim().toLowerCase();
 			if(em in allTerm){
 				//if exist, then check if have the same type
 				let t = allTerm[em];
