@@ -14,13 +14,13 @@ export default function render(keyword, option, items){
   	let vsHtml = vs.render(items);
     vsHtml.active = false;
     if(option.activeTab == 0){
-        trsHtml.active = true;
+      vsHtml.active = true;
     }
     else if(option.activeTab == 1){
-        psHtml.active = true;
+      psHtml.active = true;
     }
     else{
-        vsHtml.active = true;
+      trsHtml.active = true;
     }
   	html = tabs(trsHtml, psHtml, vsHtml);
   }
