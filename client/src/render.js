@@ -96,33 +96,14 @@ export default function render(keyword, option, items){
   });
 
   let hiddenRows = $('#tree_table').find('.data-hide');
-  let propertiesRows =  $('#tree_table').find('span.property');
   $('#trs-checkbox').click(function(){
     if(this.checked){
       hiddenRows.each(function(){
         $(this).removeClass('hide');
       });
-      propertiesRows.each(function(){
-        let target = $(this);
-        let parentTarget = target.parent().parent();
-        let ttId = parentTarget.data('tt-id'); 
-        let len = $('*[data-tt-parent-id="'+ ttId +'"]').length;
-        target.text(function(index, text){
-          return text.replace(/\d+/g, len);
-        });
-      });
     }else{
       hiddenRows.each(function(){
         $(this).addClass('hide');
-      });
-      propertiesRows.each(function(){
-        let target = $(this);
-        let parentTarget = target.parent().parent();
-        let ttId = parentTarget.data('tt-id'); 
-        let len = $('*[data-tt-parent-id="'+ ttId +'"]').not('.data-hide' ).length;
-        target.text(function(index, text){
-          return text.replace(/\d+/g, len);
-        });
       });
     }
   });
