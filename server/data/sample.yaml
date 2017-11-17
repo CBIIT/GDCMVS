@@ -509,7 +509,6 @@ properties:
   sample_type:
     term:
       $ref: "_terms.yaml#/sample_type"
-    type: string
     enum:
       - Additional Metastatic
       - Additional - New Primary
@@ -529,6 +528,7 @@ properties:
       - GenomePlex (Rubicon) Amplified DNA
       - Granulocytes
       - Human Tumor Original Cells
+      - Lymphoid Normal
       - Metastatic
       - Mononuclear Cells from Bone Marrow Normal
       - Primary Blood Derived Cancer - Peripheral Blood
@@ -546,6 +546,8 @@ properties:
       - Slides
       - Solid Tissue Normal
       - Total RNA
+      - Tumor Adjacent Normal – Post Neo-adjuvant Therapy
+      - Tumor
       - Xenograft Tissue
       - Unknown
       - Not Reported
@@ -553,7 +555,6 @@ properties:
   sample_type_id:
     term:
       $ref: "_terms.yaml#/sample_type_id"
-    type: string
     enum:
       - '01'
       - '02'
@@ -571,6 +572,8 @@ properties:
       - '14'
       - '15'
       - '16'
+      - '17'
+      - '18'
       - '20'
       - '40'
       - '41'
@@ -605,13 +608,13 @@ properties:
   tumor_code:
     term:
       $ref: "_terms.yaml#/tumor_code"
-    type: string
     enum:
       - Non cancerous tissue
       - Diffuse Large B-Cell Lymphoma (DLBCL)
       - Lung Cancer (all types)
       - Cervical Cancer (all types)
       - Anal Cancer (all types)
+      - Acute Leukemia of Ambiguous Lineage (ALAL)
       - Acute lymphoblastic leukemia (ALL)
       - Acute myeloid leukemia (AML)
       - Induction Failure AML (AML-IF)
@@ -634,7 +637,6 @@ properties:
   tumor_code_id:
     term:
       $ref: "_terms.yaml#/tumor_code_id"
-    type: string
     enum:
       - "00"
       - "01"
@@ -642,6 +644,7 @@ properties:
       - "03"
       - "04"
       - "10"
+      - "15"
       - "20"
       - "21"
       - "30"

@@ -4,8 +4,11 @@ var https = require('https');
 
 var elastic = require('../../components/elasticsearch');
 var handleError = require('../../components/handleError');
+var logger = require('../../components/logger');
 var config = require('../../config');
+var https = require('https');
 var fs = require('fs');
+const excel = require('node-excel-export');
 var cdeData = {};
 var gdcData = {};
 
@@ -139,6 +142,13 @@ var searchP = function(req, res){
 				return handleError.error(res, result);
 			}
 			let data = result.hits.hits;
+			data.forEach(function(entry){
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
+			});
 			res.json(data);
 		});
 	}
@@ -455,21 +465,127 @@ var getGDCandCDEData = function(req, res){
 };
 
 var preload = function(req, res){
-	// elastic.preloadDataAfter(function(result){
-	// 	if(result === 1){
-	// 		res.json({"status":"success", "message":"preparing data..."});
-	// 	}
-	// 	else{
-	// 		res.json({"status":"failed", "message":"failed to loading data from caDSR."});
-	// 	}
-	// });
-	elastic.preloadDataTypeFromCaDSR(function(result){
+	elastic.loadSynonyms_continue(function(result){
 		if(result === 1){
-			res.json({"status":"success", "message":"preparing data type..."});
+			res.json({"status":"success", "message":"preparing data..."});
 		}
 		else{
-			res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
+			res.json({"status":"failed", "message":"failed to loading data from caDSR."});
 		}
+	});
+	// elastic.preloadDataTypeFromCaDSR(function(result){
+	// 	if(result === 1){
+	// 		res.json({"status":"success", "message":"preparing data type..."});
+	// 	}
+	// 	else{
+	// 		res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
+	// 	}
+	// });
+};
+
+var export2Excel = function(req, res){
+	let query = {"match_all": {}};
+
+	elastic.query(config.index_p, query, null, function(result){
+		if(result.hits === undefined){
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		let ds = [];
+		data.forEach(function(entry){
+			let vs = entry._source.enum;
+			if(vs){
+				let cde = entry._source.cde_pv;
+				vs.forEach(function(v){
+					let tmp = {};
+					tmp.c = entry._source.category;
+					tmp.n = entry._source.node;
+					tmp.p = entry._source.name;
+					tmp.v = v.n;
+					tmp.ncit = v.n_c;
+					if(v.i_c){
+						tmp.icdo = v.i_c.c;
+					}
+					else{
+						tmp.icdo = "";
+					}
+					if(tmp.n == 'follow_up' && tmp.p == 'adverse_event'){
+						cde.forEach(function(c){
+							if(c.n.trim().toLowerCase() == tmp.v.trim().toLowerCase()){
+								tmp.ctcae = c.ss[0].c;
+							}
+						});
+					}
+					else{
+						tmp.ctcae = "";
+					}
+					ds.push(tmp);
+				});
+				
+			}
+		});
+		let heading = [
+			['Category', 'Node', 'Property', 'Value', 'NCIt Code', 'ICD-O-3 Code', 'CTCAE Code']
+		];
+		let merges = [];
+		let specification = {
+			c: {
+				width: 200
+			},
+			n: {
+				width: 200
+			},
+			p: {
+				width: 200
+			},
+			v: {
+				width: 200
+			},
+			ncit: {
+				width: 100
+			},
+			icdo: {
+				width: 100
+			},
+			ctcae: {
+				width: 100
+			}
+		};
+		const report = excel.buildExport(
+		  [ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+		    {
+		      name: 'Report', // <- Specify sheet name (optional) 
+		      heading: heading, // <- Raw heading array (optional) 
+		      merges: merges, // <- Merge cell ranges 
+		      specification: specification, // <- Report specification 
+		      data: ds // <-- Report data 
+		    }
+		  ]
+		);
+		 
+		// You can then return this straight 
+		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.send(report);
+	});
+};
+
+var getNCItInfo = function(req, res){
+	let code = req.query.code;
+	let url = config.NCIt_url[4] + code;
+	https.get(url, (rsp) => {
+		  let html = '';
+		  rsp.on('data', (dt) => {
+			html += dt;
+		  });
+		  rsp.on('end', function(){
+			  	if(html.trim() !== ''){
+			  		let data = JSON.parse(html);
+			  		res.json(data);
+			  	}
+  			});
+
+	}).on('error', (e) => {
+	  logger.debug(e);
 	});
 };
 
@@ -482,5 +598,7 @@ module.exports = {
 	getGDCData,
 	getGDCandCDEData,
 	preload,
+	export2Excel,
+	getNCItInfo,
 	indexing
 };

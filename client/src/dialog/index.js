@@ -8,9 +8,18 @@ const func = {
  		if($('#gdc_data').length){
             $('#gdc_data').remove();
         }
+        let windowEl = $(window);
+        let icdo = false;
+        items.forEach(function(item){
+            if(item.i_c !== undefined){
+                icdo = true;
+            }
+        });
+        
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-        let html = $.templates(tmpl.gdc_data).render({target:target,items: items });
+        let html = $.templates(tmpl.gdc_data).render({target:target, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
+
         //display result in a table
         $(document.body).append(html);
         if(target !== undefined){
@@ -20,6 +29,8 @@ const func = {
                     $('#gdc-data-list div[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
+                    var setScroll = $('#gdc_data_match').offset().top - $('#gdc-data-list').offset().top;
+                    $('#gdc-data-list').scrollTop(setScroll - 120);
                 }
                 else{
                     $('#gdc-data-list div[style="display: block;"]').each(function(){
@@ -28,23 +39,22 @@ const func = {
                 }
             });
         }
-        $("#gdc_data").dialog({
-            width:"600px",
-        });
-        $("#gdc_data").dialog({
-                modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"35%",
-                title: "GDC Permissible Values ("+items.length+")",
-                open: function() {
-                    var target = $(this).parent();
-                    if(target.offset().top < shared.headerOffset()){
-                        target.css('top', (shared.headerOffset()+20)+"px");
-                    }
-                },
-                close: function() {
-                    $(this).remove();
+
+        $('#gdc_data').dialog({
+            modal: false,
+            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
+            width: '45%',
+            minWidht: '385px',
+            title: 'GDC Values ('+items.length+')',
+            open: function() {
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                 }
+            },
+            close: function() {
+                $(this).remove();
+            }
         }).parent().draggable({
             containment: '#docs-container'
         });
@@ -59,6 +69,7 @@ const func = {
         }
         let targets = null;
         let icdo = false;
+        let windowEl = $(window);
         if(tgts !== null && tgts !== undefined){
             targets = tgts.split("#"); 
 
@@ -95,7 +106,7 @@ const func = {
             }
             it.s_r = tmp_s;
         }); 
-        let html = $.templates(tmpl.gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
+        let html = $.templates({markup: tmpl.gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
@@ -107,8 +118,7 @@ const func = {
                     $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
-                }
-                else{
+                } else {
                     $('#gdc-syn-data-list div.table-row[style="display: block;"]').each(function(){
                         $(this).css("display","none");
                     });
@@ -121,11 +131,11 @@ const func = {
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"55%",
-                title: "GDC Synonyms ("+items.length+")",
+                title: "GDC Terms ("+items.length+")",
                 open: function() {
                     var target = $(this).parent();
-                    if(target.offset().top < shared.headerOffset()){
-                        target.css('top', (shared.headerOffset()+20)+"px");
+                    if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                        target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                     }
 
                     $('#gdc-data-invariant').bind('click', function(){
@@ -151,6 +161,7 @@ const func = {
  		if($('#compare_dialog').length){
             $('#compare_dialog').remove();
         }
+        let windowEl = $(window);
         let html = $.templates(tmpl.toCompare).render({items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
@@ -159,12 +170,12 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width:"60%",
-            title: "Compare Your Values with GDC Permissible Values ",
+            title: "Compare Your Values with GDC Values ",
             open: function() {
 
                 var target = $(this).parent();
-                if(target.offset().top < shared.headerOffset()){
-                    target.css('top', (shared.headerOffset()+20)+"px");
+                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                 }
 
             	$('#cp_result').css("display", "none");
@@ -228,6 +239,7 @@ const func = {
             });
 
             let targets = null;
+            let windowEl = $(window);
             
             if(tgts !== null && tgts !== undefined && tgts !== ""){
                 tgts = tgts.replace(/\^/g,'\'');
@@ -244,7 +256,7 @@ const func = {
                 $('#caDSR_data').remove();
             }
 
-            let html = $.templates(tmpl.cde_data).render({targets: targets, items: tmp });
+            let html = $.templates({markup: tmpl.cde_data, allowCode: true}).render({targets: targets, items: tmp });
             let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
             //display result in a table
             $(document.body).append(html);
@@ -270,11 +282,11 @@ const func = {
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                     width:"60%",
-                    title: "CaDSR Permissible Values ("+tmp.length+")",
+                    title: "caDSR Values ("+tmp.length+")",
                     open: function() {
                         var target = $(this).parent();
-                        if(target.offset().top < shared.headerOffset()){
-                            target.css('top', (shared.headerOffset()+20)+"px");
+                        if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                            target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                         }
 
                         $('#cde-data-invariant').bind('click', function(){
@@ -290,7 +302,7 @@ const func = {
                         $(this).remove();
                     }
             }).parent().draggable({
-                containment: '#docs-container'
+              containment: '#docs-container'
             });
             
         });
@@ -303,6 +315,7 @@ const func = {
         if($('#compareGDC_dialog').length){
             $('#compareGDC_dialog').remove();
         }
+        let windowEl = $(window);
         let popup = '<div id="compareGDC_dialog">'
                         +'<div id="compareGDC_result"></div>'
                     +'</div>';
@@ -336,8 +349,8 @@ const func = {
                 open: function() {
 
                     var target = $(this).parent();
-                    if(target.offset().top < shared.headerOffset()){
-                        target.css('top', (shared.headerOffset()+20)+"px");
+                    if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                        target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                     }
 
                     $('#compareGDC_filter').bind('click', function(){
@@ -358,6 +371,64 @@ const func = {
                 close: function() {
                     $(this).remove();
                 }
+        }).parent().draggable({
+            containment: '#docs-container'
+        });
+    });
+  },
+  ncitDetails(uid){
+    api.evsRestApi(uid, function(id, item) {
+        
+        let tmp = {};
+        tmp.code = item.code;
+        tmp.name = item.preferredName
+        tmp.definition = item.definitions.length ? item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description : undefined;
+        let tmp_s = item.synonyms.map(function(syns){ return syns.termName });
+        tmp.synonyms = [];
+        //remove the duplicate
+
+        let cache = {};
+        if(tmp_s.length > 0){
+            tmp_s.forEach(function(s){
+                let lc = s.trim().toLowerCase();
+                if(!(lc in cache)){
+                    cache[lc] = [];
+                }
+                cache[lc].push(s);
+            });
+            for(let idx in cache){
+                //find the term with the first character capitalized
+                let word = findWord(cache[idx]);
+                tmp.synonyms.push(word);
+            }
+        }
+        
+
+        if($('#ncit_details').length){
+            $('#ncit_details').remove();
+        }
+
+        let windowEl = $(window);
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+        let html = $.templates(tmpl.ncit_details).render({item: tmp});
+
+        $(document.body).append(html);
+
+        $('#ncit_details').dialog({
+            modal: false,
+            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
+            width: '45%',
+            title: 'NCIt Terms & Properties',
+            open: function() {
+
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+                }
+            },
+            close: function() {
+                $(this).remove();
+            }
         }).parent().draggable({
             containment: '#docs-container'
         });
