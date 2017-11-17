@@ -173,7 +173,8 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
                 }
             });
 		}
-		enums.forEach(function(em){
+		enums.forEach(function(enm){
+			let em = enm.toString().trim().toLowerCase();
 			if(em in allTerm){
 				//if exist, then check if have the same type
 				let t = allTerm[em];
@@ -234,29 +235,62 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 						tmp.i_c = {};
 						tmp.i_c.c = item.code;
 						let ts = [];
-						//check if it's a range in level 2
-						if(item.code.indexOf("-") >= 0){
-							let r = item.code.split("-");
-							let start = parseInt(r[0]);
-							let end = parseInt(r[1]);
-							for(let i = start; i <= end; i++){
-								ts.push(i);
+						
+						if(item.code.indexOf('C') >= 0){
+							//ICD-O-3 code with C
+							//check if it's a range in level 2
+							if(item.code.indexOf("-") >= 0){
+								let r = item.code.split("-");
+								let start = parseInt(r[0].substr(1));
+								let end = parseInt(r[1].substr(1));
+								for(let i = start; i <= end; i++){
+									if(i < 10){
+										ts.push("C0" + i);
+									}
+									else{
+										ts.push("C" + i);
+									}
+								}
 							}
-
-						}
-						else if(item.code.indexOf("/") >= 0){
-							//check if it has "/" in the code
-							let idx = item.code.indexOf("/");
-							let l3 = item.code.substr(0, idx);
-							let l4 = item.code;
-							let l2 = l3.substr(0, l3.length - 1);
-							ts.push(l2);
-							ts.push(l3);
-							ts.push(l4);
+							else if(item.code.indexOf(".") >= 0){
+								//check if it has "/" in the code
+								let idx = item.code.indexOf(".");
+								let l2 = item.code.substr(0, idx);
+								let l3 = item.code;
+								ts.push(l2);
+								ts.push(l3);
+							}
+							else{
+								ts.push(item.code);
+							}
 						}
 						else{
-							ts.push(item.code);
+							//regular ICD-O-3 code
+							//check if it's a range in level 2
+							if(item.code.indexOf("-") >= 0){
+								let r = item.code.split("-");
+								let start = parseInt(r[0]);
+								let end = parseInt(r[1]);
+								for(let i = start; i <= end; i++){
+									ts.push(i);
+								}
+
+							}
+							else if(item.code.indexOf("/") >= 0){
+								//check if it has "/" in the code
+								let idx = item.code.indexOf("/");
+								let l3 = item.code.substr(0, idx);
+								let l4 = item.code;
+								let l2 = l3.substr(0, l3.length - 1);
+								ts.push(l2);
+								ts.push(l3);
+								ts.push(l4);
+							}
+							else{
+								ts.push(item.code);
+							}
 						}
+						
 						tmp.i_c.have = ts;
 					}
 					tmp.n_c = item.pvc;
@@ -349,6 +383,7 @@ function bulkIndex(next){
 		if(file.indexOf('_') !== 0){
 			let fileJson = yaml.load(folderPath+'/'+file);
 			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema"){
+				logger.debug(folderPath+'/'+file);
 				helper(fileJson, termsJson, defJson, ccode, syns);
 			}
 			
@@ -481,15 +516,19 @@ exports.createIndexes = createIndexes;
 function preloadDataFromCaDSR(next){
 	let folderPath = path.join(__dirname, '..','data');
 	let termsJson = yaml.load(folderPath+'/_terms.yaml');
+	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeDataJson = JSON.parse(content_1);
 	let ids = [];
 	for(var term in termsJson){
 		let detail = termsJson[term];
 		if(detail.termDef !== undefined && detail.termDef.source !== undefined && detail.termDef.source === 'caDSR'){
-			if(detail.termDef.cde_id !== undefined){
+			if(detail.termDef.cde_id !== undefined && !(detail.termDef.cde_id in cdeDataJson)){
 				ids.push(detail.termDef.cde_id);
 			}
 		}
 	}
+	logger.debug(ids);
 	caDSR.loadData(ids);
 	next(1);
 }
@@ -513,9 +552,16 @@ function preloadDataTypeFromCaDSR(next){
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
-function preloadDataAfter(next){
-	caDSR.loadDataAfter();
+function loadSynonyms(next){
+	caDSR.loadSynonyms();
 	next(1);
 }
 
-exports.preloadDataAfter = preloadDataAfter;
+exports.loadSynonyms = loadSynonyms;
+
+function loadSynonyms_continue(next){
+	caDSR.loadSynonyms_continue();
+	next(1);
+}
+
+exports.loadSynonyms_continue = loadSynonyms_continue;

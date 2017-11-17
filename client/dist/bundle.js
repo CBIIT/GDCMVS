@@ -75,7 +75,6 @@ const api = {
     $.getJSON({
   	url: baseUrl + "/suggest?keyword=" + value,
   	success: function(data) {
-  		//console.log(data);
   	  callback(data);
   	}
     });
@@ -100,6 +99,11 @@ const api = {
     $.getJSON(baseUrl + '/p/both/vs', {local:ids.local, cde: ids.cde}, function(result){
         callback(ids,result);
       });
+  },
+  evsRestApi(id, callback){
+    $.getJSON('./search/ncit/detail?code=' + id, function(result){
+      callback(id,result);
+    });
   }
 }
 
@@ -400,6 +404,12 @@ function compareGDC(prop, cdeId){
 
 window.compareGDC = compareGDC;
 
+function ncitDetails(uid){
+    __WEBPACK_IMPORTED_MODULE_1__dialog___["a" /* default */].ncitDetails(uid);
+}
+
+window.ncitDetails = ncitDetails;
+
 //find the word with the first character capitalized
 function findWord (words){
     let word = "";
@@ -600,13 +610,13 @@ function render(keyword, option, items){
   	let vsHtml = __WEBPACK_IMPORTED_MODULE_2__values_table___["a" /* default */].render(items);
     vsHtml.active = false;
     if(option.activeTab == 0){
-        trsHtml.active = true;
+      vsHtml.active = true;
     }
     else if(option.activeTab == 1){
-        psHtml.active = true;
+      psHtml.active = true;
     }
     else{
-        vsHtml.active = true;
+      trsHtml.active = true;
     }
   	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
   }
@@ -718,35 +728,7 @@ function render(keyword, option, items){
     });
   });
 
-  $('.tooltip-box').tooltip();
-
-  // $('#table-body').scroll(function() {
-  //   console.log('true');
-
-  //   let vsTapTop = $('#vsTab').offset().top + 88;
-  //   let vsTapBotton=  vsTapTop + $('#vsTab').height();
-
-  //   $('.table-row').each(function(){
-  //     var t = $(this);
-  //     var thisTop = t.offset().top;
-  //     var thisBotton = thisTop + t.height();
-  //     var property =  t.find('.property');
-
-  //     console.log('vsTapTop' + vsTapTop + 'vsTapBotton' + vsTapBotton +  'thisTop' + thisTop + 'thisBotton' + thisBotton)
-  //     if(thisBotton > vsTapTop && thisBotton < vsTapBotton || thisTop < vsTapTop && thisTop > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton ){
-  //       console.log(property);
-  //       if(thisTop < vsTapTop || thisTop < vsTapTop && thisBotton > vsTapTop || thisTop < vsTapTop && thisBotton > vsTapBotton  )
-  //         property.attr('style','opacity: 100; position: relative; top: '+ (vsTapTop - thisTop )+'px;');
-  //       else{
-  //         property.attr('style','opacity: 100; position: relative; top: 0');
-  //       }
-  //     }
-  //     else{
-  //       property.attr('style','opacity: 0;'); //property.hide();
-  //     }
-  //   });
-  // });
-  
+  $('.tooltip-box').tooltip();  
 }
 
 
@@ -769,6 +751,12 @@ const func = {
  	let count = 0;
  	//data generated
  	let trs = [];
+
+    //category row
+    let c = {};
+    //node row
+    let n = {};    
+
  	items.forEach(function(item){
  		let hl = item.highlight;
         let source = item._source;
@@ -781,7 +769,6 @@ const func = {
         let arr_cde_n = [];
         let arr_cde_s = [];
         let matched_pv = [];
-        let cde2local = false;
         enum_s.forEach(function(s){
             let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
             arr_enum_s.push(tmp);
@@ -813,18 +800,7 @@ const func = {
                 }
                 exist = exist || (arr_cde_n.indexOf(pv.n) >= 0);
                 if(exist){
-                    matched_pv.push(pv.n);
-                    if(source.enum !== undefined){
-                        source.enum.forEach(function(em){
-                            if(cde2local){
-                                return;
-                            }
-                            if(em.n == pv.n){
-                                cde2local = true;
-                            }
-                        });
-                    }
-                    
+                    matched_pv.push(pv.n.toLowerCase());
                 }
             });
         }
@@ -832,7 +808,7 @@ const func = {
  		if(source.category != c_c){
  			//put category to tree table
  			c_c = source.category;
-	        let c = {};
+	        c = {};
 	        c.id = c_c;
 	        c.title = c_c;
 	        c.desc = "";
@@ -840,12 +816,14 @@ const func = {
 	        c.data_tt_parent_id = "--";
 	        c.type = "category";
 	        c.node = "branch";
+            c.exist = true;
+            c.len = 0;
 	        trs.push(c);
  		}
  		if(source.node != c_n){
  			//put node to tree table
  			c_n = source.node;
- 			let n = {};
+ 			n = {};
  			//link id
  			n.l_id = source.node;
             n.id = source.node;
@@ -855,10 +833,18 @@ const func = {
             n.data_tt_parent_id = c_c;
             n.type = "folder";
             n.node = "branch";
+            n.exist = true;
+            n.len = 0;
             trs.push(n);
  		}
  		//put property to tree table
  		let p = {};
+        //calculate if property itself got matched;
+        let count_p = 0;
+        //calculate how many values got matched in this property;
+        let count_v = 0;
+        //calculate how many synonyms got matched in this property
+        let count_s = 0;
  		count++;
  		p.id = count + "_" + source.name;
  		//may have highlighted terms in p.title and p.desc
@@ -867,100 +853,119 @@ const func = {
  		p.data_tt_id = p.id;
         p.data_tt_parent_id = c_n;
         p.type="property";
-        //put value to tree table
-        if(enum_n.length == 0 && enum_s.length == 0 && !cde2local){
-            //if no values show in the values tab
-            p.node = "leaf";
-            trs.push(p);
+        p.exist = true;
+        if(("name" in hl) || ("name.have" in hl) || ("desc" in hl)){
+            count_p = 1;
         }
-        else if(source.enum !== undefined){
-        	p.node = "branch";
-        	trs.push(p);
-        	//show values, need to highlight if necessary
-        	let list = [];
-            if(("enum.n" in hl) || ("enum.n.have" in hl)){
-                list = hl["enum.n"] || hl["enum.n.have"];
+        //put value to tree table
+        if(source.enum != undefined){
+            if(enum_n.length == 0 && enum_s.length == 0 && matched_pv.length == 0){
+                //if no values show in the values tab
+                p.node = "leaf";
+                trs.push(p);
             }
-            let enums = {};
-            list.forEach(function(em){
-                let e = em.replace(/<b>/g,"").replace(/<\/b>/g, "");
-                enums[e] = em;
-            });
-            let values = source.enum;
-            values.forEach(function(v){
-            	count++;
-            	let e = {}; 
-            	e.id = count + "_"+ v.n;
-
-                if(arr_enum_n.indexOf(v.n) !== -1 || matched_pv.indexOf(v.n) !== -1) {
-                    e.exist = true;
+            else{
+                p.node = "branch";
+                trs.push(p);
+                //show values, need to highlight if necessary
+                let list = [];
+                if(("enum.n" in hl) || ("enum.n.have" in hl)){
+                    list = hl["enum.n"] || hl["enum.n.have"];
                 }
+                let enums = {};
+                list.forEach(function(em){
+                    let e = em.replace(/<b>/g,"").replace(/<\/b>/g, "");
+                    enums[e] = em;
+                });
+                let values = source.enum;
+                let tmp_trs = [];
+                values.forEach(function(v){
+                    count++;
+                    let e = {}; 
+                    e.id = count + "_"+ v.n;
+                    e.exist = false;
 
-                if(v.s !== undefined && e.exist != true){
-                    v.s.forEach(function(syn){
-                        if(arr_enum_s.indexOf(syn) !== -1) {
+                    let idx = matched_pv.indexOf(v.n.toLowerCase());
+                    if( idx !== -1){
+                        count_s --;
+                        e.exist = true;
+                    }
+                    else{
+                        if(arr_enum_n.indexOf(v.n) !== -1) {
                             e.exist = true;
                         }
+
+                        if(v.s !== undefined && e.exist != true){
+                            v.s.forEach(function(syn){
+                                if(arr_enum_s.indexOf(syn) !== -1) {
+                                    e.exist = true;
+                                }
+                            });
+                        }
+                    }
+                    
+                    if(e.exist){
+                        count_v ++;
+                    }
+                    //may be highlighted
+                    e.title = (v.n in enums) ? enums[v.n] : v.n;
+                    e.desc = "";
+                    e.data_tt_id = e.id;
+                    e.data_tt_parent_id = p.id;
+                    e.type = "value";
+                    e.node = "leaf";
+                    tmp_trs.push(e);
+
+                });
+                if(count_v == 0){
+                    p.node = "leaf";
+                }
+                else{
+                    tmp_trs.forEach(function(tt){
+                        trs.push(tt);
                     });
                 }
-
-                // if(e.exist){
-                //     p.node = "branch novalues";
-                // }
-            	//may be highlighted
-            	e.title = (v.n in enums) ? enums[v.n] : v.n;
-            	e.desc = "";
-            	e.data_tt_id = e.id;
-            	e.data_tt_parent_id = p.id;
-            	e.type = "value";
-            	e.node = "leaf";
-            	trs.push(e);
-            });
-        }
-        else if(source.cde !== undefined){
-        	p.node = "branch";
-        	trs.push(p);
-        	//show caDSR reference
-        	count++;
-            let l = {};
-            l.id = count + "_l";
-            l.l_id = source.cde.id;
-            l.l_type = "cde";
-            l.url = source.cde.url;
-            l.desc = "";
-            l.data_tt_id = l.id;
-            l.data_tt_parent_id = p.id;
-            l.type = "link";
-            l.node = "leaf";
-            trs.push(l);
-        }
-        else if(source.ncit !== undefined){
-        	p.node = "branch";
-        	trs.push(p);
-        	//show NCIt reference
-        	count++;
-            let l = {};
-            l.id = count + "_l";
-            l.l_id = source.ncit.id;
-            l.l_type = "ncit";
-            l.url = source.ncit.url;
-            l.desc = "";
-            l.data_tt_id = l.id;
-            l.data_tt_parent_id = p.id;
-            l.type = "link";
-            l.node = "leaf";
-            trs.push(l);
+                
+                count_s += matched_pv.length;    
+            }
         }
         else{
-        	p.node = "leaf";
-        	trs.push(p);
+            if(matched_pv.length > 0){
+                //matched on cde
+                p.node = "branch";
+                trs.push(p);
+                //show caDSR reference
+                count++;
+                let l = {};
+                l.id = count + "_l";
+                l.l_id = source.cde.id;
+                l.l_type = "cde";
+                l.url = source.cde.url;
+                l.desc = "";
+                l.data_tt_id = l.id;
+                l.data_tt_parent_id = p.id;
+                l.type = "link";
+                l.node = "leaf";
+                trs.push(l);
+                
+                count_s = matched_pv.length;
+            }
+            else{
+                //matched on property name or description
+                p.node = "leaf";
+                trs.push(p);
+            }
         }
+
+        //save and calculate the count of matched element in this property
+        p.len = count_v + count_s;
+        c.len += p.len + count_p;
+        n.len += p.len + count_p;
  	});
 
  	let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 290;
+    let h = window.innerHeight - offset - 300;
     h = (h < 500) ? 500 : h;
-
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
     let result = {};
     result.len = 0;
@@ -995,9 +1000,9 @@ let tmpl = '<div class="container table-container">'
 						+'{{for trs}}'
 						+'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}} {{if exist != true && type == "value"}}data-hide hide{{/if}}" style="width:100%; float:left;">'
 						+'<td width="33%" style="width:33%; float:left; display:flex; align-items: center;">'
-						+'<span class="{{:type}}" style="display:inline-block; width: 70%;">'
+						+'<span class="{{:type}} title" style="display:inline-block; width: 70%;">'
 						+'{{if type == "folder"}}'
-						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}}</a>'
+						+'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}} {{if len !== undefined}}({{:len}}){{/if}}</a>'
 						+'{{else type == "link"}}'
 							+'{{if l_type == "cde"}}'
 							+'No values in GDC, reference values in <a href="javascript:getCDEData(\'{{:l_id}}\');" class="table-td-link">caDSR</a>'
@@ -1005,7 +1010,7 @@ let tmpl = '<div class="container table-container">'
 							+'No values in GDC, concept referenced in <a target="_blank" href="{{:url}}" class="table-td-link">NCIt</a>'
 							+'{{/if}}'
 			            +'{{else}}'
-			            +'{{:title}}'
+			            +'{{:title}} {{if len && len !== 0}}({{:len}}){{/if}}'
 			            +'{{/if}}'
 			            +'</td>'
 			            +'<td width="66%" style="width:66%; float:left; line-height: 22px;">'
@@ -1112,7 +1117,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
   +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
   +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
     +'{{if syn}}'
-    +'<br><a href="javascript:getGDCSynonyms(\'{{:ref}}\',null);">See All Synonyms</a>'
+    +'<br><a href="javascript:getGDCSynonyms(\'{{:ref}}\',null);">See All Terms</a>'
     +'{{else}}'
     +'{{/if}}'
   +'{{else}}'
@@ -1278,8 +1283,23 @@ const func = {
 				//check if there are any matches in local synonyms
 				let exist = false;
 				let tmp_s = [];
+				let t_s = [];
 				if(em.s){
+					//remove depulicates in local synonyms
+					let cache = {};
 					em.s.forEach(function(s){
+						let lc = s.trim().toLowerCase();
+                        if(!(lc in cache)){
+                            cache[lc] = [];
+                        }
+                        cache[lc].push(s);
+					});
+					for(let idx in cache){
+                        //find the term with the first character capitalized
+                        let word = findWord(cache[idx]);
+                        t_s.push(word);
+                    }
+					t_s.forEach(function(s){
 						if(s in dict_enum_s){
 							exist = true;
 							tmp_s.push(dict_enum_s[s])
@@ -1308,7 +1328,8 @@ const func = {
 						v.n = dict_enum_n[em.n];
 						v.ref = row.ref;
 						v.n_c = em.n_c;
-						v.s = em.s;
+						//v.s = em.s;
+						v.s = tmp_s;
 					}
 					
 				}
@@ -1321,7 +1342,8 @@ const func = {
 							v.n = em.n;
 							v.ref = row.ref;
 							v.n_c = em.n_c;
-							v.s = em.s;
+							//v.s = em.s;
+							v.s = tmp_s;
 						}
 					}
 					else{
@@ -1338,7 +1360,8 @@ const func = {
 								v.n = em.n;
 								v.ref = row.ref;
 								v.n_c = em.n_c;
-								v.s = em.s;
+								//v.s = em.s;
+								v.s = tmp_s;
 							}
 						}
 						else{
@@ -1352,33 +1375,15 @@ const func = {
 					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
 					row.tgts_enum_n += tmp + "#";
 				}
-				//check if there are any matched cde_pvs can connect to this value
-				// if(v.n !== undefined){
-				// 	//v.pv = em.n;
 
-				// 	let lc = em.n.toLowerCase();
-				// 	if(lc in matched_pv){
-				// 		v.cde_s = matched_pv[lc].ss;
-				// 		if(v.cde_s.length){
-				// 			v.cde_pv = matched_pv[lc].pv;
-				// 			v.cde_pvm = matched_pv[lc].pvm;
-				// 		}
-				// 		delete matched_pv[lc];
-
-				// 	}
-				// 	else{
-				// 		v.cde_s = [];
-				// 	}
-
-				// 	row.vs.push(v);
-				// }
 				let lc = em.n.toLowerCase();
 				if(lc in matched_pv){
 					if(v.n == undefined){
 						v.n = em.n;
 						v.ref = row.ref;
 						v.n_c = em.n_c;
-						v.s = em.s;
+						//v.s = em.s;
+						v.s = tmp_s;
 					}
 					
 					v.cde_s = matched_pv[lc].ss;
@@ -1426,7 +1431,7 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 240;
  		h = (h < 550) ? 550 : h;
- 		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h, values:values});
+ 		html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */], allowCode: true}).render({mh:h, values:values});
  	}
     let result = {};
     result.len = len;
@@ -1466,7 +1471,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
           +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></br>'
         +'{{/if}}'
         +'{{if syn}}'
-          +'<a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Synonyms</a></br>'
+          +'<a href="javascript:getGDCSynonyms(\'{{:ref}}\', \'{{:tgts_enum_n}}\');">See All Terms</a></br>'
         +'{{/if}}'
         +'{{if cdeId == ""}}'
           +''
@@ -1487,13 +1492,16 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
       +'<div class="table-td col-xs-6 border-r border-b">'
       +'{{if n == "no match"}}no match{{else}}'
         +'<div class="row">'
-          +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}({{:i_c}}) {{else}}{{/if}}{{:n}}</a></div>'
-          +'<div class="col-xs-2">{{if s !== undefined}}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
+          +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}{{:i_c}} {{:n}} (ICD-O-3){{else}}{{:n}}{{/if}}</a></div>'
+          +'<div class="col-xs-2">{{if s.length }}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="col-xs-3">{{:n_c}}</div>'
-            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+            +'<div class="col-xs-4">'
+              +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
+              +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+            +'</div>'
+            +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
         +'</div>'
       +'{{/if}}'
@@ -1509,12 +1517,15 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
         +'</div>'
         +'<div id="data-content" class="table-td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="table-td col-xs-12">PV Meaning: {{:cde_pvm}}</div>'
+            +'<div class="table-td col-xs-12">PV Meaning (caDSR): {{:cde_pvm}}</div>'
           +'</div>' 
           +'{{for cde_s}}'
           +'<div class="row">'
-            +'<div class="col-xs-3">{{:c}}</div>'
-            +'<div class="col-xs-9">{{for s}}{{:}}</br>{{/for}}</div>'
+            +'<div class="col-xs-4">'
+            +'{{* if((/^C[1-9]/g).test(data.c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:c}}\');">{{:c}}</a> (NCIt)'
+            +'{{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+            +'</div>'
+            +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
           +'</div>'
           +'{{/for}}'
         +'</div>'
@@ -1561,12 +1572,12 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 "use strict";
 let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
-      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Search Results - GDC Dictionary</a></li>' +
+      '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li>' +
       '<li role="presentation" class="{{if ps_active}}active{{else}}{{/if}}"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
-      '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li></ul>' +
-      '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div>' +
+      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Summary</a></li></ul>' +
+      '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div>' +
       '<div role="tabpanel" class="tab-pane {{if ps_active}}active{{else}}{{/if}}" id="psTab">{{:psHtml}}</div>' +
-      '<div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div></div></div>';
+      '<div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div></div></div>';
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
@@ -1602,9 +1613,18 @@ const func = {
  		if($('#gdc_data').length){
             $('#gdc_data').remove();
         }
+        let windowEl = $(window);
+        let icdo = false;
+        items.forEach(function(item){
+            if(item.i_c !== undefined){
+                icdo = true;
+            }
+        });
+        
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target,items: items });
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? 0 : window.innerHeight * 0.2;
+
         //display result in a table
         $(document.body).append(html);
         if(target !== undefined){
@@ -1614,6 +1634,8 @@ const func = {
                     $('#gdc-data-list div[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
+                    var setScroll = $('#gdc_data_match').offset().top - $('#gdc-data-list').offset().top;
+                    $('#gdc-data-list').scrollTop(setScroll - 120);
                 }
                 else{
                     $('#gdc-data-list div[style="display: block;"]').each(function(){
@@ -1622,23 +1644,22 @@ const func = {
                 }
             });
         }
-        $("#gdc_data").dialog({
-            width:"600px",
-        });
-        $("#gdc_data").dialog({
-                modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"35%",
-                title: "GDC Permissible Values ("+items.length+")",
-                open: function() {
-                    var target = $(this).parent();
-                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
-                    }
-                },
-                close: function() {
-                    $(this).remove();
+
+        $('#gdc_data').dialog({
+            modal: false,
+            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
+            width: '45%',
+            minWidht: '385px',
+            title: 'GDC Values ('+items.length+')',
+            open: function() {
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                 }
+            },
+            close: function() {
+                $(this).remove();
+            }
         }).parent().draggable({
             containment: '#docs-container'
         });
@@ -1653,6 +1674,7 @@ const func = {
         }
         let targets = null;
         let icdo = false;
+        let windowEl = $(window);
         if(tgts !== null && tgts !== undefined){
             targets = tgts.split("#"); 
 
@@ -1689,7 +1711,7 @@ const func = {
             }
             it.s_r = tmp_s;
         }); 
-        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms).render({targets: targets, icdo: icdo, items: items });
+        let html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
@@ -1701,8 +1723,7 @@ const func = {
                     $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
-                }
-                else{
+                } else {
                     $('#gdc-syn-data-list div.table-row[style="display: block;"]').each(function(){
                         $(this).css("display","none");
                     });
@@ -1715,11 +1736,11 @@ const func = {
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                 width:"55%",
-                title: "GDC Synonyms ("+items.length+")",
+                title: "GDC Terms ("+items.length+")",
                 open: function() {
                     var target = $(this).parent();
-                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                     }
 
                     $('#gdc-data-invariant').bind('click', function(){
@@ -1745,6 +1766,7 @@ const func = {
  		if($('#compare_dialog').length){
             $('#compare_dialog').remove();
         }
+        let windowEl = $(window);
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].toCompare).render({items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
@@ -1753,12 +1775,12 @@ const func = {
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             width:"60%",
-            title: "Compare Your Values with GDC Permissible Values ",
+            title: "Compare Your Values with GDC Values ",
             open: function() {
 
                 var target = $(this).parent();
-                if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                    target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                 }
 
             	$('#cp_result').css("display", "none");
@@ -1822,6 +1844,7 @@ const func = {
             });
 
             let targets = null;
+            let windowEl = $(window);
             
             if(tgts !== null && tgts !== undefined && tgts !== ""){
                 tgts = tgts.replace(/\^/g,'\'');
@@ -1838,7 +1861,7 @@ const func = {
                 $('#caDSR_data').remove();
             }
 
-            let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].cde_data).render({targets: targets, items: tmp });
+            let html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].cde_data, allowCode: true}).render({targets: targets, items: tmp });
             let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
             //display result in a table
             $(document.body).append(html);
@@ -1864,11 +1887,11 @@ const func = {
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
                     width:"60%",
-                    title: "CaDSR Permissible Values ("+tmp.length+")",
+                    title: "caDSR Values ("+tmp.length+")",
                     open: function() {
                         var target = $(this).parent();
-                        if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                            target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                        if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                            target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                         }
 
                         $('#cde-data-invariant').bind('click', function(){
@@ -1884,7 +1907,7 @@ const func = {
                         $(this).remove();
                     }
             }).parent().draggable({
-                containment: '#docs-container'
+              containment: '#docs-container'
             });
             
         });
@@ -1897,6 +1920,7 @@ const func = {
         if($('#compareGDC_dialog').length){
             $('#compareGDC_dialog').remove();
         }
+        let windowEl = $(window);
         let popup = '<div id="compareGDC_dialog">'
                         +'<div id="compareGDC_result"></div>'
                     +'</div>';
@@ -1930,8 +1954,8 @@ const func = {
                 open: function() {
 
                     var target = $(this).parent();
-                    if(target.offset().top < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                        target.css('top', (__WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()+20)+"px");
+                    if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                        target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                     }
 
                     $('#compareGDC_filter').bind('click', function(){
@@ -1956,6 +1980,64 @@ const func = {
             containment: '#docs-container'
         });
     });
+  },
+  ncitDetails(uid){
+    __WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].evsRestApi(uid, function(id, item) {
+        
+        let tmp = {};
+        tmp.code = item.code;
+        tmp.name = item.preferredName
+        tmp.definition = item.definitions.length ? item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description : undefined;
+        let tmp_s = item.synonyms.map(function(syns){ return syns.termName });
+        tmp.synonyms = [];
+        //remove the duplicate
+
+        let cache = {};
+        if(tmp_s.length > 0){
+            tmp_s.forEach(function(s){
+                let lc = s.trim().toLowerCase();
+                if(!(lc in cache)){
+                    cache[lc] = [];
+                }
+                cache[lc].push(s);
+            });
+            for(let idx in cache){
+                //find the term with the first character capitalized
+                let word = findWord(cache[idx]);
+                tmp.synonyms.push(word);
+            }
+        }
+        
+
+        if($('#ncit_details').length){
+            $('#ncit_details').remove();
+        }
+
+        let windowEl = $(window);
+        let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].ncit_details).render({item: tmp});
+
+        $(document.body).append(html);
+
+        $('#ncit_details').dialog({
+            modal: false,
+            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
+            width: '45%',
+            title: 'NCIt Terms & Properties',
+            open: function() {
+
+                var target = $(this).parent();
+                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
+                }
+            },
+            close: function() {
+                $(this).remove();
+            }
+        }).parent().draggable({
+            containment: '#docs-container'
+        });
+    });
   }
 };
 
@@ -1974,22 +2056,65 @@ let tmpl = {
           +'{{else}}'
           +''
           +'{{/if}}'
-          +'<div id="gdc-data-list" class="div-list">'
-          +'{{if target !== null }}'
-            +'{{for items}}'
-            +'{{if n == ~root.target }}'
-            +'<div>{{:n}}</div>'
-            +'{{else}}'
-            +'<div style="display: none;">{{:n}}</div>'
-            +'{{/if}}'
-            +'{{/for}}'
+          +'<div class="clearfix"></div>'
+          +'{{if icdo}}'
+            +'<div class="table-container">'
+              +'<div class="table-thead row">'
+                +'<div class="table-th col-xs-4">ICD-O-3 Code</div>'
+                +'<div class="table-th col-xs-8">ICD-O-3 Term</div>'
+              +'</div>'
+              +'<div id="gdc-data-list" class="table-body row" style="max-height: 390px;">'
+                +'<div class="col-xs-12">'
+                  +'{{if target !== null }}'
+                    +'{{for items}}'
+                      +'{{if n == ~root.target }}'
+                        +'<div class="table-row row" id="gdc_data_match">'
+                          +'<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div><div class="table-td td-slim col-xs-8"><b>{{:n}}</b></div>'
+                        +'</div>'
+                      +'{{else}}'
+                        +'<div class="table-row row" style="display: none;">'
+                          +'<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div><div class="table-td td-slim col-xs-8">{{:n}}</div>'
+                        +'</div>'
+                      +'{{/if}}'
+                    +'{{/for}}'
+                  +'{{else}}'
+                    +'{{for items}}'
+                      +'<div class="table-row row">'
+                        +'<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div><div class="table-td td-slim col-xs-8">{{:n}}</div>'
+                      +'</div>'
+                    +'{{/for}}'
+                  +'{{/if}}'
+                +'</div>'
+              +'</div>'
+            +'</div>'
           +'{{else}}'
-            +'{{for items}}'
-            +'<div>{{:n}}</div>'
-            +'{{/for}}'
+            +'<div class="table-container-blank">'
+              +'<div id="gdc-data-list" class="table-body row" style="max-height: 390px;">'
+                +'<div class="col-xs-12">'
+                  +'{{if target !== null }}'
+                    +'{{for items}}'
+                      +'{{if n == ~root.target }}'
+                        +'<div class="row" id="gdc_data_match">'
+                          +'<div class="table-td td-xs-slim col-xs-8"><b>{{:n}}</b></div>'
+                        +'</div>'
+                      +'{{else}}'
+                        +'<div class="row" style="display: none;">'
+                          +'<div class="table-td td-xs-slim col-xs-8">{{:n}}</div>'
+                        +'</div>'
+                      +'{{/if}}'
+                    +'{{/for}}'
+                  +'{{else}}'
+                    +'{{for items}}'
+                      +'<div class="row">'
+                        +'<div class="table-td td-xs-slim col-xs-8">{{:n}}</div>'
+                      +'</div>'
+                    +'{{/for}}'
+                  +'{{/if}}'
+                +'</div>'
+              +'</div>'
+            +'</div>'
           +'{{/if}}'
-          +'</div>'
-          +'</div>',
+        +'</div>',
   gdc_synonyms: '<div id="gdc_syn_data">'
           +'<div class="option-left"><input type="checkbox" id="gdc-data-invariant"> Show Duplicates</div>'
           +'{{if targets !== null }}'
@@ -2000,10 +2125,10 @@ let tmpl = {
           +'<div class="clearfix"></div>'
           +'<div id="gdc-syn-data-list" class="table-container">'
             +'<div class="table-thead row">'
-              +'{{if icdo}}<div class="table-th col-xs-2">ICDO_3_1 CODE</div>{{/if}}'
+              +'{{if icdo}}<div class="table-th col-xs-2">ICD-O-3 Code</div>{{/if}}'
               +'<div class="table-th col-xs-3">ICD-O-3 Term</div>'
-              +'<div class="table-th col-xs-2">NCIt</div>'
-              +'<div class="table-th col-xs-5">Synonyms</div>'
+              +'<div class="table-th col-xs-2">NCIt Code</div>'
+              +'<div class="table-th col-xs-5">NCIt Terms</div>'
             +'</div>'
             +'<div class="table-body row" style="max-height: 390px;">'
               +'<div class="col-xs-12">'
@@ -2012,7 +2137,12 @@ let tmpl = {
                     +'<div class="table-row row">'
                       +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
-                      +'<div class="table-td col-xs-2">{{:n_c}}</div>'
+                      +'<div class="table-td col-xs-2">'
+                      +'{{if n_c && n_c !== ""}}'
+                        +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
+                        +'{{* } else { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                      +'{{/if}}'
+                      +'</div>'
                       +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
                       +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
                       +'{{for s}}{{>#data}}<br>{{/for}}'
@@ -2022,7 +2152,12 @@ let tmpl = {
                     +'<div class="table-row row" style="display: none;">'
                       +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
-                      +'<div class="table-td col-xs-2">{{:n_c}}</div>'
+                      +'<div class="table-td col-xs-2">'
+                      +'{{if n_c && n_c !== ""}}'
+                        +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
+                        +'{{* } else { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                      +'{{/if}}'
+                      +'</div>'
                       +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
                       +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
                       +'{{for s}}{{>#data}}<br>{{/for}}'
@@ -2086,7 +2221,10 @@ let tmpl = {
                       +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12">'
+                            +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');">{{:pvc}}</a> (NCIt)'
+                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                          +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2094,7 +2232,10 @@ let tmpl = {
                       +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12">'
+                            +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');">{{:pvc}}</a> (NCIt)'
+                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                          +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2108,7 +2249,10 @@ let tmpl = {
                       +'<div name="syn_area" class="table-td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12">'
+                            +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');">{{:pvc}}</a> (NCIt)'
+                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                          +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2116,7 +2260,10 @@ let tmpl = {
                       +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
-                          +'<div class="col-lg-3 col-xs-12"><a class="table-td-link" href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:pvc}}" target="_blank">{{:pvc}}</a></div>'
+                          +'<div class="col-lg-3 col-xs-12">'
+                            +'{{* if((/^C[1-9]/g).test(data.pvc)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:pvc}}\');">{{:pvc}}</a> (NCIt)'
+                            +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
+                          +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
                         +'</div>' 
                       +'{{/for}}'
@@ -2127,7 +2274,14 @@ let tmpl = {
                   +'</div>'
                 +'</div>'
               +'</div>'
-            +'</div>'
+            +'</div>',
+  ncit_details: '<div id="ncit_details">'
+      +'<p><b>Preferred Name:</b> {{:item.name}}</p>'
+      +'{{if item.definition !== undefined}}<p><b>Definition:</b> {{:item.definition}}</p>{{/if}}'
+      +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code}}" target="_blank"">{{:item.code}}</a></p>'
+      +'{{if item.synonyms.length }}<p><b>Synonyms &amp; Abbreviations:</b></p><p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>{{/if}}'
+      +'<p><a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">more details</p>'
+      +'</div>'
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);

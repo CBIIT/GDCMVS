@@ -5,7 +5,6 @@ const api = {
     $.getJSON({
   	url: baseUrl + "/suggest?keyword=" + value,
   	success: function(data) {
-  		//console.log(data);
   	  callback(data);
   	}
     });
@@ -30,6 +29,11 @@ const api = {
     $.getJSON(baseUrl + '/p/both/vs', {local:ids.local, cde: ids.cde}, function(result){
         callback(ids,result);
       });
+  },
+  evsRestApi(id, callback){
+    $.getJSON('./search/ncit/detail?code=' + id, function(result){
+      callback(id,result);
+    });
   }
 }
 
