@@ -10,7 +10,12 @@ const func = {
  	//prefix for property and value id
  	let count = 0;
  	//data generated
- 	let trs = [];    
+ 	let trs = [];
+
+    //category row
+    let c = {};
+    //node row
+    let n = {};    
 
  	items.forEach(function(item){
  		let hl = item.highlight;
@@ -24,7 +29,6 @@ const func = {
         let arr_cde_n = [];
         let arr_cde_s = [];
         let matched_pv = [];
-        let cde2local = false;
         enum_s.forEach(function(s){
             let tmp = s.replace(/<b>/g,"").replace(/<\/b>/g, "");
             arr_enum_s.push(tmp);
@@ -56,39 +60,15 @@ const func = {
                 }
                 exist = exist || (arr_cde_n.indexOf(pv.n) >= 0);
                 if(exist){
-                    matched_pv.push(pv.n);
-                    if(source.enum !== undefined){
-                        source.enum.forEach(function(em){
-                            if(cde2local){
-                                return;
-                            }
-                            if(em.n == pv.n){
-                                cde2local = true;
-                            }
-                        });
-                    }
-                    
+                    matched_pv.push(pv.n.toLowerCase());
                 }
             });
         }
 
-        // let count_n = 0;
-        // if(source.enum !== undefined && source.enum.length > 0){
-        //     source.enum.forEach(function(v, idx){
-        //         if(arr_enum_n.indexOf(v.n) !== -1 || matched_pv.indexOf(v.n) !== -1) {
-        //             count_n++;
-        //             delete matched_pv[matched_pv.indexOf(v.n)];
-        //         }
-
-        //     });
-        //     count_n += matched_pv.length;
-        // }
-        // console.log(count_n);
-
  		if(source.category != c_c){
  			//put category to tree table
  			c_c = source.category;
-	        let c = {};
+	        c = {};
 	        c.id = c_c;
 	        c.title = c_c;
 	        c.desc = "";
@@ -97,12 +77,13 @@ const func = {
 	        c.type = "category";
 	        c.node = "branch";
             c.exist = true;
+            c.len = 0;
 	        trs.push(c);
  		}
  		if(source.node != c_n){
  			//put node to tree table
  			c_n = source.node;
- 			let n = {};
+ 			n = {};
  			//link id
  			n.l_id = source.node;
             n.id = source.node;
@@ -113,10 +94,17 @@ const func = {
             n.type = "folder";
             n.node = "branch";
             n.exist = true;
+            n.len = 0;
             trs.push(n);
  		}
  		//put property to tree table
  		let p = {};
+        //calculate if property itself got matched;
+        let count_p = 0;
+        //calculate how many values got matched in this property;
+        let count_v = 0;
+        //calculate how many synonyms got matched in this property
+        let count_s = 0;
  		count++;
  		p.id = count + "_" + source.name;
  		//may have highlighted terms in p.title and p.desc
@@ -126,101 +114,114 @@ const func = {
         p.data_tt_parent_id = c_n;
         p.type="property";
         p.exist = true;
-        //put value to tree table
-        if(enum_n.length == 0 && enum_s.length == 0 && !cde2local){
-            //if no values show in the values tab
-            p.node = "leaf";
-            trs.push(p);
+        if(("name" in hl) || ("name.have" in hl) || ("desc" in hl)){
+            count_p = 1;
         }
-        else if(source.enum !== undefined){
-        	p.node = "branch";
-        	trs.push(p);
-        	//show values, need to highlight if necessary
-        	let list = [];
-            if(("enum.n" in hl) || ("enum.n.have" in hl)){
-                list = hl["enum.n"] || hl["enum.n.have"];
+        //put value to tree table
+        if(source.enum != undefined){
+            if(enum_n.length == 0 && enum_s.length == 0 && matched_pv.length == 0){
+                //if no values show in the values tab
+                p.node = "leaf";
+                trs.push(p);
             }
-            let enums = {};
-            list.forEach(function(em){
-                let e = em.replace(/<b>/g,"").replace(/<\/b>/g, "");
-                enums[e] = em;
-            });
-            let values = source.enum;
-            values.forEach(function(v){
-            	count++;
-            	let e = {}; 
-            	e.id = count + "_"+ v.n;
-
-                if(arr_enum_n.indexOf(v.n) !== -1 || matched_pv.indexOf(v.n) !== -1) {
-                    e.exist = true;
+            else{
+                p.node = "branch";
+                trs.push(p);
+                //show values, need to highlight if necessary
+                let list = [];
+                if(("enum.n" in hl) || ("enum.n.have" in hl)){
+                    list = hl["enum.n"] || hl["enum.n.have"];
                 }
+                let enums = {};
+                list.forEach(function(em){
+                    let e = em.replace(/<b>/g,"").replace(/<\/b>/g, "");
+                    enums[e] = em;
+                });
+                let values = source.enum;
+                let tmp_trs = [];
+                values.forEach(function(v){
+                    count++;
+                    let e = {}; 
+                    e.id = count + "_"+ v.n;
+                    e.exist = false;
 
-                if(v.s !== undefined && e.exist != true){
-                    v.s.forEach(function(syn){
-                        if(arr_enum_s.indexOf(syn) !== -1) {
+                    let idx = matched_pv.indexOf(v.n.toLowerCase());
+                    if( idx !== -1){
+                        count_s --;
+                        e.exist = true;
+                    }
+                    else{
+                        if(arr_enum_n.indexOf(v.n) !== -1) {
                             e.exist = true;
                         }
+
+                        if(v.s !== undefined && e.exist != true){
+                            v.s.forEach(function(syn){
+                                if(arr_enum_s.indexOf(syn) !== -1) {
+                                    e.exist = true;
+                                }
+                            });
+                        }
+                    }
+                    
+                    if(e.exist){
+                        count_v ++;
+                    }
+                    //may be highlighted
+                    e.title = (v.n in enums) ? enums[v.n] : v.n;
+                    e.desc = "";
+                    e.data_tt_id = e.id;
+                    e.data_tt_parent_id = p.id;
+                    e.type = "value";
+                    e.node = "leaf";
+                    tmp_trs.push(e);
+
+                });
+                if(count_v == 0){
+                    p.node = "leaf";
+                }
+                else{
+                    tmp_trs.forEach(function(tt){
+                        trs.push(tt);
                     });
                 }
-
-            	//may be highlighted
-            	e.title = (v.n in enums) ? enums[v.n] : v.n;
-            	e.desc = "";
-            	e.data_tt_id = e.id;
-            	e.data_tt_parent_id = p.id;
-            	e.type = "value";
-            	e.node = "leaf";
-            	trs.push(e);
-            });
-        }
-        //else if(cde_pv !== undefined)
-        else if(source.cde !== undefined){
-        	p.node = "branch";
-        	trs.push(p);
-        	//show caDSR reference
-        	count++;
-            let l = {};
-            l.id = count + "_l";
-            l.l_id = source.cde.id;
-            l.l_type = "cde";
-            l.url = source.cde.url;
-            l.desc = "";
-            l.data_tt_id = l.id;
-            l.data_tt_parent_id = p.id;
-            l.type = "link";
-            l.node = "leaf";
-            trs.push(l);
-        }
-        else if(source.ncit !== undefined){
-        	p.node = "branch";
-        	trs.push(p);
-        	//show NCIt reference
-        	count++;
-            let l = {};
-            l.id = count + "_l";
-            l.l_id = source.ncit.id;
-            l.l_type = "ncit";
-            l.url = source.ncit.url;
-            l.desc = "";
-            l.data_tt_id = l.id;
-            l.data_tt_parent_id = p.id;
-            l.type = "link";
-            l.node = "leaf";
-            trs.push(l);
+                
+                count_s += matched_pv.length;    
+            }
         }
         else{
-        	p.node = "leaf";
-        	trs.push(p);
+            if(matched_pv.length > 0){
+                //matched on cde
+                p.node = "branch";
+                trs.push(p);
+                //show caDSR reference
+                count++;
+                let l = {};
+                l.id = count + "_l";
+                l.l_id = source.cde.id;
+                l.l_type = "cde";
+                l.url = source.cde.url;
+                l.desc = "";
+                l.data_tt_id = l.id;
+                l.data_tt_parent_id = p.id;
+                l.type = "link";
+                l.node = "leaf";
+                trs.push(l);
+                
+                count_s = matched_pv.length;
+            }
+            else{
+                //matched on property name or description
+                p.node = "leaf";
+                trs.push(p);
+            }
         }
- 	});
 
-    trs.forEach(function(item){
-        if(item.node == 'branch'){
-            item.len = trs.filter(function(n){
-                return item.data_tt_id == n.data_tt_parent_id && n.exist;                
-            }).length;
-        }
-    });
+        //save and calculate the count of matched element in this property
+        p.len = count_v + count_s;
+        c.len += p.len + count_p;
+        n.len += p.len + count_p;
+ 	});
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 300;
