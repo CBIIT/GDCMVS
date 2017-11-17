@@ -56,7 +56,13 @@ div.col-md-3 {
   padding-right: 15px;
   margin-bottom: 15px;
 }
-.table-body{
+
+.table-container-blank {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 15px;
+}
+.table-body {
   overflow-y: auto;
   max-height: 500px;
 }
@@ -72,9 +78,13 @@ div.col-md-3 {
   padding-bottom: 15px;
   line-height: 1.428571;
 }
-.td-slim{
+.td-slim {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+.td-xs-slim {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 .table-header {
   text-align: center;
@@ -93,7 +103,7 @@ div.col-md-3 {
   color: white;
   margin-left: 10px;
 }
-.thead-row{
+.thead-row {
   display: flex;
   align-items: center;
 }
@@ -174,8 +184,22 @@ div.col-md-3 {
 .ref-box{
   position:absolute;
   top:calc(2rem + 1em);
-  right:15%;
+  right:10%;
 }
+.ref-box a{
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+@media screen and (max-width:1200px){
+  .ref-box{
+    top:2rem;
+  }
+  .ref-box a{
+    display: block;
+  }
+}
+
 .btn-container{
   margin-top: 10px;
   margin-bottom: 10px;
@@ -207,14 +231,6 @@ div.col-md-3 {
   height:1.5em;
 }
 .btn-submit-large{
-/*  color:white;
-  background-color:#4486F3;
-  border:1px solid #4486F3;
-  transition: background 0.25s ease-in-out;
-  cursor:pointer;
-  padding: 5px 10px 5px 10px;
-  border-radius:0.3em;
-  line-height: 3em;*/
   margin-left: 4em;
 }
 .div-message{
@@ -310,10 +326,6 @@ table.treetable div.value {
   display: inline-block;
   float: right;
 }
-/*.data-table-row:nth-of-type(odd) {
-  background: #f1f1f1;
-}*/
-
 .row-flex{
   display:flex;
   align-items: stretch;
@@ -334,49 +346,6 @@ table.treetable div.value {
 .gdc-details{
   margin-bottom: 10px;
   display: inline-block;
-}
-.dropdown-head{
-  min-width: 10em;
-  display:block;
-  font-size: 0.9em;
-}
-/* The container <div> - needed to position the dropdown content */
-.dropdown-box {
-  position: relative;
-  display: inline-block;
-  text-align:center;
-  /*margin-left:calc(25% - 14em);*/
-}
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  font-size: 0.9em;
-  min-width: 10em;
-  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-/* Links inside the dropdown */
-.dropdown-content a {
-  /*padding: 12px 16px;*/
-  display: block;
-}
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: #f1f1f1
-}
-/* Show the dropdown menu on hover */
-.dropdown-box:hover .dropdown-content{
-  display: block;
-}
-.dropdown-box:hover .dropdown-head{
-  display: block;
-  background-color: #f1f1f1;
-  min-width: 10em;
-}
-.dropdown-box:hover{
-  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
 }
 .w20{
   width:20%;
@@ -414,21 +383,12 @@ table.treetable div.value {
 #compare_result{
   height:33em;
 }
-/*#compareGDC_result{
-  height:33em;
-}*/
-/*#cp_result_table{
-  width:100%;
-  float:left;
-  height:20em;
-  overflow: auto;
-}*/
-/*#cpGDC_result_table{
-  width:100%;
-  float:left;*/
-  /*height:20em;
-  overflow: auto;
-}*/
+#gdc_data {
+  min-height: 415px !important;
+}
+#ncit_details{
+  max-height: 415px !important;
+}
 #cp_result_option{
   width:100%;
   float:left;
