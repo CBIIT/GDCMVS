@@ -221,16 +221,17 @@ var loadSynonyms_continue = function(){
 	let content_2 = fs.readFileSync("./synonyms.js").toString();
 	content_2 = content_2.replace(/}{/g, ",");
 	let synonyms = JSON.parse(content_2);
-	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
-	for(let ic in icdo){
-		let arr = icdo[ic];
-		arr.forEach(function(dict){
-			if(dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1){
-				ncitids.push(dict.n_c);
+	//load concept codes
+	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let cc = JSON.parse(conceptCode);
+	for(let c in cc){
+		let vs = cc[c];
+		for(let v in vs){
+			let code = vs[v];
+			if(code !== "" && ncitids.indexOf(code) == -1){
+				ncitids.push(code);
 			}
-		});
+		}
 		
 	}
 	let ncit = [];
@@ -243,6 +244,7 @@ var loadSynonyms_continue = function(){
 			logger.debug("in the synonyms:" + id );
 		}
 	});
+	logger.debug(ncit);
 	logger.debug("length of NCIt codes: \n" + ncit.length);
 	//get data
 	synchronziedLoadSynonmysfromNCIT(ncit, 0);
