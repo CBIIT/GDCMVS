@@ -196,7 +196,7 @@ var indexing = function(req, res){
 	                	"type":"keyword"
 	                },
 	                "name" : {
-	                	"type": "string",
+	                	"type": "text",
 	                	"fields":{
 	                		"have":{
 	                			"type": "text",
@@ -206,7 +206,7 @@ var indexing = function(req, res){
 	                	"analyzer": "case_insensitive"
 	                },
 	                "enum.n" : {
-	                	"type": "string",
+	                	"type": "text",
 	                	"fields":{
 	                		"have":{
 	                			"type": "text"
@@ -215,7 +215,7 @@ var indexing = function(req, res){
 	                	"analyzer": "case_insensitive"
 	                },
 	                "enum.s" : {
-	                	"type": "string",
+	                	"type": "text",
 	                	"fields":{
 	                		"have":{
 	                			"type": "text"
@@ -224,7 +224,7 @@ var indexing = function(req, res){
 	                	"analyzer": "case_insensitive"
 	                },
 	                "cde_pv.n" : {
-	                	"type": "string",
+	                	"type": "text",
 	                	"fields":{
 	                		"have":{
 	                			"type": "text"
@@ -233,7 +233,7 @@ var indexing = function(req, res){
 	                	"analyzer": "case_insensitive"
 	                },
 	                "cde_pv.ss.s" : {
-	                	"type": "string",
+	                	"type": "text",
 	                	"fields":{
 	                		"have":{
 	                			"type": "text"
@@ -242,11 +242,11 @@ var indexing = function(req, res){
 	                	"analyzer": "case_insensitive"
 	                },
 	                "enum.i_c.c":{
-	                	"type": "string",
+	                	"type": "text",
 	                	"analyzer": "case_insensitive"
 	                },
 	                "enum.i_c.have":{
-	                	"type": "string",
+	                	"type": "text",
 	                	"analyzer": "case_insensitive"
 	                }
 	            }
