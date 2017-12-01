@@ -113,9 +113,11 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 			}
 			
 		}
+
+		let prop_full_name = fileJson.category + "." + fileJson.id + "." + prop;
 		//add conceptcode
-		if(prop in conceptCode){
-			let cc = conceptCode[prop];
+		if(prop_full_name in conceptCode){
+			let cc = conceptCode[prop_full_name];
 			let enums = [];
 			entry.syns = [];
 			for(var s in cc){
@@ -131,9 +133,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 			}
 		}
 		//check extra gdc values
-		if(prop in gdc_values){
+		if(prop_full_name in gdc_values){
 			let enums = [];
-			let obj = gdc_values[prop];
+			let obj = gdc_values[prop_full_name];
 			obj.forEach(function(v){
 				let tmp = {};
 				tmp.pv = v.nm;
@@ -226,7 +228,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 		}
 		else{
 			//has gdc synonyms
-			if((prop in conceptCode) || (prop in gdc_values)){
+			if((prop_full_name in conceptCode) || (prop_full_name in gdc_values)){
 				p.enum = [];
 				entry.syns.forEach(function(item){
 					let tmp = {};
