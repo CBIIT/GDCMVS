@@ -1391,17 +1391,17 @@
 "Wound Infection":"C45234",
 "Wrist Fracture":"C80517"
 },
-{"clinical.clinical.ethnicity":{
+"clinical.clinical.ethnicity":{
 "hispanic or latino":"C17459",
 "not hispanic or latino":"C41222"
 },
-{"clinical.clinical.gender":{
+"clinical.clinical.gender":{
 "female":"C16576",
 "male":"C20197",
 "unknown":"C17998",
 "unspecified":"C38046"
 },
-{"clinical.clinical.race":{
+"clinical.clinical.race":{
 "american indian or alaska native":"C41259",
 "asian":"C41260",
 "black or african american":"C16352",
@@ -1410,12 +1410,12 @@
 "other":"C17649",
 "white":"C41261"
 },
-{"clinical.clinical.vital_status":{
+"clinical.clinical.vital_status":{
 "alive":"C37987",
 "dead":"C28554",
 "lost to follow-up":"C48227"
 },
-{"clinical.clinical_test.biomarker_result":{
+"clinical.clinical_test.biomarker_result":{
 "Amplification":"C25418",
 "Gain":"C37956",
 "Loss":"C25559",
@@ -1426,7 +1426,7 @@
 "Pending":"C53470",
 "Translocation":"C25756"
 },
-{"clinical.clinical_test.biomarker_test_method":{
+"clinical.clinical_test.biomarker_test_method":{
 "Cytogenetics":"C16487",
 "FISH":"C17563",
 "IHC":"C23020",
@@ -1440,7 +1440,7 @@
 "RT-PCR":"C18136",
 "Southern":"C16356"
 },
-{"clinical.clinical_test.estrogen_receptor_percent_positive_ihc":{
+"clinical.clinical_test.estrogen_receptor_percent_positive_ihc":{
 "<1%":"C141466",
 "1-10%":"C141467",
 "11-20%":"C141468",
@@ -1453,13 +1453,13 @@
 "81-90%":"C141475",
 "91-100%":"C141476"
 },
-{"clinical.clinical_test.estrogen_receptor_result_ihc":{
+"clinical.clinical_test.estrogen_receptor_result_ihc":{
 "Negative":"C15493",
 "Not Performed":"C141477",
 "Positive":"C141465",
 "Unknown":"C17998"
 },
-{"clinical.clinical_test.her2_erbb2_percent_positive_ihc":{
+"clinical.clinical_test.her2_erbb2_percent_positive_ihc":{
 "<1%":"C141493",
 "1-10%":"C141494",
 "11-20%":"C141495",
@@ -1472,24 +1472,24 @@
 "81-90%":"C141502",
 "91-100%":"C141503"
 },
-{"clinical.clinical_test.her2_erbb2_result_fish":{
+"clinical.clinical_test.her2_erbb2_result_fish":{
 "Negative":"C141435",
 "Not Performed":"C141477",
 "Positive":"C141434",
 "Unknown":"C68750"
 },
-{"clinical.clinical_test.her2_erbb2_result_ihc":{
+"clinical.clinical_test.her2_erbb2_result_ihc":{
 "Negative":"C141480",
 "Not Performed":"C141477",
 "Positive":"C141481",
 "Unknown":"C68750"
 },
-{"clinical.clinical_test.microsatellite_instability_abnormal":{
+"clinical.clinical_test.microsatellite_instability_abnormal":{
 "No":"C49487",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.clinical_test.progesterone_receptor_percent_positive_ihc":{
+"clinical.clinical_test.progesterone_receptor_percent_positive_ihc":{
 "<1%":"C141447",
 "1-10%":"C141448",
 "11-20%":"C141449",
@@ -1502,36 +1502,36 @@
 "81-90%":"C141456",
 "91-100%":"C141457"
 },
-{"clinical.clinical_test.progesterone_receptor_result_ihc":{
+"clinical.clinical_test.progesterone_receptor_result_ihc":{
 "Negative":"C15497",
 "Not Performed":"C141477",
 "Positive":"C141458",
 "Unknown":"C15498"
 },
-{"clinical.clinical_test.type":{
+"clinical.clinical_test.type":{
 "clinical_test":""
 },
-{"clinical.demographic.cause_of_death":{
+"clinical.demographic.cause_of_death":{
 "Cancer Related":"",
 "Not Cancer Related":"",
 "Not Reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.demographic.ethnicity":{
+"clinical.demographic.ethnicity":{
 "hispanic or latino":"C17459",
 "not allowed to collect":"C141478",
 "not hispanic or latino":"C41222",
 "not reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.demographic.gender":{
+"clinical.demographic.gender":{
 "female":"C16576",
 "male":"C20197",
 "not reported":"C43234",
 "unknown":"C17998",
 "unspecified":"C38046"
 },
-{"clinical.demographic.race":{
+"clinical.demographic.race":{
 "american indian or alaska native":"C41259",
 "asian":"C41260",
 "black or african american":"C16352",
@@ -1542,13 +1542,13 @@
 "Unknown":"C17998",
 "white":"C41261"
 },
-{"clinical.demographic.vital_status":{
+"clinical.demographic.vital_status":{
 "Alive":"C37987",
 "Dead":"C28554",
 "Not Reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_clinical_m":{
+"clinical.diagnosis.ajcc_clinical_m":{
 "cM0 (i+)":"C95956",
 "M0":"C48699",
 "M1":"C48700",
@@ -1560,7 +1560,7 @@
 "Not Reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_clinical_n":{
+"clinical.diagnosis.ajcc_clinical_n":{
 "N0":"C48705",
 "N0 (i-)":"C95921",
 "N0 (i+)":"C95922",
@@ -1589,7 +1589,7 @@
 "NX":"C48718",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_clinical_stage":{
+"clinical.diagnosis.ajcc_clinical_stage":{
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Stage 0":"C28051",
@@ -1622,7 +1622,7 @@
 "Stage X":"C95957",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_clinical_t":{
+"clinical.diagnosis.ajcc_clinical_t":{
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "T0":"C48719",
@@ -1661,7 +1661,7 @@
 "TX":"C48737",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_pathologic_m":{
+"clinical.diagnosis.ajcc_pathologic_m":{
 "cM0 (i+)":"C95956",
 "M0":"C48699",
 "M1":"C48700",
@@ -1674,7 +1674,7 @@
 "Not Reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_pathologic_n":{
+"clinical.diagnosis.ajcc_pathologic_n":{
 "N0":"C48705",
 "N0 (i-)":"C95921",
 "N0 (i+)":"C95922",
@@ -1703,7 +1703,7 @@
 "NX":"C48718",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ajcc_pathologic_stage":{
+"clinical.diagnosis.ajcc_pathologic_stage":{
 "Stage 0":"C28051",
 "Stage 0a":"C27964",
 "Stage 0is":"C27965",
@@ -1732,7 +1732,7 @@
 "Stage Tis":"C48738",
 "Stage X":"C95957"
 },
-{"clinical.diagnosis.ajcc_pathologic_t":{
+"clinical.diagnosis.ajcc_pathologic_t":{
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "T0":"C48719",
@@ -1771,33 +1771,33 @@
 "TX":"C48737",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.ann_arbor_b_symptoms":{
+"clinical.diagnosis.ann_arbor_b_symptoms":{
 "No":"C49487",
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.ann_arbor_clinical_stage":{
+"clinical.diagnosis.ann_arbor_clinical_stage":{
 "Stage I":"C125472",
 "Stage II":"C125474",
 "Stage III":"C125476",
 "Stage IV":"C125478"
 },
-{"clinical.diagnosis.ann_arbor_extranodal_involvement":{
+"clinical.diagnosis.ann_arbor_extranodal_involvement":{
 "No":"C49487",
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.ann_arbor_pathologic_stage":{
+"clinical.diagnosis.ann_arbor_pathologic_stage":{
 "Stage I":"C125473",
 "Stage II":"C125475",
 "Stage III":"C125477",
 "Stage IV":"C125479"
 },
-{"clinical.diagnosis.best_overall_response":{
+"clinical.diagnosis.best_overall_response":{
 "AJ-Adjuvant Therapy":"C15675",
 "CPD-Clinical Progression":"C17747",
 "CR-Complete Response":"C123574",
@@ -1825,7 +1825,7 @@
 "TE-Too Early":"C133441",
 "VGPR-Very Good Partial Response":""
 },
-{"clinical.diagnosis.burkitt_lymphoma_clinical_variant":{
+"clinical.diagnosis.burkitt_lymphoma_clinical_variant":{
 "Endemic":"C27122",
 "Immunodeficiency-associated, adult":"C27915",
 "Immunodeficiency-associated, pediatric":"C27915",
@@ -1835,12 +1835,12 @@
 "Sporadic, pediatric":"C27914",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.cause_of_death":{
+"clinical.diagnosis.cause_of_death":{
 "Cancer Related":"",
 "Not Cancer Related":"",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.classification_of_tumor":{
+"clinical.diagnosis.classification_of_tumor":{
 "metastasis":"C14174",
 "Not Allowed To Collect":"C141478",
 "not reported":"C43234",
@@ -1849,14 +1849,14 @@
 "recurrence":"C3352",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.colon_polyps_history":{
+"clinical.diagnosis.colon_polyps_history":{
 "No":"C49487",
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.figo_stage":{
+"clinical.diagnosis.figo_stage":{
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Stage 0":"C96243",
@@ -1884,29 +1884,29 @@
 "Stage IVB":"C96263",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.hiv_positive":{
+"clinical.diagnosis.hiv_positive":{
 "No":"C137693",
 "Unknown":"C17998",
 "Yes":"C15175"
 },
-{"clinical.diagnosis.hpv_positive_type":{
+"clinical.diagnosis.hpv_positive_type":{
 "HPV 16":"C129455",
 "HPV 18":"C131711",
 "Other HPV type(s)":"",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.hpv_status":{
+"clinical.diagnosis.hpv_status":{
 "Negative":"C131488",
 "Positive":"C128839",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.iss_stage":{"I":"C70658",
+"clinical.diagnosis.iss_stage":{"I":"C70658",
 "II":"C70659",
 "III":"C70660",
 "Not Reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.last_known_disease_status":{
+"clinical.diagnosis.last_known_disease_status":{
 "Biochemical evidence of disease without structural correlate":"",
 "Distant met recurrence/progression":"",
 "Loco-regional recurrence/progression":"",
@@ -1916,18 +1916,18 @@
 "Unknown tumor status":"",
 "With tumor":""
 },
-{"clinical.diagnosis.laterality":{
+"clinical.diagnosis.laterality":{
 "Bilateral":"C13332",
 "Left":"C25229",
 "Right":"C25228",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.lymphatic_invasion_present":{
+"clinical.diagnosis.lymphatic_invasion_present":{
 "No":"C49487",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.method_of_diagnosis":{
+"clinical.diagnosis.method_of_diagnosis":{
 "Autopsy":"C25153",
 "Biopsy":"C15189",
 "Blood Draw":"C17610",
@@ -1948,7 +1948,7 @@
 "Ultrasound Guided Biopsy":"C93022",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.new_event_type":{
+"clinical.diagnosis.new_event_type":{
 "Biochemical Evidence of Disease":"",
 "Both Locoregional and Distant Metastasis":"",
 "Distant Metastasis":"C18206",
@@ -1971,51 +1971,51 @@
 "Regional Lymph Node":"",
 "Unknown":"C17998"
 },
-{"clinical.diagnosis.perineural_invasion_present":{
+"clinical.diagnosis.perineural_invasion_present":{
 "No":"C49487",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.prior_malignancy":{
+"clinical.diagnosis.prior_malignancy":{
 "no":"C49487",
 "Not Allowed To Collect":"C141478",
 "not reported":"C43234",
 "unknown":"C17998",
 "yes":"C49488"
 },
-{"clinical.diagnosis.prior_treatment":{
+"clinical.diagnosis.prior_treatment":{
 "No":"C49487",
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.progression_free_survival_event":{
+"clinical.diagnosis.progression_free_survival_event":{
 "Death":"C28554",
 "Disease Progression":"",
 "No Event":""
 },
-{"clinical.diagnosis.progression_or_recurrence":{
+"clinical.diagnosis.progression_or_recurrence":{
 "no":"C49487",
 "Not Allowed To Collect":"C141478",
 "not reported":"C43234",
 "unknown":"C17998",
 "yes":"C49488"
 },
-{"clinical.diagnosis.residual_disease":{
+"clinical.diagnosis.residual_disease":{
 "R0":"C139578",
 "R1":"C139579",
 "R2":"C139580",
 "RX":"C139581"
 },
-{"clinical.diagnosis.vascular_invasion_present":{
+"clinical.diagnosis.vascular_invasion_present":{
 "No":"C49487",
 "Not Allowed To Collect":"C141478",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.diagnosis.vital_status":{
+"clinical.diagnosis.vital_status":{
 "alive":"C37987",
 "dead":"C28554",
 "lost to follow-up":"C48227",
@@ -2024,7 +2024,7 @@
 "pending":"C53470",
 "unknown":"C17998"
 },
-{"clinical.exposure.tobacco_smoking_status":{
+"clinical.exposure.tobacco_smoking_status":{
 "1":"",
 "2":"",
 "3":"",
@@ -2036,26 +2036,26 @@
 "Not Reported":"C43234",
 "Unknown":"C17998"
 },
-{"clinical.exposure.type":{
+"clinical.exposure.type":{
 "exposure":"C17941"
 },
-{"clinical.family_history.relationship_gender":{
+"clinical.family_history.relationship_gender":{
 "female":"C16576",
 "male":"C20197",
 "not reported":"C43234",
 "unknown":"C17998",
 "unspecified":"C38046"
 },
-{"clinical.family_history.relative_with_cancer_history":{
+"clinical.family_history.relative_with_cancer_history":{
 "no":"C49487",
 "not reported":"C43234",
 "unknown":"C17998",
 "yes":"C49488"
 },
-{"clinical.family_history.type":{
+"clinical.family_history.type":{
 "family_history":"C29878"
 },
-{"clinical.follow_up.comorbidity":{
+"clinical.follow_up.comorbidity":{
 "Acute Renal Failure":"C26808",
 "Adrenocortical Insufficiency":"C26691",
 "Allergies":"C114476",
@@ -2151,7 +2151,7 @@
 "Tuberculosis":"C3423",
 "Ulcerative Colitis":"C2952"
 },
-{"clinical.follow_up.disease_response":{
+"clinical.follow_up.disease_response":{
 "AJ-Adjuvant Therapy":"C15675",
 "CPD-Clinical Progression":"C17747",
 "CR-Complete Response":"C123574",
@@ -2179,7 +2179,7 @@
 "TE-Too Early":"C133441",
 "VGPR-Very Good Partial Response":""
 },
-{"clinical.follow_up.ecog_performance_status":{
+"clinical.follow_up.ecog_performance_status":{
 "0":"C105722",
 "1":"C105723",
 "2":"C105725",
@@ -2187,32 +2187,32 @@
 "4":"C105727",
 "5":"C105728"
 },
-{"clinical.follow_up.hiv_positive":{
+"clinical.follow_up.hiv_positive":{
 "No":"C137693",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C15175"
 },
-{"clinical.follow_up.progression_or_recurrence":{
+"clinical.follow_up.progression_or_recurrence":{
 "No":"C49487",
 "Not Reported":"C43234",
 "Unknown":"C17998",
 "Yes":"C49488"
 },
-{"clinical.treatment.treatment_or_therapy":{
+"clinical.treatment.treatment_or_therapy":{
 "no":"C49487",
 "not reported":"C43234",
 "unknown":"C17998",
 "yes":"C49488"
 },
-{"clinical.treatment.treatment_outcome":{
+"clinical.treatment.treatment_outcome":{
 "Complete Response":"C4870",
 "Partial Response":"C18058",
 "Treatment Ongoing":"",
 "Treatment Stopped Due to Toxicity":"",
 "Unknown":"C17998"
 },
-{"clinical.treatment.treatment_type":{
+"clinical.treatment.treatment_type":{
 "Ablation":"C20985",
 "Chemotherapy":"C15632",
 "Concurrent Chemoradiation":"",
@@ -2231,7 +2231,7 @@
 "Targeted Molecular Therapy":"C76243",
 "Unknown":"C17998"
 },
-{"clinical.treatment.type":{
+"clinical.treatment.type":{
 "treatment":"C49236"
 }
 }
