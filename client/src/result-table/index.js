@@ -15,7 +15,10 @@ const func = {
     //category row
     let c = {};
     //node row
-    let n = {};    
+    let n = {};
+    //final result
+    let result = {};
+    result.len = 0; 
 
  	items.forEach(function(item){
  		let hl = item.highlight;
@@ -221,14 +224,14 @@ const func = {
         p.len = count_v + count_s;
         c.len += p.len + count_p;
         n.len += p.len + count_p;
+        result.len += p.len + count_p;
  	});
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 300;
     h = (h < 500) ? 500 : h;
     let html = $.templates(tmpl).render({mh:h,trs: trs});
-    let result = {};
-    result.len = 0;
+    
     result.html = html;
     return result;
 
