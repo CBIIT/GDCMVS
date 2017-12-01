@@ -755,7 +755,10 @@ const func = {
     //category row
     let c = {};
     //node row
-    let n = {};    
+    let n = {};
+    //final result
+    let result = {};
+    result.len = 0; 
 
  	items.forEach(function(item){
  		let hl = item.highlight;
@@ -961,14 +964,14 @@ const func = {
         p.len = count_v + count_s;
         c.len += p.len + count_p;
         n.len += p.len + count_p;
+        result.len += p.len + count_p;
  	});
 
  	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 300;
     h = (h < 500) ? 500 : h;
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
-    let result = {};
-    result.len = 0;
+    
     result.html = html;
     return result;
 
@@ -1560,7 +1563,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 
 /* harmony default export */ __webpack_exports__["a"] = (function (trsHtml, psHtml, vsHtml) {
 
-  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({trs_active:trsHtml.active, trsHtml: trsHtml.html, ps_active:psHtml.active,ps_len: psHtml.len, psHtml: psHtml.html, vs_active:vsHtml.active, vs_len: vsHtml.len, vsHtml: vsHtml.html});
+  let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({trs_active:trsHtml.active, trs_len: trsHtml.len, trsHtml: trsHtml.html, ps_active:psHtml.active,ps_len: psHtml.len, psHtml: psHtml.html, vs_active:vsHtml.active, vs_len: vsHtml.len, vsHtml: vsHtml.html});
 
   return html;
 });
@@ -1574,7 +1577,7 @@ let tmpl = '<div class="container table-container"><div class="table-thead row">
 let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
       '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li>' +
       '<li role="presentation" class="{{if ps_active}}active{{else}}{{/if}}"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
-      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Summary</a></li></ul>' +
+      '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Summary ({{:trs_len}})</a></li></ul>' +
       '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div>' +
       '<div role="tabpanel" class="tab-pane {{if ps_active}}active{{else}}{{/if}}" id="psTab">{{:psHtml}}</div>' +
       '<div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div></div></div>';
