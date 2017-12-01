@@ -336,7 +336,7 @@ var getCDEData = function(req, res){
 			if(data.length > 0){
 				let p = data[0];
 				cdeData[uid] = p._source.cde_pv;
-				let pid = p._source.name + "/" + p._source.node + "/" + p._source.category;
+				let pid =  p._source.category + "." + p._source.node + "." + p._source.name;
 				if(!(pid in gdcData)){
 					gdcData[pid] = p._source.enum;	
 				}
@@ -361,7 +361,7 @@ var getDataFromGDC = function(req, res){
 		let syns = JSON.parse(content_2);
 		let gv = JSON.parse(content_3);
 		gdcData = {};
-		//put data from gdc_values.js to memory
+		//load data from gdc_values.js to memory
 		for(var c in gv){
 			gdcData[c] = [];
 			gv[c].forEach(function(ss){
@@ -373,7 +373,7 @@ var getDataFromGDC = function(req, res){
 				gdcData[c].push(tmp);
 			});
 		}
-		//put data from conceptCode.js to memory
+		//load data from conceptCode.js to memory
 		for(var t in cc){
 			gdcData[t] = [];
 			let obj = cc[t];
