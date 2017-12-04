@@ -70,12 +70,13 @@ const func = {
 
  		if(source.category != c_c){
  			//put category to tree table
+            count++;
  			c_c = source.category;
 	        c = {};
 	        c.id = c_c;
 	        c.title = c_c;
 	        c.desc = "";
-	        c.data_tt_id = c.id;
+	        c.data_tt_id = count + "_" +c.id;
 	        c.data_tt_parent_id = "--";
 	        c.type = "category";
 	        c.node = "branch";
@@ -85,6 +86,7 @@ const func = {
  		}
  		if(source.node != c_n){
  			//put node to tree table
+            count++;
  			c_n = source.node;
  			n = {};
  			//link id
@@ -92,8 +94,8 @@ const func = {
             n.id = source.node;
             n.title = source.n_title;
             n.desc = source.n_desc;
-            n.data_tt_id = n.id;
-            n.data_tt_parent_id = c_c;
+            n.data_tt_id = count + "_" + n.id;
+            n.data_tt_parent_id = c.data_tt_id;
             n.type = "folder";
             n.node = "branch";
             n.exist = true;
@@ -114,7 +116,7 @@ const func = {
         p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : source.name;
         p.desc = ("desc" in hl) ? hl["desc"] : source.desc;
  		p.data_tt_id = p.id;
-        p.data_tt_parent_id = c_n;
+        p.data_tt_parent_id = n.data_tt_id;
         p.type="property";
         p.exist = true;
         if(("name" in hl) || ("name.have" in hl) || ("desc" in hl)){
