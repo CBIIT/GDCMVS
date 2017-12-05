@@ -1,4 +1,4 @@
-{"morphology":[
+{"clinical.diagnosis.morphology":[
 {"nm":"Neoplasm, benign","i_c":"8000/0","n_c":"C3677"},
 {"nm":"Tumor, benign","i_c":"8000/0","n_c":"C3677"},
 {"nm":"Unclassified tumor, benign","i_c":"8000/0","n_c":"C3677"},
@@ -2520,7 +2520,7 @@
 {"nm":"Refractory neutropenia","i_c":"9991/3","n_c":"C82593"},
 {"nm":"Refractory thrombocytopenia","i_c":"9992/3","n_c":"C82594"}
 ],
-"site_of_resection_or_biopsy":[
+"clinical.diagnosis.site_of_resection_or_biopsy":[
 {"i_c":"C00-C14","nm":"LIP, ORAL CAVITY AND PHARYNX","n_c":""},
 {"i_c":"C00.0","nm":"External upper lip","n_c":"C12221"},
 {"i_c":"C00.0","nm":"Upper lip, NOS","n_c":""},
