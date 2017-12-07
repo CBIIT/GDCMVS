@@ -11,7 +11,7 @@ var all = {
 	port: process.env.PORT || 3000,
 
 	// Server port
-    logDir: process.env.LOGDIR || '/var/log/gdcmvs',
+    logDir: process.env.LOGDIR || '/local/content/mvs/logs',
 
 	// Node environment (dev, test, stage, prod), must select one.
 	env: process.env.NODE_ENV || 'prod',
