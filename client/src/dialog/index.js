@@ -90,6 +90,7 @@ const func = {
             });
         }
         items.forEach(function(it){
+            if(it.s == undefined) return;
             let cache = {};
             let tmp_s = [];
             it.s.forEach(function(s){

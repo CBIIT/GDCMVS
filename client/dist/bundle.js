@@ -1700,6 +1700,7 @@ const func = {
             });
         }
         items.forEach(function(it){
+            if(it.s == undefined) return;
             let cache = {};
             let tmp_s = [];
             it.s.forEach(function(s){
@@ -2130,8 +2131,12 @@ let tmpl = {
           +'<div class="clearfix"></div>'
           +'<div id="gdc-syn-data-list" class="table-container">'
             +'<div class="table-thead row">'
-              +'{{if icdo}}<div class="table-th col-xs-2">ICD-O-3 Code</div>{{/if}}'
+              +'{{if icdo}}'
+              +'<div class="table-th col-xs-2">ICD-O-3 Code</div>'
               +'<div class="table-th col-xs-3">ICD-O-3 Term</div>'
+              +'{{else}}'
+              +'<div class="table-th col-xs-5">GDC Term</div>'
+              +'{{/if}}'
               +'<div class="table-th col-xs-2">NCIt Code</div>'
               +'<div class="table-th col-xs-5">NCIt Terms</div>'
             +'</div>'
@@ -2140,8 +2145,12 @@ let tmpl = {
                 +'{{for items}}'
                   +'{{if e == true || ~root.targets == null}}'
                     +'<div class="table-row row">'
-                      +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
+                      +'{{if ~root.icdo}}'
+                      +'<div class="table-td col-xs-2">{{:i_c.c}}</div>'
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
+                      +'{{else}}'
+                      +'<div class="table-td col-xs-5">{{:n}}</div>'
+                      +'{{/if}}'
                       +'<div class="table-td col-xs-2">'
                       +'{{if n_c && n_c !== ""}}'
                         +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
@@ -2155,8 +2164,12 @@ let tmpl = {
                     +'</div>'
                   +'{{else}}'
                     +'<div class="table-row row" style="display: none;">'
-                      +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
+                      +'{{if ~root.icdo}}'
+                      +'<div class="table-td col-xs-2">{{:i_c.c}}</div>'
                       +'<div class="table-td col-xs-3">{{:n}}</div>'
+                      +'{{else}}'
+                      +'<div class="table-td col-xs-5">{{:n}}</div>'
+                      +'{{/if}}'
                       +'<div class="table-td col-xs-2">'
                       +'{{if n_c && n_c !== ""}}'
                         +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
