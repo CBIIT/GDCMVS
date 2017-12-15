@@ -31,7 +31,7 @@ ul {
   margin-bottom: 0 !important;
 }
 .invalid-feedback {
-  display: none; 
+  display: none;
   margin-top: .25rem;
   color: #dc3545;
 }

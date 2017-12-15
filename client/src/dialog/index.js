@@ -15,7 +15,7 @@ const func = {
                 icdo = true;
             }
         });
-        
+
         let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
         let html = $.templates(tmpl.gdc_data).render({target:target, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
@@ -58,9 +58,9 @@ const func = {
         }).parent().draggable({
             containment: '#docs-container'
         });
-      	
+
     });
-    
+
   },
   getGDCSynonyms(uid, tgts){
   	api.getGDCDataById(uid, function(id, items) {
@@ -71,7 +71,7 @@ const func = {
         let icdo = false;
         let windowEl = $(window);
         if(tgts !== null && tgts !== undefined){
-            targets = tgts.split("#"); 
+            targets = tgts.split("#");
 
             items.forEach(function(item){
                 if(item.i_c !== undefined){
@@ -105,13 +105,13 @@ const func = {
                 tmp_s.push(word);
             }
             it.s_r = tmp_s;
-        }); 
+        });
         let html = $.templates({markup: tmpl.gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
 
-        if(tgts !== null && tgts !== undefined && tgts !== ""){
+        //if(tgts !== null && tgts !== undefined && tgts !== ""){
             $('#show_all_gdc_syn').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
@@ -124,7 +124,7 @@ const func = {
                     });
                 }
             });
-        }
+        //}
 
 
         $("#gdc_syn_data").dialog({
@@ -153,7 +153,7 @@ const func = {
         }).parent().draggable({
             containment: '#docs-container'
         });
-      	
+
     });
   },
   toCompare(uid){
@@ -196,7 +196,7 @@ const func = {
         }).parent().draggable({
             containment: '#docs-container'
         });
-      	
+
     });
   },
   getCDEData(uid, tgts){
@@ -240,10 +240,10 @@ const func = {
 
             let targets = null;
             let windowEl = $(window);
-            
+
             if(tgts !== null && tgts !== undefined && tgts !== ""){
                 tgts = tgts.replace(/\^/g,'\'');
-                targets = tgts.split("#"); 
+                targets = tgts.split("#");
 
                 tmp.forEach(function(item){
                 if (targets.indexOf(item.pv) > -1){
@@ -260,7 +260,7 @@ const func = {
             let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
             //display result in a table
             $(document.body).append(html);
-            
+
             if(targets !== undefined){
                 $('#show_all_cde_syn').bind('click', function(){
                     let v = $(this).prop("checked");
@@ -304,7 +304,7 @@ const func = {
             }).parent().draggable({
               containment: '#docs-container'
             });
-            
+
         });
   },
   compareGDC(prop, uid){
@@ -340,7 +340,7 @@ const func = {
                     +'</div>';
 
         $('#compareGDC_result').html(html);
-        
+
         $("#compareGDC_dialog").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
@@ -378,7 +378,7 @@ const func = {
   },
   ncitDetails(uid){
     api.evsRestApi(uid, function(id, item) {
-        
+
         let tmp = {};
         tmp.code = item.code;
         tmp.name = item.preferredName
@@ -402,7 +402,7 @@ const func = {
                 tmp.synonyms.push(word);
             }
         }
-        
+
 
         if($('#ncit_details').length){
             $('#ncit_details').remove();
