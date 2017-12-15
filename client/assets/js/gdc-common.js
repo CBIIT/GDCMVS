@@ -149,6 +149,8 @@ $(function() {
         var $results = $('.search-results', _modalEl),
           $searchContentBody = $('.search-body', _modalEl);
 
+        var base_url = 'https://docs.gdc.cancer.gov'
+
 
         $resultsContainer.delegate('.' + _searchItemClass, 'click keyup', function(e) {
 
@@ -168,7 +170,7 @@ $(function() {
           _resetSearch();
         });
 
-        $.get(base_url + '/mkdocs/search_index.json', function (data) {
+        $.get('./assets/mkdocs/search_index.json', function (data) {
           var index = lunr(function () {
             this.field('title', {
               boost: 10
@@ -212,16 +214,17 @@ $(function() {
 
             if (results.length > 0) {
 
-              var baseHostURL = location.protocol + '//' + location.hostname + (location.port &&
-                                                                                (location.port != 80 && location.port != 443) ? (':' + location.port) : '') +
-                                '/';
+              // var baseHostURL = location.protocol + '//' + location.hostname + (location.port &&
+              //                                                                   (location.port != 80 && location.port != 443) ? (':' + location.port) : '') +
+              //                   '/';
 
               for (var i = 0; i < results.length; i++) {
                 var result = results[i];
                 doc = documents[result.ref];
                 doc.base_url = base_url;
                 doc.summary = doc.text.substring(0, 200);
-                var hostURL = baseHostURL + doc.location.replace(/[\.]+\//g, '');
+                //var hostURL = baseHostURL + doc.location.replace(/[\.]+\//g, '');
+                var hostURL = doc.location.replace(/[\.]+\//g, '');
 
 
                 resultsHTML += '<div class="' + _searchItemClass + ' animated fadeInLeft" tabindex="0" role="button" data-link="' + doc.location + '">' +
@@ -278,7 +281,7 @@ $(function() {
 
       function _init() {
         _addSearchListeners();
-        //_initSearchIndex();
+        _initSearchIndex();
       }
 
       var $body = $('#body'),
@@ -362,7 +365,7 @@ $(function() {
 
 
       // Stripe tables
-      $('table').addClass('table table-striped table-hover');
+      //$('table').addClass('table table-striped table-hover');
 
       // Enable side ToC
       $('body').scrollspy({
@@ -460,65 +463,65 @@ $(function() {
 
 
 
-    function _initHeaders(confineToContainerID) {
+    // function _initHeaders(confineToContainerID) {
 
-      var $body = $(confineToContainerID);
+    //   var $body = $(confineToContainerID);
 
-      // Add header links
-      $(":header", $body).each(function (i, header) {
-        var $header = $(header);
+    //   // Add header links
+    //   $(":header", $body).each(function (i, header) {
+    //     var $header = $(header);
 
-        if ($header.hasClass('no-auto-render')) {
-          return;
-        }
+    //     if ($header.hasClass('no-auto-render')) {
+    //       return;
+    //     }
 
-        var id = $header.attr('id');
-        var icon = '&nbsp;<i class="fa fa-share-alt"></i>';
+    //     var id = $header.attr('id');
+    //     var icon = '&nbsp;<i class="fa fa-share-alt"></i>';
 
-        if (id) {
-          var title = $header.text();
-          $header.text("");
-          //$header.prepend($("<a/>").addClass("header-link").attr("href", "#" + id)); //.html(icon));
-          $header.append($("<a/>")
-            .addClass("header-text-link")
-            .attr("href", "#" + id)
-            .attr("title", "Click on this header and copy URL to link to this section.")
-            .append(title)
-            .append(icon));
-        }
-      });
-
-
-      var mainHeader = $('h1', $body);
-
-      if (mainHeader.hasClass('no-auto-render')) {
-        return;
-      }
-
-      mainHeader.prepend('<span class="header-badge"><span class="fa fa-book" aria-hidden="true"></span></span>');
-
-    }
-
-    function _initLinks(confineToContainerID) {
-      // Ensure all anchor links which appear to be external have the appropriate target and
-      // icon.
-      $(confineToContainerID + ' a[href^="http"]').each(function() {
-        var anchor = $(this);
-
-        anchor.attr('target', '_blank');
-        anchor.addClass('external-link');
-
-        // If the link already has an font awesome icon associated skip it
-        if (! anchor.find('*[class*="fa-"]').length) {
-          anchor.prepend('&nbsp;<i class="fa fa-external-link"></i>&nbsp;');
-        }
-
-      });
+    //     if (id) {
+    //       var title = $header.text();
+    //       $header.text("");
+    //       //$header.prepend($("<a/>").addClass("header-link").attr("href", "#" + id)); //.html(icon));
+    //       $header.append($("<a/>")
+    //         .addClass("header-text-link")
+    //         .attr("href", "#" + id)
+    //         .attr("title", "Click on this header and copy URL to link to this section.")
+    //         .append(title)
+    //         .append(icon));
+    //     }
+    //   });
 
 
-      // Ensure all mail links have the appropriate icon.
-      $('a[href^="mailto"]').prepend('&nbsp;<i class="fa fa-envelope"></i>&nbsp;');
-    }
+    //   var mainHeader = $('h1', $body);
+
+    //   if (mainHeader.hasClass('no-auto-render')) {
+    //     return;
+    //   }
+
+    //   mainHeader.prepend('<span class="header-badge"><span class="fa fa-book" aria-hidden="true"></span></span>');
+
+    //}
+
+    // function _initLinks(confineToContainerID) {
+    //   // Ensure all anchor links which appear to be external have the appropriate target and
+    //   // icon.
+    //   $(confineToContainerID + ' a[href^="http"]').each(function() {
+    //     var anchor = $(this);
+
+    //     anchor.attr('target', '_blank');
+    //     anchor.addClass('external-link');
+
+    //     // If the link already has an font awesome icon associated skip it
+    //     if (! anchor.find('*[class*="fa-"]').length) {
+    //       anchor.prepend('&nbsp;<i class="fa fa-external-link"></i>&nbsp;');
+    //     }
+
+    //   });
+
+
+    //   // Ensure all mail links have the appropriate icon.
+    //   $('a[href^="mailto"]').prepend('&nbsp;<i class="fa fa-envelope"></i>&nbsp;');
+    // }
 
     function _initMenuNavBar(container, subContainer) {
       var menuBar = $('.menu-bar'),
@@ -592,56 +595,56 @@ $(function() {
 
 
 
-    function _calcMainContentWidth() {
-      if ($('.full-width-content').length || $('.toc-container').length === 0) {
-        $('.main-container').addClass('col-md-12').removeClass('col-md-9').css({borderLeft: 'none'});
-      }
-    }
+    // function _calcMainContentWidth() {
+    //   if ($('.full-width-content').length || $('.toc-container').length === 0) {
+    //     $('.main-container').addClass('col-md-12').removeClass('col-md-9').css({borderLeft: 'none'});
+    //   }
+    // }
 
-    function _initAlerts() {
-      $('.alert').each(function() {
-        var alertContainer = $(this),
-            supportedAlertTypes = ['alert-info'];
+    // function _initAlerts() {
+    //   $('.alert').each(function() {
+    //     var alertContainer = $(this),
+    //         supportedAlertTypes = ['alert-info'];
 
-        for (var i = 0; i < supportedAlertTypes.length; i++) {
-          var alertTypeClass = supportedAlertTypes[i];
+    //     for (var i = 0; i < supportedAlertTypes.length; i++) {
+    //       var alertTypeClass = supportedAlertTypes[i];
 
-          if (!  alertContainer.hasClass(alertTypeClass)) {
-            continue;
-          }
+    //       if (!  alertContainer.hasClass(alertTypeClass)) {
+    //         continue;
+    //       }
 
-          var iconClass = null,
-              alertText = '';
+    //       var iconClass = null,
+    //           alertText = '';
 
-          switch (alertTypeClass) {
-            case 'alert-info':
-              iconClass = 'icon-pencil';
-            break;
-            case 'alert-warning':
-              iconClass = 'icon-attention-1';
-              break;
-           default:
-             break;
-          }
+    //       switch (alertTypeClass) {
+    //         case 'alert-info':
+    //           iconClass = 'icon-pencil';
+    //         break;
+    //         case 'alert-warning':
+    //           iconClass = 'icon-attention-1';
+    //           break;
+    //        default:
+    //          break;
+    //       }
 
-          if( ! iconClass ) {
-            continue;
-          }
-
-
-          alertText = alertContainer.text();
-          alertContainer.empty();
-          alertContainer.append('<div class="alert-indicator-icon">' +
-                                '<i class="' + iconClass + '"></i>' +
-                                '</div>' +
-                                '<div class="alert-indicator-text">' +
-                                alertText + '</div>');
+    //       if( ! iconClass ) {
+    //         continue;
+    //       }
 
 
-        }
+    //       alertText = alertContainer.text();
+    //       alertContainer.empty();
+    //       alertContainer.append('<div class="alert-indicator-icon">' +
+    //                             '<i class="' + iconClass + '"></i>' +
+    //                             '</div>' +
+    //                             '<div class="alert-indicator-text">' +
+    //                             alertText + '</div>');
 
-      });
-    }
+
+    //     }
+
+    //   });
+    // }
 
     function _initScrollUpIndicator() {
       $.scrollUp({
@@ -670,20 +673,20 @@ $(function() {
       _ensureMaxHeight(_bsSidebar);
     }
 
-    var BODY_ID = '#body';
+    //var BODY_ID = '#body';
     var _hideMenuOffset = 64;
 
     _initScrollSpy();
     _initMenuNavBar('.navbar-nav', '> li');
-    _initHeaders(BODY_ID);
-    _initLinks(BODY_ID);
-    _calcMainContentWidth();
-    _initAlerts();
+    //_initHeaders(BODY_ID);
+    //_initLinks(BODY_ID);
+    //_calcMainContentWidth();
+    //_initAlerts();
     _initScrollUpIndicator();
 
 
     // Hightlight code
-    hljs.initHighlightingOnLoad();
+    //hljs.initHighlightingOnLoad();
     /*
     var particleContainer = $('.spinParticle');
     particleContainer.addClass('endLoad');

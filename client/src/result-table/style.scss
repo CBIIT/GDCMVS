@@ -1,0 +1,43 @@
+table.treetable {
+  font-size: 1em;
+  line-height: 1;
+}
+
+table.treetable tr{
+  border: 1px solid #e6e6e6;
+}
+table.treetable tr td {
+  padding-left: 15px;
+}
+table.treetable tr.leaf {
+  border: none;
+}
+table.treetable tr.leaf td{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+table.treetable tr.expanded span.indenter a:before {
+  font-family: FontAwesome;
+  content: "\f106";
+}
+
+table.treetable tr.collapsed span.indenter a {
+  position: relative;
+  left: -5px;
+}
+
+table.treetable tr.collapsed span.indenter a:before {
+  font-family: FontAwesome;
+  content: "\f107";
+}
+
+table.treetable tr.expanded span.indenter a {
+  position: relative;
+  left: -5px;
+}
+
+table.treetable tr.expanded span.indenter a:before {
+  font-family: FontAwesome;
+  content: "\f106";
+}
