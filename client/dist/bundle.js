@@ -1376,10 +1376,7 @@ const func = {
 
 				}
 
-				if(v.n !== undefined){
-					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
-					row.tgts_enum_n += tmp + "#";
-				}
+				
 
 				let lc = em.n.toLowerCase();
 				if(lc in matched_pv){
@@ -1404,6 +1401,8 @@ const func = {
 				}
 
 				if(v.n !== undefined){
+					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
+					row.tgts_enum_n += tmp + "#";
 					row.vs.push(v);
 				}
 				
@@ -1722,8 +1721,10 @@ const func = {
         //display result in a table
         $(document.body).append(html);
 
-        if(tgts !== null && tgts !== undefined && tgts !== ""){
-            $('#show_all_gdc_syn').bind('click', function(){
+        //if(tgts !== null && tgts !== undefined && tgts !== ""){
+        let element = $('#show_all_gdc_syn');
+        if(element !== undefined){
+            element.bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
                     $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
