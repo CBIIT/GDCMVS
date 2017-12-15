@@ -90,6 +90,7 @@ const func = {
             });
         }
         items.forEach(function(it){
+            if(it.s == undefined) return;
             let cache = {};
             let tmp_s = [];
             it.s.forEach(function(s){
@@ -112,7 +113,9 @@ const func = {
         $(document.body).append(html);
 
         //if(tgts !== null && tgts !== undefined && tgts !== ""){
-            $('#show_all_gdc_syn').bind('click', function(){
+        let element = $('#show_all_gdc_syn');
+        if(element !== undefined){
+            element.bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
                     $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
