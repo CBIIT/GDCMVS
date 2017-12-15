@@ -10,8 +10,8 @@ const func = {
         let keyword = $("#keywords").val();
 
         if(keyword == ""){
-            $('#form-search').addClass('has-error');
-            $('#form-search .invalid-feedback').css({'display': 'block'});
+            //$('#form-search').addClass('has-error');
+            //$('#form-search .invalid-feedback').css({'display': 'block'});
             return;
         }
 
@@ -71,11 +71,11 @@ const func = {
     },
     suggest(){
         let area = document.getElementById("suggestBox");
-        
-        if($("#form-search").hasClass('has-error')){
-            $("#form-search").removeClass('has-error');
-            $('#form-search .invalid-feedback').removeAttr('style');
-        }
+
+        // if($("#form-search").hasClass('has-error')){
+        //     $("#form-search").removeClass('has-error');
+        //     $('#form-search .invalid-feedback').removeAttr('style');
+        // }
 
         if($(this).val().trim() === ''){
             area.style.display = "none";
@@ -90,7 +90,7 @@ const func = {
                 area.innerHTML = "";
                 return;
             }
-            
+
             area.style.display = "block";
             let html = $.templates(tmpl).render({options: result });;
             displayBoxIndex = -1;

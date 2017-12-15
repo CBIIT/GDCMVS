@@ -27,30 +27,32 @@ export default function render(keyword, option, items){
   else{
   	html = '<div class="info">No result found for keyword: '+keyword+'</div>';
   }
-  
+
   $("#root").html(html);
-  
+
   if($("#tree_table").length){
-      $("#tree_table").treetable({expandable: true});
-      $("#collapse").bind("click", function(){
-          $("#tree_table").find('a[title="Collapse"]').each(function(){
-              $(this).trigger("click");
-          });
-
-      });
-
-      $("#expand").bind("click", function(){
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-              $(this).trigger("click");
-          });
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-              $(this).trigger("click");
-          });
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-              $(this).trigger("click");
-          });
-
-      });
+    $("#tree_table").treetable({expandable: true});
+    $("#tree_toggle").bind('click', function(){
+      var target = $(this);
+      if(target.attr("aria-pressed") == 'true') {
+        target.html('<i class="fa fa-angle-down"></i> Expand All');
+        $("#tree_table").find('a[title="Collapse"]').each(function(){
+          $(this).trigger("click");
+        });
+      } else {
+        target.html('<i class="fa fa-angle-up"></i>  Collapse All');
+        $("#tree_table").find('a[title="Expand"]').each(function(){
+          $(this).trigger("click");
+        });
+        $("#tree_table").find('a[title="Expand"]').each(function(){
+          $(this).trigger("click");
+        });
+        $("#tree_table").find('a[title="Expand"]').each(function(){
+          $(this).trigger("click");
+        });
+      }
+      //console.log($(this).attr("aria-pressed"));
+    });
   }
 
   let htmlShow = '';
@@ -116,7 +118,7 @@ export default function render(keyword, option, items){
       alertSuggest.css({'display': 'none'})
     });
   });
-  
+
   var windowEl = $(window);
 
   windowEl.resize(function() {
@@ -132,5 +134,5 @@ export default function render(keyword, option, items){
     });
   });
 
-  $('.tooltip-box').tooltip();  
+  $('.table__tooltip').tooltip();
 }
