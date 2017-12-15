@@ -220,10 +220,7 @@ const func = {
 
 				}
 
-				if(v.n !== undefined){
-					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
-					row.tgts_enum_n += tmp + "#";
-				}
+				
 
 				let lc = em.n.toLowerCase();
 				if(lc in matched_pv){
@@ -248,6 +245,8 @@ const func = {
 				}
 
 				if(v.n !== undefined){
+					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
+					row.tgts_enum_n += tmp + "#";
 					row.vs.push(v);
 				}
 				
