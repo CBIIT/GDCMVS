@@ -22,10 +22,11 @@ export default function render(keyword, option, items){
     else{
       trsHtml.active = true;
     }
-  	html = tabs(trsHtml, psHtml, vsHtml);
-  }
-  else{
-  	html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+  	html = tabs(trsHtml, psHtml, vsHtml, keyword);
+  } else if (option.error == true) {
+    html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
+  } else {
+  	html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
   }
 
   $("#root").html(html);
@@ -36,11 +37,14 @@ export default function render(keyword, option, items){
       var target = $(this);
       if(target.attr("aria-pressed") == 'true') {
         target.html('<i class="fa fa-angle-down"></i> Expand All');
+        $('#gdc-loading-icon').fadeIn(100);
         $("#tree_table").find('a[title="Collapse"]').each(function(){
           $(this).trigger("click");
         });
+        $('#gdc-loading-icon').fadeOut('fast');
       } else {
         target.html('<i class="fa fa-angle-up"></i>  Collapse All');
+        $('#gdc-loading-icon').fadeIn(100);
         $("#tree_table").find('a[title="Expand"]').each(function(){
           $(this).trigger("click");
         });
@@ -50,8 +54,8 @@ export default function render(keyword, option, items){
         $("#tree_table").find('a[title="Expand"]').each(function(){
           $(this).trigger("click");
         });
+        $('#gdc-loading-icon').fadeOut('fast');
       }
-      //console.log($(this).attr("aria-pressed"));
     });
   }
 
@@ -69,7 +73,7 @@ export default function render(keyword, option, items){
     } else {
       htmlShow = target.html();
       target.addClass('more');
-      targets.css({display: 'flex'});
+      targets.css({display: 'block'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
@@ -82,9 +86,9 @@ export default function render(keyword, option, items){
 
     dataContainer.slideToggle(400, function(){
       if(dataContainer.is(":visible")){
-        target.html('<i class="fa fa-minus"></i>');
+        target.html('<i class="fa fa-angle-up fa-lg"></i>');
       }else{
-        target.html('<i class="fa fa-plus"></i>');
+        target.html('<i class="fa fa-angle-down fa-lg"></i>');
       }
     });
   });
@@ -135,4 +139,10 @@ export default function render(keyword, option, items){
   });
 
   $('.table__tooltip').tooltip();
+
+  // $('#myTabs a').click(function (e) {
+  //   e.preventDefault()
+  //   $(this).tab('show')
+  // });
+
 }

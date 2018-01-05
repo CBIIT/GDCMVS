@@ -213,7 +213,7 @@ function compare(gv){
     if($('#cp_input').val().trim() === ''){
         $('#cp_massage').css("display", "block");
         $("#cp_massage").removeClass();
-        $('#cp_massage').addClass("div-message");
+        $('#cp_massage').addClass("compare-form__message");
         $('#cp_massage').html("Please type in user defined values.");
         return;
     }
@@ -224,18 +224,25 @@ function compare(gv){
         $('#cp_massage').html("");
         $('#compare_form').css("display", "none");
         $('#compare_result').css("display", "block");
+
+        let compare_dialog = $('#compare_dialog').parent().find('.ui-dialog-titlebar');
+
+        let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Case Sensitive</label>'
+        + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>';
+
+        compare_dialog.append(titleComponent);
+
+
         let vs = $('#cp_input').val().split(/\n/);
 
         let opt = {};
         opt.sensitive = false;
         opt.unmatched = false;
         let table = generateCompareResult(vs, gv, opt);
-        let html = '<div class="cp_result_title">Compare Result</div>'
-                    +'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
-                    +'<div class="clearfix"></div>'
-                    +'<div id="cp_result_table" class="table-container">'+table+'</div>'
-                    +'<div id="cp_result_bottom"><button id="back2Compare" class="btn btn-default btn-submit-large">Back</button>'
-                    +'</div>';
+        let html =  ''//'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
+                    +'<div id="cp_result_table" class="table__container table__container--margin-bottom">'+table+'</div>'
+                    +'<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare_result__button">Back</button></div>';
+
         $('#compare_result').html(html);
 
         $('#compare_filter').bind('click', function(){
@@ -258,6 +265,7 @@ function compare(gv){
             $('#compare_result').html("");
             $('#compare_result').css("display", "none");
             $('#compare_form').css("display", "block");
+            compare_dialog.find('.ui-checkbox').remove();
         });
 
     }
@@ -278,14 +286,12 @@ function generateCompareResult(fromV, toV, option){
         });
     }
 
-        let table = '<div class="table-thead row">'
-                  +'<div class="table-th col-xs-6">User Defined Values</div>'
-                  +'<div class="table-th col-xs-6">Matched GDC Values</div>'
+        let table = '<div class="table__thead row">'
+                  +'<div class="table__th col-xs-6">User Defined Values</div>'
+                  +'<div class="table__th col-xs-6">Matched GDC Values</div>'
                 +'</div>'
-                +'<div class="table-body row" style="height: 350px;">'
+                +'<div class="table__body row" style="height: 350px;">'
                   +'<div class="col-xs-12">';
-
-    //let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">User Defined Values</td><td width="50%" style="text-align:left;">Matched GDC Values</td></tr>';
 
     fromV.forEach(function(v){
         let tmp = $.trim(v);
@@ -301,16 +307,16 @@ function generateCompareResult(fromV, toV, option){
         if(text ===''){
             text = '<div style="color:red;">--</div>';
             //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left">'+text+'</td></tr>';
-            table += '<div class="table-row row">'
-              +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-              +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+              +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+              +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
             +'</div>';
         }
         else{
             //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
-            table += '<div class="table-row row">'
-              +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-              +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+              +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+              +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
             +'</div>';
         }
     });
@@ -319,11 +325,11 @@ function generateCompareResult(fromV, toV, option){
             continue;
         }
         //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
-        table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
-              +'<div class="table-td td-slim col-xs-6"><div style="color:red;">--</div></div>'
-              +'<div class="table-td td-slim col-xs-6">'+toV[i]+'</div>'
+        table += '<div class="table__row row '+(option.unmatched ? 'table__row--undisplay' : '')+'">'
+              +'<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
+              +'<div class="table__td table__td--slim col-xs-6">'+toV[i]+'</div>'
             +'</div>';
-    }       
+    }
     table += '</div></div>'
     //table += "</tbody></table>";
     return table;
@@ -345,14 +351,12 @@ function generateCompareGDCResult(fromV, toV, option){
         });
     }
 
-    let table = '<div class="table-thead row">'
-                  +'<div class="table-th col-xs-6">GDC Values</div>'
-                  +'<div class="table-th col-xs-6">Matched caDSR Values</div>'
+    let table = '<div class="table__thead row">'
+                  +'<div class="table__th col-xs-6">GDC Values</div>'
+                  +'<div class="table__th col-xs-6">Matched caDSR Values</div>'
                 +'</div>'
-                +'<div class="table-body row" style="height: 350px;">'
+                +'<div class="table__body row" style="height: 350px;">'
                   +'<div class="col-xs-12">';
-
-    //table += '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
 
     fromV.forEach(function(v){
         let tmp = $.trim(v);
@@ -367,31 +371,27 @@ function generateCompareGDCResult(fromV, toV, option){
         }
         if(text ===''){
             text = '<div style="color:red;">--</div>';
-            table += '<div class="table-row row">'
-                      +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-                      +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+                      +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+                      +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
                     +'</div>';
-            //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
         }
         else{
-            table += '<div class="table-row row">'
-                      +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-                      +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+                      +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+                      +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
                     +'</div>';
-            //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
         }
     });
     for(var i = 0; i< toV.length; i++){
         if(v_matched.indexOf(i) >= 0){
             continue;
         }
-        table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
-                      +'<div class="table-td  td-slim col-xs-6"><div style="color:red;">--</div></div>'
-                      +'<div class="table-td td-slim col-xs-6">'+toV[i]+'</div>'
+        table += '<div class="table__row row '+(option.unmatched ? 'table__row--undisplay' : '')+'">'
+                      +'<div class="table__td  table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
+                      +'<div class="table__td table__td--slim col-xs-6">'+toV[i]+'</div>'
                     +'</div>';
-        //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
     }
-    //table += "</tbody></table>";
     table += '</div></div>'
 
     return table;
@@ -457,7 +457,7 @@ function findWord (words){
                 }
             }
         }
-        
+
     });
     if(word == ""){
         word = words[0];
@@ -486,10 +486,12 @@ let activeTab = 0;
 const func = {
     search(){
         let keyword = $("#keywords").val();
+        let option = {};
 
         if(keyword == ""){
-            //$('#form-search').addClass('has-error');
-            //$('#form-search .invalid-feedback').css({'display': 'block'});
+            option.error = true;
+            $('#keywords').addClass('search-bar__input--has-error');
+            Object(__WEBPACK_IMPORTED_MODULE_1__render__["a" /* default */])(keyword, option, []);
             return;
         }
 
@@ -502,7 +504,7 @@ const func = {
             }
             count++;
         });
-        let option = {};
+
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
@@ -523,7 +525,6 @@ const func = {
             e.preventDefault();
         }
         if(e.keyCode == 13 && $("#suggestBox .selected").length !== 0){
-            // let idx = $("#suggestBox .selected").html().indexOf("<label>");
             let t = $("#suggestBox .selected").text();
             $("#keywords").val(t.substr(0,t.length-1));
             $("#search").trigger("click");
@@ -550,10 +551,9 @@ const func = {
     suggest(){
         let area = document.getElementById("suggestBox");
 
-        // if($("#form-search").hasClass('has-error')){
-        //     $("#form-search").removeClass('has-error');
-        //     $('#form-search .invalid-feedback').removeAttr('style');
-        // }
+        if($("#keywords").hasClass('search-bar__input--has-error')){
+            $("#keywords").removeClass('search-bar__input--has-error');
+        }
 
         if($(this).val().trim() === ''){
             area.style.display = "none";
@@ -626,10 +626,11 @@ function render(keyword, option, items){
     else{
       trsHtml.active = true;
     }
-  	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml);
-  }
-  else{
-  	html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+  	html = Object(__WEBPACK_IMPORTED_MODULE_3__tabs___["a" /* default */])(trsHtml, psHtml, vsHtml, keyword);
+  } else if (option.error == true) {
+    html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
+  } else {
+  	html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
   }
 
   $("#root").html(html);
@@ -640,11 +641,14 @@ function render(keyword, option, items){
       var target = $(this);
       if(target.attr("aria-pressed") == 'true') {
         target.html('<i class="fa fa-angle-down"></i> Expand All');
+        $('#gdc-loading-icon').fadeIn(100);
         $("#tree_table").find('a[title="Collapse"]').each(function(){
           $(this).trigger("click");
         });
+        $('#gdc-loading-icon').fadeOut('fast');
       } else {
         target.html('<i class="fa fa-angle-up"></i>  Collapse All');
+        $('#gdc-loading-icon').fadeIn(100);
         $("#tree_table").find('a[title="Expand"]').each(function(){
           $(this).trigger("click");
         });
@@ -654,8 +658,8 @@ function render(keyword, option, items){
         $("#tree_table").find('a[title="Expand"]').each(function(){
           $(this).trigger("click");
         });
+        $('#gdc-loading-icon').fadeOut('fast');
       }
-      //console.log($(this).attr("aria-pressed"));
     });
   }
 
@@ -673,7 +677,7 @@ function render(keyword, option, items){
     } else {
       htmlShow = target.html();
       target.addClass('more');
-      targets.css({display: 'flex'});
+      targets.css({display: 'block'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
@@ -686,9 +690,9 @@ function render(keyword, option, items){
 
     dataContainer.slideToggle(400, function(){
       if(dataContainer.is(":visible")){
-        target.html('<i class="fa fa-minus"></i>');
+        target.html('<i class="fa fa-angle-up fa-lg"></i>');
       }else{
-        target.html('<i class="fa fa-plus"></i>');
+        target.html('<i class="fa fa-angle-down fa-lg"></i>');
       }
     });
   });
@@ -739,6 +743,12 @@ function render(keyword, option, items){
   });
 
   $('.table__tooltip').tooltip();
+
+  // $('#myTabs a').click(function (e) {
+  //   e.preventDefault()
+  //   $(this).tab('show')
+  // });
+
 }
 
 
@@ -768,7 +778,7 @@ const func = {
     let n = {};
     //final result
     let result = {};
-    result.len = 0; 
+    result.len = 0;
 
  	items.forEach(function(item){
  		let hl = item.highlight;
@@ -876,7 +886,7 @@ const func = {
         if(source.enum != undefined){
             if(enum_n.length == 0 && enum_s.length == 0 && matched_pv.length == 0){
                 //if no values show in the values tab
-                p.node = "leaf";
+                p.node = "";
                 trs.push(p);
             }
             else{
@@ -896,7 +906,7 @@ const func = {
                 let tmp_trs = [];
                 values.forEach(function(v){
                     count++;
-                    let e = {}; 
+                    let e = {};
                     e.id = count + "_"+ v.n;
                     e.exist = false;
 
@@ -918,7 +928,7 @@ const func = {
                             });
                         }
                     }
-                    
+
                     if(e.exist){
                         count_v ++;
                     }
@@ -933,15 +943,15 @@ const func = {
 
                 });
                 if(count_v == 0){
-                    p.node = "leaf";
+                    p.node = "";
                 }
                 else{
                     tmp_trs.forEach(function(tt){
                         trs.push(tt);
                     });
                 }
-                
-                count_s += matched_pv.length;    
+
+                count_s += matched_pv.length;
             }
         }
         else{
@@ -962,12 +972,12 @@ const func = {
                 l.type = "link";
                 l.node = "leaf";
                 trs.push(l);
-                
+
                 count_s = matched_pv.length;
             }
             else{
                 //matched on property name or description
-                p.node = "leaf";
+                p.node = "";
                 trs.push(p);
             }
         }
@@ -980,10 +990,10 @@ const func = {
  	});
 
  	let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 300;
-    h = (h < 500) ? 500 : h;
+    let h = window.innerHeight - offset - 305;
+    h = (h < 430) ? 430 : h;
     let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,trs: trs});
-    
+
     result.html = html;
     return result;
 
@@ -991,6 +1001,7 @@ const func = {
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (func);
+
 
 /***/ }),
 /* 7 */
@@ -1012,13 +1023,13 @@ let tmpl = '<div class="container table__container">'
     +'</button>'
   +'</div></div>'
 +'</div>'
-+'<div class="row">'
++'<div class="table__body table__body--overflow row" style="max-height: {{:mh}}px;">'
   +'<table class="treetable table" id="tree_table">'
-    +'<tbody style="max-height: {{:mh}}px; overflow-y: auto;">'
+    +'<tbody>'
     +'{{for trs}}'
     +'<tr key="{{:id}}" data-tt-id="{{:data_tt_id}}" data-tt-parent-id="{{:data_tt_parent_id}}" class="data-table-row {{:node}} {{if exist != true && type == "value"}}data-hide hide{{/if}}">'
     +'<td width="33%">'
-    +'<span class="{{:type}} title">'
+    +'<span class="{{:type}} title table__td--word-break" style="display:inline-block; width: 70%;">'
     +'{{if type == "folder"}}'
     +'<a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">{{:title}} {{if len !== undefined}}({{:len}}){{/if}}</a>'
     +'{{else type == "link"}}'
@@ -1075,7 +1086,7 @@ const func = {
  					if(em.n_c !== undefined){
  						prop.syn = true;
  					}
- 				});	
+ 				});
  			}
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde !== undefined ? source.cde.id : "";
@@ -1091,25 +1102,26 @@ const func = {
  	let html = "";
  	if(props.length == 0){
  		let keyword = $("#keywords").val();
- 		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+ 		html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 260;
- 		h = (h < 540) ? 540 : h;
+ 		let h = window.innerHeight - offset - 300;
+ 		h = (h < 430) ? 430 : h;
 
  		html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({mh:h,props: props});
  	}
- 	
+
     let result = {};
     result.len = props.length;
     result.html = html;
     return result;
-    
+
   }
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (func);
+
 
 /***/ }),
 /* 9 */
@@ -1124,11 +1136,11 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
   +'<div class="table__th col-xs-2">GDC Property Values</div>'
   +'<div class="table__th col-xs-2">CDE Reference</div>'
 +'</div>'
-+'<div class="table__body row" style="max-height: {{:mh}}px;"><div class="col-xs-12">'
++'<div class="table__body table__body--overflow row" style="max-height: {{:mh}}px;"><div class="col-xs-12">'
 +'{{for props}}'
 +'<div class="table__row row">'
   +'<div class="table__td col-xs-2">{{:ct}}<ul><li class="table__td--word-break">{{:nd}}</li></ul></div>'
-  +'<div class="table__td col-xs-2 word-break">{{:nm}}</div>'
+  +'<div class="table__td col-xs-2 table__td--word-break">{{:nm}}</div>'
   +'<div class="table__td col-xs-4">{{:desc}}</div>'
   +'<div class="table__td col-xs-2">'
   +'{{if local}}'
@@ -1178,9 +1190,9 @@ const func = {
 	let len = 0;
 	items.forEach(function (item){
 	  	let hl = item.highlight;
-	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
-	  		&& hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined 
-	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined 
+	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined
+	  		&& hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined
+	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined
 	  		&& hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined){
 	  		return;
 		}
@@ -1206,7 +1218,7 @@ const func = {
 				if(em.n_c !== undefined){
 					row.syn = true;
 				}
-			});	
+			});
 		}
 		row.ref = source.name +"@" +source.node +"@" + source.category;
 		row.cdeId = source.cde !== undefined ? source.cde.id : "";
@@ -1260,7 +1272,7 @@ const func = {
 				if(pv.ss !== undefined && pv.ss.length > 0){
 					pv.ss.forEach(function(ss){
 						let tmp_s = [];
-						let tmp_s_h = [];   
+						let tmp_s_h = [];
 		                //remove duplicate
 		                let cache = {};
 						ss.s.forEach(function(s){
@@ -1296,7 +1308,7 @@ const func = {
 				}
 			});
 		}
-		
+
 		if(source.enum){
 			source.enum.forEach(function(em){
 				//check if there are any matches in local synonyms
@@ -1350,7 +1362,7 @@ const func = {
 						//v.s = em.s;
 						v.s = tmp_s;
 					}
-					
+
 				}
 
 				//check if it contains icd-0-3 codes.
@@ -1390,10 +1402,7 @@ const func = {
 
 				}
 
-				if(v.n !== undefined){
-					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
-					row.tgts_enum_n += tmp + "#";
-				}
+
 
 				let lc = em.n.toLowerCase();
 				if(lc in matched_pv){
@@ -1404,7 +1413,7 @@ const func = {
 						//v.s = em.s;
 						v.s = tmp_s;
 					}
-					
+
 					v.cde_s = matched_pv[lc].ss;
 					if(v.cde_s.length){
 						v.cde_pv = matched_pv[lc].pv;
@@ -1418,9 +1427,11 @@ const func = {
 				}
 
 				if(v.n !== undefined){
+					let tmp = v.n.replace(/<b>/g,"").replace(/<\/b>/g, "");
+					row.tgts_enum_n += tmp + "#";
 					row.vs.push(v);
 				}
-				
+
 			});
 		}
 
@@ -1448,8 +1459,8 @@ const func = {
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 240;
- 		h = (h < 550) ? 550 : h;
+ 		let h = window.innerHeight - offset - 300;
+ 		h = (h < 430) ? 430 : h;
  		html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */], allowCode: true}).render({mh:h, values:values});
  	}
     let result = {};
@@ -1461,6 +1472,7 @@ const func = {
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (func);
+
 
 /***/ }),
 /* 11 */
@@ -1479,10 +1491,10 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     +'</div>'
   +'</div>'
 +'</div>'
-+'<div id="table-body" class="row table-body" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
-+'<div class="table-row row row-flex">'
-  +'<div class="property table-td col-xs-3">'
-      +'{{:category}}<ul><li class="word-break">{{:node}}<ul><li class="word-break">{{:name}}</li></ul></li></ul>'
++'<div id="table-body" class="table__body table__body--overflow row" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
++'<div class="table__row row table__row--striped table__row--flex">'
+  +'<div class="table__td col-xs-3">'
+      +'{{:category}}<ul><li class="table__td--word-break">{{:node}}<ul><li class="table__td--word-break">{{:name}}</li></ul></li></ul>'
       +'<a href="javascript:void(0)" class="gdc-details"><i class="fa fa-angle-down"></i> detail</a>'
       +'<div id="gdc-links" style="display: none;">'
         +'{{if local}}'
@@ -1506,15 +1518,15 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
         +'{{/if}}'
       +'</div>'
   +'</div>'
-  +'<div class="col-xs-9 border-l"> {{for vs}}'
-    +'<div class="row {{if #getIndex() > 4}}row-toggle row-flex{{else}}row-flex{{/if}}">'
-      +'<div class="table-td col-xs-6 border-r border-b">'
+  +'<div class="table__values col-xs-9"> {{for vs}}'
+    +'<div class="row table__row--flex{{if #getIndex() > 4}} row-toggle{{/if}}">'
+      +'<div class="table__td table__gdc-values col-xs-6">'
       +'{{if n == "no match"}}no match{{else}}'
         +'<div class="row">'
           +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{if i_c !== undefined }}{{:i_c}} {{:n}} (ICD-O-3){{else}}{{:n}}{{/if}}</a></div>'
-          +'<div class="col-xs-2">{{if s.length }}<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
+          +'<div class="col-xs-2">{{if s.length }}<a href="javascript:void(0);" class="collapser" aria-label="collapser"><i class="fa fa-angle-down fa-lg"></i></a>{{/if}}</div>'
         +'</div>'
-        +'<div id="data-content" class="table-td" style="display: none;">'
+        +'<div id="data-content" class="table__td" style="display: none;">'
           +'<div class="row">'
             +'<div class="col-xs-4">'
               +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
@@ -1525,18 +1537,18 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
         +'</div>'
       +'{{/if}}'
       +'</div>'
-      +'<div class="table-td col-xs-6 border-b">'
+      +'<div class="table__td table__cde-values col-xs-6">'
         +'{{if cde_s.length }}'
         +'<div class="row">'
           +'<div class="col-xs-9">{{:cde_pv}}</div>'
           +'<div class="col-xs-3 cde-links">'
-            +'<a href="javascript:void(0);" class="collapser"><i class="fa fa-plus"></i></a>'
+            +'<a href="javascript:void(0);" class="collapser" aria-label="collapser"><i class="fa fa-angle-down fa-lg"></i></a>'
             +'{{if n == "no match"}}<a href="javascript:void(0);" class="cde-suggest" style="float: right;">Suggest Item</a>{{/if}}'
           +'</div>'
         +'</div>'
-        +'<div id="data-content" class="table-td" style="display: none;">'
+        +'<div id="data-content" class="table__td" style="display: none;">'
           +'<div class="row">'
-            +'<div class="table-td col-xs-12">PV Meaning (caDSR): {{:cde_pvm}}</div>'
+            +'<div class="table__td col-xs-12">PV Meaning (caDSR): {{:cde_pvm}}</div>'
           +'</div>'
           +'{{for cde_s}}'
           +'<div class="row">'
@@ -1552,7 +1564,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
       +'</div>'
     +'</div> {{/for}}'
       +'{{if vs.length > 5}}'
-        +'<div class="row row-flex"><div class="table-td col-xs-12 border-r">'
+        +'<div class="row"><div class="table__td col-xs-12">'
          +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
         +'</div></div>'
       +'{{/if}}'
@@ -1577,7 +1589,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(13);
 
 
-/* harmony default export */ __webpack_exports__["a"] = (function (trsHtml, psHtml, vsHtml) {
+/* harmony default export */ __webpack_exports__["a"] = (function (trsHtml, psHtml, vsHtml, keyword) {
 
   let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */]).render({
     trs_active:trsHtml.active,
@@ -1588,7 +1600,8 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     psHtml: psHtml.html,
     vs_active:vsHtml.active,
     vs_len: vsHtml.len,
-    vsHtml: vsHtml.html
+    vsHtml: vsHtml.html,
+    keyword: keyword
   });
 
   return html;
@@ -1600,53 +1613,41 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// let tmpl = '<div><ul class="nav nav-tabs" role="tablist">' +
-//       '<li role="presentation" class="{{if vs_active}}active{{else}}{{/if}}"><a href="#vsTab" aria-controls="vsTab" role="tab" data-toggle="tab">Values ({{:vs_len}})</a></li>' +
-//       '<li role="presentation" class="{{if ps_active}}active{{else}}{{/if}}"><a href="#psTab" aria-controls="psTab" role="tab" data-toggle="tab">Properties ({{:ps_len}})</a></li>' +
-//       '<li role="presentation" class="{{if trs_active}}active{{else}}{{/if}}"><a href="#trsTab" aria-controls="trsTab" role="tab" data-toggle="tab">Summary ({{:trs_len}})</a></li></ul>' +
-//       '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="vsTab">{{:vsHtml}}</div>' +
-//       '<div role="tabpanel" class="tab-pane {{if ps_active}}active{{else}}{{/if}}" id="psTab">{{:psHtml}}</div>' +
-//       '<div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="trsTab">{{:trsHtml}}</div></div></div>';
 
 let tmpl = '<div class="results">' +
   '<div class="tab-nav">' +
-    '<div class="tab-nav__text">Results for <span class="tab-nav__term">\'Abdomen\'</span> in:</div>' +
+    '<div class="tab-nav__text">Results for <span class="tab-nav__term">\'{{:keyword}}\'</span> in:</div>' +
     '<div id="tab" class="btn-group tab-nav__group" data-toggle="buttons">' +
-      '<a href="#values" class="btn tab-nav__btn {{if vs_active}}active{{else}}{{/if}}" data-toggle="tab">' +
-        '<input type="radio" />Values' +
-        '<span class="tab-nav__notification">{{:vs_len}}</span>' +
-      '</a>' +
-      '<a href="#properties" class="btn tab-nav__btn {{if ps_active}}active{{else}}{{/if}}" data-toggle="tab">' +
-        '<input type="radio" />Properties' +
-        '<span class="tab-nav__notification">{{:ps_len}}</span>' +
-      '</a>' +
-      '<a href="#dictionary" class="btn tab-nav__btn {{if trs_active}}active{{else}}{{/if}}" data-toggle="tab">' +
-        '<input type="radio" />GDC Dictionary' +
-        '<span class="tab-nav__notification">{{:trs_len}}</span>' +
-      '</a>' +
+      // '<a href="#" class="btn tab-nav__btn {{if vs_active}}active{{else}}{{/if}}" data-toggle="tab">' +
+      //   '<label for="values" class="hide">values</label><input id="values" type="radio" data-target="#values" />Values' +
+      //   '<span class="tab-nav__notification">{{:vs_len}}</span>' +
+      // '</a>' +
+      // '<a href="#" class="btn tab-nav__btn {{if ps_active}}active{{else}}{{/if}}" data-toggle="tab">' +
+      //   '<label for="properties" class="hide">properties</label><input id="properties" type="radio" data-target="#properties" />Properties' +
+      //   '<span class="tab-nav__notification">{{:ps_len}}</span>' +
+      // '</a>' +
+      // '<a href="#" class="btn tab-nav__btn {{if trs_active}}active{{else}}{{/if}}" data-toggle="tab">' +
+      //   '<label for="dictionary" class="hide">dictionary</label><input id="dictionary" type="radio" data-target="#dictionary" />GDC Dictionary' +
+      //   '<span class="tab-nav__notification">{{:trs_len}}</span>' +
+      // '</a>' +
+      '<ul class="tab-nav__ul"role="tablist">'+
+      '<li role="presentation" class="tab-nav__li{{if vs_active}} active{{else}}{{/if}}">'+
+        '<a href="#values" class="tab-nav__btn" aria-controls="values" role="tab" data-toggle="tab" aria-expanded="true">Values</a>'+
+        '<span class="tab-nav__notification">{{:vs_len}}</span>'+
+      '</li>'+
+      '<li role="presentation" class="tab-nav__li{{if ps_active}} active{{else}}{{/if}}">'+
+        '<a href="#properties" class="tab-nav__btn" aria-controls="properties" role="tab" data-toggle="tab" aria-expanded="true">Properties</a>'+
+        '<span class="tab-nav__notification">{{:ps_len}}</span>'+
+      '</li>'+
+      '<li role="presentation" class="tab-nav__li{{if trs_active}} active{{else}}{{/if}}">'+
+        '<a href="#dictionary" class="tab-nav__btn" aria-controls="dictionary" role="tab" data-toggle="tab" aria-expanded="true">GDC Dictionary</a>'+
+        '<span class="tab-nav__notification">{{:trs_len}}</span>'+
+      '</li>'+
+      '</ul>'+
   '</div></div>' +
   '<div class="tab-content"><div role="tabpanel" class="tab-pane {{if vs_active}}active{{else}}{{/if}}" id="values">{{:vsHtml}}</div>' +
   '<div role="tabpanel" class="tab-pane {{if ps_active}}active{{else}}{{/if}}" id="properties">{{:psHtml}}</div>' +
   '<div role="tabpanel" class="tab-pane {{if trs_active}}active{{else}}{{/if}}" id="dictionary">{{:trsHtml}}</div></div></div>';
-
-              //     <div class="results">
-              // <div class="tab-nav">
-              //   <div class="tab-nav__text">Results for <span class="tab-nav__term">'Abdomen'</span> in:</div>
-              //   <div id="tab" class="btn-group tab-nav__group" data-toggle="buttons">
-              //     <a href="#values" class="btn tab-nav__btn active" data-toggle="tab">
-              //       <input type="radio" />Values
-              //     </a>
-              //     <a href="#properties" class="btn tab-nav__btn" data-toggle="tab">
-              //       <input type="radio" />Properties
-              //       <span class="tab-nav__notification">7</span>
-              //     </a>
-              //     <a href="#dictionary" class="btn tab-nav__btn" data-toggle="tab">
-              //       <input type="radio" />GDC Dictionary
-              //       <span class="tab-nav__notification">49</span>
-              //     </a>
-              //   </div>
-              // </div>
-              // <div class="tab-content">
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
 
@@ -1680,6 +1681,7 @@ let tmpl = '{{for options}}<div class="suggest__object">'
 const func = {
   getGDCData(prop, item) {
  	__WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCDataById(prop, function(id, items) {
+
  		if($('#gdc_data').length){
             $('#gdc_data').remove();
         }
@@ -1695,9 +1697,40 @@ const func = {
         let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_data).render({target:target, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? 0 : window.innerHeight * 0.2;
 
+        let titleComponent = '<span class="ui-label">'+items.length+'</span>'
+        if(target !== null){
+          titleComponent += '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="show_all_gdc_data" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values</label></div>'
+        }
+
         //display result in a table
         $(document.body).append(html);
-        if(target !== undefined){
+
+        $('#gdc_data').dialog({
+            modal: false,
+            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
+            width: 600,
+            height: 390,
+            minWidth: 420,
+            maxWidth: 800,
+            minHeight: 300,
+            maxHeight: 600,
+            title: 'GDC Values',
+            open: function() {
+              var target = $(this).parent();
+              target.find('.ui-dialog-titlebar').append(titleComponent);
+              target.find('.ui-dialog-titlebar-close').html('');
+              if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
+                  target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
+              }
+            },
+            close: function() {
+              $(this).remove();
+            }
+        }).parent().draggable({
+            containment: '#docs-container'
+        });
+
+        if($('#show_all_gdc_data') !== undefined){
             $('#show_all_gdc_data').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
@@ -1715,28 +1748,11 @@ const func = {
             });
         }
 
-        $('#gdc_data').dialog({
-            modal: false,
-            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
-            width: '45%',
-            minWidht: '385px',
-            title: 'GDC Values ('+items.length+')',
-            open: function() {
-                var target = $(this).parent();
-                if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
-                    target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
-                }
-            },
-            close: function() {
-                $(this).remove();
-            }
-        }).parent().draggable({
-            containment: '#docs-container'
-        });
-
     });
 
   },
+
+
   getGDCSynonyms(uid, tgts){
   	__WEBPACK_IMPORTED_MODULE_1__api__["a" /* default */].getGDCDataById(uid, function(id, items) {
  		if($('#gdc_syn_data').length){
@@ -1765,6 +1781,7 @@ const func = {
             });
         }
         items.forEach(function(it){
+            if(it.s == undefined) return;
             let cache = {};
             let tmp_s = [];
             it.s.forEach(function(s){
@@ -1783,32 +1800,33 @@ const func = {
         });
         let html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
+
+
+        let titleComponent = '<span class="ui-label">'+items.length+'</span>'
+        + '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="gdc-data-invariant" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates</label>';
+        if(targets !== null){
+          titleComponent += '<label class="checkbox__label checkbox__label--height"><input id="show_all_gdc_syn" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values</label>'
+        }
+        titleComponent += '</div>'
+
         //display result in a table
         $(document.body).append(html);
-
-        //if(tgts !== null && tgts !== undefined && tgts !== ""){
-            $('#show_all_gdc_syn').bind('click', function(){
-                let v = $(this).prop("checked");
-                if(v){
-                    $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
-                        $(this).css("display","block");
-                    });
-                } else {
-                    $('#gdc-syn-data-list div.table-row[style="display: block;"]').each(function(){
-                        $(this).css("display","none");
-                    });
-                }
-            });
-        //}
-
 
         $("#gdc_syn_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"55%",
-                title: "GDC Terms ("+items.length+")",
+                //width:"55%",
+                width: 900,
+                height: 'auto',
+                minWidth: 700,
+                maxWidth: 1000,
+                minHeight: 300,
+                maxHeight: 600,
+                title: "GDC Terms",
                 open: function() {
                     var target = $(this).parent();
+                    target.find('.ui-dialog-titlebar').append(titleComponent);
+                    target.find('.ui-dialog-titlebar-close').html('');
                     if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
                         target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                     }
@@ -1829,6 +1847,23 @@ const func = {
             containment: '#docs-container'
         });
 
+        //if(tgts !== null && tgts !== undefined && tgts !== ""){
+        let element = $('#show_all_gdc_syn');
+        if(element !== undefined){
+            element.bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+                    $('#gdc-syn-data-list div.table__row[style="display: none;"]').each(function(){
+                        $(this).css("display","block");
+                    });
+                } else {
+                    $('#gdc-syn-data-list div.table__row[style="display: block;"]').each(function(){
+                        $(this).css("display","none");
+                    });
+                }
+            });
+        }
+
     });
   },
   toCompare(uid){
@@ -1837,23 +1872,30 @@ const func = {
             $('#compare_dialog').remove();
         }
         let windowEl = $(window);
-        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].toCompare).render({items: items });
+        let html = $.templates(__WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].toCompare).render({items: items});
         let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         $("#compare_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-            width:"60%",
+            //width:"60%",
+            width: 750,
+            height: 550,
+            minWidth: 600,
+            maxWidth: 900,
+            minHeight: 300,
+            maxHeight: 800,
             title: "Compare Your Values with GDC Values ",
             open: function() {
 
                 var target = $(this).parent();
+                target.find('.ui-dialog-titlebar-close').html('');
                 if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
                     target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                 }
 
-            	$('#cp_result').css("display", "none");
+                $('#cp_result').css("display", "none");
                 $('#compare').bind('click', function(){
                     let gv = [];
                     items.forEach(function(item){
@@ -1933,33 +1975,33 @@ const func = {
 
             let html = $.templates({markup: __WEBPACK_IMPORTED_MODULE_0__view__["a" /* default */].cde_data, allowCode: true}).render({targets: targets, items: tmp });
             let tp = (window.innerHeight * 0.2 < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() )? __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20 : window.innerHeight * 0.2;
+
+            let titleComponent = '<span class="ui-label">'+items.length+'</span>'
+            + '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="cde-data-invariant" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates</label>';
+            if(targets !== null){
+              titleComponent += '<label class="checkbox__label checkbox__label--height"><input id="show_all_cde_syn" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDE values</label>'
+            }
+            titleComponent +='</div>';
+
+
             //display result in a table
             $(document.body).append(html);
-
-            if(targets !== undefined){
-                $('#show_all_cde_syn').bind('click', function(){
-                    let v = $(this).prop("checked");
-                    if(v){
-                        $('#cde-syn-data-list div.table-row[style="display: none;"]').each(function(){
-                            $(this).css("display","block");
-                        });
-                    }
-                    else{
-                        $('#cde-syn-data-list div.table-row[style="display: block;"]').each(function(){
-                            $(this).css("display","none");
-                        });
-                    }
-                });
-            }
-
 
             $("#caDSR_data").dialog({
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                    width:"60%",
-                    title: "caDSR Values ("+tmp.length+")",
+                    //width:"60%",
+                    width: 900,
+                    height: 'auto',
+                    minWidth: 700,
+                    maxWidth: 1000,
+                    minHeight: 300,
+                    maxHeight: 600,
+                    title: "caDSR Values",
                     open: function() {
                         var target = $(this).parent();
+                        target.find('.ui-dialog-titlebar').append(titleComponent);
+                        target.find('.ui-dialog-titlebar-close').html('');
                         if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
                             target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                         }
@@ -1979,6 +2021,22 @@ const func = {
             }).parent().draggable({
               containment: '#docs-container'
             });
+
+            if($('#show_all_cde_syn') !== undefined){
+              $('#show_all_cde_syn').bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+                  $('#cde-syn-data-list div.table__row[style="display: none;"]').each(function(){
+                      $(this).css("display","block");
+                  });
+                }
+                else{
+                  $('#cde-syn-data-list div.table__row[style="display: block;"]').each(function(){
+                      $(this).css("display","none");
+                  });
+                }
+              });
+            }
 
         });
   },
@@ -2008,22 +2066,32 @@ const func = {
             fromV.push(f.n);
         });
         let table = generateCompareGDCResult(fromV, toV, opt);
-        let html = '<div class="cp_result_title">Compare Result</div>'
-                    +'<div id="cpGDC_result_option">'
-                        +'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
-                    +'<div id="cpGDC_result_table" class="table-container">'+table+'</div>'
+        let html = '<div id="cpGDC_result_option">'
+                        //+'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
+                    +'<div id="cpGDC_result_table" class="table__container">'+table+'</div>'
                     +'</div>';
+
+        let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compareGDC_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Case Sensitive</label>'
+         + '<label class="checkbox__label checkbox__label--height"><input id="compareGDC_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label></div>';
 
         $('#compareGDC_result').html(html);
 
         $("#compareGDC_dialog").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"50%",
+                //width:"50%",
+                width: 750,
+                height: 550,
+                minWidth: 600,
+                maxWidth: 900,
+                minHeight: 300,
+                maxHeight: 800,
                 title: "Compare GDC Values with caDSR Values ",
                 open: function() {
 
                     var target = $(this).parent();
+                    target.find('.ui-dialog-titlebar').append(titleComponent);
+                    target.find('.ui-dialog-titlebar-close').html('');
                     if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
                         target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                     }
@@ -2092,11 +2160,18 @@ const func = {
         $('#ncit_details').dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-            width: '45%',
+            //width: '45%',
+            width: 600,
+            height: 390,
+            minWidth: 420,
+            maxWidth: 800,
+            minHeight: 300,
+            maxHeight: 600,
             title: 'NCIt Terms & Properties',
             open: function() {
 
                 var target = $(this).parent();
+                target.find('.ui-dialog-titlebar-close').html('');
                 if((target.offset().top - windowEl.scrollTop()) < __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset()){
                     target.css('top', (windowEl.scrollTop() + __WEBPACK_IMPORTED_MODULE_2__shared__["a" /* default */].headerOffset() + 20)+'px');
                 }
@@ -2122,36 +2197,37 @@ const func = {
 
 let tmpl = {
   gdc_data: '<div id="gdc_data">'
-          +'{{if target !== null }}'
-          +'<div class="option-right"><input type="checkbox" id="show_all_gdc_data"> Show all GDC values</div>'
-          +'{{else}}'
-          +''
-          +'{{/if}}'
-          +'<div class="clearfix"></div>'
+          // +'{{if target !== null }}'
+          // +'<div class="option-right"><input type="checkbox" id="show_all_gdc_data"> Show all GDC values</div>'
+          // +'{{else}}'
+          // +''
+          // +'{{/if}}'
+          // +'<div class="clearfix"></div>'
           +'{{if icdo}}'
-            +'<div class="table-container">'
-              +'<div class="table-thead row">'
-                +'<div class="table-th col-xs-4">ICD-O-3 Code</div>'
-                +'<div class="table-th col-xs-8">ICD-O-3 Term</div>'
+            +'<div class="table__container">'
+              +'<div class="table__thead row">'
+                +'<div class="table__th col-xs-4">ICD-O-3 Code</div>'
+                +'<div class="table__th col-xs-8">ICD-O-3 Term</div>'
               +'</div>'
-              +'<div id="gdc-data-list" class="table-body row" style="max-height: 390px;">'
+              +'<div id="gdc-data-list" class="table__body row">'
+              //+'<div id="gdc-data-list" class="table__body row" style="max-height: 390px;">'
                 +'<div class="col-xs-12">'
                   +'{{if target !== null }}'
                     +'{{for items}}'
                       +'{{if n == ~root.target }}'
-                        +'<div class="table-row row" id="gdc_data_match">'
-                          +'<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div><div class="table-td td-slim col-xs-8"><b>{{:n}}</b></div>'
+                        +'<div class="table__row row" id="gdc_data_match">'
+                          +'<div class="table__td table__td--slim col-xs-4">{{:i_c.c}}</div><div class="table__td table__td--slim col-xs-8"><b>{{:n}}</b></div>'
                         +'</div>'
                       +'{{else}}'
-                        +'<div class="table-row row" style="display: none;">'
-                          +'<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div><div class="table-td td-slim col-xs-8">{{:n}}</div>'
+                        +'<div class="table__row row" style="display: none;">'
+                          +'<div class="table__td table__td--slim col-xs-4">{{:i_c.c}}</div><div class="table__td table__td--slim col-xs-8">{{:n}}</div>'
                         +'</div>'
                       +'{{/if}}'
                     +'{{/for}}'
                   +'{{else}}'
                     +'{{for items}}'
-                      +'<div class="table-row row">'
-                        +'<div class="table-td td-slim col-xs-4">{{:i_c.c}}</div><div class="table-td td-slim col-xs-8">{{:n}}</div>'
+                      +'<div class="table__row row">'
+                        +'<div class="table__td table__td--slim col-xs-4">{{:i_c.c}}</div><div class="table__td table__td--slim col-xs-8">{{:n}}</div>'
                       +'</div>'
                     +'{{/for}}'
                   +'{{/if}}'
@@ -2159,25 +2235,26 @@ let tmpl = {
               +'</div>'
             +'</div>'
           +'{{else}}'
-            +'<div class="table-container-blank">'
-              +'<div id="gdc-data-list" class="table-body row" style="max-height: 390px;">'
+            +'<div class=" table__container table__container--blank">'
+              +'<div id="gdc-data-list" class="table__body row">'
+              //+'<div id="gdc-data-list" class="table__body row" style="max-height: 390px;">'
                 +'<div class="col-xs-12">'
                   +'{{if target !== null }}'
                     +'{{for items}}'
                       +'{{if n == ~root.target }}'
                         +'<div class="row" id="gdc_data_match">'
-                          +'<div class="table-td td-xs-slim col-xs-8"><b>{{:n}}</b></div>'
+                          +'<div class="table__td table__td--xslim col-xs-8"><b>{{:n}}</b></div>'
                         +'</div>'
                       +'{{else}}'
                         +'<div class="row" style="display: none;">'
-                          +'<div class="table-td td-xs-slim col-xs-8">{{:n}}</div>'
+                          +'<div class="table__td table__td--xslim col-xs-8">{{:n}}</div>'
                         +'</div>'
                       +'{{/if}}'
                     +'{{/for}}'
                   +'{{else}}'
                     +'{{for items}}'
                       +'<div class="row">'
-                        +'<div class="table-td td-xs-slim col-xs-8">{{:n}}</div>'
+                        +'<div class="table__td table__td--xslim col-xs-8">{{:n}}</div>'
                       +'</div>'
                     +'{{/for}}'
                   +'{{/if}}'
@@ -2187,50 +2264,62 @@ let tmpl = {
           +'{{/if}}'
         +'</div>',
   gdc_synonyms: '<div id="gdc_syn_data">'
-          +'<div class="option-left"><input type="checkbox" id="gdc-data-invariant"> Show Duplicates</div>'
-          +'{{if targets !== null }}'
-            +'<div class="option-right"><input type="checkbox" id="show_all_gdc_syn"> Show all GDC values</div>'
-          +'{{else}}'
-            +''
-          +'{{/if}}'
-          +'<div class="clearfix"></div>'
-          +'<div id="gdc-syn-data-list" class="table-container">'
-            +'<div class="table-thead row">'
-              +'{{if icdo}}<div class="table-th col-xs-2">ICD-O-3 Code</div>{{/if}}'
-              +'<div class="table-th col-xs-3">ICD-O-3 Term</div>'
-              +'<div class="table-th col-xs-2">NCIt Code</div>'
-              +'<div class="table-th col-xs-5">NCIt Terms</div>'
+          // +'<div class="option-left"><input type="checkbox" id="gdc-data-invariant"> Show Duplicates</div>'
+          // +'{{if targets !== null }}'
+          //   +'<div class="option-right"><input type="checkbox" id="show_all_gdc_syn"> Show all GDC values</div>'
+          // +'{{else}}'
+          //   +''
+          // +'{{/if}}'
+          // +'<div class="clearfix"></div>'
+          +'<div id="gdc-syn-data-list" class="table__container">'
+            +'<div class="table__thead row">'
+              +'{{if icdo}}'
+              +'<div class="table__th col-xs-2">ICD-O-3 Code</div>'
+              +'<div class="table__th col-xs-3">ICD-O-3 Term</div>'
+              +'{{else}}'
+              +'<div class="table__th col-xs-5">GDC Term</div>'
+              +'{{/if}}'
+              +'<div class="table__th col-xs-2">NCIt Code</div>'
+              +'<div class="table__th col-xs-5">NCIt Terms</div>'
             +'</div>'
-            +'<div class="table-body row" style="max-height: 390px;">'
+            +'<div class="table__body row" style="max-height: 390px;">'
               +'<div class="col-xs-12">'
                 +'{{for items}}'
                   +'{{if e == true || ~root.targets == null}}'
-                    +'<div class="table-row row">'
-                      +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
-                      +'<div class="table-td col-xs-3">{{:n}}</div>'
-                      +'<div class="table-td col-xs-2">'
+                    +'<div class="table__row row">'
+                      +'{{if ~root.icdo}}'
+                      +'<div class="table__td col-xs-2">{{:i_c.c}}</div>'
+                      +'<div class="table__td col-xs-3">{{:n}}</div>'
+                      +'{{else}}'
+                      +'<div class="table__td col-xs-5">{{:n}}</div>'
+                      +'{{/if}}'
+                      +'<div class="table__td col-xs-2">'
                       +'{{if n_c && n_c !== ""}}'
                         +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
                         +'{{* } else { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                       +'{{/if}}'
                       +'</div>'
-                      +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
-                      +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
+                      +'<div name="syn_area" class="table__td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
+                      +'<div name="syn_invariant" class="table__td col-xs-5" style="display: none;">'
                       +'{{for s}}{{>#data}}<br>{{/for}}'
                       +'</div>'
                     +'</div>'
                   +'{{else}}'
-                    +'<div class="table-row row" style="display: none;">'
-                      +'{{if ~root.icdo}}<div class="table-td col-xs-2">{{:i_c.c}}</div>{{/if}}'
-                      +'<div class="table-td col-xs-3">{{:n}}</div>'
-                      +'<div class="table-td col-xs-2">'
+                    +'<div class="table__row row" style="display: none;">'
+                      +'{{if ~root.icdo}}'
+                      +'<div class="table__td col-xs-2">{{:i_c.c}}</div>'
+                      +'<div class="table__td col-xs-3">{{:n}}</div>'
+                      +'{{else}}'
+                      +'<div class="table__td col-xs-5">{{:n}}</div>'
+                      +'{{/if}}'
+                      +'<div class="table__td col-xs-2">'
                       +'{{if n_c && n_c !== ""}}'
                         +'{{* if((/^C[1-9]/g).test(data.n_c)) { }}<a class="table-td-link" href="javascript:ncitDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
                         +'{{* } else { }} {{:n_c}} {{*: (/^[E]/g).test(data.n_c) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                       +'{{/if}}'
                       +'</div>'
-                      +'<div name="syn_area" class="table-td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
-                      +'<div name="syn_invariant" class="table-td col-xs-5" style="display: none;">'
+                      +'<div name="syn_area" class="table__td col-xs-5">{{for s_r}}{{>#data}}<br>{{/for}}</div>'
+                      +'<div name="syn_invariant" class="table__td col-xs-5" style="display: none;">'
                       +'{{for s}}{{>#data}}<br>{{/for}}'
                       +'</div>'
 
@@ -2242,54 +2331,53 @@ let tmpl = {
           +'</div>'
         +'</div>',
   toCompare: '<div id="compare_dialog">'
-                    +'<div id="compare_form">'
-                        +'<div id="cp_top">'
-                            +'<label class="left_label">User Defined Values:</label>'
-                            +'<label class="right_label">GDC Values:</label>'
-                            +'<div id="cp_left">'
-                            +'<textarea id="cp_input" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>'
-                            +'<div id="cp_middle"></div>'
-                            +'<div id="cp_right">'
+                    +'<div id="compare_form" class="compare-form">'
+                        +'<div id="cp_top" class="compare-form__top">'
+                            +'<label class="compare-form__label--left">User Defined Values:</label>'
+                            +'<label class="compare-form__label--right">GDC Values:</label>'
+                            +'<div id="cp_left" class="compare-form__left">'
+                            +'<textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>'
+                            +'<div id="cp_middle" class="compare-form__middle"></div>'
+                            +'<div id="cp_right" class="compare-form__right">'
                             +'{{for items}}'
                             +'<div>{{:n}}</div>'
                             +'{{/for}}'
                             +'</div>'
                         +'</div>'
-                        +'<div id="cp_massage">'
-                        +'</div>'
-                        +'<div id="cp_bottom">'
-                            +'<button id="compare" class="btn btn-default btn-submit-large">Compare</button>'
-                            +'<button id="cancelCompare" class="btn btn-default btn-submit-large">Cancel</button>'
+                        +'<div id="cp_massage"></div>'
+                        +'<div id="cp_bottom" class="compare-form__bottom">'
+                            +'<button id="compare" class="btn btn-default compare-form__button">Compare</button>'
+                            +'<button id="cancelCompare" class="btn btn-default compare-form__button">Cancel</button>'
                         +'</div>'
                     +'</div>'
-                    +'<div id="compare_result"></div>'
+                    +'<div id="compare_result" class="compare_result"></div>'
                 +'</div>',
   cde_data: '<div id="caDSR_data">'
-              +'<div class="data-option">'
-                +'<div class="option-left"><input type="checkbox" id="cde-data-invariant"> Show Duplicates</div>'
-                +'{{if targets !== null }}'
-                  +'<div class="option-right"><input type="checkbox" id="show_all_cde_syn"> Show all GDE values</div>'
-                +'{{else}}'
-                  +''
-                +'{{/if}}'
-              +'</div>'
-              +'<div class="clearfix"></div>'
-              +'<div id="cde-syn-data-list" class="table-container">'
-                +'<div class="table-thead row">'
-                  +'<div class="table-th col-xs-2">PV</div>'
-                  +'<div class="table-th col-xs-2">PV Meaning</div>'
-                  +'<div class="table-th col-xs-4">Description</div>'
-                  +'<div class="table-th col-xs-4">NCIt Code and Synonyms</div>'
+              // +'<div class="data-option">'
+              //   +'<div class="option-left"><input type="checkbox" id="cde-data-invariant"> Show Duplicates</div>'
+              //   +'{{if targets !== null }}'
+              //     +'<div class="option-right"><input type="checkbox" id="show_all_cde_syn"> Show all GDE values</div>'
+              //   +'{{else}}'
+              //     +''
+              //   +'{{/if}}'
+              // +'</div>'
+              //+'<div class="clearfix"></div>'
+              +'<div id="cde-syn-data-list" class="table__container">'
+                +'<div class="table__thead row">'
+                  +'<div class="table__th col-xs-2">PV</div>'
+                  +'<div class="table__th col-xs-2">PV Meaning</div>'
+                  +'<div class="table__th col-xs-4">Description</div>'
+                  +'<div class="table__th col-xs-4">NCIt Code and Synonyms</div>'
                 +'</div>'
-                +'<div class="table-body row" style="max-height: 390px;">'
+                +'<div class="table__body row" style="max-height: 390px;">'
                   +'<div class="col-xs-12">'
                   +'{{for items}}'
                     +'{{if e == true || ~root.targets == null}}'
-                    +'<div class="table-row row">'
-                      +'<div class="table-td col-xs-2">{{:pv}}</div>'
-                      +'<div class="table-td col-xs-2">{{:pvm}}</div>'
-                      +'<div class="table-td col-xs-4">{{:pvd}}</div>'
-                      +'<div name="syn_area" class="table-td col-xs-4">'
+                    +'<div class="table__row row">'
+                      +'<div class="table__td col-xs-2">{{:pv}}</div>'
+                      +'<div class="table__td col-xs-2">{{:pvm}}</div>'
+                      +'<div class="table__td col-xs-4">{{:pvd}}</div>'
+                      +'<div name="syn_area" class="table__td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
@@ -2297,10 +2385,10 @@ let tmpl = {
                             +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
-                        +'</div>' 
+                        +'</div>'
                       +'{{/for}}'
                       +'</div>'
-                      +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
+                      +'<div name="syn_invariant" class="table__td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
@@ -2308,16 +2396,16 @@ let tmpl = {
                             +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
-                        +'</div>' 
+                        +'</div>'
                       +'{{/for}}'
                       +'</div>'
                     +'</div>'
                     +'{{else}}'
-                    +'<div class="table-row row" style="display: none;">'
-                      +'<div class="table-td col-xs-2">{{:pv}}</div>'
-                      +'<div class="table-td col-xs-2">{{:pvm}}</div>'
-                      +'<div class="table-td col-xs-4">{{:pvd}}</div>'
-                      +'<div name="syn_area" class="table-td col-xs-4">'
+                    +'<div class="table__row row" style="display: none;">'
+                      +'<div class="table__td col-xs-2">{{:pv}}</div>'
+                      +'<div class="table__td col-xs-2">{{:pvm}}</div>'
+                      +'<div class="table__td col-xs-4">{{:pvd}}</div>'
+                      +'<div name="syn_area" class="table__td col-xs-4">'
                       +'{{for i_rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
@@ -2325,10 +2413,10 @@ let tmpl = {
                             +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
-                        +'</div>' 
+                        +'</div>'
                       +'{{/for}}'
                       +'</div>'
-                      +'<div name="syn_invariant" class="table-td col-xs-4" style="display: none;">'
+                      +'<div name="syn_invariant" class="table__td col-xs-4" style="display: none;">'
                       +'{{for rows}}'
                         +'<div class="row">'
                           +'<div class="col-lg-3 col-xs-12">'
@@ -2336,7 +2424,7 @@ let tmpl = {
                             +'{{* } else { }} {{:pvc}} {{*: (/^[E]/g).test(data.pvc) ? "(CTCAE)" : "(NCIt)" }} {{* } }}'
                           +'</div>'
                           +'<div class="col-lg-9 col-xs-12">{{for s}}{{>#data}}<br>{{/for}}</div>'
-                        +'</div>' 
+                        +'</div>'
                       +'{{/for}}'
                       +'</div>'
                     +'</div>'
@@ -2346,16 +2434,17 @@ let tmpl = {
                 +'</div>'
               +'</div>'
             +'</div>',
-  ncit_details: '<div id="ncit_details">'
+  ncit_details: '<div id="ncit_details"><div class="ncit__content">'
       +'<p><b>Preferred Name:</b> {{:item.name}}</p>'
       +'{{if item.definition !== undefined}}<p><b>Definition:</b> {{:item.definition}}</p>{{/if}}'
       +'<p><b>NCI Thesaurus Code:</b> <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code}}" target="_blank"">{{:item.code}}</a></p>'
       +'{{if item.synonyms.length }}<p><b>Synonyms &amp; Abbreviations:</b></p><p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>{{/if}}'
       +'<p><a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">more details</p>'
-      +'</div>'
+      +'</div></div>'
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (tmpl);
+
 
 /***/ }),
 /* 17 */

@@ -23,7 +23,7 @@ const func = {
  					if(em.n_c !== undefined){
  						prop.syn = true;
  					}
- 				});	
+ 				});
  			}
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde !== undefined ? source.cde.id : "";
@@ -39,21 +39,21 @@ const func = {
  	let html = "";
  	if(props.length == 0){
  		let keyword = $("#keywords").val();
- 		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+ 		html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 260;
- 		h = (h < 540) ? 540 : h;
+ 		let h = window.innerHeight - offset - 300;
+ 		h = (h < 430) ? 430 : h;
 
  		html = $.templates(tmpl).render({mh:h,props: props});
  	}
- 	
+
     let result = {};
     result.len = props.length;
     result.html = html;
     return result;
-    
+
   }
 };
 

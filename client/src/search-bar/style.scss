@@ -7,13 +7,18 @@
   background-color: #93a5a5;
   border-color: #93a5a5;
   padding: 8px 45px;
-  font-size: 17px
+  font-size: 17px;
+  color: #fff;
 }
+.search-bar__btn:active:hover,
 .search-bar__btn:hover,
 .search-bar__btn:focus,
 .search-bar__btn:active {
   background-color: #707c7c;
   border-color: #707c7c;
+}
+.search-bar__input--has-error {
+  border: 2px solid #c74060;
 }
 
 

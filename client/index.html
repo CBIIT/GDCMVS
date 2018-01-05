@@ -15,12 +15,9 @@
   <link href="./assets/css/base.css" rel="stylesheet">
   <link href="./assets/css/gdc-common.css" rel="stylesheet">
   <link href="./assets/css/gdc-fonts.css" rel="stylesheet">
-  <link href="./assets/css/encyclopedia.css" rel="stylesheet">
-  <link href="./assets/css/encyclopedia.css" rel="stylesheet">
 
   <!-- GDC CSS-->
   <link rel="stylesheet" type="text/css" href="./assets/css/jquery.treetable.css" />
-  <!-- <link rel="stylesheet" type="text/css" href="./assets/css/jquery.treetable.theme.default.css" /> -->
   <link rel="stylesheet" type="text/css" href="./assets/css/jquery-ui.css" />
   <link rel="stylesheet" type="text/css" href="./dist/styles.css" />
 </head>
@@ -376,44 +373,17 @@
 
                     <div class="search-box">
                         <div class="search-bar">
+                          <label for="keywords" class="hide">keyword:</label>
                           <div class="input-group">
                             <input id="keywords" type="text" class="form-control" placeholder="Please enter a single keyword">
                             <span class="input-group-btn">
-                            <button id="search" class="btn btn-primary search-bar__btn" type="button">Search</button>
+                              <button id="search" class="btn search-bar__btn" type="button">Search</button>
                             </span>
                           </div>
                           <div class="suggest">
                             <div id="suggestBox" class="suggest__listbox"></div>
                           </div>
                         </div>
-<!--                         <form id="form-search" class="form-inline">
-                          <div class="form-group">
-                            <label for="keywords">Keyword: </label>
-                            <input id="keywords" type="text" class="form-control"  placeholder="Please enter a single keyword" name="keywords" autocomplete="off" value="" style="width: 21em;">
-                            <button id="search" type="button" class="btn btn-default">Search</button>
-                            <div class="suggest-container">
-                              <div id="suggestBox" class="suggestArea"></div>
-                            </div>
-                            <div class="invalid-feedback">Please enter a valid keyword.</div>
-                          </div>
-                        </form> -->
-                        <!-- <div class="ref-box">
-                          <a href="https://ncit.nci.nih.gov/" target="_blank" class="external-link">Search in NCIt</a>
-                          <a href="https://cdebrowser.nci.nih.gov/" target="_blank" class="external-link">Search in caDSR</a>
-                        </div>
-                        <div class="search-options">
-                            <div class="checkbox search-checkbox">
-                              <label class="checkbox-inline">
-                                <input type="checkbox" id="i_ematch"> Exact Match
-                              </label>
-                              <label class="checkbox-inline">
-                                <input type="checkbox" id="i_desc"> Property Description
-                              </label>
-                              <label class="checkbox-inline" >
-                                <input type="checkbox" id="i_syn"> Synonyms
-                              </label>
-                            </div>
-                        </div> -->
                         <div class="search-options">
                           <div class="checkbox">
                             <label class="checkbox__label checkbox__label--padding">
@@ -477,8 +447,9 @@
         </div>
       </div>
     </footer>
+
     <script src="./assets/js/lodash.js"></script>
-    <script src="./assets/js/jquery-1.12.0.min.js"></script>
+    <script src="./assets/js/jquery.js"></script>
     <script src="./assets/js/bootstrap-3.3.6.min.js"></script>
     <script src="./assets/js/lunr-0.5.7.min.js"></script>
     <script src="./assets/js/jquery.highlight-4.closure.js"></script>
@@ -487,10 +458,10 @@
     <script src="./assets/js/gdc-common.js"></script>
 
     <!-- GDC JS-->
-    <script src="./assets/js/jsrender.min.js"></script>
-    <script src="./dist/bundle.js"></script>
     <script type="text/javascript" src="./assets/js/jquery.treetable.js"></script>
     <script type="text/javascript" src="./assets/js/jquery-ui.js"></script>
+    <script src="./assets/js/jsrender.min.js"></script>
+    <script src="./dist/bundle.js"></script>
   </div>
 </body>
 </html>
