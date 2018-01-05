@@ -5,6 +5,7 @@ import shared from '../shared'
 const func = {
   getGDCData(prop, item) {
  	api.getGDCDataById(prop, function(id, items) {
+
  		if($('#gdc_data').length){
             $('#gdc_data').remove();
         }
@@ -20,9 +21,40 @@ const func = {
         let html = $.templates(tmpl.gdc_data).render({target:target, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
 
+        let titleComponent = '<span class="ui-label">'+items.length+'</span>'
+        if(target !== null){
+          titleComponent += '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="show_all_gdc_data" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values</label></div>'
+        }
+
         //display result in a table
         $(document.body).append(html);
-        if(target !== undefined){
+
+        $('#gdc_data').dialog({
+            modal: false,
+            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
+            width: 600,
+            height: 390,
+            minWidth: 420,
+            maxWidth: 800,
+            minHeight: 300,
+            maxHeight: 600,
+            title: 'GDC Values',
+            open: function() {
+              var target = $(this).parent();
+              target.find('.ui-dialog-titlebar').append(titleComponent);
+              target.find('.ui-dialog-titlebar-close').html('');
+              if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
+                  target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+              }
+            },
+            close: function() {
+              $(this).remove();
+            }
+        }).parent().draggable({
+            containment: '#docs-container'
+        });
+
+        if($('#show_all_gdc_data') !== undefined){
             $('#show_all_gdc_data').bind('click', function(){
                 let v = $(this).prop("checked");
                 if(v){
@@ -40,28 +72,11 @@ const func = {
             });
         }
 
-        $('#gdc_data').dialog({
-            modal: false,
-            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
-            width: '45%',
-            minWidht: '385px',
-            title: 'GDC Values ('+items.length+')',
-            open: function() {
-                var target = $(this).parent();
-                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
-                }
-            },
-            close: function() {
-                $(this).remove();
-            }
-        }).parent().draggable({
-            containment: '#docs-container'
-        });
-
     });
 
   },
+
+
   getGDCSynonyms(uid, tgts){
   	api.getGDCDataById(uid, function(id, items) {
  		if($('#gdc_syn_data').length){
@@ -109,34 +124,33 @@ const func = {
         });
         let html = $.templates({markup: tmpl.gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+
+
+        let titleComponent = '<span class="ui-label">'+items.length+'</span>'
+        + '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="gdc-data-invariant" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates</label>';
+        if(targets !== null){
+          titleComponent += '<label class="checkbox__label checkbox__label--height"><input id="show_all_gdc_syn" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values</label>'
+        }
+        titleComponent += '</div>'
+
         //display result in a table
         $(document.body).append(html);
-
-        //if(tgts !== null && tgts !== undefined && tgts !== ""){
-        let element = $('#show_all_gdc_syn');
-        if(element !== undefined){
-            element.bind('click', function(){
-                let v = $(this).prop("checked");
-                if(v){
-                    $('#gdc-syn-data-list div.table-row[style="display: none;"]').each(function(){
-                        $(this).css("display","block");
-                    });
-                } else {
-                    $('#gdc-syn-data-list div.table-row[style="display: block;"]').each(function(){
-                        $(this).css("display","none");
-                    });
-                }
-            });
-        //}
-
 
         $("#gdc_syn_data").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"55%",
-                title: "GDC Terms ("+items.length+")",
+                //width:"55%",
+                width: 900,
+                height: 'auto',
+                minWidth: 700,
+                maxWidth: 1000,
+                minHeight: 300,
+                maxHeight: 600,
+                title: "GDC Terms",
                 open: function() {
                     var target = $(this).parent();
+                    target.find('.ui-dialog-titlebar').append(titleComponent);
+                    target.find('.ui-dialog-titlebar-close').html('');
                     if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                         target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                     }
@@ -157,6 +171,23 @@ const func = {
             containment: '#docs-container'
         });
 
+        //if(tgts !== null && tgts !== undefined && tgts !== ""){
+        let element = $('#show_all_gdc_syn');
+        if(element !== undefined){
+            element.bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+                    $('#gdc-syn-data-list div.table__row[style="display: none;"]').each(function(){
+                        $(this).css("display","block");
+                    });
+                } else {
+                    $('#gdc-syn-data-list div.table__row[style="display: block;"]').each(function(){
+                        $(this).css("display","none");
+                    });
+                }
+            });
+        }
+
     });
   },
   toCompare(uid){
@@ -165,23 +196,30 @@ const func = {
             $('#compare_dialog').remove();
         }
         let windowEl = $(window);
-        let html = $.templates(tmpl.toCompare).render({items: items });
+        let html = $.templates(tmpl.toCompare).render({items: items});
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         $("#compare_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-            width:"60%",
+            //width:"60%",
+            width: 750,
+            height: 550,
+            minWidth: 600,
+            maxWidth: 900,
+            minHeight: 300,
+            maxHeight: 800,
             title: "Compare Your Values with GDC Values ",
             open: function() {
 
                 var target = $(this).parent();
+                target.find('.ui-dialog-titlebar-close').html('');
                 if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                     target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                 }
 
-            	$('#cp_result').css("display", "none");
+                $('#cp_result').css("display", "none");
                 $('#compare').bind('click', function(){
                     let gv = [];
                     items.forEach(function(item){
@@ -261,33 +299,33 @@ const func = {
 
             let html = $.templates({markup: tmpl.cde_data, allowCode: true}).render({targets: targets, items: tmp });
             let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+
+            let titleComponent = '<span class="ui-label">'+items.length+'</span>'
+            + '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="cde-data-invariant" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates</label>';
+            if(targets !== null){
+              titleComponent += '<label class="checkbox__label checkbox__label--height"><input id="show_all_cde_syn" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDE values</label>'
+            }
+            titleComponent +='</div>';
+
+
             //display result in a table
             $(document.body).append(html);
-
-            if(targets !== undefined){
-                $('#show_all_cde_syn').bind('click', function(){
-                    let v = $(this).prop("checked");
-                    if(v){
-                        $('#cde-syn-data-list div.table-row[style="display: none;"]').each(function(){
-                            $(this).css("display","block");
-                        });
-                    }
-                    else{
-                        $('#cde-syn-data-list div.table-row[style="display: block;"]').each(function(){
-                            $(this).css("display","none");
-                        });
-                    }
-                });
-            }
-
 
             $("#caDSR_data").dialog({
                     modal: false,
                     position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                    width:"60%",
-                    title: "caDSR Values ("+tmp.length+")",
+                    //width:"60%",
+                    width: 900,
+                    height: 'auto',
+                    minWidth: 700,
+                    maxWidth: 1000,
+                    minHeight: 300,
+                    maxHeight: 600,
+                    title: "caDSR Values",
                     open: function() {
                         var target = $(this).parent();
+                        target.find('.ui-dialog-titlebar').append(titleComponent);
+                        target.find('.ui-dialog-titlebar-close').html('');
                         if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                             target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                         }
@@ -307,6 +345,22 @@ const func = {
             }).parent().draggable({
               containment: '#docs-container'
             });
+
+            if($('#show_all_cde_syn') !== undefined){
+              $('#show_all_cde_syn').bind('click', function(){
+                let v = $(this).prop("checked");
+                if(v){
+                  $('#cde-syn-data-list div.table__row[style="display: none;"]').each(function(){
+                      $(this).css("display","block");
+                  });
+                }
+                else{
+                  $('#cde-syn-data-list div.table__row[style="display: block;"]').each(function(){
+                      $(this).css("display","none");
+                  });
+                }
+              });
+            }
 
         });
   },
@@ -336,22 +390,32 @@ const func = {
             fromV.push(f.n);
         });
         let table = generateCompareGDCResult(fromV, toV, opt);
-        let html = '<div class="cp_result_title">Compare Result</div>'
-                    +'<div id="cpGDC_result_option">'
-                        +'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
-                    +'<div id="cpGDC_result_table" class="table-container">'+table+'</div>'
+        let html = '<div id="cpGDC_result_option">'
+                        //+'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
+                    +'<div id="cpGDC_result_table" class="table__container">'+table+'</div>'
                     +'</div>';
+
+        let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compareGDC_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Case Sensitive</label>'
+         + '<label class="checkbox__label checkbox__label--height"><input id="compareGDC_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label></div>';
 
         $('#compareGDC_result').html(html);
 
         $("#compareGDC_dialog").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                width:"50%",
+                //width:"50%",
+                width: 750,
+                height: 550,
+                minWidth: 600,
+                maxWidth: 900,
+                minHeight: 300,
+                maxHeight: 800,
                 title: "Compare GDC Values with caDSR Values ",
                 open: function() {
 
                     var target = $(this).parent();
+                    target.find('.ui-dialog-titlebar').append(titleComponent);
+                    target.find('.ui-dialog-titlebar-close').html('');
                     if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                         target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                     }
@@ -420,11 +484,18 @@ const func = {
         $('#ncit_details').dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-            width: '45%',
+            //width: '45%',
+            width: 600,
+            height: 390,
+            minWidth: 420,
+            maxWidth: 800,
+            minHeight: 300,
+            maxHeight: 600,
             title: 'NCIt Terms & Properties',
             open: function() {
 
                 var target = $(this).parent();
+                target.find('.ui-dialog-titlebar-close').html('');
                 if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                     target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
                 }

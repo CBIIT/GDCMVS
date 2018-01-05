@@ -8,10 +8,12 @@ let activeTab = 0;
 const func = {
     search(){
         let keyword = $("#keywords").val();
+        let option = {};
 
         if(keyword == ""){
-            //$('#form-search').addClass('has-error');
-            //$('#form-search .invalid-feedback').css({'display': 'block'});
+            option.error = true;
+            $('#keywords').addClass('search-bar__input--has-error');
+            render(keyword, option, []);
             return;
         }
 
@@ -24,7 +26,7 @@ const func = {
             }
             count++;
         });
-        let option = {};
+
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
@@ -45,7 +47,6 @@ const func = {
             e.preventDefault();
         }
         if(e.keyCode == 13 && $("#suggestBox .selected").length !== 0){
-            // let idx = $("#suggestBox .selected").html().indexOf("<label>");
             let t = $("#suggestBox .selected").text();
             $("#keywords").val(t.substr(0,t.length-1));
             $("#search").trigger("click");
@@ -72,10 +73,9 @@ const func = {
     suggest(){
         let area = document.getElementById("suggestBox");
 
-        // if($("#form-search").hasClass('has-error')){
-        //     $("#form-search").removeClass('has-error');
-        //     $('#form-search .invalid-feedback').removeAttr('style');
-        // }
+        if($("#keywords").hasClass('search-bar__input--has-error')){
+            $("#keywords").removeClass('search-bar__input--has-error');
+        }
 
         if($(this).val().trim() === ''){
             area.style.display = "none";

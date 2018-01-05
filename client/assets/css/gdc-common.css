@@ -819,7 +819,6 @@ footer a:visited {
 .gdc-app-list {
   list-style: none;
   display: inline-block;
-  color: #777 !important;
   background-color: transparent;
   padding: 0rem 0rem;
   margin-bottom: 0rem;
@@ -832,7 +831,7 @@ footer a:visited {
 }
 
 .gdc-app-list a {
-  color: inherit;
+  color: #777 !important;
   display: inline-block;
   cursor: pointer;
   padding: 2rem 1.5rem 1.5rem 1.5rem;
