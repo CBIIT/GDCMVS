@@ -19,14 +19,50 @@
   margin-left: 2em;
 }
 .tab-nav__btn {
-  padding: 5px 30px;
-  min-width: 160px;
+  // padding: 5px 30px;
+  // min-width: 160px;
+  padding: .15em 1em;
+  min-width: 12em;
+
   box-shadow: none !important;
   border: 1px solid #3598db;
   font-size: 1em;
   color: #3598db !important;
   position: relative;
+
+  float: left;
+  margin-left: -1px;
+  text-align: center;
+  border-radius: 4px;
+
 }
+
+.tab-nav__btn:hover,
+.tab-nav__btn:focus{
+  text-decoration: none;
+}
+
+.tab-nav__li.active .tab-nav__btn{
+  background-color: #3598db;
+  color: #fff !important;
+}
+
+.tab-nav__li:not(:first-child):not(:last-child) .tab-nav__btn{
+  border-radius: 0;
+}
+
+.tab-nav__li:first-child:not(:last-child) .tab-nav__btn{
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.tab-nav__li:last-child:not(:first-child) .tab-nav__btn {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+
+
 .tab-nav__notification {
   position: absolute;
   top: -10px;
@@ -37,10 +73,23 @@
   color: #fff;
   background-color: #e39fae;
   border-radius: 10px;
+  line-height: 1.5em;
 }
+
 .tab-nav__btn:focus,
-.tab-nav__btn:active,
-.tab-nav__btn.active{
+.tab-nav__btn:active{
   background-color: #3598db;
   color: #fff !important;
 }
+
+.tab-nav__ul {
+  margin: 0;
+  padding: 0;
+}
+
+.tab-nav__li {
+  position: relative;
+  display: block;
+  float: left;
+}
+

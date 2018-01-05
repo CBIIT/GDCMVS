@@ -281,7 +281,7 @@ $(function() {
 
       function _init() {
         _addSearchListeners();
-        _initSearchIndex();
+        //_initSearchIndex();
       }
 
       var $body = $('#body'),

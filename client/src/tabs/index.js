@@ -1,6 +1,6 @@
 import tmpl from './view';
 
-export default function (trsHtml, psHtml, vsHtml) {
+export default function (trsHtml, psHtml, vsHtml, keyword) {
 
   let html = $.templates(tmpl).render({
     trs_active:trsHtml.active,
@@ -11,7 +11,8 @@ export default function (trsHtml, psHtml, vsHtml) {
     psHtml: psHtml.html,
     vs_active:vsHtml.active,
     vs_len: vsHtml.len,
-    vsHtml: vsHtml.html
+    vsHtml: vsHtml.html,
+    keyword: keyword
   });
 
   return html;

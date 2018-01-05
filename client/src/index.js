@@ -45,7 +45,7 @@ function compare(gv){
     if($('#cp_input').val().trim() === ''){
         $('#cp_massage').css("display", "block");
         $("#cp_massage").removeClass();
-        $('#cp_massage').addClass("div-message");
+        $('#cp_massage').addClass("compare-form__message");
         $('#cp_massage').html("Please type in user defined values.");
         return;
     }
@@ -56,18 +56,25 @@ function compare(gv){
         $('#cp_massage').html("");
         $('#compare_form').css("display", "none");
         $('#compare_result').css("display", "block");
+
+        let compare_dialog = $('#compare_dialog').parent().find('.ui-dialog-titlebar');
+
+        let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Case Sensitive</label>'
+        + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>';
+
+        compare_dialog.append(titleComponent);
+
+
         let vs = $('#cp_input').val().split(/\n/);
 
         let opt = {};
         opt.sensitive = false;
         opt.unmatched = false;
         let table = generateCompareResult(vs, gv, opt);
-        let html = '<div class="cp_result_title">Compare Result</div>'
-                    +'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
-                    +'<div class="clearfix"></div>'
-                    +'<div id="cp_result_table" class="table-container">'+table+'</div>'
-                    +'<div id="cp_result_bottom"><button id="back2Compare" class="btn btn-default btn-submit-large">Back</button>'
-                    +'</div>';
+        let html =  ''//'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
+                    +'<div id="cp_result_table" class="table__container table__container--margin-bottom">'+table+'</div>'
+                    +'<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare_result__button">Back</button></div>';
+
         $('#compare_result').html(html);
 
         $('#compare_filter').bind('click', function(){
@@ -90,6 +97,7 @@ function compare(gv){
             $('#compare_result').html("");
             $('#compare_result').css("display", "none");
             $('#compare_form').css("display", "block");
+            compare_dialog.find('.ui-checkbox').remove();
         });
 
     }
@@ -110,14 +118,12 @@ function generateCompareResult(fromV, toV, option){
         });
     }
 
-        let table = '<div class="table-thead row">'
-                  +'<div class="table-th col-xs-6">User Defined Values</div>'
-                  +'<div class="table-th col-xs-6">Matched GDC Values</div>'
+        let table = '<div class="table__thead row">'
+                  +'<div class="table__th col-xs-6">User Defined Values</div>'
+                  +'<div class="table__th col-xs-6">Matched GDC Values</div>'
                 +'</div>'
-                +'<div class="table-body row" style="height: 350px;">'
+                +'<div class="table__body row" style="height: 350px;">'
                   +'<div class="col-xs-12">';
-
-    //let table = '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">User Defined Values</td><td width="50%" style="text-align:left;">Matched GDC Values</td></tr>';
 
     fromV.forEach(function(v){
         let tmp = $.trim(v);
@@ -133,16 +139,16 @@ function generateCompareResult(fromV, toV, option){
         if(text ===''){
             text = '<div style="color:red;">--</div>';
             //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left">'+text+'</td></tr>';
-            table += '<div class="table-row row">'
-              +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-              +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+              +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+              +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
             +'</div>';
         }
         else{
             //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
-            table += '<div class="table-row row">'
-              +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-              +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+              +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+              +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
             +'</div>';
         }
     });
@@ -151,11 +157,11 @@ function generateCompareResult(fromV, toV, option){
             continue;
         }
         //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
-        table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
-              +'<div class="table-td td-slim col-xs-6"><div style="color:red;">--</div></div>'
-              +'<div class="table-td td-slim col-xs-6">'+toV[i]+'</div>'
+        table += '<div class="table__row row '+(option.unmatched ? 'table__row--undisplay' : '')+'">'
+              +'<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
+              +'<div class="table__td table__td--slim col-xs-6">'+toV[i]+'</div>'
             +'</div>';
-    }       
+    }
     table += '</div></div>'
     //table += "</tbody></table>";
     return table;
@@ -177,14 +183,12 @@ function generateCompareGDCResult(fromV, toV, option){
         });
     }
 
-    let table = '<div class="table-thead row">'
-                  +'<div class="table-th col-xs-6">GDC Values</div>'
-                  +'<div class="table-th col-xs-6">Matched caDSR Values</div>'
+    let table = '<div class="table__thead row">'
+                  +'<div class="table__th col-xs-6">GDC Values</div>'
+                  +'<div class="table__th col-xs-6">Matched caDSR Values</div>'
                 +'</div>'
-                +'<div class="table-body row" style="height: 350px;">'
+                +'<div class="table__body row" style="height: 350px;">'
                   +'<div class="col-xs-12">';
-
-    //table += '<table width="100%"><tbody><tr class="data-table-head center"><td width="50%" style="text-align:left;">GDC Values</td><td width="50%" style="text-align:left;">Matched caDSR Values</td></tr>';
 
     fromV.forEach(function(v){
         let tmp = $.trim(v);
@@ -199,31 +203,27 @@ function generateCompareGDCResult(fromV, toV, option){
         }
         if(text ===''){
             text = '<div style="color:red;">--</div>';
-            table += '<div class="table-row row">'
-                      +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-                      +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+                      +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+                      +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
                     +'</div>';
-            //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left">'+text+'</td></tr>';
         }
         else{
-            table += '<div class="table-row row">'
-                      +'<div class="table-td td-slim col-xs-6">'+v+'</div>'
-                      +'<div class="table-td td-slim col-xs-6">'+text+'</div>'
+            table += '<div class="table__row row">'
+                      +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
+                      +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
                     +'</div>';
-            //table += '<tr class="data-table-row"><td align="left"><b>'+(++from_num)+'.</b>'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
         }
     });
     for(var i = 0; i< toV.length; i++){
         if(v_matched.indexOf(i) >= 0){
             continue;
         }
-        table += '<div class="table-row row '+(option.unmatched ? 'row-undisplay' : '')+'">'
-                      +'<div class="table-td  td-slim col-xs-6"><div style="color:red;">--</div></div>'
-                      +'<div class="table-td td-slim col-xs-6">'+toV[i]+'</div>'
+        table += '<div class="table__row row '+(option.unmatched ? 'table__row--undisplay' : '')+'">'
+                      +'<div class="table__td  table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
+                      +'<div class="table__td table__td--slim col-xs-6">'+toV[i]+'</div>'
                     +'</div>';
-        //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
     }
-    //table += "</tbody></table>";
     table += '</div></div>'
 
     return table;
@@ -289,7 +289,7 @@ function findWord (words){
                 }
             }
         }
-        
+
     });
     if(word == ""){
         word = words[0];

@@ -8,9 +8,9 @@ const func = {
 	let len = 0;
 	items.forEach(function (item){
 	  	let hl = item.highlight;
-	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined 
-	  		&& hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined 
-	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined 
+	  	if(hl["enum.n"] == undefined && hl["enum.n.have"] == undefined && hl["enum.s"] == undefined && hl["enum.s.have"] == undefined
+	  		&& hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined
+	  		&& hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined
 	  		&& hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined){
 	  		return;
 		}
@@ -36,7 +36,7 @@ const func = {
 				if(em.n_c !== undefined){
 					row.syn = true;
 				}
-			});	
+			});
 		}
 		row.ref = source.name +"@" +source.node +"@" + source.category;
 		row.cdeId = source.cde !== undefined ? source.cde.id : "";
@@ -90,7 +90,7 @@ const func = {
 				if(pv.ss !== undefined && pv.ss.length > 0){
 					pv.ss.forEach(function(ss){
 						let tmp_s = [];
-						let tmp_s_h = [];   
+						let tmp_s_h = [];
 		                //remove duplicate
 		                let cache = {};
 						ss.s.forEach(function(s){
@@ -126,7 +126,7 @@ const func = {
 				}
 			});
 		}
-		
+
 		if(source.enum){
 			source.enum.forEach(function(em){
 				//check if there are any matches in local synonyms
@@ -180,7 +180,7 @@ const func = {
 						//v.s = em.s;
 						v.s = tmp_s;
 					}
-					
+
 				}
 
 				//check if it contains icd-0-3 codes.
@@ -220,7 +220,7 @@ const func = {
 
 				}
 
-				
+
 
 				let lc = em.n.toLowerCase();
 				if(lc in matched_pv){
@@ -231,7 +231,7 @@ const func = {
 						//v.s = em.s;
 						v.s = tmp_s;
 					}
-					
+
 					v.cde_s = matched_pv[lc].ss;
 					if(v.cde_s.length){
 						v.cde_pv = matched_pv[lc].pv;
@@ -249,7 +249,7 @@ const func = {
 					row.tgts_enum_n += tmp + "#";
 					row.vs.push(v);
 				}
-				
+
 			});
 		}
 
@@ -277,8 +277,8 @@ const func = {
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 240;
- 		h = (h < 550) ? 550 : h;
+ 		let h = window.innerHeight - offset - 300;
+ 		h = (h < 430) ? 430 : h;
  		html = $.templates({markup: tmpl, allowCode: true}).render({mh:h, values:values});
  	}
     let result = {};

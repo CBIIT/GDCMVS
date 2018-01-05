@@ -1,0 +1,34 @@
+.row-toggle {
+  display: none;
+}
+
+.cde-suggest {
+  font-size: 0.8em;
+}
+
+.table__row--striped:nth-of-type(even) {
+    background: #fafafa;
+}
+
+.table__row--flex{
+  display: flex;
+  align-items: stretch;
+}
+
+.table__values {
+  border-left: 1px solid #ecf0f1;
+}
+
+.table__value-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.table__gdc-values {
+  border-right: 1px solid #ecf0f1;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.table__cde-values {
+  border-bottom: 1px solid #ecf0f1;
+}

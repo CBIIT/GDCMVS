@@ -56,6 +56,7 @@
 
       this._hideChildren();
       this.expander.attr("title", this.settings.stringExpand);
+      this.expander.attr("aria-label", this.settings.stringExpand);
 
       if (this.initialized && this.settings.onNodeCollapse != null) {
         this.settings.onNodeCollapse.apply(this);
@@ -86,6 +87,7 @@
       }
 
       this.expander.attr("title", this.settings.stringCollapse);
+      this.expander.attr("aria-label", this.settings.stringCollapse);
 
       return this;
     };

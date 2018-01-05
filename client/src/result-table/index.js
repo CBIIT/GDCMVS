@@ -18,7 +18,7 @@ const func = {
     let n = {};
     //final result
     let result = {};
-    result.len = 0; 
+    result.len = 0;
 
  	items.forEach(function(item){
  		let hl = item.highlight;
@@ -126,7 +126,7 @@ const func = {
         if(source.enum != undefined){
             if(enum_n.length == 0 && enum_s.length == 0 && matched_pv.length == 0){
                 //if no values show in the values tab
-                p.node = "leaf";
+                p.node = "";
                 trs.push(p);
             }
             else{
@@ -146,7 +146,7 @@ const func = {
                 let tmp_trs = [];
                 values.forEach(function(v){
                     count++;
-                    let e = {}; 
+                    let e = {};
                     e.id = count + "_"+ v.n;
                     e.exist = false;
 
@@ -168,7 +168,7 @@ const func = {
                             });
                         }
                     }
-                    
+
                     if(e.exist){
                         count_v ++;
                     }
@@ -183,15 +183,15 @@ const func = {
 
                 });
                 if(count_v == 0){
-                    p.node = "leaf";
+                    p.node = "";
                 }
                 else{
                     tmp_trs.forEach(function(tt){
                         trs.push(tt);
                     });
                 }
-                
-                count_s += matched_pv.length;    
+
+                count_s += matched_pv.length;
             }
         }
         else{
@@ -212,12 +212,12 @@ const func = {
                 l.type = "link";
                 l.node = "leaf";
                 trs.push(l);
-                
+
                 count_s = matched_pv.length;
             }
             else{
                 //matched on property name or description
-                p.node = "leaf";
+                p.node = "";
                 trs.push(p);
             }
         }
@@ -230,10 +230,10 @@ const func = {
  	});
 
  	let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 300;
-    h = (h < 500) ? 500 : h;
+    let h = window.innerHeight - offset - 305;
+    h = (h < 430) ? 430 : h;
     let html = $.templates(tmpl).render({mh:h,trs: trs});
-    
+
     result.html = html;
     return result;
 
