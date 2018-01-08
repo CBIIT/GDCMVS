@@ -38,7 +38,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
       +'</div>'
   +'</div>'
   +'<div class="table__values col-xs-9"> {{for vs}}'
-    +'<div class="row table__row--flex{{if #getIndex() > 4}} row-toggle{{/if}}">'
+    +'<div class="row table__row--flex{{if #getIndex() > 4}} table__row--toggle{{/if}}">'
       +'<div class="table__td table__gdc-values col-xs-6">'
       +'{{if n == "no match"}}no match{{else}}'
         +'<div class="row">'
