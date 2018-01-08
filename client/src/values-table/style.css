@@ -1,7 +1,3 @@
-.row-toggle {
-  display: none;
-}
-
 .cde-suggest {
   font-size: 0.8em;
 }
@@ -31,4 +27,8 @@
 
 .table__cde-values {
   border-bottom: 1px solid #ecf0f1;
+}
+
+.table__row--toggle {
+  display: none;
 }

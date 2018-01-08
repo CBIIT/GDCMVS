@@ -61,8 +61,8 @@ const func = {
                     $('#gdc-data-list div[style="display: none;"]').each(function(){
                         $(this).css("display","block");
                     });
-                    var setScroll = $('#gdc_data_match').offset().top - $('#gdc-data-list').offset().top;
-                    $('#gdc-data-list').scrollTop(setScroll - 120);
+                    var setScroll = $('#gdc_data_match').offset().top - $('#gdc_data').offset().top;
+                    $('#gdc_data').scrollTop(setScroll - 120);
                 }
                 else{
                     $('#gdc-data-list div[style="display: block;"]').each(function(){

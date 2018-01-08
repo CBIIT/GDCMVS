@@ -38,23 +38,29 @@ export default function render(keyword, option, items){
       if(target.attr("aria-pressed") == 'true') {
         target.html('<i class="fa fa-angle-down"></i> Expand All');
         $('#gdc-loading-icon').fadeIn(100);
-        $("#tree_table").find('a[title="Collapse"]').each(function(){
-          $(this).trigger("click");
-        });
-        $('#gdc-loading-icon').fadeOut('fast');
+
+        setTimeout(function(){
+          $("#tree_table").find('a[title="Collapse"]').each(function(){
+            $(this).trigger("click");
+          });
+          $('#gdc-loading-icon').fadeOut('fast');
+        }, 1000);
       } else {
         target.html('<i class="fa fa-angle-up"></i>  Collapse All');
         $('#gdc-loading-icon').fadeIn(100);
-        $("#tree_table").find('a[title="Expand"]').each(function(){
-          $(this).trigger("click");
-        });
-        $("#tree_table").find('a[title="Expand"]').each(function(){
-          $(this).trigger("click");
-        });
-        $("#tree_table").find('a[title="Expand"]').each(function(){
-          $(this).trigger("click");
-        });
-        $('#gdc-loading-icon').fadeOut('fast');
+
+        setTimeout(function(){
+          $("#tree_table").find('a[title="Expand"]').each(function(){
+            $(this).trigger("click");
+          });
+          $("#tree_table").find('a[title="Expand"]').each(function(){
+            $(this).trigger("click");
+          });
+          $("#tree_table").find('a[title="Expand"]').each(function(){
+            $(this).trigger("click");
+          });
+          $('#gdc-loading-icon').fadeOut('fast');
+        }, 1000);
       }
     });
   }
@@ -65,7 +71,7 @@ export default function render(keyword, option, items){
     let target = $(this);
 
     let parentTable = $(this).parent().parent().parent();
-    let targets = parentTable.find('.row-toggle');
+    let targets = parentTable.find('.table__row--toggle');
     if(target.hasClass('more')){
       target.removeClass('more');
       targets.css({display: 'none'});
@@ -73,7 +79,7 @@ export default function render(keyword, option, items){
     } else {
       htmlShow = target.html();
       target.addClass('more');
-      targets.css({display: 'block'});
+      targets.css({display: 'flex'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
@@ -139,10 +145,5 @@ export default function render(keyword, option, items){
   });
 
   $('.table__tooltip').tooltip();
-
-  // $('#myTabs a').click(function (e) {
-  //   e.preventDefault()
-  //   $(this).tab('show')
-  // });
 
 }
