@@ -23,8 +23,9 @@ footer{
 a, a:link, a:visited,
 a:hover, a:focus {
   color: #2a72a4;
+  outline: none;
+  text-decoration: none;
 }
-
 
 .checkbox__label--padding {
   padding-left: 0 !important;
