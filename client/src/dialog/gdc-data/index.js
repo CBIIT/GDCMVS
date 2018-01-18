@@ -18,7 +18,7 @@ export default function gdcData(prop, item) {
     });
 
     let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-    let header = $.templates(tmpl.header).render({items_length: items.length});
+    let header = $.templates(tmpl.header).render({target: target, items_length: items.length});
     let html = $.templates(tmpl.body).render({target:target, icdo: icdo, items: items });
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
 
