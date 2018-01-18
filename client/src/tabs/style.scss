@@ -19,17 +19,13 @@
   margin-left: 2em;
 }
 .tab-nav__btn {
-  // padding: 5px 30px;
-  // min-width: 160px;
   padding: .15em 1em;
-  min-width: 12em;
-
+  min-width: 12.5em;
   box-shadow: none !important;
   border: 1px solid #3598db;
   font-size: 1em;
   color: #3598db !important;
   position: relative;
-
   float: left;
   margin-left: -1px;
   text-align: center;
@@ -91,5 +87,9 @@
   position: relative;
   display: block;
   float: left;
+}
+
+.tab-nav__tooltip {
+  display: inline-block;
 }
 

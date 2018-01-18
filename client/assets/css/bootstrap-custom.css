@@ -6013,10 +6013,10 @@ button.close {
   opacity: 0;
   filter: alpha(opacity=0);
 }
-.tooltip.in {
+/*.tooltip.in {
   opacity: 0.9;
   filter: alpha(opacity=90);
-}
+}*/
 .tooltip.top {
   margin-top: -3px;
   padding: 5px 0;
@@ -6800,10 +6800,10 @@ button.close {
 .text-info:hover {
   color: #3498db;
 }
-table a:not(.btn),
+/*table a:not(.btn),
 .table a:not(.btn) {
   text-decoration: underline;
-}
+}*/
 table .dropdown-menu a,
 .table .dropdown-menu a {
   text-decoration: none;
