@@ -92,9 +92,9 @@ export default function render(keyword, option, items){
 
     dataContainer.slideToggle(400, function(){
       if(dataContainer.is(":visible")){
-        target.html('<i class="fa fa-angle-up fa-lg"></i>');
+        target.html('<i class="fa fa-minus"></i>');
       }else{
-        target.html('<i class="fa fa-angle-down fa-lg"></i>');
+        target.html('<i class="fa fa-plus"></i>');
       }
     });
   });
@@ -120,7 +120,7 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('.cde-suggest').click(function(){
+  $('.cd e-suggest').click(function(){
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({'display': 'none'});
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -144,6 +144,6 @@ export default function render(keyword, option, items){
     });
   });
 
-  $('.table__tooltip').tooltip();
+  $('.tooltip-target').tooltip();
 
 }

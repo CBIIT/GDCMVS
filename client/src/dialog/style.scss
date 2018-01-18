@@ -1,25 +1,31 @@
 .ui-resizable {
     box-sizing: content-box;
 }
-/*.ui-dialog .ui-dialog-title {
-  font-size: 1.3rem;
-}*/
 .ui-dialog .ui-dialog-titlebar {
-  font-size: 1.3rem;
-  padding: 15px;
-  border-radius: 6px 6px 0 0;
+  padding-top: 8em;
 }
 .ui-dialog .ui-dialog-content {
-  font-size: 1.3rem;
   padding: 0;
 }
 .ui-widget.ui-widget-content {
+  font-size: 1.3rem;
   background: #ffffff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
 }
-.ui-widget-header {
+/*.ui-widget-header {
+  border-bottom: 1px solid #dddddd;
+}*/
+
+.dialog__header{
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+.dialog__titlebar{
+  padding: 1em;
   border-bottom: 1px solid #dddddd;
 }
 .ui-dialog .ui-dialog-title {
@@ -35,12 +41,6 @@
   display: inline-block;
   overflow: initial;
 }
-
-/*.ui-button{
-  border: none;
-  background: transparent;
-  color: #aaa;
-}*/
 .ui-button:hover,
 .ui-button:focus{
   border: none;
@@ -104,12 +104,12 @@
 
 .compare-form__message {
   text-align: center;
-  margin: 10px 0;
+  height: 2em;
   color: #c74060;
 }
 
 .compare-form__top {
-  margin-bottom: 1em;
+  margin-bottom: 0.3em;
 }
 
 .compare-form__left {

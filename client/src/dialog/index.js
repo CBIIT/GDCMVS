@@ -1,194 +1,18 @@
 import tmpl from './view';
 import api from '../api';
-import shared from '../shared'
+import shared from '../shared';
+import gdcData from './gdc-data';
+import gdcTerms from './gdc-terms';
+import cdeData from './cde-data';
+import ncitDetails from './ncit-details';
 
 const func = {
   getGDCData(prop, item) {
- 	api.getGDCDataById(prop, function(id, items) {
-
- 		if($('#gdc_data').length){
-            $('#gdc_data').remove();
-        }
-        let windowEl = $(window);
-        let icdo = false;
-        items.forEach(function(item){
-            if(item.i_c !== undefined){
-                icdo = true;
-            }
-        });
-
-        let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-        let html = $.templates(tmpl.gdc_data).render({target:target, icdo: icdo, items: items });
-        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
-
-        let titleComponent = '<span class="ui-label">'+items.length+'</span>'
-        if(target !== null){
-          titleComponent += '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="show_all_gdc_data" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values</label></div>'
-        }
-
-        //display result in a table
-        $(document.body).append(html);
-
-        $('#gdc_data').dialog({
-            modal: false,
-            position: { my: 'center top+'+tp, at: 'center top', of:$('#docs-container')},
-            width: 600,
-            height: 390,
-            minWidth: 420,
-            maxWidth: 800,
-            minHeight: 300,
-            maxHeight: 600,
-            title: 'GDC Values',
-            open: function() {
-              var target = $(this).parent();
-              target.find('.ui-dialog-titlebar').append(titleComponent);
-              target.find('.ui-dialog-titlebar-close').html('');
-              if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                  target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
-              }
-            },
-            close: function() {
-              $(this).remove();
-            }
-        }).parent().draggable({
-            containment: '#docs-container'
-        });
-
-        if($('#show_all_gdc_data') !== undefined){
-            $('#show_all_gdc_data').bind('click', function(){
-                let v = $(this).prop("checked");
-                if(v){
-                    $('#gdc-data-list div[style="display: none;"]').each(function(){
-                        $(this).css("display","block");
-                    });
-                    var setScroll = $('#gdc_data_match').offset().top - $('#gdc_data').offset().top;
-                    $('#gdc_data').scrollTop(setScroll - 120);
-                }
-                else{
-                    $('#gdc-data-list div[style="display: block;"]').each(function(){
-                        $(this).css("display","none");
-                    });
-                }
-            });
-        }
-
-    });
-
+    gdcData(prop, item);
   },
 
-
-  getGDCSynonyms(uid, tgts){
-  	api.getGDCDataById(uid, function(id, items) {
- 		if($('#gdc_syn_data').length){
-            $('#gdc_syn_data').remove();
-        }
-        let targets = null;
-        let icdo = false;
-        let windowEl = $(window);
-        if(tgts !== null && tgts !== undefined){
-            targets = tgts.split("#");
-
-            items.forEach(function(item){
-                if(item.i_c !== undefined){
-                    icdo = true;
-                }
-                if (targets.indexOf(item.n) > -1){
-                    item.e = true;
-                }
-            });
-        }
-        else{
-            items.forEach(function(item){
-                if(item.i_c !== undefined){
-                    icdo = true;
-                }
-            });
-        }
-        items.forEach(function(it){
-            if(it.s == undefined) return;
-            let cache = {};
-            let tmp_s = [];
-            it.s.forEach(function(s){
-                let lc = s.trim().toLowerCase();
-                if(!(lc in cache)){
-                    cache[lc] = [];
-                }
-                cache[lc].push(s);
-            });
-            for(let idx in cache){
-                //find the term with the first character capitalized
-                let word = findWord(cache[idx]);
-                tmp_s.push(word);
-            }
-            it.s_r = tmp_s;
-        });
-        let html = $.templates({markup: tmpl.gdc_synonyms, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
-        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
-
-
-        let titleComponent = '<span class="ui-label">'+items.length+'</span>'
-        + '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="gdc-data-invariant" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates</label>';
-        if(targets !== null){
-          titleComponent += '<label class="checkbox__label checkbox__label--height"><input id="show_all_gdc_syn" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values</label>'
-        }
-        titleComponent += '</div>'
-
-        //display result in a table
-        $(document.body).append(html);
-
-        $("#gdc_syn_data").dialog({
-                modal: false,
-                position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                //width:"55%",
-                width: 900,
-                height: 'auto',
-                minWidth: 700,
-                maxWidth: 1000,
-                minHeight: 300,
-                maxHeight: 600,
-                title: "GDC Terms",
-                open: function() {
-                    var target = $(this).parent();
-                    target.find('.ui-dialog-titlebar').append(titleComponent);
-                    target.find('.ui-dialog-titlebar-close').html('');
-                    if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                        target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
-                    }
-
-                    $('#gdc-data-invariant').bind('click', function(){
-                            $("#gdc-syn-data-list").find('div[name="syn_area"]').each(function(){
-                                let rp = $(this).html();
-                                let invariant = $(this).parent().children('div[name="syn_invariant"]');
-                                $(this).html(invariant[0].innerHTML);
-                                invariant[0].innerHTML = rp;
-                            });
-                        });
-                },
-                close: function() {
-                    $(this).remove();
-                }
-        }).parent().draggable({
-            containment: '#docs-container'
-        });
-
-        //if(tgts !== null && tgts !== undefined && tgts !== ""){
-        let element = $('#show_all_gdc_syn');
-        if(element !== undefined){
-            element.bind('click', function(){
-                let v = $(this).prop("checked");
-                if(v){
-                    $('#gdc-syn-data-list div.table__row[style="display: none;"]').each(function(){
-                        $(this).css("display","block");
-                    });
-                } else {
-                    $('#gdc-syn-data-list div.table__row[style="display: block;"]').each(function(){
-                        $(this).css("display","none");
-                    });
-                }
-            });
-        }
-
-    });
+  getGDCTerms(uid, tgts) {
+    gdcTerms(uid, tgts);
   },
   toCompare(uid){
   	api.getGDCDataById(uid, function(id, items) {
@@ -205,8 +29,8 @@ const func = {
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
             //width:"60%",
             width: 750,
-            height: 550,
-            minWidth: 600,
+            height: 630,
+            minWidth: 715,
             maxWidth: 900,
             minHeight: 300,
             maxHeight: 800,
@@ -214,6 +38,7 @@ const func = {
             open: function() {
 
                 var target = $(this).parent();
+                target.find('.ui-dialog-titlebar').css('padding','15px');
                 target.find('.ui-dialog-titlebar-close').html('');
                 if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                     target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
@@ -240,129 +65,9 @@ const func = {
 
     });
   },
-  getCDEData(uid, tgts){
 
-        api.getCDEDataById(uid, function(id, items) {
-            //data precessing
-            let tmp = [];
-            items.forEach(function(item){
-                let t = {};
-                t.pv = item.n;
-                t.pvm = item.m;
-                t.pvd = item.d;
-                t.i_rows = [];
-                t.rows = [];
-                item.ss.forEach(function(s){
-                    let i_r = {};
-                    let r = {};
-                    i_r.pvc = s.c;
-                    r.pvc = s.c;
-                    r.s = s.s;
-                    i_r.s = [];
-                    //remove duplicate
-                    let cache = {};
-                    s.s.forEach(function(w){
-                        let lc = w.trim().toLowerCase();
-                        if(!(lc in cache)){
-                            cache[lc] = [];
-                        }
-                        cache[lc].push(w);
-                    });
-                    for(let idx in cache){
-                        //find the term with the first character capitalized
-                        let word = findWord(cache[idx]);
-                        i_r.s.push(word);
-                    }
-                    t.i_rows.push(i_r);
-                    t.rows.push(r);
-                });
-                tmp.push(t);
-            });
-
-            let targets = null;
-            let windowEl = $(window);
-
-            if(tgts !== null && tgts !== undefined && tgts !== ""){
-                tgts = tgts.replace(/\^/g,'\'');
-                targets = tgts.split("#");
-
-                tmp.forEach(function(item){
-                if (targets.indexOf(item.pv) > -1){
-                    item.e = true;
-                }
-                });
-            }
-
-            if($('#caDSR_data').length){
-                $('#caDSR_data').remove();
-            }
-
-            let html = $.templates({markup: tmpl.cde_data, allowCode: true}).render({targets: targets, items: tmp });
-            let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
-
-            let titleComponent = '<span class="ui-label">'+items.length+'</span>'
-            + '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="cde-data-invariant" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates</label>';
-            if(targets !== null){
-              titleComponent += '<label class="checkbox__label checkbox__label--height"><input id="show_all_cde_syn" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDE values</label>'
-            }
-            titleComponent +='</div>';
-
-
-            //display result in a table
-            $(document.body).append(html);
-
-            $("#caDSR_data").dialog({
-                    modal: false,
-                    position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                    //width:"60%",
-                    width: 900,
-                    height: 'auto',
-                    minWidth: 700,
-                    maxWidth: 1000,
-                    minHeight: 300,
-                    maxHeight: 600,
-                    title: "caDSR Values",
-                    open: function() {
-                        var target = $(this).parent();
-                        target.find('.ui-dialog-titlebar').append(titleComponent);
-                        target.find('.ui-dialog-titlebar-close').html('');
-                        if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                            target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
-                        }
-
-                        $('#cde-data-invariant').bind('click', function(){
-                            $("#cde-syn-data-list").find('div[name="syn_area"]').each(function(){
-                                let rp = $(this).html();
-                                let invariant = $(this).parent().children('div[name="syn_invariant"]');
-                                $(this).html(invariant[0].innerHTML);
-                                invariant[0].innerHTML = rp;
-                            });
-                        });
-                    },
-                    close: function() {
-                        $(this).remove();
-                    }
-            }).parent().draggable({
-              containment: '#docs-container'
-            });
-
-            if($('#show_all_cde_syn') !== undefined){
-              $('#show_all_cde_syn').bind('click', function(){
-                let v = $(this).prop("checked");
-                if(v){
-                  $('#cde-syn-data-list div.table__row[style="display: none;"]').each(function(){
-                      $(this).css("display","block");
-                  });
-                }
-                else{
-                  $('#cde-syn-data-list div.table__row[style="display: block;"]').each(function(){
-                      $(this).css("display","none");
-                  });
-                }
-              });
-            }
-
-        });
+  getCDEData(uid, tgts) {
+    cdeData(uid, tgts);
   },
   compareGDC(prop, uid){
     let ids = {};
@@ -406,7 +111,7 @@ const func = {
                 //width:"50%",
                 width: 750,
                 height: 550,
-                minWidth: 600,
+                minWidth: 715,
                 maxWidth: 900,
                 minHeight: 300,
                 maxHeight: 800,
@@ -414,7 +119,7 @@ const func = {
                 open: function() {
 
                     var target = $(this).parent();
-                    target.find('.ui-dialog-titlebar').append(titleComponent);
+                    target.find('.ui-dialog-titlebar').css('padding','15px').append(titleComponent);
                     target.find('.ui-dialog-titlebar-close').html('');
                     if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
                         target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
@@ -443,70 +148,8 @@ const func = {
         });
     });
   },
-  ncitDetails(uid){
-    api.evsRestApi(uid, function(id, item) {
-
-        let tmp = {};
-        tmp.code = item.code;
-        tmp.name = item.preferredName
-        tmp.definition = item.definitions.length ? item.definitions.find(function(defs){ return defs.defSource === 'NCI' }).description : undefined;
-        let tmp_s = item.synonyms.map(function(syns){ return syns.termName });
-        tmp.synonyms = [];
-        //remove the duplicate
-
-        let cache = {};
-        if(tmp_s.length > 0){
-            tmp_s.forEach(function(s){
-                let lc = s.trim().toLowerCase();
-                if(!(lc in cache)){
-                    cache[lc] = [];
-                }
-                cache[lc].push(s);
-            });
-            for(let idx in cache){
-                //find the term with the first character capitalized
-                let word = findWord(cache[idx]);
-                tmp.synonyms.push(word);
-            }
-        }
-
-
-        if($('#ncit_details').length){
-            $('#ncit_details').remove();
-        }
-
-        let windowEl = $(window);
-        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
-        let html = $.templates(tmpl.ncit_details).render({item: tmp});
-
-        $(document.body).append(html);
-
-        $('#ncit_details').dialog({
-            modal: false,
-            position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-            //width: '45%',
-            width: 600,
-            height: 390,
-            minWidth: 420,
-            maxWidth: 800,
-            minHeight: 300,
-            maxHeight: 600,
-            title: 'NCIt Terms & Properties',
-            open: function() {
-
-                var target = $(this).parent();
-                target.find('.ui-dialog-titlebar-close').html('');
-                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
-                }
-            },
-            close: function() {
-                $(this).remove();
-            }
-        }).parent().draggable({
-            containment: '#docs-container'
-        });
-    });
+  getNCITDetails(uid) {
+    ncitDetails(uid);
   }
 };
 

@@ -27,12 +27,12 @@ function getGDCData(prop, target){
 
 window.getGDCData = getGDCData;
 
-function getGDCSynonyms(prop, targets){
+function getGDCTerms(prop, targets){
 	let uid = prop.replace(/@/g, '/');
-	dialog.getGDCSynonyms(uid, targets);
+	dialog.getGDCTerms(uid, targets);
 };
 
-window.getGDCSynonyms = getGDCSynonyms;
+window.getGDCTerms = getGDCTerms;
 
 function toCompare(prop){
 	let uid = prop.replace(/@/g, '/');
@@ -122,7 +122,7 @@ function generateCompareResult(fromV, toV, option){
                   +'<div class="table__th col-xs-6">User Defined Values</div>'
                   +'<div class="table__th col-xs-6">Matched GDC Values</div>'
                 +'</div>'
-                +'<div class="table__body row" style="height: 350px;">'
+                +'<div class="table__body row">'
                   +'<div class="col-xs-12">';
 
     fromV.forEach(function(v){
@@ -187,7 +187,7 @@ function generateCompareGDCResult(fromV, toV, option){
                   +'<div class="table__th col-xs-6">GDC Values</div>'
                   +'<div class="table__th col-xs-6">Matched caDSR Values</div>'
                 +'</div>'
-                +'<div class="table__body row" style="height: 350px;">'
+                +'<div class="table__body row">'
                   +'<div class="col-xs-12">';
 
     fromV.forEach(function(v){
@@ -244,11 +244,11 @@ function compareGDC(prop, cdeId){
 
 window.compareGDC = compareGDC;
 
-function ncitDetails(uid){
-    dialog.ncitDetails(uid);
+function getNCITDetails(uid){
+    dialog.getNCITDetails(uid);
 }
 
-window.ncitDetails = ncitDetails;
+window.getNCITDetails = getNCITDetails;
 
 //find the word with the first character capitalized
 function findWord (words){

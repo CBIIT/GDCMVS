@@ -139,8 +139,6 @@ a:hover, a:focus {
 }
 
 .table__thead {
-  display: flex;
-  align-items: center;
   background: #F1F1F1;
   color: #555;
 }
@@ -240,6 +238,15 @@ a:hover, a:focus {
 }
 .indicator__term{
   color: #2a72a4;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #cccccc;
+}
+.tooltip-inner {
+  color: #3a3a3a;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
 }
 
 @import './dialog/style';
