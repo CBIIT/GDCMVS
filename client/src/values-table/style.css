@@ -20,6 +20,10 @@
   align-items: stretch;
 }
 
+.table__collapser{
+  text-align: center;
+}
+
 .table__gdc-values {
   border-right: 1px solid #ecf0f1;
   border-bottom: 1px solid #ecf0f1;
@@ -31,4 +35,47 @@
 
 .table__row--toggle {
   display: none;
+}
+
+.alert__suggest {
+  position: fixed;
+  top: 10em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #166aa2;
+  font-weight: bold;
+  padding: 1rem 1rem;
+  border: 1px solid rgba(22, 106, 162, 0.49);
+  border-left: solid 5px #166aa2;
+  background-color: #daf2fb;
+  z-index: 999;
+  -webkit-border-radius: initial;
+  -moz-border-radius: initial;
+  border-radius: initial;
+}
+
+@keyframes fadeInDownUp {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+}
+
+.fadeInDownUp {
+  animation-name: fadeInDownUp;
 }

@@ -687,7 +687,7 @@ footer a:visited {
   display: flex;
   justify-content: center;
   align-items: center;
-  pointer-events: none;
+  /*pointer-events: none;*/
   background-color: rgba(255, 255, 255, 0.8);
   transition: opacity 0.35s ease;
 }
