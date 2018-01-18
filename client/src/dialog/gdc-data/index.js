@@ -18,8 +18,8 @@ export default function gdcData(prop, item) {
     });
 
     let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-    let header = $.templates(tmpl.header).render({target: target, items_length: items.length});
-    let html = $.templates(tmpl.body).render({target:target, icdo: icdo, items: items });
+    let header = $.templates(tmpl.header).render({target: target, icdo: icdo, items_length: items.length});
+    let html = $.templates(tmpl.body).render({target: target, icdo: icdo, items: items});
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
 
     //display result in a table
@@ -36,10 +36,11 @@ export default function gdcData(prop, item) {
       maxHeight: 650,
       open: function() {
         //add new custom header
-
-        $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.5em').html(header);
-        // $(this).prev('.ui-dialog-titlebar').remove();
-        // $(this).before(header);
+        if(icdo) {
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
+        } else {
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.5em').html(header);
+        }
 
         var target = $(this).parent();
         if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
