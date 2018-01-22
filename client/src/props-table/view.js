@@ -1,5 +1,5 @@
 
-let tmpl = '<div class="container table__container"><div class="table__thead row">'
+let tmpl = '<div class="container table__container"><div class="table__thead row table__thead--padding-right">'
   +'<div class="table__th col-xs-2">Category / Node</div>'
   +'<div class="table__th col-xs-2">Property</div>'
   +'<div class="table__th col-xs-4">Description</div>'
@@ -30,9 +30,9 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
   +'{{else}}'
   +'caDSR: <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
     +'{{if local && cdeLen}}'
-    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a> , <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
+    +', <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a>, <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
     +'{{else cdeLen}}'
-    +' , <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a>'
+    +', <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a>'
     +'{{else}}'
     +''
     +'{{/if}}'
