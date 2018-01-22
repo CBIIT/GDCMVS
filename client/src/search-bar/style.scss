@@ -3,6 +3,11 @@
   min-width: 690px;
   margin: 0 auto;
 }
+.search-bar__input {
+  box-shadow: 1px 1px 5px 1px #e3e3e3;
+  border-radius: 4px;
+}
+
 .search-bar__btn {
   background-color: #93a5a5;
   border-color: #93a5a5;
@@ -16,11 +21,11 @@
 .search-bar__btn:active {
   background-color: #707c7c;
   border-color: #707c7c;
+  outline: none;
 }
 .search-bar__input--has-error {
   border: 2px solid #c74060;
 }
-
 
 .suggest {
   position: relative;
