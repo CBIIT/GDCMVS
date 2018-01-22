@@ -20,7 +20,9 @@ export default function gdcData(prop, item) {
     let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
     let header = $.templates(tmpl.header).render({target: target, icdo: icdo, items_length: items.length});
     let html = $.templates(tmpl.body).render({target: target, icdo: icdo, items: items});
-    let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 0 : window.innerHeight * 0.2;
+    let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
+    console.log(window.innerHeight * 0.2 );
+    console.log(shared.headerOffset());
 
     //display result in a table
     $(document.body).append(html);
@@ -45,6 +47,7 @@ export default function gdcData(prop, item) {
         var target = $(this).parent();
         if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
           target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+
         }
 
         $('#close_gdc_data').bind('click', function(){

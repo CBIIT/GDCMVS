@@ -27,6 +27,15 @@ a:hover, a:focus {
   text-decoration: none;
 }
 
+.search-bar__input {
+  box-shadow: 1px 1px 5px 1px #e3e3e3;
+  border-radius: 4px;
+}
+
+.search-bar__btn {
+  outline: none;
+}
+
 .checkbox__label--padding {
   padding-left: 0 !important;
 }
@@ -142,6 +151,9 @@ a:hover, a:focus {
 .table__thead {
   background: #F1F1F1;
   color: #555;
+}
+.table__thead--padding-right {
+  padding-right: 15px;
 }
 .table__tooltip,
 .table__tooltip:hover {

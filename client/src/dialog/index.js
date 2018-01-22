@@ -21,7 +21,8 @@ const func = {
         }
         let windowEl = $(window);
         let html = $.templates(tmpl.toCompare).render({items: items});
-        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+
+        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         $("#compare_dialog").dialog({
@@ -30,9 +31,9 @@ const func = {
             //width:"60%",
             width: 750,
             height: 630,
-            minWidth: 715,
+            minWidth: 750,
             maxWidth: 900,
-            minHeight: 300,
+            minHeight: 542,
             maxHeight: 800,
             title: "Compare Your Values with GDC Values ",
             open: function() {
