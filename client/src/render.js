@@ -74,12 +74,12 @@ export default function render(keyword, option, items){
     let targets = parentTable.find('.table__row--toggle');
     if(target.hasClass('more')){
       target.removeClass('more');
-      targets.css({display: 'none'});
+      targets.slideToggle(350);
       target.html(htmlShow == ''? '<i class="fa fa-angle-down"></i> Show More' : htmlShow);
     } else {
       htmlShow = target.html();
       target.addClass('more');
-      targets.css({display: 'flex'});
+      targets.slideToggle(350).css({display: 'flex'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
@@ -120,7 +120,7 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('.cd e-suggest').click(function(){
+  $('.cde-suggest').click(function(){
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({'display': 'none'});
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
