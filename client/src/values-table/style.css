@@ -33,6 +33,23 @@
   border-bottom: 1px solid #ecf0f1;
 }
 
+.table__ul{
+  padding-left: 15px;
+  list-style:none;
+}
+
+.table__li:before{
+  font-family: 'FontAwesome';
+  content: '\f107';
+  display: inline-block;
+  margin:0 5px 0 -10px;
+/*  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);*/
+  color: #acacac;
+  transform: rotate(45deg);
+}
+
 .table__row--toggle {
   display: none;
 }
@@ -49,9 +66,8 @@
   border-left: solid 5px #166aa2;
   background-color: #daf2fb;
   z-index: 999;
-  -webkit-border-radius: initial;
-  -moz-border-radius: initial;
   border-radius: initial;
+  -webkit-animation-duration: 4s;
 }
 
 @keyframes fadeInDownUp {
