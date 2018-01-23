@@ -243,7 +243,17 @@ a:hover, a:focus {
 .indicator__term{
   color: #2a72a4;
 }
-
+.tooltip.bottom:after{
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  display: inline-block;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #ffffff;
+  border-left: 5px solid transparent;
+  content: '';
+  margin-left: -5px;
+}
 .tooltip.bottom .tooltip-arrow {
   border-bottom-color: #cccccc;
 }
