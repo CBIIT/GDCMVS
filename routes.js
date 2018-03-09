@@ -32,14 +32,13 @@ module.exports = function(app){
 	// })
 
 	//put all the routers here
-	// app.use('/', function(req, res){
-	// 	res.sendFile(app.get('views') + '/index.html');
-	// });
-	
+	app.use('/', function(req, res){
+		res.render(app.get('views') + '/index.html');
+		//res.sendFile(app.get('views') + '/index.html');
+	});
 
 	// All other routes should redirect to error page
-    app.route('*')
-        .get(function(req, res) {
-            res.sendFile(app.get('views') + '/404.html');
-        });
+  app.route('*').get(function(req, res) {
+    res.sendFile(app.get('views') + '/404.html');
+  });
 };

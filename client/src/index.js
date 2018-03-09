@@ -298,3 +298,13 @@ function findWord (words){
 };
 
 window.findWord = findWord;
+
+$(function() {
+
+  $('#body a[href^="http"]').each(function(){
+      var anchor = $(this);
+      anchor.removeClass('external-link');
+      anchor.html($.trim(anchor[0].outerText));
+  });
+
+});
