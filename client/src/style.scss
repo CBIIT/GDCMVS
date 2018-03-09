@@ -1,23 +1,57 @@
 @charset "UTF-8";
 
+html, body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(249, 249, 249);
+  color: #3a3a3a;
+  line-height: 2rem;
+}
+
 body {
   min-width: 970px;
+  padding-top: 64px;
+  position: relative;
+  font-size: 1.4rem;
 }
+
 #body {
+  min-height: 768px;
+  max-width: 1280px;
+  margin: 0 auto;
   margin-top: 0 !important;
   margin-bottom: 130px;
 }
+
 .parent-container{
   min-height: calc(100% - 10px);
 }
+
+.main-container {
+  outline: none;
+  padding: 2rem;
+}
+
 .container {
   font-size: 1.3rem;
+  line-height: 2.4rem;
+  width: 100%;
+  padding-right: 0px;
+  padding-left: 0px;
 }
+
 footer{
   min-width: 970px;
   margin: 0;
   position: absolute;
   bottom: 0;
+}
+
+h1 {
+  display: none;
 }
 
 a, a:link, a:visited,
@@ -26,6 +60,13 @@ a:hover, a:focus {
   outline: none;
   text-decoration: none;
 }
+
+.gdc-app-list a {
+  color: inherit;
+}
+
+
+/* Checkbox */
 
 .checkbox__label--padding {
   padding-left: 0 !important;
@@ -71,7 +112,6 @@ a:hover, a:focus {
 .table__container {
   padding-left: 15px;
   padding-right: 15px;
-  // margin-bottom: 15px;
 }
 
 .table__container--margin-bottom {
@@ -82,13 +122,6 @@ a:hover, a:focus {
   overflow-y: auto;
   max-height: 500px;
 }
-// .table__body .col-xs-1,
-// .table__body .col-xs-2,
-// .table__body .col-xs-3,
-// .table__body .col-xs-4,
-// .table__body .col-xs-12{
-//   position: static !important;
-// }
 .table__th {
   font-weight: bold;
   text-align: left;
@@ -261,6 +294,131 @@ a:hover, a:focus {
   color: #3a3a3a;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+// Loading css animation
+
+.particle.grey {
+  background-color: #6b6262
+}
+
+.particle.red {
+  background-color: #c31547;
+}
+
+.particle.blue {
+  background-color: #123e57;
+}
+
+.loadingContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  transition: opacity 0.35s ease;
+}
+
+.spinParticleContainer {
+  margin-right: 10px;
+  width: 4rem;
+  height: 4rem;
+  display: block;
+  -webkit-animation: Rotate 2.0s infinite linear;
+  animation: Rotate 2.0s infinite linear;
+}
+
+.spinParticle.endLoad {
+  -webkit-animation: BlowUp 1s 1 ease-out;
+  animation: BlowUp 1s 1 ease-out;
+}
+
+.spinParticle {
+  width: 4rem;
+  height: 4rem;
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  z-index: 900000;
+  /* display: block; */
+  display: none;
+  -moz-animation: Rotate 2.0s infinite linear;
+  -webkit-animation: Rotate 2.0s infinite linear;
+  animation: Rotate 2.0s infinite linear;
+}
+
+.particle {
+  width: 60%;
+  height: 60%;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  background-color: #000;
+  border-radius: 100%;
+
+  -webkit-animation: Scale 2.0s infinite ease-in-out;
+  animation: Scale 2.0s infinite ease-in-out;
+}
+
+.other-particle {
+  top: auto;
+  bottom: 0;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.other-other-particle {
+  top: 0;
+  bottom: auto;
+  margin-left: 2.2rem;
+  -webkit-animation-delay: -1.2s;
+  animation-delay: -1.2s;
+}
+
+@-webkit-keyframes Rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes Rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@-webkit-keyframes Scale {
+  0%, 100% {
+    -webkit-transform: scale(0.0);
+  }
+  50% {
+    -webkit-transform: scale(1.5);
+  }
+}
+
+@keyframes Scale {
+  0%, 100% {
+    -webkit-transform: scale(0.0);
+    transform: scale(0.0);
+  }
+  50% {
+      -webkit-transform: scale(1.0);
+      transform: scale(1.0);
+    }
 }
 
 @import './dialog/style';

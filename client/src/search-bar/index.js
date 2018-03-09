@@ -83,7 +83,8 @@ const func = {
             area.innerHTML = "";
             return;
         }
-        $.getJSON('./search/suggest', {keyword:$(this).val()}, function(result){
+
+        api.suggest($(this).val(), function(result){
             if(result.length === 0){
                 area.style.display = "none";
                 displayBoxIndex = -1;
