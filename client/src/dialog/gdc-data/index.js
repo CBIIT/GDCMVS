@@ -21,8 +21,6 @@ export default function gdcData(prop, item) {
     let header = $.templates(tmpl.header).render({target: target, icdo: icdo, items_length: items.length});
     let html = $.templates(tmpl.body).render({target: target, icdo: icdo, items: items});
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
-    console.log(window.innerHeight * 0.2 );
-    console.log(shared.headerOffset());
 
     //display result in a table
     $(document.body).append(html);

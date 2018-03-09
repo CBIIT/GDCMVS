@@ -28,7 +28,7 @@ module.exports = function(app){
     }));
     app.use(methodOverride());
     app.use(cookieParser());
-    app.use(express.static(path.join(config.root, 'client')));
+    app.use(express.static(path.join(config.root, 'client/static')));
     app.set('viewPath', 'client');
 
     if ('dev' === env) {
