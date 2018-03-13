@@ -17,7 +17,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
   +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
   +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
     +'{{if syn}}'
-    +'<br><a href="javascript:getGDCSynonyms(\'{{:ref}}\',null);">See All Terms</a>'
+    +'<br><a href="javascript:getGDCTerms(\'{{:ref}}\',null);">See All Terms</a>'
     +'{{else}}'
     +'{{/if}}'
   +'{{else}}'
