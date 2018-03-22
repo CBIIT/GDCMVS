@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha output_js_tests/ --reporter xunit --reporter-options output=output_js_tests/e2e_results.xml",
     "build": "webpack --config client/webpack.config.js",
     "watch": "webpack --watch --config client/webpack.config.js"
   },
@@ -32,6 +32,8 @@
     "node-sass": "^4.6.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
-    "webpack": "^3.6.0"
+    "webpack": "^3.6.0",
+    "mocha": "^3.5.0",
+    "selenium-webdriver": "^3.5.0"
   }
 }
