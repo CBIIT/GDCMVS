@@ -1,15 +1,19 @@
 {
-  "name": "myapp",
-  "version": "1.0.0",
-  "description": "",
+  "name": "GDCMVS",
+  "version": "v1.0.1-alpha.5",
+  "description": "GDC Metadata Validation Services",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config client/webpack.config.js",
-    "watch": "webpack --watch --config client/webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch --config webpack.config.js"
   },
-  "author": "",
+  "author": "CBIIT",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CBIIT/GDCMVS"
+  },
   "dependencies": {
     "body-parser": "^1.17.2",
     "compression": "^1.6.2",
@@ -27,8 +31,12 @@
     "yamljs": "^0.2.10"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.2",
+    "filemanager-webpack-plugin": "^1.0.25",
     "node-sass": "^4.6.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
