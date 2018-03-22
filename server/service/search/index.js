@@ -10,6 +10,8 @@ router.get('/preload', controller.preload);
 //router.get('/external/caDSR', controller.getDataFromCDE);
 //router.get('/local', controller.getDataFromGDC);
 //router.get('/export', controller.export2Excel);
+//router.get('/release/elephant_cat', controller.export_release_elephant_cat);
+//router.get('/release/elephant_cat/excel', controller.export_release_elephant_cat_excel);
 router.get('/ncit/detail', controller.getNCItInfo);
 
 //property based api

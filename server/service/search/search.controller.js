@@ -8,6 +8,8 @@ var logger = require('../../components/logger');
 var config = require('../../config');
 var https = require('https');
 var fs = require('fs');
+var path = require('path');
+var yaml = require('yamljs');
 const excel = require('node-excel-export');
 var cdeData = {};
 var gdcData = {};
@@ -589,6 +591,283 @@ var getNCItInfo = function(req, res){
 	});
 };
 
+var export_release_elephant_cat =  function(req, res){
+	let heading = [
+		['Category', 'Node', 'Property', 'Value', 'Description']
+	];
+
+	let merges = [];
+	let specification = {
+		c : {
+			width : 200
+		},
+		n : {
+			width : 200
+		},
+		p : {
+			width : 200
+		},
+		v : {
+			width : 200
+		},
+		d : {
+			width : 200
+		}
+	};
+
+
+	
+	let all_files = [];
+	let file_definitions = {};
+	let file_terms = {};
+	let folderPath = path.join(__dirname,'../..','data_elephant');
+	fs.readdirSync(folderPath).forEach(file => {
+		let tmp_file = {};
+		if(file !== '_definitions.yaml' && file !== '_terms.yaml'){
+			tmp_file = yaml.load(folderPath+'/'+file);
+			all_files.push(tmp_file);
+		}
+		file_definitions = yaml.load(folderPath + '/' +'_definitions.yaml');
+		file_terms = yaml.load(folderPath + '/' + '_terms.yaml');
+		
+	});
+	
+	let data = [];
+	all_files.forEach(function(item){
+		
+		//console.log(item);
+		let keys1 = Object.keys(item.properties);
+		
+		for(var i=0; i < keys1.length; i++)
+		{
+			
+			let value=keys1[i];
+
+			if((item.properties[value]).hasOwnProperty('enum')){
+				
+				for(var m=0; m< item.properties[value].enum.length; m++){
+					
+
+					if((item.properties[value]).hasOwnProperty('$ref')){
+
+						let temp_value = item.properties[value].$ref;
+						
+						if(temp_value.indexOf('_definitions.yaml') > -1){
+							let fileName_data = [];
+							fileName_data = temp_value.split('#/');
+							//console.log(fileName_data);
+							//console.log(file_definitions[fileName_data[1]]);
+							if((file_definitions[fileName_data[1]]).hasOwnProperty('enum')){
+		
+								for(var n=0; n< file_definitions[fileName_data[1]].enum.length; n++){
+									let tmp_data = {};
+									tmp_data.c = item.category;
+									tmp_data.n = item.id;			
+									tmp_data.p = value;
+									tmp_data.v = file_definitions[fileName_data[1]].enum[n];
+		
+									if((file_definitions[fileName_data[1]]).hasOwnProperty('term') && (file_definitions[fileName_data[1]].term).hasOwnProperty('$ref') ){
+										if(file_definitions[fileName_data[1]].term.$ref.indexOf('_terms.yaml') > -1){
+											let term_value = [];
+											term_value = file_definitions[fileName_data[1]].term.$ref.split('#/');
+											
+		
+											if(file_terms[term_value[1]].hasOwnProperty('description')){
+												tmp_data.d = file_terms[term_value[1]].description;
+											}else{
+												tmp_data.d = "";
+											}
+		
+										}
+									}
+		
+									data.push(tmp_data);
+								}
+								
+							}
+		
+						}
+					}else{
+						let tmp_data = {};
+						tmp_data.c = item.category;
+						tmp_data.n = item.id;			
+						tmp_data.p = value;
+						tmp_data.v = item.properties[value].enum[m];
+
+						if(item.properties[value].hasOwnProperty('description')){
+							tmp_data.d = item.properties[value].description;
+						}
+						else{
+							tmp_data.d = " ";
+						}
+						data.push(tmp_data);
+
+						}
+				}
+			}else if((item.properties[value]).hasOwnProperty('$ref')){
+
+				let temp_value = item.properties[value].$ref;
+				
+				if(temp_value.indexOf('_definitions.yaml') > -1){
+					let fileName_data = [];
+					fileName_data = temp_value.split('#/');
+					//console.log(fileName_data);
+					//console.log(file_definitions[fileName_data[1]]);
+					if((file_definitions[fileName_data[1]]).hasOwnProperty('enum')){
+
+						for(var n=0; n< file_definitions[fileName_data[1]].enum.length; n++){
+							let tmp_data = {};
+							tmp_data.c = item.category;
+							tmp_data.n = item.id;			
+							tmp_data.p = value;
+							tmp_data.v = file_definitions[fileName_data[1]].enum[n];
+
+							if((file_definitions[fileName_data[1]]).hasOwnProperty('term') && (file_definitions[fileName_data[1]].term).hasOwnProperty('$ref') ){
+								if(file_definitions[fileName_data[1]].term.$ref.indexOf('_terms.yaml') > -1){
+									let term_value = [];
+									term_value = file_definitions[fileName_data[1]].term.$ref.split('#/');
+									
+
+									if(file_terms[term_value[1]].hasOwnProperty('description')){
+										tmp_data.d = file_terms[term_value[1]].description;
+									}else{
+										tmp_data.d = "";
+									}
+
+								}
+							}
+
+							data.push(tmp_data);
+						}
+						
+					}
+
+				}
+			}
+			
+		}
+		
+
+
+	});
+	// console.log(data);
+	 const report = excel.buildExport(
+	 	[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+	 	  {
+	 		name: 'Report', // <- Specify sheet name (optional) 
+	 		heading: heading, // <- Raw heading array (optional) 
+	 		merges: merges, // <- Merge cell ranges 
+	 		specification: specification, // <- Report specification 
+	 		data: data // <-- Report data 
+	 	  }
+	 	]
+	   );
+	   res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.send(report);
+};
+
+var export_release_elephant_cat_excel =  function(req, res){
+	let heading = [
+		['Category', 'Node', 'Property', 'Value', 'Description']
+	];
+
+	let merges = [];
+	let specification = {
+		categories : {
+			width : 200
+		},
+		node : {
+			width : 200
+		},
+		properties : {
+			width : 200
+		},
+		value : {
+			width : 200
+		},
+		description : {
+			width : 2000
+		}
+	};
+
+
+	let report_data = [];
+	let all_files = [];
+	let file_definitions = {};
+	let file_terms = {};
+	let folderPath = path.join(__dirname,'../..','data_elephant');
+	fs.readdirSync(folderPath).forEach(file => {
+		let tmp_file = {};
+		if(file !== '_definitions.yaml' && file !== '_terms.yaml'){
+			tmp_file = yaml.load(folderPath+'/'+file);
+			all_files.push(tmp_file);
+		}
+		file_definitions = yaml.load(folderPath + '/' +'_definitions.yaml');
+		file_terms = yaml.load(folderPath + '/' + '_terms.yaml');
+		
+	});
+	
+	all_files.forEach(function(item){
+		if(item.hasOwnProperty('$schema')){
+			
+			let property_keys = Object.keys(item.properties);
+			for(let k in property_keys){
+				let key = property_keys[k];
+				if(item.properties[key].hasOwnProperty('enum')){
+					
+					let local_value = item.properties[key];
+					let local_enum = local_value.enum;
+					for(let en in local_enum){
+						let temp_data = {};
+						temp_data.categories = item.category;
+						temp_data.node = item.id;
+						temp_data.properties = key;
+						temp_data.value = local_enum[en];
+						
+						if(local_value.hasOwnProperty('description')){
+							temp_data.description = local_value.description;
+						}
+						else if(local_value.hasOwnProperty('term') && local_value.term.hasOwnProperty('$ref')){
+							let local_ref = local_value.term.$ref;
+							if(local_ref.indexOf('_terms.yaml') > -1){
+								let ref_value = local_ref.replace('_terms.yaml#/','');
+								if(file_terms.hasOwnProperty(ref_value) && file_terms[ref_value].hasOwnProperty('description')){
+									temp_data.description = file_terms[ref_value].description;
+								}
+								
+							}
+						}
+						else{
+							temp_data.description = "";
+						}
+						report_data.push(temp_data);
+					}
+				}
+				console.log(item.properties.$ref);
+				if(item.properties.hasOwnProperty('$ref')){
+					
+				}
+			}
+		}else{
+			
+		}
+	});
+	
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+		  {
+			name: 'Report', // <- Specify sheet name (optional) 
+			heading: heading, // <- Raw heading array (optional) 
+			merges: merges, // <- Merge cell ranges 
+			specification: specification, // <- Report specification 
+			data: report_data // <-- Report data 
+		  }
+		]
+	  );
+	  res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	   res.send(report);
+};
+
 module.exports = {
 	suggestion,
 	searchP,
@@ -599,6 +878,8 @@ module.exports = {
 	getGDCandCDEData,
 	preload,
 	export2Excel,
+	export_release_elephant_cat,
+	export_release_elephant_cat_excel,
 	getNCItInfo,
 	indexing
 };
