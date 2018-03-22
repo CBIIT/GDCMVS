@@ -1,4 +1,4 @@
-const baseUrl = './search';
+const baseUrl = 'https://gdc-mvs.nci.nih.gov/gdc/search';
 
 const api = {
   suggest(value, callback) {
@@ -31,7 +31,7 @@ const api = {
       });
   },
   evsRestApi(id, callback){
-    $.getJSON('./search/ncit/detail?code=' + id, function(result){
+    $.getJSON(baseUrl + '/ncit/detail?code=' + id, function(result){
       callback(id,result);
     });
   }
