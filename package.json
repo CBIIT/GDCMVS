@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "mocha output_js_tests/ --reporter xunit --reporter-options output=output_js_tests/e2e_results.xml",
+    "test": "mocha tests/output_js_tests/ --reporter xunit --reporter-options tests/output=output_js_tests/e2e_results.xml",
     "build": "webpack --config client/webpack.config.js",
     "watch": "webpack --watch --config client/webpack.config.js"
   },

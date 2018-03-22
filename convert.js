@@ -26,5 +26,5 @@ describe(path.basename(__filename), function() {
   });
 })
 `;
-seleniumConverter('input_html_tests','output_js_tests', template);
+seleniumConverter('tests/input_html_tests','tests/output_js_tests', template);
 
