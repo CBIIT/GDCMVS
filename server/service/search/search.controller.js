@@ -37,6 +37,55 @@ var suggestion = function(req, res){
 	})
 };
 
+var searchICDO3Data = function(req, res){
+	var icdo3_code = req.query.icdo3;
+	let data = [];
+	let query = {};
+	
+	if(icdo3_code.trim() !== ''){
+		
+		
+		query.term={};
+		query.term["enum.i_c.have"] = icdo3_code;
+		
+		let highlight;
+		
+		elastic.query(config.index_p, query, highlight, function(result){
+			let mainData = [];
+			if(result.hits === undefined){
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			data.forEach(function(entry){
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
+			});
+
+			for(let d in data){
+				let enums = data[d]._source.enum;
+				for(let e in enums){
+					
+					if((enums[e].i_c.have).indexOf(icdo3_code) > -1){
+						let ICDO3Data = {};
+						ICDO3Data.category = data[d]._source.category;
+						ICDO3Data.node = data[d]._source.node;
+						ICDO3Data.property = data[d]._source.name;
+						ICDO3Data.enums = enums[e];
+						mainData.push(ICDO3Data);
+					}
+				}
+			}
+			res.json(mainData);
+		});
+	}else{
+		data.push('No data found!');
+	}
+
+}
+
 var searchP = function(req, res){
 	let keyword = req.query.keyword;
 	if(keyword.trim() ===''){
@@ -868,9 +917,12 @@ var export_release_elephant_cat_excel =  function(req, res){
 	   res.send(report);
 };
 
+
+
 module.exports = {
 	suggestion,
 	searchP,
+	searchICDO3Data,
 	getDataFromCDE,
 	getCDEData,
 	getDataFromGDC,
