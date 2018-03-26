@@ -35,6 +35,54 @@ var suggestion = function(req, res){
 	})
 };
 
+var searchICDO3Data = function(req, res){
+	var icdo3_code = req.query.icdo3;
+	let data = [];
+	let query = {};
+	
+	if(icdo3_code.trim() !== ''){
+		query.term={};
+		query.term["enum.i_c.have"] = icdo3_code;
+		
+		let highlight;
+		
+		elastic.query(config.index_p, query, highlight, function(result){
+			let mainData = [];
+			if(result.hits === undefined){
+				res.send('No data found!');
+			}
+			let data = result.hits.hits;
+			data.forEach(function(entry){
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
+			});
+
+			for(let d in data){
+				let enums = data[d]._source.enum;
+				let ICDO3Data = {};
+				ICDO3Data.category = data[d]._source.category;
+				ICDO3Data.node = data[d]._source.node;
+				ICDO3Data.property = data[d]._source.name;
+				ICDO3Data.enums =[];
+
+				for(let e in enums){
+					if((enums[e].i_c.have).indexOf(icdo3_code) > -1){
+						ICDO3Data.enums.push(enums[e]);
+					}
+				}
+				mainData.push(ICDO3Data);
+			}
+			res.json(mainData);
+		});
+	}else{
+		res.send('No data found!');
+	}
+}
+
+
 var searchP = function(req, res){
 	let keyword = req.query.keyword;
 	if(keyword.trim() ===''){
@@ -597,6 +645,7 @@ module.exports = {
 	getDataFromGDC,
 	getGDCData,
 	getGDCandCDEData,
+	searchICDO3Data,
 	preload,
 	export2Excel,
 	getNCItInfo,
