@@ -66,17 +66,20 @@ var searchICDO3Data = function(req, res){
 
 			for(let d in data){
 				let enums = data[d]._source.enum;
+				let ICDO3Data = {};
+				ICDO3Data.category = data[d]._source.category;
+				ICDO3Data.node = data[d]._source.node;
+				ICDO3Data.property = data[d]._source.name;
+				ICDO3Data.enums =[];
 				for(let e in enums){
 					
 					if((enums[e].i_c.have).indexOf(icdo3_code) > -1){
-						let ICDO3Data = {};
-						ICDO3Data.category = data[d]._source.category;
-						ICDO3Data.node = data[d]._source.node;
-						ICDO3Data.property = data[d]._source.name;
-						ICDO3Data.enums = enums[e];
-						mainData.push(ICDO3Data);
+						
+						ICDO3Data.enums.push(enums[e]);
+						
 					}
 				}
+				mainData.push(ICDO3Data);
 			}
 			res.json(mainData);
 		});
