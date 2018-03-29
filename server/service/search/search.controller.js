@@ -41,8 +41,8 @@ var searchICDO3Data = function(req, res){
 	let query = {};
 	
 	if(icdo3_code.trim() !== ''){
-		query.term={};
-		query.term["enum.i_c.have"] = icdo3_code;
+		query.match_phrase={};
+		query.match_phrase["enum.i_c.have"] = icdo3_code;
 		
 		let highlight;
 		
