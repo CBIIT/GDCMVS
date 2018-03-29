@@ -42,8 +42,10 @@ var searchICDO3Data = function(req, res){
 	
 	if(icdo3_code.trim() !== ''){
 		query.match_phrase={};
-		query.match_phrase["enum.i_c.have"] = icdo3_code;
-		
+		query.match_phrase["enum.i_c.have"]={};
+		query.match_phrase["enum.i_c.have"].query = icdo3_code;
+		query.match_phrase["enum.i_c.have"].analyzer = "case_insensitive";
+		//query.analyzer = "keyword";
 		let highlight;
 		
 		elastic.query(config.index_p, query, highlight, function(result){
@@ -69,7 +71,10 @@ var searchICDO3Data = function(req, res){
 				ICDO3Data.enums =[];
 
 				for(let e in enums){
-					if((enums[e].i_c.have).indexOf(icdo3_code) > -1){
+					let value = enums[e].i_c.have;
+					value.map(function(x){ return x.toString().toUpperCase() })
+					
+					if((value).indexOf(icdo3_code.toUpperCase()) > -1){
 						ICDO3Data.enums.push(enums[e]);
 					}
 				}
