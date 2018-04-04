@@ -10,7 +10,7 @@ until = webdriver.until;
 describe(path.basename(__filename), function() {
   // --enter test case name (ie. 'example test case')
   test.it('search_blood', function(done) {
-    this.timeout(0);
+    this.skip();
     var driver = new webdriver.Builder()
     .forBrowser('firefox')
     .build();
