@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "node tests/convert.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
+    "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "build": "webpack --config client/webpack.config.js",
     "watch": "webpack --watch --config client/webpack.config.js"
   },
