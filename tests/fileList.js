@@ -1,14 +1,14 @@
 var fs = require('fs');
 
-var data = [];
+var data = '';
 
 fs.readdir("tests/output_js_tests", (err, filenames) => {
     if (err) throw err;
-    data.push("All test cases" );
-    data.push("None");
+    data = data + "All test cases";
+    data = data + "/None";
     filenames.forEach(filename => {
         if (filename !== 'e2e_results.xml') {
-            data.push(filename);
+            data = data + '/' +filename;
         }
     });
 
