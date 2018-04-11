@@ -12,9 +12,7 @@ fs.readdir("tests/output_js_tests", (err, filenames) => {
         }
     });
 
-    var json = JSON.stringify(data);
-
-    fs.writeFile("tests/myjsonfile.json", json, function (err) {
+    fs.writeFile("tests/myjsonfile.json", data, function (err) {
         if (err) throw err;
     }
     );
