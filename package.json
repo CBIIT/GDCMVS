@@ -4,17 +4,12 @@
   "description": "GDC Metadata Validation Services",
   "main": "app.js",
   "scripts": {
-    "generate-json": "node tests/fileList.js",
-    "convert": "node tests/convert.js",
+    "convert": "node tests/convert.js && node tests/fileList.js",
     "test": "node tests/convert.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --config webpack.config.js"
   },
-  "pre-commit": [
-    "convert",
-    "generate-json"
-  ],
   "author": "CBIIT",
   "license": "ISC",
   "repository": {
@@ -46,7 +41,6 @@
     "filemanager-webpack-plugin": "^1.0.25",
     "mocha": "^3.5.0",
     "node-sass": "^4.6.1",
-    "pre-commit": "^1.2.2",
     "sass-loader": "^6.0.6",
     "selenium-webdriver": "^3.5.0",
     "style-loader": "^0.19.0",
