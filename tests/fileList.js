@@ -12,7 +12,7 @@ fs.readdir("tests/output_js_tests", (err, filenames) => {
         }
     });
 
-    fs.writeFile("tests/myjsonfile.txt", data, function (err) {
+    fs.writeFile("tests/mytxtfile.txt", data, function (err) {
         if (err) throw err;
     }
     );
