@@ -5,13 +5,16 @@ const test = require('selenium-webdriver/testing');
 const webdriver = require('selenium-webdriver'),
 By = webdriver.By,
 until = webdriver.until;
+
+
 describe(path.basename(__filename), function() {
   // --enter test case name (ie. 'example test case')
   test.it('search_blood_2', function(done) {
-    this.skip(0);
+    this.timeout(0);
     var driver = new webdriver.Builder()
     .forBrowser('firefox')
     .build();
+
   
     driver.get("http://localhost:3000"+"/");
 		driver.findElement(By.id("keywords")).click();
