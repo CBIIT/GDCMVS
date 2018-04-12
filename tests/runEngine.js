@@ -263,9 +263,14 @@ module.exports = (htmlPath,jsPath,templateVar, testFile)=>{
           fs.readFile(dirnameHtml + filename, 'utf-8',(err, testHtml)=>{
             if (err) throw err;
             filename = filename.replace(/\.html/g, "");		
-            if(filename+'.js'.indexOf(testFile) > -1){
-                onFileContent(dirnameJs,filename,testHtml);
-            }
+            
+            testFile.forEach(function(data){
+                if(filename === data.replace(/\.js/g, "")){
+                    onFileContent(dirnameJs,filename,testHtml);
+                }
+            })
+            
+            
           });
         });
       });
