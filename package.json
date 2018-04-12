@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "convert": "node tests/convert.js && node tests/fileList.js",
+    "run-some-test": "node tests/skipTest.js && node tests/runSomeTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "test": "node tests/convert.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "build": "webpack --config webpack.config.js",
