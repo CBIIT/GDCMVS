@@ -1,9 +1,9 @@
 const seleniumConverter = require('./runEngine.js');
-let testFile = {
-    myVar: process.env.npm_config_myVar
-}
 
+let shellData = process.env.npm_config_myVar;
 
+let testFile = [];
+testFile = shellData.split(',');
 
 let template = `
 const assert = require('assert');
@@ -27,4 +27,4 @@ describe(path.basename(__filename), function() {
 })
 `;
 
-seleniumConverter('tests/input_html_tests','tests/output_js_tests', template, testFile.myVar);
+seleniumConverter('tests/input_html_tests','tests/output_js_tests', template, testFile);
