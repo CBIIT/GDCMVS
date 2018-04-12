@@ -18,24 +18,15 @@ describe(path.basename(__filename), function() {
   
     driver.get("http://localhost:3000"+"/");
 		driver.findElement(By.id("keywords")).click();
+		driver.sleep('3000');
 		driver.findElement(By.id("keywords")).sendKeys('Stomach');
-		driver.sleep('2000');
+		driver.sleep('3000');
 		driver.findElement(By.id("search")).click();
-		driver.sleep('5000');
+		driver.sleep('6000');
 		driver.findElement(By.linkText("Fundus Of Stomach")).getText().then(text=> {
 			assert(text == 'Fundus Of Stomach');
 			done();
 		});
-		driver.sleep('4000');
-		driver.findElement(By.linkText("Dictionary")).click();
-		driver.sleep('4000');
-		driver.findElement(By.id("trs-checkbox")).click();
-		driver.sleep('6000');
-		driver.findElement(By.css("div.checkbox.checkbox-th > label.checkbox__label")).click();
-		driver.sleep('6000');
-		driver.findElement(By.id("tree_toggle")).click();
-		driver.sleep('6000');
-		driver.findElement(By.linkText("Values")).click();
 		
     done();
     driver.close();
