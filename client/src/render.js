@@ -65,28 +65,30 @@ export default function render(keyword, option, items){
     });
   }
 
-  $('#tab-values').bind('click', function(){
+  $('a.redirect').bind('click', function(event) {
+    event.preventDefault();
+    if(window.location.href != 'https://docs.gdc.cancer.gov/'){
+      var href = $(this).attr('href');
+      window.open('https://docs.gdc.cancer.gov' + href, '_blank');
+    }
+  });
 
+  $('#tab-values').bind('click', function(){
     var option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 0;
     localStorage.setItem('option', JSON.stringify(option));
-
   });
 
   $('#tab-properties').bind('click', function(){
-
     var option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 1;
     localStorage.setItem('option', JSON.stringify(option));
-
   });
 
   $('#tab-dictionary').bind('click', function(){
-
     var option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 2;
     localStorage.setItem('option', JSON.stringify(option));
-
   });
 
   let htmlShow = '';
