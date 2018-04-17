@@ -36,7 +36,12 @@ const func = {
         //todo:show progress bar
         $('#gdc-loading-icon').fadeIn(100);
         api.searchAll(keyword, option, function(keyword, option, items) {
-          //console.log(items);
+
+          //Save the data in localStorage
+          localStorage.setItem('keyword', keyword);
+          localStorage.setItem('option', JSON.stringify(option));
+          localStorage.setItem('items', JSON.stringify(items));
+
           render(keyword, option, items);
           //todo: close progress bar
           $('#gdc-loading-icon').fadeOut('fast');
