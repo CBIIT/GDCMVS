@@ -1,1 +1,1 @@
-All test cases/None/search_blood.js/search_blood_1.js/search_blood_2.js/search_Stomach.js
+All test cases/None/search_blood.js/search_Stomach.js
