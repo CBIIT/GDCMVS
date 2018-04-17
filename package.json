@@ -29,6 +29,7 @@
     "method-override": "^2.3.9",
     "morgan": "^1.8.2",
     "node-excel-export": "^1.4.2",
+    "npm": "^5.8.0",
     "rotating-file-stream": "^1.2.2",
     "winston": "^2.4.0",
     "winston-daily-rotate-file": "^1.7.2",
