@@ -3,3 +3,4 @@ node_modules
 npm-debug.log
 client/static/dist
 gdc-docs
+geckodriver.exe
