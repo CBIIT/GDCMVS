@@ -65,6 +65,30 @@ export default function render(keyword, option, items){
     });
   }
 
+  $('#tab-values').bind('click', function(){
+
+    var option = JSON.parse(localStorage.getItem('option'));
+    option.activeTab = 0;
+    localStorage.setItem('option', JSON.stringify(option));
+
+  });
+
+  $('#tab-properties').bind('click', function(){
+
+    var option = JSON.parse(localStorage.getItem('option'));
+    option.activeTab = 1;
+    localStorage.setItem('option', JSON.stringify(option));
+
+  });
+
+  $('#tab-dictionary').bind('click', function(){
+
+    var option = JSON.parse(localStorage.getItem('option'));
+    option.activeTab = 2;
+    localStorage.setItem('option', JSON.stringify(option));
+
+  });
+
   let htmlShow = '';
 
   $('.show-more-less').click(function () {
