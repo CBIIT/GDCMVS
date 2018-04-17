@@ -67,7 +67,7 @@ export default function render(keyword, option, items){
 
   $('a.redirect').bind('click', function(event) {
     event.preventDefault();
-    if(window.location.href != 'https://docs.gdc.cancer.gov/'){
+    if(!(window.location.href.indexOf('https://docs.gdc.cancer.gov/') > -1)){
       var href = $(this).attr('href');
       window.open('https://docs.gdc.cancer.gov' + href, '_blank');
     }
