@@ -112,6 +112,9 @@ const func = {
         let count_s = 0;
  		count++;
  		p.id = count + "_" + source.name;
+    //link id
+    p.l_id = source.name;
+    p.parent_l_id = n.l_id;
  		//may have highlighted terms in p.title and p.desc
         p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : source.name;
         p.desc = ("desc" in hl) ? hl["desc"] : source.desc;
@@ -229,10 +232,10 @@ const func = {
         result.len += p.len + count_p;
  	});
 
- 	let offset = $('#root').offset().top;
+ 	  let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 305;
     h = (h < 430) ? 430 : h;
-    let html = $.templates(tmpl).render({mh:h,trs: trs});
+    let html = $.templates(tmpl).render({mh: h,trs: trs});
 
     result.html = html;
     return result;

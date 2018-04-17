@@ -33,6 +33,7 @@ const func = {
  			if(source.cde !== undefined && source.cde.dt !== undefined){
  				prop.type = source.cde.dt;
  			}
+      prop.type = prop.type.toLowerCase();
  			props.push(prop);
  		}
  	});
@@ -45,8 +46,7 @@ const func = {
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 300;
  		h = (h < 430) ? 430 : h;
-
- 		html = $.templates(tmpl).render({mh:h,props: props});
+ 		html = $.templates(tmpl).render({mh: h,props: props});
  	}
 
     let result = {};
