@@ -72,9 +72,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 					entry.term.termDef.cde_id = "" + entry.term.termDef.cde_id;
 					if(entry.term.termDef.source ==='caDSR'){
 						entry.syns = cdeData[entry.term.termDef.cde_id];
-						if(entry.syns.length > 0){
+						if(entry.syns !== undefined && entry.syns.length > 0){
 							entry.cde_len = entry.syns.length;
-						}
+						
 						
 						//generate cde_pv for properties index
 						p.cde_pv = [];
@@ -100,6 +100,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 							}
 							p.cde_pv.push(tmp);
 						});
+					}
 					}
 					else if(entry.term.termDef.source ==='NCIt'){
 						p.ncit = {};
@@ -317,7 +318,8 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 			p.type = "enum";
 		}
 		else{
-			p.type = entry.type !== undefined ? entry.type : "object";
+			let type = typeof entry.type;
+			p.type = type !== "undefined" && type !== "object" ? entry.type : "object";
 		}
 		allProperties.push(p);
 	}
@@ -375,7 +377,7 @@ function bulkIndex(next){
 			}
 		});
 	}
-	var folderPath = path.join(__dirname, '..','data');
+	var folderPath = path.join(__dirname, '..','data_horton');
 	var count = 0, total = 0;
 	var termsJson = yaml.load(folderPath+'/_terms.yaml');
 	var defJson = yaml.load(folderPath + '/_definitions.yaml');
