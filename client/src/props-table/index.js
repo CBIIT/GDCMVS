@@ -32,8 +32,11 @@ const func = {
  			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
  			if(source.cde !== undefined && source.cde.dt !== undefined){
  				prop.type = source.cde.dt;
- 			}
-      prop.type = prop.type.toLowerCase();
+       }
+      if(prop.type){
+        prop.type = prop.type.toLowerCase();
+      }
+
  			props.push(prop);
  		}
  	});

@@ -1,4 +1,4 @@
-const baseUrl = 'https://gdc-mvs.nci.nih.gov/gdc/search';
+const baseUrl = './search';
 
 const api = {
   suggest(value, callback) {
