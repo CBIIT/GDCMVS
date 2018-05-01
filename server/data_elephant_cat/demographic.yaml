@@ -1,0 +1,156 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+id: "demographic"
+title: Demographic
+type: object
+namespace: http://gdc.nci.nih.gov
+category: clinical
+program: '*'
+project: '*'
+description: >
+  Data for the characterization of the patient by means of segementing the population (e.g.,
+  characterization by age, sex, or race).
+additionalProperties: false
+submittable: true
+validators: null
+
+systemProperties:
+  - id
+  - project_id
+  - state
+  - created_datetime
+  - updated_datetime
+
+links:
+  - name: cases
+    backref: demographics
+    label: describes
+    target_type: case
+    multiplicity: one_to_one
+    required: true
+
+required:
+  - cases
+  - race
+  - ethnicity
+  - gender
+
+preferred:
+  - year_of_death
+
+uniqueKeys:
+  #unclear if want submitter ID for clinical
+  - [id]
+  - [project_id, submitter_id]
+
+properties:
+  type:
+    type: string
+
+  id:
+    $ref: "_definitions.yaml#/UUID"
+    systemAlias: node_id
+
+  state:
+    $ref: "_definitions.yaml#/state"
+
+  submitter_id:
+    type:
+      - string
+      - "null"
+
+  age_at_index:
+    term:
+      $ref: "_terms.yaml#/age_at_index"
+    type:
+      - integer
+      - "null"
+
+  cause_of_death:
+    term:
+      $ref: "_terms.yaml#/cause_of_death"
+    enum:
+      - Cancer Related
+      - End-stage Renal Disease
+      - Infection
+      - Not Cancer Related
+      - Spinal Muscular Atrophy
+      - Toxicity
+      - Not Reported
+      - Unknown
+
+  days_to_birth:
+    term:
+      $ref: "_terms.yaml#/days_to_birth"
+    type: integer
+
+  days_to_death:
+    term:
+      $ref: "_terms.yaml#/days_to_death"
+    type: integer
+
+  gender:
+    term:
+      $ref: "_terms.yaml#/gender"
+    enum:
+      - female
+      - male
+      - unknown
+      - unspecified
+      - not reported
+
+  race:
+    term:
+      $ref: "_terms.yaml#/race"
+    enum:
+      - white
+      - american indian or alaska native
+      - black or african american
+      - asian
+      - native hawaiian or other pacific islander
+      - other
+      - Unknown
+      - not reported
+      - not allowed to collect
+      - unknown
+
+  ethnicity:
+    term:
+      $ref: "_terms.yaml#/ethnicity"
+    enum:
+      - hispanic or latino
+      - not hispanic or latino
+      - Unknown
+      - not reported
+      - not allowed to collect
+      - unknown
+
+  year_of_birth:
+    term:
+      $ref: "_terms.yaml#/year_of_birth"
+    type:
+      - number
+      - "null"
+
+  year_of_death:
+    term:
+      $ref: "_terms.yaml#/year_of_death"
+    type: number
+
+  vital_status:
+    term:
+      $ref: "_terms.yaml#/vital_status"
+    enum:
+      - Alive
+      - Dead
+      - Unknown
+      - Not Reported
+
+  cases:
+    $ref: "_definitions.yaml#/to_one"
+  project_id:
+    $ref: "_definitions.yaml#/project_id"
+  created_datetime:
+    $ref: "_definitions.yaml#/datetime"
+  updated_datetime:
+    $ref: "_definitions.yaml#/datetime"
