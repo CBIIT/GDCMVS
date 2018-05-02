@@ -260,7 +260,23 @@ const func = {
 
         });
 
-        //reformat the ico3 code data
+        //add the rest of the matched cde_pvs to the subtables
+        for (let idx in matched_pv) {
+          let v = {};
+          v.n = "no match";
+          v.ref = row.ref;
+          v.n_c = "";
+          v.s = [];
+          v.cde_s = matched_pv[idx].ss;
+          if (v.cde_s.length) {
+            v.cde_pv = matched_pv[idx].pv;
+            v.cde_pvm = matched_pv[idx].pvm;
+          }
+          row.vs.push(v);
+        }
+        len += row.vs.length;
+
+        //reformat the icd-o-3 code data
         if (row.vs) {
           let temp_i_c = [];
           let new_vs = [];
@@ -319,22 +335,8 @@ const func = {
         }
       }
 
-      //add the rest of the matched cde_pvs to the subtables
-      for (let idx in matched_pv) {
-        let v = {};
-        v.n = "no match";
-        v.ref = row.ref;
-        v.n_c = "";
-        v.s = [];
-        v.cde_s = matched_pv[idx].ss;
-        if (v.cde_s.length) {
-          v.cde_pv = matched_pv[idx].pv;
-          v.cde_pvm = matched_pv[idx].pvm;
-        }
-        row.vs.push(v);
-      }
-      len += row.vs.length;
       values.push(row);
+
     });
     let html = "";
     if (values.length == 0) {
@@ -346,7 +348,6 @@ const func = {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 300;
       h = (h < 430) ? 430 : h;
-      console.log(values);
       html = $.templates({
         markup: tmpl,
         allowCode: true

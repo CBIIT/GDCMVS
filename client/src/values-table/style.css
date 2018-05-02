@@ -37,6 +37,10 @@
   color: #2a72a4;
 }
 
+.table__row-syn{
+  margin-bottom: 10px;
+}
+
 .table__ul{
   padding-left: 20px;
   list-style:none;
