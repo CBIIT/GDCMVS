@@ -48,7 +48,6 @@ const func = {
         0 ? false : true;
       //value informations in the subtable
       row.vs = [];
-      row.new_vs = [];
       row.tgts_enum_n = ""; //added
       row.tgts_cde_n = "";
       let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
@@ -261,14 +260,15 @@ const func = {
 
         });
 
+        //reformat the ico3 code data
         if (row.vs) {
           let temp_i_c = [];
+          let new_vs = [];
           row.vs.forEach(function (item) {
-            if(item.i_c == undefined){
+            if(item.i_c === undefined){
               return;
             }
             temp_i_c.push(item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, ""));
-
           });
           var results = [];
           temp_i_c.forEach(function(d){
@@ -283,33 +283,38 @@ const func = {
               let tmp_data = {
                 i_c: {},
                 n: [],
-                ref: [],
-                n_c: [],
+                ref: {},
+                n_t: [],
                 temp_n_c: []
               };
+
               row.vs.forEach(function (value) {
                 if (value.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "") == item) {
-                  let temp_nc = {
+                  let temp_nt = {
                     n_c: {},
                     s: []
                   };
                   tmp_data.i_c = value.i_c;
+                  tmp_data.cde_s = value.cde_s;
+                  tmp_data.ref =  value.ref;
                   tmp_data.n.push(value.n);
-                  tmp_data.ref.push(value.ref);
+                  //tmp_data.ref.push(value.ref);
                   if (value.n_c && tmp_data.temp_n_c.indexOf(value.n_c) == -1) {
                     tmp_data.temp_n_c.push(value.n_c);
-                    temp_nc.n_c = value.n_c;
+                    temp_nt.n_c = value.n_c;
                     value.s.forEach(function(syn){
-                      temp_nc.s.push(syn);
+                      temp_nt.s.push(syn);
                     });
 
-                    tmp_data.n_c.push(temp_nc);
+                    tmp_data.n_t.push(temp_nt);
                   }
                 }
               });
-              row.new_vs.push(tmp_data);
+              new_vs.push(tmp_data);
             });
-            console.log(row);
+          }
+          if(new_vs.length !== 0){
+            row.vs = new_vs;
           }
         }
       }
@@ -341,6 +346,7 @@ const func = {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 300;
       h = (h < 430) ? 430 : h;
+      console.log(values);
       html = $.templates({
         markup: tmpl,
         allowCode: true
