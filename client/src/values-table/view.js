@@ -71,7 +71,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
           +'<div id="data-content" class="table__td" style="display: none;">'
 
             +'{{for n_t}}'
-            +'<div class="row">'
+            +'<div class="row table__row-syn">'
               +'<div class="col-xs-4">'
                 +'<a class="table-td-link" href="javascript:getNCITDetails(\'{{:n_c}}\');">{{:n_c}}</a> (NCIt)'
               +'</div>'
