@@ -542,20 +542,20 @@ var preLoadCaDSRData = function (req, res){
 }
 
 var preload = function (req, res) {
-	elastic.preloadDataFromCaDSR(function(result) {
-		if (result === 1) { 
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
-		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
-		}
-	});
-	elastic.loadSynonyms(function (result) {
+	// elastic.preloadDataFromCaDSR(function(result) {
+	// 	if (result === 1) { 
+	// 		res.json({
+	// 			"status": "success",
+	// 			"message": "preparing data..."
+	// 		});
+	// 	} else {
+	// 		res.json({
+	// 			"status": "failed",
+	// 			"message": "failed to loading data from caDSR."
+	// 		});
+	// 	}
+	// });
+	elastic.loadSynonyms_continue(function (result) {
 		if (result === 1) {
 			res.json({
 				"status": "success",
@@ -568,14 +568,14 @@ var preload = function (req, res) {
 			});
 		}
 	});
-	elastic.preloadDataTypeFromCaDSR(function(result){
-		if(result === 1){
-			res.json({"status":"success", "message":"preparing data type..."});
-		}
-		else{
-			res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
-		}
-	});
+	// elastic.preloadDataTypeFromCaDSR(function(result){
+	// 	if(result === 1){
+	// 		res.json({"status":"success", "message":"preparing data type..."});
+	// 	}
+	// 	else{
+	// 		res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
+	// 	}
+	// });
 };
 
 var export2Excel = function (req, res) {
