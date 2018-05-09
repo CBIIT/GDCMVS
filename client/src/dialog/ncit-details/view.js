@@ -10,7 +10,7 @@ let tmpl = {
     +'{{if item.definition !== undefined}}'
       +'<p><b>Definition:</b> {{:item.definition}}</p>'
     +'{{/if}}'
-    +'<p><b>NCI Thesaurus Code:</b>'
+    +'<p><b>NCI Thesaurus Code:</b> '
       +'<a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code}}" target="_blank"">{{:item.code}}</a>'
     +'</p>'
     +'{{if item.synonyms.length }}'
