@@ -533,14 +533,6 @@ var getGDCandCDEData = function (req, res) {
 
 };
 
-var preLoadCaDSRData = function (req, res){
-
-	
-
-
-
-}
-
 var preload = function (req, res) {
 	// elastic.preloadDataFromCaDSR(function(result) {
 	// 	if (result === 1) { 
@@ -555,7 +547,7 @@ var preload = function (req, res) {
 	// 		});
 	// 	}
 	// });
-	elastic.loadSynonyms_continue(function (result) {
+	elastic.loadSynonyms(function (result) {
 		if (result === 1) {
 			res.json({
 				"status": "success",
@@ -1732,6 +1724,5 @@ module.exports = {
 	indexing,
 	export_common,
 	export_ICDO3,
-	export_difference,
-	preLoadCaDSRData
+	export_difference
 };
