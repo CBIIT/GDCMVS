@@ -1,4 +1,0 @@
-
-searching synonyms using CTCAE code (#0) total= 790: E10350 Thu May 10 2018 11:14:16 GMT-0400 (Eastern Daylight Time)
-searching synonyms using CTCAE code (#1) total= 790: E10456 Thu May 10 2018 11:14:43 GMT-0400 (Eastern Daylight Time)
-searching synonyms using CTCAE code (#2) total= 790: E11282 Thu May 10 2018 11:15:11 GMT-0400 (Eastern Daylight Time)
