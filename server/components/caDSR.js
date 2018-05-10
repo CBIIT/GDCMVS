@@ -213,7 +213,7 @@ var loadSynonyms = function(){
 	logger.debug("length of CTCAE codes: \n" + ctcae.length);
 	//get data
 	synchronziedLoadSynonmysfromNCIT(ncit, 0);
-	//synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
+	synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
 };
 
 var loadSynonyms_continue = function(){
@@ -276,7 +276,7 @@ var synchronziedLoadSynonmysfromNCIT = function(ncitids, idx){
 				  		});
 				  		let str = {};
 				  		str[ncitids[idx]] = syn;
-				  		fs.appendFile("./synonyms.js", JSON.stringify(str), function(err) {
+				  		fs.appendFile("./synonyms_ncit.js", JSON.stringify(str), function(err) {
 						    if(err) {
 						        return logger.error(err);
 						    }
@@ -302,7 +302,14 @@ var synchronziedLoadSynonmysfromCTCAE = function(ids, idx){
 	if(idx >= ids.length){
 		return;
 	}
-	logger.debug("searching synonyms using CTCAE code (#"+idx+"): "+ ids[idx]);
+	logger.debug("searching synonyms using CTCAE code (#"+idx+") total= " +ids.length+ ": "+ ids[idx]);
+	fs.appendFile("./logs_synonyms_ctcae.txt", "\nsearching synonyms using CTCAE code (#"+idx+") total= " +ids.length+ ": "+ ids[idx] +" "+ new Date(), function(err) {
+		if(err) {
+			return logger.error(err);
+		}
+
+		logger.debug("#########synonyms for " +ids[idx] +": " + syn.toString());
+	});
 	let syn = [];
 	https.get(config.NCIt_url[3]+ids[idx], (rsp) => {
 		  let html = '';
@@ -337,7 +344,7 @@ var synchronziedLoadSynonmysfromCTCAE = function(ids, idx){
 				  	if(syn.length > 0){
 				  		let str = {};
 				  		str[ids[idx]] = syn;
-				  		fs.appendFile("./synonyms.js", JSON.stringify(str), function(err) {
+				  		fs.appendFile("./synonyms_ctcae.js", JSON.stringify(str), function(err) {
 						    if(err) {
 						        return logger.error(err);
 						    }

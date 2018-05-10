@@ -7,7 +7,6 @@ var router = express.Router();
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
 router.get('/preload', controller.preload);
-router.get('/preLoadCaDSRData', controller.preLoadCaDSRData)
 //router.get('/external/caDSR', controller.getDataFromCDE);
 //router.get('/local', controller.getDataFromGDC);
 //router.get('/export_ICDO3', controller.export_ICDO3);
