@@ -213,7 +213,7 @@ var loadSynonyms = function(){
 	logger.debug("length of CTCAE codes: \n" + ctcae.length);
 	//get data
 	synchronziedLoadSynonmysfromNCIT(ncit, 0);
-	synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
+	//synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
 };
 
 var loadSynonyms_continue = function(){
