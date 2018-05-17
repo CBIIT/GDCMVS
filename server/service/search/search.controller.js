@@ -12,6 +12,7 @@ var path = require('path');
 var yaml = require('yamljs');
 const excel = require('node-excel-export');
 var xlsx = require('node-xlsx');
+var _ = require('lodash');
 var cdeData = {};
 var gdcData = {};
 
@@ -1632,7 +1633,7 @@ var parseExcel = function (req, res) {
 					}
 				}
 			});
-			
+
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
@@ -1641,10 +1642,33 @@ var parseExcel = function (req, res) {
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (icdo[category_node_property]) {
 						//If some of the mapping exists for this category.node.property
-						console.log(icdo);
-					}else{
+						var temp_obj = {
+							nm: dataParsed[dp].icdo3_term,
+							i_c: dataParsed[dp].icdo3_code,
+							n_c: dataParsed[dp].ncit_code
+						};
+						if(!mappingExists(icdo[category_node_property], temp_obj)){
+							logger.info("new icdo3 mapping found " +JSON.stringify(temp_obj));
+							icdo[category_node_property].push(temp_obj);
+						}
+						
+					} else {
 						//If no mapping exists for this category.node.property	
+						icdo[category_node_property] = [];
+						var temp_obj = {
+							nm: dataParsed[dp].icdo3_term,
+							i_c: dataParsed[dp].icdo3_code,
+							n_c: dataParsed[dp].ncit_code
+						};
+						icdo[category_node_property].push(temp_obj);
 					}
+					//write changes to file
+					fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
+						if (err) {
+							return logger.error(err);
+						}
+					});
+
 				} else {
 					var cc = {};
 					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
@@ -1686,6 +1710,15 @@ var parseExcel = function (req, res) {
 		"status": "success",
 		"message": "Done"
 	});
+}
+function mappingExists(arr, obj){
+	for(let a in arr){
+		var checker = JSON.stringify(arr[a]) == JSON.stringify(obj);
+		if(checker){
+			return true;
+		}
+	}
+	return false;
 }
 
 var export_difference = function (req, res) {
