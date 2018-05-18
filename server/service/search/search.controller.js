@@ -11,6 +11,8 @@ var fs = require('fs');
 var path = require('path');
 var yaml = require('yamljs');
 const excel = require('node-excel-export');
+var xlsx = require('node-xlsx');
+var _ = require('lodash');
 var cdeData = {};
 var gdcData = {};
 
@@ -533,29 +535,24 @@ var getGDCandCDEData = function (req, res) {
 
 };
 
-var preLoadCaDSRData = function (req, res){
-
-	
-
-
-
+var preloadCadsrData = function (req, res) {
+	elastic.preloadDataFromCaDSR(function (result) {
+		if (result === 1) {
+			res.json({
+				"status": "success",
+				"message": "preparing data..."
+			});
+		} else {
+			res.json({
+				"status": "failed",
+				"message": "failed to loading data from caDSR."
+			});
+		}
+	});
 }
 
 var preload = function (req, res) {
-	// elastic.preloadDataFromCaDSR(function(result) {
-	// 	if (result === 1) { 
-	// 		res.json({
-	// 			"status": "success",
-	// 			"message": "preparing data..."
-	// 		});
-	// 	} else {
-	// 		res.json({
-	// 			"status": "failed",
-	// 			"message": "failed to loading data from caDSR."
-	// 		});
-	// 	}
-	// });
-	elastic.loadSynonyms_continue(function (result) {
+	elastic.loadSynonyms(function (result) {
 		if (result === 1) {
 			res.json({
 				"status": "success",
@@ -1584,8 +1581,144 @@ var export_ICDO3 = function (req, res) {
 	res.send(report);
 };
 
-function findDeselectedItem(CurrentArray, PreviousArray) {
+var parseExcel = function (req, res) {
+	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
+	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('.xlsx') !== -1) {
+			var dataParsed = [];
+			var obj = xlsx.parse(folderPath + '/' + file);
+			obj.forEach(function (sheet) {
+				var worksheet = sheet.data;
 
+				for (var n = 1; n < worksheet.length; n++) {
+					var row = worksheet[n];
+					let temp_data = {};
+					if (row.length > 0) {
+						if (row[0]) {
+							temp_data.category = row[0];
+						} else {
+							temp_data.category = "";
+						}
+						if (row[1]) {
+							temp_data.node = row[1];
+						} else {
+							temp_data.node = "";
+						}
+						if (row[2]) {
+							temp_data.property = row[2];
+						} else {
+							temp_data.property = "";
+						}
+						if (row[3]) {
+							temp_data.value = row[3];
+						} else {
+							temp_data.value = "";
+						}
+						if (row[5]) {
+							temp_data.ncit_code = row[5];
+						} else {
+							temp_data.ncit_code = "";
+						}
+						if (row[6]) {
+							temp_data.icdo3_code = row[6];
+							if (row[7]) {
+								temp_data.icdo3_term = row[7];
+							} else {
+								temp_data.icdo3_term = "";
+							}
+						}
+						dataParsed.push(temp_data);
+					}
+				}
+			});
+
+			for (let dp in dataParsed) {
+				if (dataParsed[dp].icdo3_code) {
+					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
+					let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+					let icdo = JSON.parse(gdcValues);
+					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+					if (icdo[category_node_property]) {
+						//If some of the mapping exists for this category.node.property
+						var temp_obj = {
+							nm: dataParsed[dp].icdo3_term,
+							i_c: dataParsed[dp].icdo3_code,
+							n_c: dataParsed[dp].ncit_code
+						};
+						if(!mappingExists(icdo[category_node_property], temp_obj)){
+							logger.info("new icdo3 mapping found " +JSON.stringify(temp_obj));
+							icdo[category_node_property].push(temp_obj);
+						}
+						
+					} else {
+						//If no mapping exists for this category.node.property	
+						icdo[category_node_property] = [];
+						var temp_obj = {
+							nm: dataParsed[dp].icdo3_term,
+							i_c: dataParsed[dp].icdo3_code,
+							n_c: dataParsed[dp].ncit_code
+						};
+						icdo[category_node_property].push(temp_obj);
+					}
+					//write changes to file
+					fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
+						if (err) {
+							return logger.error(err);
+						}
+					});
+
+				} else {
+					var cc = {};
+					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
+					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+					if (concept[category_node_property]) {
+						//If category.node.property already exists in the conceptCode.js file, then delete it.
+						delete concept[category_node_property]
+					}
+					var helper_cc = {};
+					helper_cc[category_node_property] = {}
+					var temp_cc = {};
+					for (let temp_dp in dataParsed) {
+						if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+							if (dataParsed[temp_dp].ncit_code) {
+								temp_cc[category_node_property] = {
+									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+								}
+							} else {
+								temp_cc[category_node_property] = {
+									[dataParsed[temp_dp].value]: ""
+								}
+							}
+							Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
+						}
+					}
+					cc = helper_cc;
+					Object.assign(concept, cc);
+					fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+						if (err) {
+							return logger.error(err);
+						}
+						logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
+					});
+				}
+			}
+		}
+	});
+	res.json({
+		"status": "success",
+		"message": "Done"
+	});
+}
+function mappingExists(arr, obj){
+	for(let a in arr){
+		var checker = JSON.stringify(arr[a]) == JSON.stringify(obj);
+		if(checker){
+			return true;
+		}
+	}
+	return false;
 }
 
 var export_difference = function (req, res) {
@@ -1649,28 +1782,26 @@ var export_difference = function (req, res) {
 					}
 
 				}
-				
+
 				for (let p in props_new) {
-					
+
 					if (props_new[p].enum) {
 						if (props_old[p] && props_old[p].enum) {
-							props_new[p].enum.forEach(function(em){
-								if(props_old[p].enum.indexOf(em) >= 0){
+							props_new[p].enum.forEach(function (em) {
+								if (props_old[p].enum.indexOf(em) >= 0) {
 									let temp_data = {};
-										temp_data.c = tmp_new.category;
-										temp_data.n = tmp_new.id;
-										temp_data.p = p;
-										temp_data.value_old = em;
-										if(tmp_new.deprecated && tmp_new.deprecated.indexOf(p) >= 0){
-											temp_data.value_new = "no match";		
-										}
-										else{
-											temp_data.value_new = em;
-										}
-										
-										data.push(temp_data);
-								}
-								else if(props_old[p].enum.indexOf(em) == -1 ){
+									temp_data.c = tmp_new.category;
+									temp_data.n = tmp_new.id;
+									temp_data.p = p;
+									temp_data.value_old = em;
+									if (tmp_new.deprecated && tmp_new.deprecated.indexOf(p) >= 0) {
+										temp_data.value_new = "no match";
+									} else {
+										temp_data.value_new = em;
+									}
+
+									data.push(temp_data);
+								} else if (props_old[p].enum.indexOf(em) == -1) {
 									let temp_data = {};
 									temp_data.c = tmp_new.category;
 									temp_data.n = tmp_new.id;
@@ -1733,5 +1864,6 @@ module.exports = {
 	export_common,
 	export_ICDO3,
 	export_difference,
-	preLoadCaDSRData
+	preloadCadsrData,
+	parseExcel
 };
