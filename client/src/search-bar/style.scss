@@ -4,29 +4,26 @@
   margin: 0 auto;
 }
 .search-bar__input {
-  // box-shadow: 1px 1px 5px 1px #e3e3e3;
-  //box-shadow: 0 10px 10px -6px #e3e3e3;
   box-shadow: 1px 7px 7px -6px #e3e3e3;
   border-radius: 4px;
 }
 .search-bar__input:hover {
-  // box-shadow: 0 10px 10px -6px #e3e3e3;
   box-shadow:0 3px 8px 0 #e3e3e3;
 }
 
 .search-bar__btn {
-  background-color: #93a5a5;
-  border-color: #93a5a5;
+  background-color: #6A7676;
+  border-color: #6A7676;
   padding: 8px 45px;
   font-size: 17px;
-  color: #fff;
+  color: #ffffff;
 }
 .search-bar__btn:active:hover,
 .search-bar__btn:hover,
 .search-bar__btn:focus,
 .search-bar__btn:active {
-  background-color: #707c7c;
-  border-color: #707c7c;
+  background-color: #788787;
+  border-color: #788787;
   outline: none;
 }
 .search-bar__input--has-error {
@@ -87,5 +84,5 @@
 }
 
 .ref-box__link {
-  padding-left: 2em;
+  margin-left: 2em;
 }

@@ -50,15 +50,11 @@ footer{
   bottom: 0;
 }
 
-h1 {
-  display: none;
-}
-
 a, a:link, a:visited,
 a:hover, a:focus {
   color: #2a72a4;
-  outline: none;
-  text-decoration: none;
+  // outline: none;
+  // text-decoration: none;
 }
 
 .gdc-app-list a {
