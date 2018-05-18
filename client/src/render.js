@@ -114,7 +114,7 @@ export default function render(keyword, option, items){
     let target = $(this);
     let parentTable = $(this).parent().parent().parent();
 
-    let dataContainer = parentTable.find('#data-content');
+    let dataContainer = parentTable.find('.data-content');
 
     dataContainer.slideToggle(400, function(){
       if(dataContainer.is(":visible")){
@@ -129,7 +129,7 @@ export default function render(keyword, option, items){
   $('.gdc-details').click(function(){
     let target = $(this);
     let parentTarget = $(this).parent();
-    let gdcLinks = parentTarget.find('#gdc-links');
+    let gdcLinks = parentTarget.find('.gdc-links');
     gdcLinks.slideToggle(350);
   });
 
