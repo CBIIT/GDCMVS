@@ -35,6 +35,7 @@
 
 .table__ico3-code {
   color: #2a72a4;
+  white-space: nowrap;
 }
 
 .table__row-syn{
