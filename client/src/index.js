@@ -44,16 +44,11 @@ window.toCompare = toCompare;
 
 function compare(gv){
     if($('#cp_input').val().trim() === ''){
-        $('#cp_massage').css("display", "block");
-        $("#cp_massage").removeClass();
-        $('#cp_massage').addClass("compare-form__message");
         $('#cp_massage').html("Please type in user defined values.");
         return;
     }
     else{
         //compare and render
-        $('#cp_massage').css("display", "none");
-        $("#cp_massage").removeClass();
         $('#cp_massage').html("");
         $('#compare_form').css("display", "none");
         $('#compare_result').css("display", "block");
@@ -74,7 +69,7 @@ function compare(gv){
         let table = generateCompareResult(vs, gv, opt);
         let html =  ''//'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
                     +'<div id="cp_result_table" class="table__container table__container--margin-bottom">'+table+'</div>'
-                    +'<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare_result__button">Back</button></div>';
+                    +'<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare-form__button">Back</button></div>';
 
         $('#compare_result').html(html);
 

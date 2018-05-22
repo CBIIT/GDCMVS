@@ -69,7 +69,7 @@ a:hover, a:focus {
 }
 .checkbox__btn {
   position: relative;
-  display: inline-block;
+  display: block;
   border: 1px solid #dce4ec;
   background-color: #fff;
   border-radius: .25em;
@@ -85,9 +85,7 @@ a:hover, a:focus {
   top: 50%;
   left: 26%;
 }
-.checkbox__input {
-  display: none;
-}
+
 .checkbox__input + .checkbox__btn > .checkbox__icon  {
   opacity: 0;
 }
@@ -101,6 +99,10 @@ a:hover, a:focus {
 }
 .checkbox__input:disabled > .checkbox__btn {
   opacity: .5;
+}
+
+.checkbox__input:focus + .checkbox__btn {
+  box-shadow: 0px 0px 4px 2px #e3e3e3;
 }
 
 /* Table */
@@ -118,33 +120,40 @@ a:hover, a:focus {
   overflow-y: auto;
   max-height: 500px;
 }
+
 .table__th {
   font-weight: bold;
   text-align: left;
   padding-top: 15px;
   padding-bottom: 15px;
 }
+
 .table__th--right {
   text-align: right;
 }
+
 .table__td {
   text-align: left;
   padding-top: 12px;
   padding-bottom: 12px;
   line-height: 1.428571;
 }
+
 .table__td--title {
   font-weight: bold;
   color: #217dbc;
 }
+
 .table__td--slim {
   padding-top: 8px;
   padding-bottom: 8px;
 }
+
 .table__td--xslim{
   padding-top: 5px;
   padding-bottom: 5px;
 }
+
 .table__td--right {
   text-align: right;
 }
@@ -160,9 +169,11 @@ a:hover, a:focus {
 .table__row {
   border-bottom: 1px solid #ecf0f1;
 }
+
 .table__row--undisplay {
   display: none;
 }
+
 .table__content {
   border-bottom: 1px solid #ecf0f1;
   display: none;
@@ -170,31 +181,43 @@ a:hover, a:focus {
 
 .table__thead {
   background: #F1F1F1;
-  color: #555;
+  color: #555555;
 }
+
 .table__thead--padding-right {
   padding-right: 15px;
 }
+
 .table__tooltip,
 .table__tooltip:hover {
-  color: #555;
+  color: #555555;
   margin-left: 10px;
 }
+
+.table__tooltip:focus{
+  color: #000000;
+  outline: none;
+}
+
 .table__arrow {
   padding-right: 1em;
   display: inline-block;
   width: 25px;
 }
+
 .table__dropdown-toggle {
   color: #788d90 !important;
 }
+
 .table__dropdown-toggle:hover,
 .table__dropdown-toggle:focus {
   color: #3598db !important;
 }
+
 .table__dropdown-menu {
   left: auto;
 }
+
 .table__dropdown-menu:before {
   position: absolute;
   top: -7px;
@@ -206,6 +229,7 @@ a:hover, a:focus {
   border-bottom-color: rgba(0, 0, 0, 0.2);
   content: '';
 }
+
 .table__dropdown-menu:after {
   position: absolute;
   top: -6px;
@@ -216,15 +240,18 @@ a:hover, a:focus {
   border-left: 6px solid transparent;
   content: '';
 }
+
 .table__dropdown-link {
   color: #3a3a3a !important;
 }
+
 .table__dropdown-link:hover,
 .table__dropdown-link:focus {
   text-decoration: none;
   color: #ffffff !important;
   background-color: #3598db !important;
 }
+
 .thead__row {
   display: flex;
   align-items: center;
@@ -247,8 +274,10 @@ a:hover, a:focus {
 .btn-th:hover,
 .btn-th:focus,
 .btn-th:active {
-  color: #000 !important;
-  outline: none !important;
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+  outline: none;
 }
 
 .btn-th__icon {
