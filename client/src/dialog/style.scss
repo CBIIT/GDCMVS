@@ -24,10 +24,12 @@
   top: 0;
   left: 0;
 }
+
 .dialog__titlebar{
   padding: 1em;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #DDDDDD
 }
+
 .ui-dialog .ui-dialog-title {
   float: none;
   width: auto;
@@ -41,27 +43,26 @@
   display: inline-block;
   overflow: initial;
 }
-.ui-button:hover,
-.ui-button:focus{
-  border: none;
-  background: transparent;
-  color: #bbb;
-  outline: none;
-}
+
 .ui-dialog .ui-dialog-titlebar-close {
-  position:relative;
+  position: absolute;
   background: none;
   border: none;
   text-indent: 0;
-  float:right;
-  color: #bbb;
-  z-index:1;
-  width: 20px;
-  height: 20px;
+  right: .5em;
+  top: 1.3em;
+  color: #BBBBBB;
 }
+
+.ui-dialog .ui-dialog-titlebar-close:hover,
+.ui-dialog .ui-dialog-titlebar-close:focus{
+  color: #666666;
+  outline: none;
+}
+
 .ui-dialog-titlebar-close:after {
-  position:relative;
-  top:5px;
+  position: relative;
+  top: 5px;
   font-family: FontAwesome;
   font-size: 1.5em;
   content: "\f00d";
@@ -121,8 +122,11 @@
 .compare-form__textarea {
   height: 28.5em;
   width: 98%;
-  outline: none;
   resize: none;
+}
+
+.compare-form__textarea:focus {
+  outline-color: #777777;
 }
 
 .compare-form__middle {
@@ -151,13 +155,12 @@
   font-weight: bold;
 }
 
-
 .compare-form__bottom {
   text-align: center;
 }
 
 .compare-form__button {
-  margin-left: 1em;
+  // margin-left: 1em;
   padding: 0.4em 2em;
   min-width: 9em;
   box-shadow: none !important;
@@ -167,12 +170,18 @@
   background-color: #fff;
 }
 
+.compare-form__button:active:hover,
+.compare-form__button:active,
 .compare-form__button:hover,
 .compare-form__button:focus {
   color: #fff;
   background-color: #3598db;
   border-color: #3598db;
   outline: none;
+}
+
+.compare-form__button--cancel {
+  margin-left: 1em;
 }
 
 .compare_result {

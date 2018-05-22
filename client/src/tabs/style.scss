@@ -3,21 +3,26 @@
   border-radius: 5px;
   background-color: #fff;
 }
+
 .tab-nav {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 2em 0;
 }
+
 .tab-nav__text {
   color: #535A60;
 }
+
 .tab-nav__term {
   color: #000;
 }
+
 .tab-nav__group {
   margin-left: 2em;
 }
+
 .tab-nav__btn {
   padding: .15em 1em;
   min-width: 12.2em;
@@ -30,12 +35,17 @@
   margin-left: -1px;
   text-align: center;
   border-radius: 4px;
-
 }
 
-.tab-nav__btn:hover,
-.tab-nav__btn:focus{
+.tab-nav__btn:hover{
   text-decoration: none;
+}
+.tab-nav__btn:focus {
+  text-decoration: none;
+  outline: none;
+  border: 1px solid #2f83bc;
+  background-color: #2f83bc !important;
+  color: #fff !important;
 }
 
 .tab-nav__li.active .tab-nav__btn{

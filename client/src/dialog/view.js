@@ -17,7 +17,7 @@ let tmpl = {
                         +'<div id="cp_massage" class="compare-form__message"></div>'
                         +'<div id="cp_bottom" class="compare-form__bottom">'
                             +'<button id="compare" class="btn btn-default compare-form__button">Compare</button>'
-                            +'<button id="cancelCompare" class="btn btn-default compare-form__button">Cancel</button>'
+                            +'<button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>'
                         +'</div>'
                     +'</div>'
                     +'<div id="compare_result" class="compare_result"></div>'
