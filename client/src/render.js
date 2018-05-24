@@ -93,9 +93,9 @@ export default function render(keyword, option, items){
 
   let htmlShow = '';
 
-  $('.show-more-less').click(function () {
+  $('.show-more-less').click(function (event) {
+    event.preventDefault();
     let target = $(this);
-
     let parentTable = $(this).parent().parent().parent();
     let targets = parentTable.find('.table__row--toggle');
     if(target.hasClass('more')){
@@ -110,7 +110,8 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('.collapser').click(function(){
+  $('.collapser').click(function(event){
+    event.preventDefault();
     let target = $(this);
     let parentTable = $(this).parent().parent().parent();
 
@@ -118,15 +119,20 @@ export default function render(keyword, option, items){
 
     dataContainer.slideToggle(400, function(){
       if(dataContainer.is(":visible")){
+        target.attr('title', 'collapse');
+        target.attr('aria-label', 'collapse');
         target.html('<i class="fa fa-minus"></i>');
       }else{
+        target.attr('title', 'expand');
+        target.attr('aria-label', 'expand');
         target.html('<i class="fa fa-plus"></i>');
       }
     });
   });
 
 
-  $('.gdc-details').click(function(){
+  $('.gdc-details').click(function(event){
+    event.preventDefault();
     let target = $(this);
     let parentTarget = $(this).parent();
     let gdcLinks = parentTarget.find('.gdc-links');
@@ -146,7 +152,8 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('.cde-suggest').click(function(){
+  $('.cde-suggest').click(function(event){
+    event.preventDefault();
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({'display': 'none'});
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
