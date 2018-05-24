@@ -3,7 +3,7 @@ let tmpl = {
   toCompare: '<div id="compare_dialog">'
                     +'<div id="compare_form" class="compare-form">'
                         +'<div id="cp_top" class="compare-form__top">'
-                            +'<label class="compare-form__label--left">User Defined Values:</label>'
+                            +'<label for="cp_input"class="compare-form__label--left">User Defined Values:</label>'
                             +'<label class="compare-form__label--right">GDC Values:</label>'
                             +'<div id="cp_left" class="compare-form__left">'
                             +'<textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>'
