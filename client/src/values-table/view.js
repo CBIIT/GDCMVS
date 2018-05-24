@@ -5,8 +5,8 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
   +'</div>'
   +'<div class="col-xs-9">'
     +'<div class="table__thead row">'
-      +'<div class="table__th col-xs-6">Matched GDC Values <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover focus" tabindex="0" title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property."><i class="fa fa-info-circle"></i></a></div>'
-      +'<div class="table__th col-xs-6">CDE Permissible Values <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover focus" tabindex="0" title="For GDC dictionary properties that have a corresponding caDSR clinical data element (CDE), these values are part of that CDE\'s value domain in the caDSR. They may not currently be available in the GDC dictionary."><i class="fa fa-info-circle"></i></a></div>'
+      +'<div class="table__th col-xs-6">Matched GDC Values <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover focus" title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property."><i class="fa fa-info-circle"></i></a></div>'
+      +'<div class="table__th col-xs-6">CDE Permissible Values <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover focus" title="For GDC dictionary properties that have a corresponding caDSR clinical data element (CDE), these values are part of that CDE\'s value domain in the caDSR. They may not currently be available in the GDC dictionary."><i class="fa fa-info-circle"></i></a></div>'
     +'</div>'
   +'</div>'
 +'</div>'
@@ -17,7 +17,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
         +'<li class="table__li table__td--word-break">{{:node}}'
           +'<ul class="table__ul"><li class="table__li table__td--word-break">{{:name}}</li></ul>'
         +'</li></ul>'
-      +'<a href="javascript:void(0)" class="gdc-details"><i class="fa fa-angle-down"></i> detail</a>'
+      +'<a href="#" class="gdc-details" aria-label="details expand"><i class="fa fa-angle-down"></i> detail</a>'
       +'<div class="gdc-links" style="display: none;">'
         +'{{if local}}'
           +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a></br>'
@@ -46,7 +46,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
       +'{{if n == "no match"}}'
         +'<div class="row">'
           +'<div class="col-xs-9">no match</div>'
-          +'<div class="col-xs-3"><a href="javascript:void(0);" class="cde-suggest" style="float: right;">Suggest Item</a></div>'
+          +'<div class="col-xs-3"><a href="#" class="cde-suggest" style="float: right;">Suggest Item</a></div>'
         +'</div>'
       +'{{else}}'
 
@@ -65,7 +65,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
                   +'</div>'
                 +'</div>'
               +'</div>'
-              +'<div class="col-xs-2 table__collapser">{{if n_t.length }}<a href="javascript:void(0);" class="collapser" aria-label="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
+              +'<div class="col-xs-2 table__collapser">{{if n_t.length }}<a href="#" class="collapser" aria-label="expand" title="expand"><i class="fa fa-plus"></i></a>{{/if}}</div>'
           +'</div>'
 
           +'<div class="data-content table__td" style="display: none;">'
@@ -82,11 +82,12 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
           +'</div>'
 
         +'{{else}}'
+
           +'<div class="row">'
             +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">'
               +'{{if i_c !== undefined }}{{:i_c}} {{:n}} (ICD-O-3){{else}}{{:n}}{{/if}}'
             +'</a></div>'
-            +'<div class="col-xs-2 table__collapser">{{if s.length }}<a href="javascript:void(0);" class="collapser" aria-label="collapser"><i class="fa fa-plus"></i></a>{{/if}}</div>'
+            +'<div class="col-xs-2 table__collapser">{{if s.length }}<a href="#" class="collapser" aria-label="expand" title="expand"><i class="fa fa-plus"></i></a>{{/if}}</div>'
           +'</div>'
           +'<div class="data-content table__td" style="display: none;">'
             +'<div class="row">'
@@ -97,20 +98,18 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
               +'<div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>'
             +'</div>'
           +'</div>'
+
         +'{{/if}}'
 
-
-
-
-
       +'{{/if}}'
+      
       +'</div>'
       +'<div class="table__td table__cde-values col-xs-6">'
         +'{{if cde_s.length }}'
         +'<div class="row">'
           +'<div class="col-xs-10">{{:cde_pv}}</div>'
           +'<div class="col-xs-2 table__collapser">'
-            +'<a href="javascript:void(0);" class="collapser" aria-label="collapser"><i class="fa fa-plus"></i></a>'
+            +'<a href="#" class="collapser" aria-label="expand" title="expand"><i class="fa fa-plus"></i></a>'
           +'</div>'
         +'</div>'
         +'<div class="data-content table__td" style="display: none;">'
@@ -132,7 +131,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     +'</div> {{/for}}'
       +'{{if vs.length > 5}}'
         +'<div class="row"><div class="table__td col-xs-12">'
-         +'<a class="table-td-link show-more-less" href="javascript:void(0);"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
+         +'<a class="table-td-link show-more-less" href="#"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
         +'</div></div>'
       +'{{/if}}'
   +'</div>'

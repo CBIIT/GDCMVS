@@ -31,16 +31,8 @@ body {
 }
 
 .main-container {
-  outline: none;
   padding: 2rem;
-}
-
-.container {
   font-size: 1.3rem;
-  line-height: 2.4rem;
-  width: 100%;
-  padding-right: 0px;
-  padding-left: 0px;
 }
 
 footer{
@@ -53,8 +45,6 @@ footer{
 a, a:link, a:visited,
 a:hover, a:focus {
   color: #2a72a4;
-  // outline: none;
-  // text-decoration: none;
 }
 
 .gdc-app-list a {
@@ -67,6 +57,7 @@ a:hover, a:focus {
 .checkbox__label--padding {
   padding-left: 0 !important;
 }
+
 .checkbox__btn {
   position: relative;
   display: block;
@@ -78,6 +69,7 @@ a:hover, a:focus {
   float: left;
   margin-right: .5em;
 }
+
 .checkbox__icon {
   position: absolute;
   font-size: 0.9em;
@@ -89,9 +81,10 @@ a:hover, a:focus {
 .checkbox__input + .checkbox__btn > .checkbox__icon  {
   opacity: 0;
 }
+
 .checkbox__input:checked + .checkbox__btn {
-  background-color: #93a5a5;
-  border-color: #93a5a5;
+  background-color: #6A7676;
+  border-color: #6A7676;
 }
 .checkbox__input:checked + .checkbox__btn > .checkbox__icon {
   opacity: 1;
@@ -108,6 +101,7 @@ a:hover, a:focus {
 /* Table */
 
 .table__container {
+  font-size: 1.3rem;
   padding-left: 15px;
   padding-right: 15px;
 }
