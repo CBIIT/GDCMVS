@@ -57,12 +57,11 @@
 .ui-dialog .ui-dialog-titlebar-close:hover,
 .ui-dialog .ui-dialog-titlebar-close:focus{
   color: #666666;
-  outline: none;
 }
 
 .ui-dialog-titlebar-close:after {
   position: relative;
-  top: 5px;
+  // top: 5px;
   font-family: FontAwesome;
   font-size: 1.5em;
   content: "\f00d";
@@ -123,10 +122,6 @@
   height: 28.5em;
   width: 98%;
   resize: none;
-}
-
-.compare-form__textarea:focus {
-  outline-color: #777777;
 }
 
 .compare-form__middle {
@@ -192,3 +187,6 @@
   text-align: center;
 }
 
+.gdc-data-list {
+  outline: none;
+}
