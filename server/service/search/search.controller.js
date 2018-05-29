@@ -575,6 +575,66 @@ var preload = function (req, res) {
 	// });
 };
 
+var exportAllValues = function (req, res) {
+	let merges = [];
+	let data = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'Value']
+	];
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		v: {
+			width: 200
+		}
+	};
+	let folderPath = path.join(__dirname, '../..', 'data_horton');
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf("_") !== 0) {
+			let tmp_new = yaml.load(folderPath + '/' + file);
+			let properties = tmp_new.properties;
+			for (let property in properties) {
+				if (property.indexOf("$") !== 0) {
+					if (properties[property].enum) {
+						let values = properties[property].enum;
+						values.forEach(function (value) {
+							let temp_data = {};
+							temp_data.c = tmp_new.category;
+							temp_data.n = tmp_new.id;
+							temp_data.p = property;
+							temp_data.v = value;
+							data.push(temp_data);
+						});
+					}
+				}
+			}
+		}
+	});
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				name: 'Report', // <- Specify sheet name (optional) 
+				heading: heading, // <- Raw heading array (optional) 
+				merges: merges, // <- Merge cell ranges 
+				specification: specification, // <- Report specification 
+				data: data // <-- Report data 
+			}
+		]
+	);
+
+	// You can then return this straight 
+	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
+
+};
+
 var export2Excel = function (req, res) {
 	let query = {
 		"match_all": {}
@@ -1647,11 +1707,11 @@ var parseExcel = function (req, res) {
 							i_c: dataParsed[dp].icdo3_code,
 							n_c: dataParsed[dp].ncit_code
 						};
-						if(!mappingExists(icdo[category_node_property], temp_obj)){
-							logger.info("new icdo3 mapping found " +JSON.stringify(temp_obj));
+						if (!mappingExists(icdo[category_node_property], temp_obj)) {
+							logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
 							icdo[category_node_property].push(temp_obj);
 						}
-						
+
 					} else {
 						//If no mapping exists for this category.node.property	
 						icdo[category_node_property] = [];
@@ -1711,10 +1771,11 @@ var parseExcel = function (req, res) {
 		"message": "Done"
 	});
 }
-function mappingExists(arr, obj){
-	for(let a in arr){
+
+function mappingExists(arr, obj) {
+	for (let a in arr) {
 		var checker = JSON.stringify(arr[a]) == JSON.stringify(obj);
-		if(checker){
+		if (checker) {
 			return true;
 		}
 	}
@@ -1767,7 +1828,7 @@ var export_difference = function (req, res) {
 
 				if (tmp_new.deprecated) {
 					for (let d in tmp_new.deprecated) {
-						if (props_old[tmp_new.deprecated[d]] && props_old[tmp_new.deprecated[d]].enum) {
+						if (props_old[tmp_new.deprecated[d]].enum) {
 							props_old[tmp_new.deprecated[d]].enum.forEach(function (em) {
 								let temp_data = {};
 								temp_data.c = tmp_new.category;
@@ -1822,10 +1883,41 @@ var export_difference = function (req, res) {
 							// 		data.push(temp_data);
 							// 	}
 							// });
+						} else if (!props_old[p]) {
+							if (props_new[p].enum) {
+								props_new[p].enum.forEach(function (em) {
+									let temp_data = {};
+									temp_data.c = tmp_new.category;
+									temp_data.n = tmp_new.id;
+									temp_data.p = p;
+									temp_data.value_old = "no match";
+									temp_data.value_new = em;
+									data.push(temp_data);
+								});
+							}
 						}
 					}
 				}
 
+			} else {
+				let tmp_new = yaml.load(folderPath + '/' + file);
+				let temp_property = tmp_new.properties;
+				for (let property in temp_property) {
+					if (property.indexOf("$") !== 0) {
+						if (temp_property[property].enum) {
+							let all_enums = temp_property[property].enum;
+							all_enums.forEach(function (val) {
+								let temp_data = {};
+								temp_data.c = tmp_new.category;
+								temp_data.n = tmp_new.id;
+								temp_data.p = property;
+								temp_data.value_old = "no match";
+								temp_data.value_new = val;
+								data.push(temp_data);
+							})
+						}
+					}
+				}
 			}
 		}
 	});
@@ -1865,5 +1957,6 @@ module.exports = {
 	export_ICDO3,
 	export_difference,
 	preloadCadsrData,
-	parseExcel
+	parseExcel,
+	exportAllValues
 };
