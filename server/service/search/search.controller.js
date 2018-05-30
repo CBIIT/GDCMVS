@@ -1783,41 +1783,106 @@ function mappingExists(arr, obj) {
 }
 
 var export_difference = function (req, res) {
-	let heading = [
-		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value']
-	];
-	let merges = [];
-	let data = [];
-	let specification = {
-		c: {
-			width: 200
+	const styles = {
+		headerDark: {
+			fill: {
+				fgColor: {
+					rgb: '6969e1'
+				}
+			},
+			font: {
+				color: {
+					rgb: 'FFFFFF'
+				},
+				sz: 13,
+				bold: true
+			}
 		},
-		n: {
-			width: 200
+		cellYellow: {
+			fill: {
+				fgColor: {
+					rgb: 'ffff99'
+				}
+			}
 		},
-		p: {
-			width: 200
-		},
-		value_old: {
-			width: 200
-		},
-		value_new: {
-			width: 200
+		cellRed: {
+			fill: {
+				fgColor: {
+					rgb: 'ff9999'
+				}
+			}
 		}
 	};
-
+	let specification = {
+		c: {
+			width: 200,
+			displayName: 'Category',
+			headerStyle: styles.headerDark
+		},
+		n: {
+			width: 200,
+			displayName: 'Node',
+			headerStyle: styles.headerDark
+		},
+		p: {
+			width: 200,
+			displayName: 'Property',
+			headerStyle: styles.headerDark,
+			cellStyle: function (value, row) {
+				if (deprecated_properties.indexOf((row.c + '/' + row.n + '/' + row.p).toString()) !== -1) {
+					return styles.cellRed;
+				} else {
+					return row.p
+				}
+			}
+		},
+		value_old: {
+			width: 200,
+			displayName: 'Old GDC Dcitonary Value',
+			headerStyle: styles.headerDark,
+			cellStyle: function (value, row) {
+				if (row.value_old.toString() === 'no match') {
+					return styles.cellYellow;
+				} else {
+					return row.value_old;
+				}
+			}
+		},
+		value_new: {
+			width: 200,
+			displayName: 'New GDC Dcitonary Value',
+			headerStyle: styles.headerDark,
+			cellStyle: function (value, row) {
+				if (row.value_new.toString() === 'no match') {
+					return styles.cellYellow;
+				} else {
+					for (let dv in deprecated_values) {
+						let tmp_row = {};
+						tmp_row.c = row.c;
+						tmp_row.n = row.n;
+						tmp_row.p = row.p;
+						tmp_row.v = row.value_new;
+						if (JSON.stringify(deprecated_values[dv]) == JSON.stringify(tmp_row)) {
+							return styles.cellRed;
+						}
+					}
+					return row.value_new
+				}
+			}
+		}
+	};
+	let merges = [];
+	let data = [];
+	let deprecated_properties = [];
+	let deprecated_values = [];
 	let folderPath = path.join(__dirname, '../..', 'data_horton');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
-
-
-
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf("_") !== 0) {
 			if (fs.existsSync(folderPath_old + '/' + file)) {
 				let tmp_new = yaml.load(folderPath + '/' + file);
 				let props_new = tmp_new.properties;
-
 				let props_old = {};
 				let property_keys_old;
 				let property_keys_new = Object.keys(props_new);
@@ -1836,16 +1901,29 @@ var export_difference = function (req, res) {
 								temp_data.p = tmp_new.deprecated[d];
 								temp_data.value_old = em;
 								temp_data.value_new = "no match";
-								data.push(temp_data);
+								deprecated_properties.push(temp_data.c + '/' + temp_data.n + '/' + temp_data.p);
+								//data.push(temp_data);
 							})
 						}
-
 					}
-
+				}
+				if (tmp_new.properties) {
+					for (let property in tmp_new.properties) {
+						if (tmp_new.properties[property].deprecated_enum) {
+							let denums = tmp_new.properties[property].deprecated_enum;
+							denums.forEach(function (denum) {
+								let temp_data = {};
+								temp_data.c = tmp_new.category;
+								temp_data.n = tmp_new.id;
+								temp_data.p = property;
+								temp_data.v = denum;
+								deprecated_values.push(temp_data);
+							});
+						}
+					}
 				}
 
 				for (let p in props_new) {
-
 					if (props_new[p].enum) {
 						if (props_old[p] && props_old[p].enum) {
 							props_new[p].enum.forEach(function (em) {
@@ -1925,17 +2003,12 @@ var export_difference = function (req, res) {
 		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
 			{
 				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
 				merges: merges, // <- Merge cell ranges 
 				specification: specification, // <- Report specification 
 				data: data // <-- Report data 
 			}
 		]
 	);
-
-	//const report = excel.buildExport(content);
-
-	// You can then return this straight 
 	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
 
