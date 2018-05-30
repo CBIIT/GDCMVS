@@ -1861,7 +1861,7 @@ var export_difference = function (req, res) {
 						tmp_row.c = row.c;
 						tmp_row.n = row.n;
 						tmp_row.p = row.p;
-						tmp_row.v = row.value_new;
+						tmp_row.v = row.value_new.toLowerCase();
 						if (JSON.stringify(deprecated_values[dv]) == JSON.stringify(tmp_row)) {
 							return styles.cellRed;
 						}
@@ -1890,7 +1890,6 @@ var export_difference = function (req, res) {
 				props_old = tmp_old.properties;
 				property_keys_old = Object.keys(props_old);
 
-
 				if (tmp_new.deprecated) {
 					for (let d in tmp_new.deprecated) {
 						if (props_old[tmp_new.deprecated[d]].enum) {
@@ -1916,7 +1915,7 @@ var export_difference = function (req, res) {
 								temp_data.c = tmp_new.category;
 								temp_data.n = tmp_new.id;
 								temp_data.p = property;
-								temp_data.v = denum;
+								temp_data.v = denum.toLowerCase();
 								deprecated_values.push(temp_data);
 							});
 						}
