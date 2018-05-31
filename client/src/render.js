@@ -100,11 +100,13 @@ export default function render(keyword, option, items){
     let targets = parentTable.find('.table__row--toggle');
     if(target.hasClass('more')){
       target.removeClass('more');
+      target.attr('aria-expanded', 'false');
       targets.slideToggle(350);
       target.html(htmlShow == ''? '<i class="fa fa-angle-down"></i> Show More' : htmlShow);
     } else {
       htmlShow = target.html();
       target.addClass('more');
+      target.attr('aria-expanded', 'true');
       targets.slideToggle(350).css({display: 'flex'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
@@ -121,15 +123,16 @@ export default function render(keyword, option, items){
       if(dataContainer.is(":visible")){
         target.attr('title', 'collapse');
         target.attr('aria-label', 'collapse');
+        target.attr('aria-expanded', 'true');
         target.html('<i class="fa fa-minus"></i>');
-      }else{
+      } else {
         target.attr('title', 'expand');
         target.attr('aria-label', 'expand');
+        target.attr('aria-expanded', 'false');
         target.html('<i class="fa fa-plus"></i>');
       }
     });
   });
-
 
   $('.gdc-details').click(function(event){
     event.preventDefault();
