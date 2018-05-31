@@ -855,6 +855,7 @@ properties:
       - "No"
       - Unknown
       - Not Reported
+
   bmi:
     term:
       $ref: "_terms.yaml#/bmi"
