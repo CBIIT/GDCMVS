@@ -9,6 +9,7 @@ var path = require('path');
 var elasticsearch = require('elasticsearch');
 var yaml = require('yamljs');
 var config = require('../config');
+var config_dev = require('../config/dev');
 var logger = require('./logger');
 var caDSR = require('./caDSR');
 var extend = require('util')._extend;
@@ -19,8 +20,8 @@ var gdc_values = {};
 var allProperties = [];
 
 var esClient = new elasticsearch.Client({
-	host: config.elasticsearch.host,
-	log: config.elasticsearch.log
+	host: config_dev.elasticsearch.host,
+	log: config_dev.elasticsearch.log
 });
 
 function parseRef(ref, termsJson, defJson){
