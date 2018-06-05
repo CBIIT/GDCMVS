@@ -19,7 +19,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
         +'</li></ul>'
 
       +'<div class="dropdown">'
-        +'<a href="#" type="button" id="dropdownMenu1" data-toggle="dropdown"><i class="fa fa-caret-down"></i> detail</a>'
+        +'<a href="#" type="button" data-toggle="dropdown"><i class="fa fa-caret-down"></i> detail</a>'
         +'<ul class="dropdown-menu dropdown-menu__gdc-links">'
           +'{{if local}}'    
             +'<li><a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a></li>'
