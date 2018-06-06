@@ -3,7 +3,9 @@
 var express = require('express');
 var config = require('./server/config');
 var logger = require('./server/components/logger');
+var compression = require('compression');
 var app = express();
+app.use(compression());
 
 require('./server/config/express')(app);
 require('./routes')(app);
