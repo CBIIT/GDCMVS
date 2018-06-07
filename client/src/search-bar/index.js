@@ -40,7 +40,6 @@ const func = {
           //Save the data in localStorage
           localStorage.setItem('keyword', keyword);
           localStorage.setItem('option', JSON.stringify(option));
-          localStorage.setItem('items', JSON.stringify(items));
 
           render(keyword, option, items);
           //todo: close progress bar
