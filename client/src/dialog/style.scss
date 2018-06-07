@@ -14,9 +14,6 @@
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
 }
-/*.ui-widget-header {
-  border-bottom: 1px solid #dddddd;
-}*/
 
 .dialog__header{
   position: absolute;
@@ -63,7 +60,6 @@
 
 .ui-dialog-titlebar-close:after {
   position: relative;
-  // top: 5px;
   font-family: FontAwesome;
   font-size: 1.5em;
   content: "\f00d";
@@ -157,7 +153,6 @@
 }
 
 .compare-form__button {
-  // margin-left: 1em;
   padding: 0.4em 2em;
   min-width: 9em;
   box-shadow: none !important;
