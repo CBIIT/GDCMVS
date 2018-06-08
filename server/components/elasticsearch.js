@@ -378,7 +378,7 @@ function bulkIndex(next){
 			}
 		});
 	}
-	var folderPath = path.join(__dirname, '..','data_horton');
+	var folderPath = path.join(__dirname, '..','data');
 	var count = 0, total = 0;
 	var termsJson = yaml.load(folderPath+'/_terms.yaml');
 	var defJson = yaml.load(folderPath + '/_definitions.yaml');
@@ -519,7 +519,7 @@ function createIndexes(params, next){
 exports.createIndexes = createIndexes;
 
 function preloadDataFromCaDSR(next){
-	let folderPath = path.join(__dirname, '..','data_horton');
+	let folderPath = path.join(__dirname, '..','data');
 	let termsJson = yaml.load(folderPath+'/_terms.yaml');
 	let content_1 = fs.readFileSync("./cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
