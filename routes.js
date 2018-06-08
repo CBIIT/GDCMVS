@@ -5,9 +5,12 @@
 'use strict';
 
 var config = require('./server/config');
+var compression = require('compression');
+var helmet =  require('helmet');
 
 module.exports = function(app){
-
+	app.use(compression());
+	app.use(helmet());
 	//allows CrossDomainAccess to API
 	app.use(function(req, res, next){
 		res.header('Access-Control-Allow-Origin', '*');
