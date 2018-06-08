@@ -595,7 +595,7 @@ var exportAllValues = function (req, res) {
 			width: 200
 		}
 	};
-	let folderPath = path.join(__dirname, '../..', 'data_horton');
+	let folderPath = path.join(__dirname, '../..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf("_") !== 0) {
 			let tmp_new = yaml.load(folderPath + '/' + file);
@@ -767,7 +767,7 @@ var export_common = function (req, res) {
 
 	let content_1 = fs.readFileSync("./conceptCode.js").toString();
 	//let cc = JSON.parse(content_1);
-	let folderPath = path.join(__dirname, '../..', 'data_horton');
+	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
 	fs.readdirSync(folderPath).forEach(file => {
@@ -1119,7 +1119,7 @@ var export_ICDO3 = function (req, res) {
 		primary_diagnosis[p.toLowerCase()].term = p;
 	}
 	let diagnosis = null;
-	let folderPath = path.join(__dirname, '../..', 'data_horton');
+	let folderPath = path.join(__dirname, '../..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file == "diagnosis.yaml") {
 			diagnosis = yaml.load(folderPath + '/' + file);
@@ -1875,7 +1875,7 @@ var export_difference = function (req, res) {
 	let data = [];
 	let deprecated_properties = [];
 	let deprecated_values = [];
-	let folderPath = path.join(__dirname, '../..', 'data_horton');
+	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
 	fs.readdirSync(folderPath).forEach(file => {
