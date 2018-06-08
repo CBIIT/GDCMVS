@@ -1,7 +1,7 @@
-
 import func from './search-bar/';
 import dialog from './dialog/';
 import render from './render';
+import api from './api';
 
 $("#search").bind("click", func.search);
 
@@ -303,17 +303,15 @@ $(function() {
       anchor.html($.trim(anchor[0].innerText));
   });
 
-  if( localStorage.hasOwnProperty('keyword') ||
-      localStorage.hasOwnProperty('option') ||
-      localStorage.hasOwnProperty('items')){
+  if( localStorage.hasOwnProperty('keyword') &&
+      localStorage.hasOwnProperty('option')){
 
     $('#gdc-loading-icon').fadeIn(100);
 
-    setTimeout(function(){
+    var keyword = localStorage.getItem('keyword');
+    var option = JSON.parse(localStorage.getItem('option'));
 
-      var keyword = localStorage.getItem('keyword');
-      var option = JSON.parse(localStorage.getItem('option'));
-      var items = JSON.parse(localStorage.getItem('items'));
+    api.searchAll(keyword, option, function(keyword, option, items) {
 
       if(keyword != null || option != null || items != null){
 
@@ -330,11 +328,10 @@ $(function() {
         }
 
         render(keyword, option, items);
-
+        //todo: close progress bar
         $('#gdc-loading-icon').fadeOut('fast');
-      }
-
-    }, 100);
+        }
+    });
   }
 
 });
