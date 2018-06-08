@@ -58,6 +58,11 @@ a:hover, a:focus {
 
 
 /* Checkbox */
+.checkbox__label {
+  margin-left: 20px;
+  padding-left: 0 !important; 
+  position: relative;
+}
 
 .checkbox__label--padding {
   padding-left: 0 !important;
@@ -81,6 +86,13 @@ a:hover, a:focus {
   line-height: 0;
   top: 50%;
   left: 26%;
+}
+
+.checkbox__input {
+  margin: 0 !important;
+  position: absolute !important;
+  top: 5px;
+  left: 5px;
 }
 
 .checkbox__input + .checkbox__btn > .checkbox__icon  {
