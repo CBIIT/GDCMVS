@@ -7,17 +7,17 @@ let activeTab = 0;
 
 const func = {
     search(){
-        let keyword = $("#keywords").val();
+        let keywordCase = $("#keywords").val();
+        let keyword = keywordCase.toLowerCase();
         let option = {};
 
-        if(keyword == ""){
+        if(keywordCase == ""){
             option.error = true;
             $('#keywords').addClass('search-bar__input--has-error');
-            render(keyword, option, []);
+            render(keywordCase, option, []);
             return;
         }
 
-        keyword = keyword.toLowerCase();
         //get selected tab
         let count = 0;
         $("li[role='presentation']").each(function(){
@@ -38,10 +38,10 @@ const func = {
         api.searchAll(keyword, option, function(keyword, option, items) {
 
           //Save the data in localStorage
-          localStorage.setItem('keyword', keyword);
+          localStorage.setItem('keyword', keywordCase);
           localStorage.setItem('option', JSON.stringify(option));
 
-          render(keyword, option, items);
+          render(keywordCase, option, items);
           //todo: close progress bar
           $('#gdc-loading-icon').fadeOut('fast');
         });
