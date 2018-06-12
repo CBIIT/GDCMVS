@@ -298,7 +298,7 @@ window.findWord = findWord;
 $(function() {
 
   $('#body a[href^="http"]').each(function(){
-      var anchor = $(this);
+      let anchor = $(this);
       anchor.removeClass('external-link');
       anchor.html($.trim(anchor[0].innerText));
   });
@@ -308,14 +308,15 @@ $(function() {
 
     $('#gdc-loading-icon').fadeIn(100);
 
-    var keyword = localStorage.getItem('keyword');
-    var option = JSON.parse(localStorage.getItem('option'));
+    let keywordCase = localStorage.getItem('keyword');
+    let option = JSON.parse(localStorage.getItem('option'));
+    let keyword = keywordCase.toLowerCase();
 
     api.searchAll(keyword, option, function(keyword, option, items) {
 
       if(keyword != null || option != null || items != null){
 
-        $("#keywords").val(keyword);
+        $("#keywords").val(keywordCase);
 
         if(option.match != 'partial'){
           $("#i_syn").prop('checked', true);
@@ -327,7 +328,7 @@ $(function() {
           $("#i_syn").prop('checked', true);
         }
 
-        render(keyword, option, items);
+        render(keywordCase, option, items);
         //todo: close progress bar
         $('#gdc-loading-icon').fadeOut('fast');
         }
