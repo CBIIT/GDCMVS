@@ -91,8 +91,6 @@ export default function render(keyword, option, items){
     localStorage.setItem('option', JSON.stringify(option));
   });
 
-  let htmlShow = '';
-
   $('.show-more-less').click(function (event) {
     event.preventDefault();
     let target = $(this);
@@ -102,9 +100,8 @@ export default function render(keyword, option, items){
       target.removeClass('more');
       target.attr('aria-expanded', 'false');
       targets.slideToggle(350);
-      target.html(htmlShow == ''? '<i class="fa fa-angle-down"></i> Show More' : htmlShow);
+      target.html('<i class="fa fa-angle-down"></i> Show More ('+ target.attr('data-hidden') +')');
     } else {
-      htmlShow = target.html();
       target.addClass('more');
       target.attr('aria-expanded', 'true');
       targets.slideToggle(350).css({display: 'flex'});

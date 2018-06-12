@@ -138,7 +138,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     +'</div> {{/for}}'
       +'{{if vs.length > 5}}'
         +'<div class="row"><div class="table__td col-xs-12">'
-         +'<a href="#" class="table-td-link show-more-less" aria-expanded="false"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
+         +'<a href="#" class="table-td-link show-more-less" aria-expanded="false" data-hidden="{{:vs.length - 5}}"><i class="fa fa-angle-down"></i> Show More ({{:vs.length - 5}})</a>'
         +'</div></div>'
       +'{{/if}}'
   +'</div>'
