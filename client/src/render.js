@@ -67,15 +67,36 @@ export default function render(keyword, option, items){
 
 
   $("#treeview .treeview__trigger").click(function (event) {
-      // event.stopPropagation();
       event.preventDefault();
       let target = $(this).closest('.parent');
-      target.find('>ul').toggle();
-      if (target.hasClass('expand'))
+      target.find('>ul.treeview__ul').toggle();
+      if (target.hasClass('expand')){
         target.removeClass('expand');
-      else
+      }else{
         target.addClass('expand');
+      }
   });
+
+  $('#trs-checkbox').click(function(){
+    if(this.checked){
+      $('.treeview__ul--all').addClass('treeview__ul').show();
+      $('.treeview__ul--hl').removeClass('treeview__ul').hide();
+    }else{
+      $('.treeview__ul--hl').addClass('treeview__ul').show();
+      $('.treeview__ul--all').removeClass('treeview__ul').hide();
+    }
+  });
+
+  $('#tree_toggle').click(function(){
+    var target = $(this);
+    if(target.hasClass('active')){
+      $('.treeview__ul').hide();
+      target.html('<i class="fa fa-angle-up"></i>  Collapse All');
+    }else{
+      $('.treeview__ul').show();
+      target.html('<i class="fa fa-angle-down"></i> Expand All');
+    }
+  })
 
   $('a.redirect').bind('click', function(event) {
     if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
@@ -149,19 +170,6 @@ export default function render(keyword, option, items){
     let parentTarget = $(this).parent();
     let gdcLinks = parentTarget.find('.gdc-links');
     gdcLinks.slideToggle(350);
-  });
-
-  let hiddenRows = $('#tree_table').find('.data-hide');
-  $('#trs-checkbox').click(function(){
-    if(this.checked){
-      hiddenRows.each(function(){
-        $(this).removeClass('hide');
-      });
-    }else{
-      hiddenRows.each(function(){
-        $(this).addClass('hide');
-      });
-    }
   });
 
   $('.cde-suggest').click(function(event){
