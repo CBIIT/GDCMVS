@@ -142,7 +142,7 @@ const func = {
         count_p = 1;
       }
       //put value to tree table
-      if (source.enum != undefined) {
+      if (source.enum != undefined && !source.cde_pv) {
         if (enum_n.length == 0 && enum_s.length == 0 && matched_pv.length ==
           0) {
           //if no values show in the values tab
@@ -283,8 +283,6 @@ const func = {
       mh: h,
       trs: trs
     });
-
-
     let new_data = [];
     trs.forEach(function (data) {
       let object = {
@@ -294,6 +292,7 @@ const func = {
         object.title = data.title;
         object.type = "category";
         object.len = data.len;
+        object.id = data.id;
 
         trs.forEach(function (data1) {
           if (data1.type == "folder" && data1.data_tt_parent_id === data.data_tt_id) {
@@ -302,6 +301,7 @@ const func = {
             temp_object.desc = data1.desc;
             temp_object.len = data1.len;
             temp_object.type = data1.type;
+            temp_object.l_id = data1.l_id;
             temp_object.children = [];
             trs.forEach(function (data2) {
 
@@ -311,6 +311,7 @@ const func = {
                   temp_prop.desc = data2.desc;
                   temp_prop.len = data2.len;
                   temp_prop.type = data2.type;
+                  temp_prop.parent_l_id = data2.parent_l_id;
                   temp_prop.hl_children = [];
                   temp_prop.all_children = [];
 
@@ -324,6 +325,14 @@ const func = {
                       } else {
                         temp_prop.all_children.push(temp_value);
                       }
+                  }
+                  if(data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
+                    let temp_value = {};
+                    temp_value.url = data3.url;
+                    temp_value.type = data3.type;
+                    temp_value.l_id = data3.l_id;
+                    temp_value.l_type = data3.l_type;
+                    temp_prop.hl_children.push(temp_value);
                   }
                 });
                 temp_object.children.push(temp_prop);
