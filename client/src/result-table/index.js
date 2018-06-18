@@ -276,33 +276,27 @@ const func = {
       result.len += p.len + count_p;
     });
 
-    let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 305;
-    h = (h < 430) ? 430 : h;
-    let html = $.templates(tmpl).render({
-      mh: h,
-      trs: trs
-    });
-
-
-    let new_data = [];
+    let newtrs = [];
     trs.forEach(function (data) {
-      let object = {
-        children: []
+      let temp_categ = {
+        nodes: []
       };
       if (data.type == "category") {
-        object.title = data.title;
-        object.type = "category";
-        object.len = data.len;
+        temp_categ.title = data.title;
+        temp_categ.type = "category";
+        temp_categ.len = data.len;
+        temp_categ.id = data.id;
 
         trs.forEach(function (data1) {
           if (data1.type == "folder" && data1.data_tt_parent_id === data.data_tt_id) {
-            let temp_object = {};
-            temp_object.title = data1.title;
-            temp_object.desc = data1.desc;
-            temp_object.len = data1.len;
-            temp_object.type = data1.type;
-            temp_object.children = [];
+            let temp_node = {};
+            temp_node.title = data1.title;
+            temp_node.desc = data1.desc;
+            temp_node.len = data1.len;
+            temp_node.type = data1.type;
+            temp_node.l_id = data1.l_id;
+            temp_node.properties = [];
+
             trs.forEach(function (data2) {
 
               if (data2.type === "property" && data2.data_tt_parent_id === data1.data_tt_id) {
@@ -311,31 +305,47 @@ const func = {
                   temp_prop.desc = data2.desc;
                   temp_prop.len = data2.len;
                   temp_prop.type = data2.type;
-                  temp_prop.hl_children = [];
-                  temp_prop.all_children = [];
+                  temp_prop.parent_l_id = data2.parent_l_id;
+                  temp_prop.hl_values = [];
+                  temp_prop.all_values = [];
+                  temp_prop.link_values = [];
 
                 trs.forEach(function (data3) {
                   if (data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id) {
                       let temp_value = {};
                       temp_value.title = data3.title;
                       temp_value.type = data3.type;
+                      temp_prop.all_values.push(temp_value);
                       if (data3.exist) {
-                        temp_prop.hl_children.push(temp_value);
-                      } else {
-                        temp_prop.all_children.push(temp_value);
+                        temp_prop.hl_values.push(temp_value);
                       }
                   }
+                  if(data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
+                    let temp_value = {};
+                    temp_value.url = data3.url;
+                    temp_value.type = data3.type;
+                    temp_value.l_id = data3.l_id;
+                    temp_value.l_type = data3.l_type;
+                    temp_prop.link_values.push(temp_value);
+                  }
                 });
-                temp_object.children.push(temp_prop);
+                temp_node.properties.push(temp_prop);
               }
             });
-            object.children.push(temp_object);
+            temp_categ.nodes.push(temp_node);
           }
         });
-        new_data.push(object);
+        newtrs.push(temp_categ);
       }
     });
-    console.log(new_data);
+
+    let offset = $('#root').offset().top;
+    let h = window.innerHeight - offset - 305;
+    h = (h < 430) ? 430 : h;
+    let html = $.templates(tmpl).render({
+      mh: h,
+      newtrs: newtrs
+    });
 
     result.html = html;
     return result;
