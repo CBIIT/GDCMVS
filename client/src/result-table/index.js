@@ -142,7 +142,7 @@ const func = {
         count_p = 1;
       }
       //put value to tree table
-      if (source.enum != undefined && !source.cde_pv) {
+      if (source.enum != undefined) {
         if (enum_n.length == 0 && enum_s.length == 0 && matched_pv.length ==
           0) {
           //if no values show in the values tab
