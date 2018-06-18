@@ -31,62 +31,74 @@ export default function render(keyword, option, items){
 
   $("#root").html(html);
 
-  if($("#tree_table").length){
-    $("#tree_table").treetable({expandable: true});
-    $("#tree_toggle").bind('click', function(){
-      var target = $(this);
-      if(target.attr("aria-pressed") == 'true') {
-        target.html('<i class="fa fa-angle-down"></i> Expand All');
-        $('#gdc-loading-icon').fadeIn(100);
+  // if($("#tree_table").length){
+  //   $("#tree_table").treetable({expandable: true});
+  //   $("#tree_toggle").bind('click', function(){
+  //     var target = $(this);
+  //     if(target.attr("aria-pressed") == 'true') {
+  //       target.html('<i class="fa fa-angle-down"></i> Expand All');
+  //       $('#gdc-loading-icon').fadeIn(100);
 
-        setTimeout(function(){
-          $("#tree_table").find('a[title="Collapse"]').each(function(){
-            $(this).trigger("click");
-          });
-          $('#gdc-loading-icon').fadeOut('fast');
-        }, 1000);
-      } else {
-        target.html('<i class="fa fa-angle-up"></i>  Collapse All');
-        $('#gdc-loading-icon').fadeIn(100);
+  //       setTimeout(function(){
+  //         $("#tree_table").find('a[title="Collapse"]').each(function(){
+  //           $(this).trigger("click");
+  //         });
+  //         $('#gdc-loading-icon').fadeOut('fast');
+  //       }, 1000);
+  //     } else {
+  //       target.html('<i class="fa fa-angle-up"></i>  Collapse All');
+  //       $('#gdc-loading-icon').fadeIn(100);
 
-        setTimeout(function(){
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-            $(this).trigger("click");
-          });
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-            $(this).trigger("click");
-          });
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-            $(this).trigger("click");
-          });
-          $('#gdc-loading-icon').fadeOut('fast');
-        }, 1000);
-      }
-    });
-  }
+  //       setTimeout(function(){
+  //         $("#tree_table").find('a[title="Expand"]').each(function(){
+  //           $(this).trigger("click");
+  //         });
+  //         $("#tree_table").find('a[title="Expand"]').each(function(){
+  //           $(this).trigger("click");
+  //         });
+  //         $("#tree_table").find('a[title="Expand"]').each(function(){
+  //           $(this).trigger("click");
+  //         });
+  //         $('#gdc-loading-icon').fadeOut('fast');
+  //       }, 1000);
+  //     }
+  //   });
+  // }
+
+
+  $("#treeview .treeview__trigger").click(function (event) {
+      // event.stopPropagation();
+      event.preventDefault();
+      let target = $(this).closest('.parent');
+      target.find('>ul').toggle();
+      if (target.hasClass('expand'))
+        target.removeClass('expand');
+      else
+        target.addClass('expand');
+  });
 
   $('a.redirect').bind('click', function(event) {
     if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
       event.preventDefault();
-      var href = $(this).attr('href');
+      let href = $(this).attr('href');
       window.open('https://docs.gdc.cancer.gov' + href, '_blank');
     }
   });
 
   $('#tab-values').bind('click', function(){
-    var option = JSON.parse(localStorage.getItem('option'));
+    let option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 0;
     localStorage.setItem('option', JSON.stringify(option));
   });
 
   $('#tab-properties').bind('click', function(){
-    var option = JSON.parse(localStorage.getItem('option'));
+    let option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 1;
     localStorage.setItem('option', JSON.stringify(option));
   });
 
   $('#tab-dictionary').bind('click', function(){
-    var option = JSON.parse(localStorage.getItem('option'));
+    let option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 2;
     localStorage.setItem('option', JSON.stringify(option));
   });

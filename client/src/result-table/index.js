@@ -230,12 +230,42 @@ const func = {
         c.len += p.len + count_p;
         n.len += p.len + count_p;
         result.len += p.len + count_p;
- 	});
+     });
+     
+     let newtrs = [
+        {title: "administrative", type: "category", desc:"", len: 3, children: [
+           {title: "Case", type: "folder", desc:"The collection of all data related to a specific subject in the context of a specific project.", len: 3, children: [
+               {title: "disease_type", type: "property", desc:"The text term used to describe the type of malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).", len: 3, children: [
+                   {title: "Blood Vessel Tumors", type: "value"},
+                   {title: "Leukemias, NOS", type: "value"}
+               ]},
+               {title: "primary_site", type: "property", desc:"The text term used to describe the general location of the malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).", len: 1, children: [
+                   {title: "Blood", type: "value"}
+               ]}
+           ]}
+        ]},
+        {title: "biospecimen", type: "category", desc:"", len: 17, children: [
+           {title: "Sample", type: "folder", desc:"Any material sample taken from a biological entity for testing, diagnostic, propagation, treatment or research purposes, including a sample obtained from a living organism or taken from the biological object after halting of all its life functions. Biospecimen can contain one or more components including but not limited to cellular molecules, cells, tissues, organs, body fluids, embryos, and body excretory products.", len: 17, children: [
+               {title: "composition", type: "property", desc:"Text term that represents the cellular composition of the sample.", len: 2, children: [
+                   {title: "Peripheral Blood Components NOS", type: "value"},
+                   {title: "Peripheral Whole Blood", type: "value"}
+               ]},
+               {title: "sample_type", type: "property", desc:"Text term to describe the source of a biospecimen used for a laboratory test.", len: 11, children: [
+                   {title: "Blood Derived Cancer - Bone Marrow, Post-treatment", type: "value"},
+                   {title: "Blood Derived Cancer - Peripheral Blood, Post-treatment", type: "value"},
+                   {title: "Blood Derived Normal", type: "value"},
+                   {title: "Primary Blood Derived Cancer - Peripheral Blood", type: "value"},
+                   {title: "Recurrent Blood Derived Cancer - Peripheral Blood", type: "value"}
+               ]},
+               {title: "sample_type", type: "property", desc:"Text term to describe the source of a biospecimen used for a laboratory test.", len: 0, children: []}
+           ]}
+        ]},
+    ]
 
- 	  let offset = $('#root').offset().top;
+ 	let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 305;
     h = (h < 430) ? 430 : h;
-    let html = $.templates(tmpl).render({mh: h,trs: trs});
+    let html = $.templates(tmpl).render({mh: h,trs: trs, newtrs: newtrs});
 
     result.html = html;
     return result;

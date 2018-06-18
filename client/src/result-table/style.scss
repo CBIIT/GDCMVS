@@ -34,3 +34,42 @@ table.treetable tr.expanded span.indenter a:before {
   font-family: FontAwesome;
   content: "\f106";
 }
+
+
+.treeview , .treeview ul {
+  list-style: none;
+  padding: 0;
+} 
+
+.treeview .parent > ul {
+  display: none;
+}
+
+.treeview__row {
+  border-bottom: 1px solid #ecf0f1;
+  text-align: left;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 1.428571;
+}
+
+.folder .treeview__trigger {
+  margin-left: 20px;
+}
+
+.property .treeview__trigger {
+  margin-left: 40px;
+}
+
+.value .treeview__col:first-child {
+  padding-left: 90px;
+}
+
+.treeview__trigger {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.treeview__col {
+  display: inline-block;
+}
