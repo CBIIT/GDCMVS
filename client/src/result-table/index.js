@@ -23,9 +23,11 @@ const func = {
     items.forEach(function (item) {
       let hl = item.highlight;
       let source = item._source;
-      let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+      let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl[
+        'enum.s'] || hl["enum.s.have"] : [];
       let enum_s_icdo3 = [];
-      let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+      let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
+        "enum.n"] || hl["enum.n.have"] : [];
       if (enum_s.length === 0 && enum_n.length === 0) {
         enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
       }
@@ -141,7 +143,8 @@ const func = {
       }
       //put value to tree table
       if (source.enum != undefined) {
-        if (enum_n.length == 0 && enum_s.length == 0 && matched_pv.length == 0) {
+        if (enum_n.length == 0 && enum_s.length == 0 && matched_pv.length ==
+          0) {
           //if no values show in the values tab
           p.node = "branch";
           trs.push(p);
@@ -283,46 +286,55 @@ const func = {
 
 
     let new_data = [];
-    trs.forEach(function(data){
+    trs.forEach(function (data) {
       let object = {
-        node: {}
+        children: []
       };
-      if(data.type == "category"){
-        object.category = data.title
+      if (data.type == "category") {
+        object.title = data.title;
+        object.type = "category";
         object.len = data.len;
-        object.description = "";
-        trs.forEach(function(data1){
-          if(data1.type == "folder" && data1.data_tt_parent_id === data.data_tt_id){
-            object.node[data1.title] = {
-              properties: []
-            };
-            object.node[data1.title].description = data1.desc;
-            object.node[data1.title].len = data1.len;
-            trs.forEach(function(data2){
-              let data2_parent_id =  data2.data_tt_parent_id.split("_")[1];
-              if(data2.type === "property" && data2.data_tt_parent_id === data1.data_tt_id){
-                object.node[data1.title].properties[data2.title] = {
-                  hl_values: [],
-                  all_values: []
-                };
-                object.node[data1.title].properties[data2.title].description = data2.desc;
-                object.node[data1.title].properties[data2.title].len = data2.len;
-                trs.forEach(function(data3){
-                  if(data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id){
-                    if(data3.exist){
-                      object.node[data1.title].properties[data2.title].hl_values.push(data3.title);
-                    }else{
-                      object.node[data1.title].properties[data2.title].all_values.push(data3.title);
-                    }
+
+        trs.forEach(function (data1) {
+          if (data1.type == "folder" && data1.data_tt_parent_id === data.data_tt_id) {
+            let temp_object = {};
+            temp_object.title = data1.title;
+            temp_object.desc = data1.desc;
+            temp_object.len = data1.len;
+            temp_object.type = data1.type;
+            temp_object.children = [];
+            trs.forEach(function (data2) {
+
+              if (data2.type === "property" && data2.data_tt_parent_id === data1.data_tt_id) {
+                  let temp_prop = {};
+                  temp_prop.title = data2.title;
+                  temp_prop.desc = data2.desc;
+                  temp_prop.len = data2.len;
+                  temp_prop.type = data2.type;
+                  temp_prop.hl_children = [];
+                  temp_prop.all_children = [];
+
+                trs.forEach(function (data3) {
+                  if (data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id) {
+                      let temp_value = {};
+                      temp_value.title = data3.title;
+                      temp_value.type = data3.type;
+                      if (data3.exist) {
+                        temp_prop.hl_children.push(temp_value);
+                      } else {
+                        temp_prop.all_children.push(temp_value);
+                      }
                   }
                 });
+                temp_object.children.push(temp_prop);
               }
-            })
+            });
+            object.children.push(temp_object);
           }
-        })
+        });
         new_data.push(object);
       }
-    })
+    });
     console.log(new_data);
 
     result.html = html;
