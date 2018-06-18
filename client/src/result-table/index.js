@@ -298,7 +298,6 @@ const func = {
             temp_node.properties = [];
 
             trs.forEach(function (data2) {
-
               if (data2.type === "property" && data2.data_tt_parent_id === data1.data_tt_id) {
                   let temp_prop = {};
                   temp_prop.title = data2.title;
