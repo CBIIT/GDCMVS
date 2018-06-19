@@ -298,25 +298,26 @@ window.findWord = findWord;
 $(function() {
 
   $('#body a[href^="http"]').each(function(){
-      let anchor = $(this);
-      anchor.removeClass('external-link');
-      anchor.html($.trim(anchor[0].innerText));
+    let anchor = $(this);
+    anchor.removeClass('external-link');
+    anchor.html($.trim(anchor[0].innerText));
   });
 
   if( localStorage.hasOwnProperty('keyword') &&
-      localStorage.hasOwnProperty('option')){
+      localStorage.hasOwnProperty('option') &&
+      localStorage.hasOwnProperty('items')){
 
-    $('#gdc-loading-icon').fadeIn(100);
+    $('#gdc-loading-icon').show();
 
-    let keywordCase = localStorage.getItem('keyword');
-    let option = JSON.parse(localStorage.getItem('option'));
-    let keyword = keywordCase.toLowerCase();
+    setTimeout(function(){
 
-    api.searchAll(keyword, option, function(keyword, option, items) {
+      let keyword = localStorage.getItem('keyword');
+      let option = JSON.parse(localStorage.getItem('option'));
+      let items = JSON.parse(localStorage.getItem('items'));
 
       if(keyword != null || option != null || items != null){
 
-        $("#keywords").val(keywordCase);
+        $("#keywords").val(keyword);
 
         if(option.match != 'partial'){
           $("#i_syn").prop('checked', true);
@@ -328,11 +329,11 @@ $(function() {
           $("#i_syn").prop('checked', true);
         }
 
-        render(keywordCase, option, items);
+        render(keyword, option, items);
         //todo: close progress bar
         $('#gdc-loading-icon').fadeOut('fast');
-        }
-    });
-  }
+      }
 
+    }, 100);
+  }
 });
