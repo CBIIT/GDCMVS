@@ -31,72 +31,62 @@ export default function render(keyword, option, items){
 
   $("#root").html(html);
 
-  // if($("#tree_table").length){
-  //   $("#tree_table").treetable({expandable: true});
-  //   $("#tree_toggle").bind('click', function(){
-  //     var target = $(this);
-  //     if(target.attr("aria-pressed") == 'true') {
-  //       target.html('<i class="fa fa-angle-down"></i> Expand All');
-  //       $('#gdc-loading-icon').fadeIn(100);
-
-  //       setTimeout(function(){
-  //         $("#tree_table").find('a[title="Collapse"]').each(function(){
-  //           $(this).trigger("click");
-  //         });
-  //         $('#gdc-loading-icon').fadeOut('fast');
-  //       }, 1000);
-  //     } else {
-  //       target.html('<i class="fa fa-angle-up"></i>  Collapse All');
-  //       $('#gdc-loading-icon').fadeIn(100);
-
-  //       setTimeout(function(){
-  //         $("#tree_table").find('a[title="Expand"]').each(function(){
-  //           $(this).trigger("click");
-  //         });
-  //         $("#tree_table").find('a[title="Expand"]').each(function(){
-  //           $(this).trigger("click");
-  //         });
-  //         $("#tree_table").find('a[title="Expand"]').each(function(){
-  //           $(this).trigger("click");
-  //         });
-  //         $('#gdc-loading-icon').fadeOut('fast');
-  //       }, 1000);
-  //     }
-  //   });
-  // }
-
-
   $("#treeview .treeview__trigger").click(function (event) {
       event.preventDefault();
-      let target = $(this).closest('.parent');
-      target.find('>ul.treeview__ul').toggle();
-      if (target.hasClass('expand')){
-        target.removeClass('expand');
+      let $this = $(this);
+      let $target = $this.closest('.treeview__parent');
+      $target.find('>ul.treeview__ul').toggle();
+      if ($target.hasClass('treeview__parent--open')){
+        $target.removeClass('treeview__parent--open');
+        $this.attr('aria-label', 'expand');
+        $this.html('<i class="fa fa-angle-down"></i>');
       }else{
-        target.addClass('expand');
+        $target.addClass('treeview__parent--open');
+        $this.attr('aria-label', 'collapse');
+        $this.html('<i class="fa fa-angle-up"></i>');
       }
   });
 
   $('#trs-checkbox').click(function(){
     if(this.checked){
-      $('.treeview__ul--all').addClass('treeview__ul').show();
-      $('.treeview__ul--hl').removeClass('treeview__ul').hide();
+      $('.treeview__ul--all').addClass('treeview__ul').each(function(){
+        let $this = $(this);
+        let $prev = $this.prev('.treeview__ul--hl');
+        if($prev.is(':visible')){
+          $this.show();
+          $prev.hide();
+        }
+      });
+      $('.treeview__ul--hl').removeClass('treeview__ul');
     }else{
-      $('.treeview__ul--hl').addClass('treeview__ul').show();
-      $('.treeview__ul--all').removeClass('treeview__ul').hide();
+      $('.treeview__ul--hl').addClass('treeview__ul').each(function(){
+        let $this = $(this);
+        let $next = $this.next('.treeview__ul--all');
+        if($next.is(':visible')){
+          $this.show();
+          $next.hide();
+        }
+      });;
+      $('.treeview__ul--all').removeClass('treeview__ul');
     }
   });
 
   $('#tree_toggle').click(function(){
-    var target = $(this);
-    if(target.hasClass('active')){
-      $('.treeview__ul').hide();
-      target.html('<i class="fa fa-angle-up"></i>  Collapse All');
+    let $this = $(this);
+    let $tview_ul = $('.treeview .treeview__ul');
+    let $tview_trigger = $('.treeview .treeview__trigger');
+    if($this.hasClass('active')){
+      $tview_ul.hide();
+      $tview_trigger.attr('aria-label', 'expand');
+      $tview_trigger.html('<i class="fa fa-angle-down"></i>');
+      $this.html('<i class="fa fa-angle-down"></i> Expand All');
     }else{
-      $('.treeview__ul').show();
-      target.html('<i class="fa fa-angle-down"></i> Expand All');
+      $tview_ul.show();
+      $tview_trigger.attr('aria-label', 'collapse');
+      $tview_trigger.html('<i class="fa fa-angle-up"></i>');
+      $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
     }
-  })
+  });
 
   $('a.redirect').bind('click', function(event) {
     if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
