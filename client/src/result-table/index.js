@@ -305,6 +305,7 @@ const func = {
                   temp_prop.len = data2.len;
                   temp_prop.type = data2.type;
                   temp_prop.parent_l_id = data2.parent_l_id;
+                  temp_prop.l_id = data2.l_id;
                   temp_prop.hl_values = [];
                   temp_prop.all_values = [];
                   temp_prop.link_values = [];
