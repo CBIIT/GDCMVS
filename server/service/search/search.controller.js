@@ -551,6 +551,22 @@ var preloadCadsrData = function (req, res) {
 	});
 }
 
+var preloadDataTypeFromCaDSR  = function (req, res) {
+	elastic.preloadDataTypeFromCaDSR(function (result) {
+		if (result === 1) {
+			res.json({
+				"status": "success",
+				"message": "preparing data..."
+			});
+		} else {
+			res.json({
+				"status": "failed",
+				"message": "failed to loading data from caDSR."
+			});
+		}
+	});
+}
+
 var preload = function (req, res) {
 	elastic.loadSynonyms(function (result) {
 		if (result === 1) {
@@ -2030,5 +2046,6 @@ module.exports = {
 	export_difference,
 	preloadCadsrData,
 	parseExcel,
-	exportAllValues
+	exportAllValues,
+	preloadDataTypeFromCaDSR
 };
