@@ -305,7 +305,7 @@ const func = {
               };
 
               row.vs.forEach(function (value) {
-                if (value.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "") == item) {
+                if (value.i_c && value.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "") == item) {
                   let temp_nt = {
                     n_c: {},
                     s: []
