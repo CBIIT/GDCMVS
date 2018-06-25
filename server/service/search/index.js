@@ -6,9 +6,9 @@ var router = express.Router();
 
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
-//router.get('/preload', controller.preload);
-//router.get('/preloadCadsrData', controller.preloadCadsrData);
-//router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
+router.get('/preload', controller.preload);
+router.get('/preloadCadsrData', controller.preloadCadsrData);
+router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
 //router.get('/parseExcel', controller.parseExcel);
 //router.get('/external/caDSR', controller.getDataFromCDE);
 //router.get('/local', controller.getDataFromGDC);
