@@ -74,14 +74,17 @@ export default function render(keyword, option, items){
   $('#tree_toggle').click(function(){
     let $this = $(this);
     let $tview_ul = $('.treeview .treeview__ul');
+    let $tview_li = $('.treeview .treeview__parent');
     let $tview_trigger = $('.treeview .treeview__trigger');
     if($this.hasClass('active')){
       $tview_ul.hide();
+      $tview_li.removeClass('treeview__parent--open');
       $tview_trigger.attr('aria-label', 'expand');
       $tview_trigger.html('<i class="fa fa-angle-down"></i>');
       $this.html('<i class="fa fa-angle-down"></i> Expand All');
     }else{
       $tview_ul.show();
+      $tview_li.addClass('treeview__parent--open');
       $tview_trigger.attr('aria-label', 'collapse');
       $tview_trigger.html('<i class="fa fa-angle-up"></i>');
       $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
