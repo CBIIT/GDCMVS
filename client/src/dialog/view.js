@@ -8,7 +8,7 @@ let tmpl = {
                             +'<div id="cp_left" class="compare-form__left">'
                             +'<textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>'
                             +'<div id="cp_middle" class="compare-form__middle"></div>'
-                            +'<div id="cp_right" class="compare-form__right" tabindex="0">'
+                            +'<div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values">'
                             +'{{for items}}'
                             +'<div>{{:n}}</div>'
                             +'{{/for}}'
