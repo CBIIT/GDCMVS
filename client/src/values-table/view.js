@@ -1,4 +1,3 @@
-
 let tmpl = '<div class="container table__container"><div class="table__thead row">'
   +'<div class="col-xs-3">'
     +'<div class="table__th">Category / Node / Property</div>'
@@ -21,7 +20,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
       +'<div class="dropdown">'
         +'<a href="#" type="button" data-toggle="dropdown"><i class="fa fa-caret-down"></i> detail</a>'
         +'<ul class="dropdown-menu dropdown-menu__gdc-links">'
-          +'{{if local}}'    
+          +'{{if local}}'
             +'<li><a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a></li>'
             +'<li><a href="javascript:toCompare(\'{{:ref}}\');">Compare with User List</a></li>'
           +'{{/if}}'
@@ -62,7 +61,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
           +'<div class="row">'
               +'<div class="col-xs-10">'
                 +'<div class="row">'
-                  +'<div class="col-xs-2 table__ico3-code">'
+                 +'<div class="col-xs-2 table__ico3-code">'
                     +'{{:i_c}}'
                   +'</div>'
                   +'<div class="col-xs-10">'
@@ -109,7 +108,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
         +'{{/if}}'
 
       +'{{/if}}'
-      
+
       +'</div>'
       +'<div class="table__td table__cde-values col-xs-6">'
         +'{{if cde_s.length }}'
@@ -146,9 +145,8 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
 +'</div> {{/for}} </div></div></div>'
 
 +'<div id="alert-suggest" class="alert alert__suggest alert-info alert-dismissible" role="alert" style="display: none;">'
-  +'An email will be sucessfully sent to <strong>GDC</strong> and <strong>EVS</strong> team.'
+  +'Coming soon: users will be able to suggest new vocabulary terms to the GDC via this link.'
 +'</div>';
 
 
 export default tmpl;
-
