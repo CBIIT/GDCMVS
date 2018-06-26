@@ -518,24 +518,31 @@ function createIndexes(params, next){
 
 exports.createIndexes = createIndexes;
 
-function preloadDataFromCaDSR(next){
+function preloadDataFromCaDSR(res){
 	let folderPath = path.join(__dirname, '..','data');
 	let termsJson = yaml.load(folderPath+'/_terms.yaml');
 	let content_1 = fs.readFileSync("./cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
-	let cdeDataJson = JSON.parse(content_1);
+	let cdeDataJson;
+	if(content_1){
+		cdeDataJson = JSON.parse(content_1);
+	}
+	
 	let ids = [];
 	for(var term in termsJson){
 		let detail = termsJson[term];
 		if(detail.termDef !== undefined && detail.termDef.source !== undefined && detail.termDef.source === 'caDSR'){
-			if(detail.termDef.cde_id !== undefined && !(detail.termDef.cde_id in cdeDataJson)){
+			if(!cdeDataJson && detail.termDef.cde_id !== undefined){
+				ids.push(detail.termDef.cde_id);
+			}
+			else if(detail.termDef.cde_id !== undefined && !(detail.termDef.cde_id in cdeDataJson)){
 				ids.push(detail.termDef.cde_id);
 			}
 		}
 	}
 	logger.debug(ids);
-	caDSR.loadData(ids);
-	next(1);
+	caDSR.loadData(ids, res);
+	// next(1);
 }
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
