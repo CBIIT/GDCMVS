@@ -67,8 +67,7 @@ function compare(gv){
         opt.sensitive = false;
         opt.unmatched = false;
         let table = generateCompareResult(vs, gv, opt);
-        let html =  ''//'<div id="cp_result_option"><div class="option-left"><input type="checkbox" id="compare_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compare_unmatched"> Hide Unmatched Values</div></div>'
-                    +'<div id="cp_result_table" class="table__container table__container--margin-bottom">'+table+'</div>'
+        let html =  '<div id="cp_result_table" class="table__container table__container--margin-bottom">'+table+'</div>'
                     +'<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare-form__button">Back</button></div>';
 
         $('#compare_result').html(html);
@@ -134,14 +133,12 @@ function generateCompareResult(fromV, toV, option){
         }
         if(text ===''){
             text = '<div style="color:red;">--</div>';
-            //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left">'+text+'</td></tr>';
             table += '<div class="table__row row">'
               +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
               +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
             +'</div>';
         }
         else{
-            //table += '<tr class="data-table-row"><td align="left">'+v+'</td><td align="left"><b>'+(idx+1)+'.</b>'+text+'</td></tr>';
             table += '<div class="table__row row">'
               +'<div class="table__td table__td--slim col-xs-6">'+v+'</div>'
               +'<div class="table__td table__td--slim col-xs-6">'+text+'</div>'
@@ -152,14 +149,12 @@ function generateCompareResult(fromV, toV, option){
         if(v_matched.indexOf(i) >= 0){
             continue;
         }
-        //table += '<tr class="data-table-row '+(option.unmatched ? 'row-undisplay' : '')+'"><td align="left"><div style="color:red;">--</div></td><td align="left"><b>'+(i+1)+'.</b>'+toV[i]+'</td></tr>';
         table += '<div class="table__row row '+(option.unmatched ? 'table__row--undisplay' : '')+'">'
               +'<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
               +'<div class="table__td table__td--slim col-xs-6">'+toV[i]+'</div>'
             +'</div>';
     }
     table += '</div></div>'
-    //table += "</tbody></table>";
     return table;
 };
 
