@@ -1,3 +1,6 @@
 node_modules
 .DS_Store
 npm-debug.log
+client/static/dist
+gdc-docs
+geckodriver.exe

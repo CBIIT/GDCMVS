@@ -22,93 +22,151 @@ export default function render(keyword, option, items){
     else{
       trsHtml.active = true;
     }
-  	html = tabs(trsHtml, psHtml, vsHtml);
+  	html = tabs(trsHtml, psHtml, vsHtml, keyword);
+  } else if (option.error == true) {
+    html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
+  } else {
+  	html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
   }
-  else{
-  	html = '<div class="info">No result found for keyword: '+keyword+'</div>';
-  }
-  
+
   $("#root").html(html);
-  
-  if($("#tree_table").length){
-      $("#tree_table").treetable({expandable: true});
-      $("#collapse").bind("click", function(){
-          $("#tree_table").find('a[title="Collapse"]').each(function(){
-              $(this).trigger("click");
-          });
 
+  $("#treeview .treeview__trigger").click(function (event) {
+      event.preventDefault();
+      let $this = $(this);
+      let $target = $this.closest('.treeview__parent');
+      $target.find('>ul.treeview__ul').toggle();
+      if ($target.hasClass('treeview__parent--open')){
+        $target.removeClass('treeview__parent--open');
+        $this.attr('aria-label', 'expand');
+        $this.html('<i class="fa fa-angle-down"></i>');
+      }else{
+        $target.addClass('treeview__parent--open');
+        $this.attr('aria-label', 'collapse');
+        $this.html('<i class="fa fa-angle-up"></i>');
+      }
+  });
+
+  $('#trs-checkbox').click(function(){
+    if(this.checked){
+      $('.treeview__ul--all').addClass('treeview__ul').each(function(){
+        let $this = $(this);
+        let $prev = $this.prev('.treeview__ul--hl');
+        if($prev.is(':visible')){
+          $this.show();
+          $prev.hide();
+        }
       });
+      $('.treeview__ul--hl').removeClass('treeview__ul');
+    }else{
+      $('.treeview__ul--hl').addClass('treeview__ul').each(function(){
+        let $this = $(this);
+        let $next = $this.next('.treeview__ul--all');
+        if($next.is(':visible')){
+          $this.show();
+          $next.hide();
+        }
+      });;
+      $('.treeview__ul--all').removeClass('treeview__ul');
+    }
+  });
 
-      $("#expand").bind("click", function(){
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-              $(this).trigger("click");
-          });
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-              $(this).trigger("click");
-          });
-          $("#tree_table").find('a[title="Expand"]').each(function(){
-              $(this).trigger("click");
-          });
+  $('#tree_toggle').click(function(){
+    let $this = $(this);
+    let $tview_ul = $('.treeview .treeview__ul');
+    let $tview_li = $('.treeview .treeview__parent');
+    let $tview_trigger = $('.treeview .treeview__trigger');
+    if($this.hasClass('active')){
+      $tview_ul.hide();
+      $tview_li.removeClass('treeview__parent--open');
+      $tview_trigger.attr('aria-label', 'expand');
+      $tview_trigger.html('<i class="fa fa-angle-down"></i>');
+      $this.html('<i class="fa fa-angle-down"></i> Expand All');
+    }else{
+      $tview_ul.show();
+      $tview_li.addClass('treeview__parent--open');
+      $tview_trigger.attr('aria-label', 'collapse');
+      $tview_trigger.html('<i class="fa fa-angle-up"></i>');
+      $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
+    }
+  });
 
-      });
-  }
+  $('a.redirect').bind('click', function(event) {
+    if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
+      event.preventDefault();
+      let href = $(this).attr('href');
+      window.open('https://docs.gdc.cancer.gov' + href, '_blank');
+    }
+  });
 
-  let htmlShow = '';
+  $('#tab-values').bind('click', function(){
+    let option = JSON.parse(localStorage.getItem('option'));
+    option.activeTab = 0;
+    localStorage.setItem('option', JSON.stringify(option));
+  });
 
-  $('.show-more-less').click(function () {
+  $('#tab-properties').bind('click', function(){
+    let option = JSON.parse(localStorage.getItem('option'));
+    option.activeTab = 1;
+    localStorage.setItem('option', JSON.stringify(option));
+  });
+
+  $('#tab-dictionary').bind('click', function(){
+    let option = JSON.parse(localStorage.getItem('option'));
+    option.activeTab = 2;
+    localStorage.setItem('option', JSON.stringify(option));
+  });
+
+  $('.show-more-less').click(function (event) {
+    event.preventDefault();
     let target = $(this);
-
     let parentTable = $(this).parent().parent().parent();
-    let targets = parentTable.find('.row-toggle');
+    let targets = parentTable.find('.table__row--toggle');
     if(target.hasClass('more')){
       target.removeClass('more');
-      targets.css({display: 'none'});
-      target.html(htmlShow == ''? '<i class="fa fa-angle-down"></i> Show More' : htmlShow);
+      target.attr('aria-expanded', 'false');
+      targets.slideToggle(350);
+      target.html('<i class="fa fa-angle-down"></i> Show More ('+ target.attr('data-hidden') +')');
     } else {
-      htmlShow = target.html();
       target.addClass('more');
-      targets.css({display: 'flex'});
+      target.attr('aria-expanded', 'true');
+      targets.slideToggle(350).css({display: 'flex'});
       target.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
 
-  $('.collapser').click(function(){
+  $('.collapser').click(function(event){
+    event.preventDefault();
     let target = $(this);
     let parentTable = $(this).parent().parent().parent();
 
-    let dataContainer = parentTable.find('#data-content');
+    let dataContainer = parentTable.find('.data-content');
 
     dataContainer.slideToggle(400, function(){
       if(dataContainer.is(":visible")){
+        target.attr('title', 'collapse');
+        target.attr('aria-label', 'collapse');
+        target.attr('aria-expanded', 'true');
         target.html('<i class="fa fa-minus"></i>');
-      }else{
+      } else {
+        target.attr('title', 'expand');
+        target.attr('aria-label', 'expand');
+        target.attr('aria-expanded', 'false');
         target.html('<i class="fa fa-plus"></i>');
       }
     });
   });
 
-
-  $('.gdc-details').click(function(){
+  $('.gdc-details').click(function(event){
+    event.preventDefault();
     let target = $(this);
     let parentTarget = $(this).parent();
-    let gdcLinks = parentTarget.find('#gdc-links');
+    let gdcLinks = parentTarget.find('.gdc-links');
     gdcLinks.slideToggle(350);
   });
 
-  let hiddenRows = $('#tree_table').find('.data-hide');
-  $('#trs-checkbox').click(function(){
-    if(this.checked){
-      hiddenRows.each(function(){
-        $(this).removeClass('hide');
-      });
-    }else{
-      hiddenRows.each(function(){
-        $(this).addClass('hide');
-      });
-    }
-  });
-
-  $('.cde-suggest').click(function(){
+  $('.cde-suggest').click(function(event){
+    event.preventDefault();
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({'display': 'none'});
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -116,7 +174,7 @@ export default function render(keyword, option, items){
       alertSuggest.css({'display': 'none'})
     });
   });
-  
+
   var windowEl = $(window);
 
   windowEl.resize(function() {
@@ -132,5 +190,6 @@ export default function render(keyword, option, items){
     });
   });
 
-  $('.tooltip-box').tooltip();  
+  $('.tooltip-target').tooltip();
+
 }

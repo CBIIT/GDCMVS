@@ -1,0 +1,46 @@
+.treeview , .treeview ul {
+  list-style: none;
+  padding: 0;
+} 
+
+.treeview .treeview__parent > ul {
+  display: none;
+}
+
+.treeview__row {
+  border-bottom: 1px solid #ecf0f1;
+  text-align: left;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 1.428571;
+}
+
+.treeview__category .treeview__indenter {
+  padding-left: 25px;
+}
+.treeview__folder .treeview__indenter {
+  padding-left: 40px;
+}
+
+.treeview__property .treeview__indenter {
+  padding-left: 55px;
+}
+
+.treeview__value .treeview__col:first-child {
+  padding-left: 85px;
+}
+
+.treeview__indenter {
+  position: relative;
+}
+
+.treeview__trigger {
+  padding-left: 8px;
+  padding-right: 8px;
+  position: absolute;
+  right: 0;
+}
+
+.treeview__col {
+  display: inline-block;
+}

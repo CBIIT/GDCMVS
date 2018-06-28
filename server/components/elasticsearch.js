@@ -9,6 +9,7 @@ var path = require('path');
 var elasticsearch = require('elasticsearch');
 var yaml = require('yamljs');
 var config = require('../config');
+var config_dev = require('../config/dev');
 var logger = require('./logger');
 var caDSR = require('./caDSR');
 var extend = require('util')._extend;
@@ -19,8 +20,8 @@ var gdc_values = {};
 var allProperties = [];
 
 var esClient = new elasticsearch.Client({
-	host: config.elasticsearch.host,
-	log: config.elasticsearch.log
+	host: config_dev.elasticsearch.host,
+	log: config_dev.elasticsearch.log
 });
 
 function parseRef(ref, termsJson, defJson){
@@ -72,9 +73,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 					entry.term.termDef.cde_id = "" + entry.term.termDef.cde_id;
 					if(entry.term.termDef.source ==='caDSR'){
 						entry.syns = cdeData[entry.term.termDef.cde_id];
-						if(entry.syns.length > 0){
+						if(entry.syns !== undefined && entry.syns.length > 0){
 							entry.cde_len = entry.syns.length;
-						}
+						
 						
 						//generate cde_pv for properties index
 						p.cde_pv = [];
@@ -100,6 +101,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 							}
 							p.cde_pv.push(tmp);
 						});
+					}
 					}
 					else if(entry.term.termDef.source ==='NCIt'){
 						p.ncit = {};
@@ -317,7 +319,8 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns){
 			p.type = "enum";
 		}
 		else{
-			p.type = entry.type !== undefined ? entry.type : "object";
+			let type = typeof entry.type;
+			p.type = type !== "undefined" && type !== "object" ? entry.type : "object";
 		}
 		allProperties.push(p);
 	}
@@ -515,24 +518,31 @@ function createIndexes(params, next){
 
 exports.createIndexes = createIndexes;
 
-function preloadDataFromCaDSR(next){
+function preloadDataFromCaDSR(res){
 	let folderPath = path.join(__dirname, '..','data');
 	let termsJson = yaml.load(folderPath+'/_terms.yaml');
 	let content_1 = fs.readFileSync("./cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
-	let cdeDataJson = JSON.parse(content_1);
+	let cdeDataJson;
+	if(content_1){
+		cdeDataJson = JSON.parse(content_1);
+	}
+	
 	let ids = [];
 	for(var term in termsJson){
 		let detail = termsJson[term];
 		if(detail.termDef !== undefined && detail.termDef.source !== undefined && detail.termDef.source === 'caDSR'){
-			if(detail.termDef.cde_id !== undefined && !(detail.termDef.cde_id in cdeDataJson)){
+			if(!cdeDataJson && detail.termDef.cde_id !== undefined){
+				ids.push(detail.termDef.cde_id);
+			}
+			else if(detail.termDef.cde_id !== undefined && !(detail.termDef.cde_id in cdeDataJson)){
 				ids.push(detail.termDef.cde_id);
 			}
 		}
 	}
 	logger.debug(ids);
-	caDSR.loadData(ids);
-	next(1);
+	caDSR.loadData(ids, res);
+	// next(1);
 }
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
