@@ -235,10 +235,15 @@ var loadSynonyms_continue = function(){
 		
 	}
 	let ncit = [];
-	
+	let ctcae = [];
 	ncitids.forEach(function(id){
 		if(!(id in synonyms)){
-			ncit.push(id);
+			if(id.indexOf('E') >= 0){
+				ctcae.push(id);
+			}
+			else{
+				ncit.push(id);
+			}
 		}
 		else{
 			logger.debug("in the synonyms:" + id );
@@ -248,6 +253,9 @@ var loadSynonyms_continue = function(){
 	logger.debug("length of NCIt codes: \n" + ncit.length);
 	//get data
 	synchronziedLoadSynonmysfromNCIT(ncit, 0);
+	if(ctcae){
+		synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
+	}
 };
 
 
@@ -255,7 +263,7 @@ var synchronziedLoadSynonmysfromNCIT = function(ncitids, idx){
 	if(idx >= ncitids.length){
 		return;
 	}
-	logger.debug("searching synonyms using NCIT code (#"+idx+"): "+ ncitids[idx]);
+	logger.debug("searching synonyms using NCIT code (#"+idx+"): total= " +ncitids.length+ ": "+ ncitids[idx]);
 	let syn = [];
 	https.get(config.NCIt_url[4]+ncitids[idx], (rsp) => {
 		  let html = '';
@@ -276,7 +284,7 @@ var synchronziedLoadSynonmysfromNCIT = function(ncitids, idx){
 				  		});
 				  		let str = {};
 				  		str[ncitids[idx]] = syn;
-				  		fs.appendFile("./synonyms.js", JSON.stringify(str), function(err) {
+				  		fs.appendFile("./synonyms_ncit.js", JSON.stringify(str), function(err) {
 						    if(err) {
 						        return logger.error(err);
 						    }
@@ -302,7 +310,14 @@ var synchronziedLoadSynonmysfromCTCAE = function(ids, idx){
 	if(idx >= ids.length){
 		return;
 	}
-	logger.debug("searching synonyms using CTCAE code (#"+idx+"): "+ ids[idx]);
+	logger.debug("searching synonyms using CTCAE code (#"+idx+") total= " +ids.length+ ": "+ ids[idx]);
+	fs.appendFile("./logs_synonyms_ctcae.txt", "\nsearching synonyms using CTCAE code (#"+idx+") total= " +ids.length+ ": "+ ids[idx] +" "+ new Date(), function(err) {
+		if(err) {
+			return logger.error(err);
+		}
+
+		logger.debug("#########synonyms for " +ids[idx] +": " + syn.toString());
+	});
 	let syn = [];
 	https.get(config.NCIt_url[3]+ids[idx], (rsp) => {
 		  let html = '';
@@ -337,7 +352,7 @@ var synchronziedLoadSynonmysfromCTCAE = function(ids, idx){
 				  	if(syn.length > 0){
 				  		let str = {};
 				  		str[ids[idx]] = syn;
-				  		fs.appendFile("./synonyms.js", JSON.stringify(str), function(err) {
+				  		fs.appendFile("./synonyms_ctcae.js", JSON.stringify(str), function(err) {
 						    if(err) {
 						        return logger.error(err);
 						    }

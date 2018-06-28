@@ -23,7 +23,7 @@ const func = {
  					if(em.n_c !== undefined){
  						prop.syn = true;
  					}
- 				});	
+ 				});
  			}
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde !== undefined ? source.cde.id : "";
@@ -32,28 +32,31 @@ const func = {
  			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
  			if(source.cde !== undefined && source.cde.dt !== undefined){
  				prop.type = source.cde.dt;
- 			}
+       }
+      if(prop.type){
+        prop.type = prop.type.toLowerCase();
+      }
+
  			props.push(prop);
  		}
  	});
  	let html = "";
  	if(props.length == 0){
  		let keyword = $("#keywords").val();
- 		html = '<div class="info">No result found for keyword: '+keyword+'</div>';
+ 		html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
  	}
  	else{
  		let offset = $('#root').offset().top;
- 		let h = window.innerHeight - offset - 260;
- 		h = (h < 540) ? 540 : h;
-
- 		html = $.templates(tmpl).render({mh:h,props: props});
+ 		let h = window.innerHeight - offset - 310;
+ 		h = (h < 430) ? 430 : h;
+ 		html = $.templates(tmpl).render({mh: h,props: props});
  	}
- 	
+
     let result = {};
     result.len = props.length;
     result.html = html;
     return result;
-    
+
   }
 };
 

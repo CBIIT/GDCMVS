@@ -1,0 +1,103 @@
+.results {
+  border: 1px solid #dce4ec;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.tab-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2em 0;
+}
+
+.tab-nav__text {
+  color: #535A60;
+}
+
+.tab-nav__term {
+  color: #000;
+}
+
+.tab-nav__group {
+  margin-left: 2em;
+}
+
+.tab-nav__btn {
+  padding: .15em 1em;
+  min-width: 12.2em;
+  box-shadow: none !important;
+  border: 1px solid #2079BB;
+  font-size: 1em;
+  color: #2079BB !important;
+  position: relative;
+  float: left;
+  margin-left: -1px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.tab-nav__btn:hover{
+  text-decoration: none;
+}
+.tab-nav__btn:focus {
+  text-decoration: none;
+  outline: none;
+  border: 1px solid #19659E;
+  background-color: #19659E !important;
+  color: #fff !important;
+}
+
+.tab-nav__li.active .tab-nav__btn{
+  background-color: #2079BB;
+  color: #fff !important;
+}
+
+.tab-nav__li:not(:first-child):not(:last-child) .tab-nav__btn{
+  border-radius: 0;
+}
+
+.tab-nav__li:first-child:not(:last-child) .tab-nav__btn{
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.tab-nav__li:last-child:not(:first-child) .tab-nav__btn {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.tab-nav__notification {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+  padding: 0 5px;
+  color: #fff;
+  background-color: #CC426C;
+  border-radius: 10px;
+  line-height: 1.5em;
+}
+
+.tab-nav__btn:focus,
+.tab-nav__btn:active{
+  background-color: #3598db;
+  color: #fff !important;
+}
+
+.tab-nav__ul {
+  margin: 0;
+  padding: 0;
+}
+
+.tab-nav__li {
+  position: relative;
+  display: block;
+  float: left;
+}
+
+.tab-nav__tooltip {
+  display: inline-block;
+}
+
