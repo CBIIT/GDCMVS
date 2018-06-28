@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024">
+  <link rel="canonical" href="https://gdc-mvs.nci.nih.gov/">
+  <link rel="shortcut icon" href="./assets/img/favicon.ico">
+  <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
+
+  <title>GDC Metadata Validation Services</title>
+
+  <link href="./assets/css/bootstrap-custom.css" rel="stylesheet">
+  <link href="./assets/css/font-awesome-4.5.css" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/highlight.css">
+  <link href="./assets/css/base.css" rel="stylesheet">
+  <link href="./assets/css/gdc-common.css" rel="stylesheet">
+  <link href="./assets/css/gdc-fonts.css" rel="stylesheet">
+
+  <!-- GDCMVS CSS-->
+  <link rel="stylesheet" type="text/css" href="./lib/css/jquery-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="./dist/styles.css" />
+</head>
+
+<body>
+  <a class="skip-main" href="#main">Skip to main content</a>
+  <div id="search-modal" class="modal fade bs-search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="search-modal-label">GDC Document Keyword Search Modal</h4>
+        </div>
+        <div class="modal-body">
+          <label for="gdc-search-query" class="inline">
+            <span class="searchbox-icon searchbox-submit">
+              <span aria-hidden="true" class="fa fa-search search-bttn"></span>
+            </span>
+            <span class="search-label">Search</span>
+          </label>
+          <input id="gdc-search-query" role="search" placeholder="e.g. Submission Portal" autocomplete="off" name="search" class="searchbox-input" type="search">
+          <span class="searchbox-icon searchbox-cancel">
+            <i class="fa fa-close search-cancel-bttn"></i>
+          </span>
+          <div class="row search-results-container">
+            <div class="col-md-12 results">
+              <div class="search-body search-result-caption"></div>
+              <div class="search-results"></div>
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="parent-container">
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation" aria-label="Site Navigation">
+
+      <div class="container">
+        <!-- Collapsed navigation -->
+        <div>
+          <!-- Main title -->
+          <a class="navbar-brand" href="https://docs.gdc.cancer.gov/">
+            <img src="./assets/img/nih-header-logo-color.png" alt="NIH National Cancer Institute GDC Documentation">
+            <span class="hidden">NIH National Cancer Institute GDC Documentation</span>
+          </a>
+          <!-- Expander button -->
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <!-- GDC Apps -->
+          <div class="pull-right">
+            <div class="gdc-app-list">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-label="GDC Apps Menu">
+                <span class="icon-gdc-apps-menu" aria-hidden="true"></span>
+                <span data-translate="">GDC Apps</span>
+              </a>
+              <div data-dropdown-menu="" class="dropdown-menu gdc-apps-menu-container" role="menu">
+                <div class="gdc-apps-menu-grid">
+                  <div class="menu-column">
+                    <a href="https://portal.gdc.cancer.gov/" title="Data Portal" target="_blank" class="menu-item">
+                      <img src="./assets/img/GDC-App-data-portal-blue.svg" class="icon icon-gdc-portal home" alt="GDC Data Portal" width="21px">
+                      <div>Data Portal</div>
+                    </a>
+                    <a href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api" title="GDC API" target="_blank" class="menu-item">
+                      <span class="icon icon-gdc-portal-api">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                        </span>
+                      <div>API</div>
+                    </a>
+                    <a href="https://docs.gdc.cancer.gov/" title="GDC Docs" target="_blank" class="active menu-item">
+                      <span class="icon icon-gdc-docs">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span><span class="path11"></span><span class="path12"></span><span class="path13"></span><span class="path14"></span>
+                      </span>
+                      <div>Documentation</div>
+                    </a>
+                    <a href="https://portal.gdc.cancer.gov/legacy-archive" title="GDC Legacy Archive" target="_blank" class="menu-item">
+                      <span class="icon icon-gdc-legacy-archive">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                      </span>
+                      <div>Legacy Archive</div>
+                    </a>
+                  </div>
+                  <div class="menu-column">
+                    <a href="https://gdc.cancer.gov/" title="GDC Website" target="_blank" class="menu-item">
+                      <img src="./assets/img/GDC-App-website-blue.svg" class="icon icon-gdc-portal home" alt="GDC Website" width="21px">
+                      <div>Website</div>
+                    </a>
+                    <a href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool" class="menu-item" title="GDC Data Transfer Tool" target="_blank">
+                      <span class="icon icon-gdc-data-transer-tool">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span>
+                      </span>
+                      <div>Data Transfer Tool</div>
+                    </a>
+                    <a href="https://portal.gdc.cancer.gov/submission/" title="GDC Submission Portal" target="_blank" class="menu-item">
+                      <span class="icon icon-gdc-submission-portal">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                      </span>
+                      <div>Data Submission Portal</div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- -->
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+          <!-- Main navigation -->
+          <ul class="nav navbar-nav nav-full">
+            <li class="active">
+                <a href="https://docs.gdc.cancer.gov/">Home</a>
+            </li>
+            <li class="dropdown">
+              <a href="#" title="API" class="dropdown-toggle" data-toggle="dropdown">API <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/">Getting Started</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Search_and_Retrieval/">Search and Retrieval</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Downloading_Files/">Downloading Files</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Data_Analysis/">Data Analysis</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/BAM_Slicing/">BAM Slicing</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Submission/">Submission</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/System_Information/">System Information</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Additional_Examples/">Additional Examples</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Appendix_A_Available_Fields/">Appendix A: Available Fields</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Appendix_B_Key_Terms/">Appendix B: Key Terms</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Appendix_C_Format_of_Submission_Requests_and_Responses/">Appendix C: Format of Submission Queries and Responses</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/Release_Notes/API_Release_Notes/">Release Notes</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/API/PDF/API_UG.pdf" target="_blank"><span aria-hidden="true" class="nav-icon fa fa-file-text"></span>Download PDF</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a href="#" title="Data Portal" class="dropdown-toggle" data-toggle="dropdown">Data Portal <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/">Getting Started</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/">Projects</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Exploration/">Exploration</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Repository/">Repository</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Genes_and_Mutations/">Genes and Mutations</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Annotations/">Annotations</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Advanced_Search/">Advanced Search</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Authentication/">Authentication</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Cart/">Downloading Files</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Legacy_Archive/">Legacy Archive</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/Release_Notes/Data_Portal_Release_Notes/">Release Notes</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Portal/PDF/Data_Portal_UG.pdf" target="_blank"><span aria-hidden="true" class="nav-icon fa fa-file-text"></span>Download PDF</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a href="#" title="Data Submission Portal" class="dropdown-toggle" data-toggle="dropdown">Data Submission Portal <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Getting_Started/">Getting Started</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Submission_Workflow/">Submission Workflow</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Authentication/">Authentication</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Homepage/">Homepage</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Dashboard/">Dashboard</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Data_Upload_UG/">Upload Data</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Submit_Data/">Submit Data</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Release_Data/">Release Data</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Transactions/">Transactions</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Browse_Data/">Browse Data</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Best_Practices/">Best Practices</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Release_Notes/Data_Submission_Portal_Release_Notes/">Release Notes</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/PDF/Data_Submission_Portal_UG.pdf" target="_blank"><span aria-hidden="true" class="nav-icon fa fa-file-text"></span>Download PDF</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a href="#" title="Data Transfer Tool" class="dropdown-toggle" data-toggle="dropdown">Data Transfer Tool <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/">Getting Started</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Accessing_Built-in_Help/">Accessing Built-in Help</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Preparing_for_Data_Download_and_Upload/">Preparing for Data Download and Upload</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Data_Download_and_Upload/">Data Download and Upload</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Appendix_A_-_Key_Terms/">Key Terms</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Release_Notes/DTT_Release_Notes/">Release Notes</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/PDF/Data_Transfer_Tool_UG.pdf" target="_blank"><span aria-hidden="true" class="nav-icon fa fa-file-text"></span>Download PDF</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a href="#" title="Data Dictionary" class="dropdown-toggle" data-toggle="dropdown">Data Dictionary <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Dictionary/">About</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/">Viewer</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a href="#" title="Data" class="dropdown-toggle" data-toggle="dropdown">Data <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Introduction/">Introduction</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Data_Model/GDC_Data_Model/">GDC Data Model</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Data_Security/Data_Security/">Data Security</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/">File Format: MAF</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/File_Formats/VCF_Format/">File Format: VCF</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/DNA_Seq_Variant_Calling_Pipeline/">Bioinformatics Pipeline: DNA-Seq Analysis</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/Expression_mRNA_Pipeline/">Bioinformatics Pipeline: mRNA Analysis</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/miRNA_Pipeline/">Bioinformatics Pipeline: miRNA Analysis</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/CNV_Pipeline/">Bioinformatics Pipeline: Copy Number Variation Analysis</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/Methylation_LO_Pipeline/">Bioinformatics Pipeline: Methylation Liftover Pipeline</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/">Release Notes</a>
+                </li>
+                <li>
+                  <a href="https://docs.gdc.cancer.gov/Data/PDF/Data_UG.pdf" target="_blank"><span aria-hidden="true" class="nav-icon fa fa-file-text"></span>Download PDF</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a href="https://docs.gdc.cancer.gov/Encyclopedia/">Encyclopedia</a>
+            </li>
+
+            <li class="menu-bar"></li>
+            <li>
+              <a aria-label="Search" id="gdc-search-button" title="Click Search the GDC Documentation" href="javascript:$gdcApp.searchModal.show()">
+                <span class="fa fa-search" aria-hidden="true"></span>&nbsp;
+                <span class="hidden">Quick Search</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="docs-container" class="container">
+      <div data-current-page="GDCMVS" id="body">
+        <div class="col-md-12 main-container" role="main" id="main" tabindex="-1" style="border-left: none;">

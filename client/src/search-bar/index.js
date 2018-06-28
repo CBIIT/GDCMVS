@@ -7,15 +7,17 @@ let activeTab = 0;
 
 const func = {
     search(){
-        let keyword = $("#keywords").val();
+        let keywordCase = $("#keywords").val();
+        let keyword = keywordCase.toLowerCase();
+        let option = {};
 
-        if(keyword == ""){
-            $('#form-search').addClass('has-error');
-            $('#form-search .invalid-feedback').css({'display': 'block'});
+        if(keywordCase == ""){
+            option.error = true;
+            $('#keywords').addClass('search-bar__input--has-error');
+            render(keywordCase, option, []);
             return;
         }
 
-        keyword = keyword.toLowerCase();
         //get selected tab
         let count = 0;
         $("li[role='presentation']").each(function(){
@@ -24,7 +26,7 @@ const func = {
             }
             count++;
         });
-        let option = {};
+
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
@@ -34,8 +36,13 @@ const func = {
         //todo:show progress bar
         $('#gdc-loading-icon').fadeIn(100);
         api.searchAll(keyword, option, function(keyword, option, items) {
-          //console.log(items);
-          render(keyword, option, items);
+
+          //Save the data in localStorage
+          localStorage.setItem('keyword', keywordCase);
+          localStorage.setItem('option', JSON.stringify(option));
+          localStorage.setItem('items', JSON.stringify(items));
+
+          render(keywordCase, option, items);
           //todo: close progress bar
           $('#gdc-loading-icon').fadeOut('fast');
         });
@@ -45,7 +52,6 @@ const func = {
             e.preventDefault();
         }
         if(e.keyCode == 13 && $("#suggestBox .selected").length !== 0){
-            // let idx = $("#suggestBox .selected").html().indexOf("<label>");
             let t = $("#suggestBox .selected").text();
             $("#keywords").val(t.substr(0,t.length-1));
             $("#search").trigger("click");
@@ -71,10 +77,9 @@ const func = {
     },
     suggest(){
         let area = document.getElementById("suggestBox");
-        
-        if($("#form-search").hasClass('has-error')){
-            $("#form-search").removeClass('has-error');
-            $('#form-search .invalid-feedback').removeAttr('style');
+
+        if($("#keywords").hasClass('search-bar__input--has-error')){
+            $("#keywords").removeClass('search-bar__input--has-error');
         }
 
         if($(this).val().trim() === ''){
@@ -83,14 +88,15 @@ const func = {
             area.innerHTML = "";
             return;
         }
-        $.getJSON('./search/suggest', {keyword:$(this).val()}, function(result){
+
+        api.suggest($(this).val(), function(result){
             if(result.length === 0){
                 area.style.display = "none";
                 displayBoxIndex = -1;
                 area.innerHTML = "";
                 return;
             }
-            
+
             area.style.display = "block";
             let html = $.templates(tmpl).render({options: result });;
             displayBoxIndex = -1;

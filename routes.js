@@ -5,9 +5,12 @@
 'use strict';
 
 var config = require('./server/config');
+var compression = require('compression');
+var helmet =  require('helmet');
 
 module.exports = function(app){
-
+	app.use(compression());
+	app.use(helmet());
 	//allows CrossDomainAccess to API
 	app.use(function(req, res, next){
 		res.header('Access-Control-Allow-Origin', '*');
@@ -32,14 +35,13 @@ module.exports = function(app){
 	// })
 
 	//put all the routers here
-	// app.use('/', function(req, res){
-	// 	res.sendFile(app.get('views') + '/index.html');
-	// });
-	
+	app.use('/', function(req, res){
+		res.render(app.get('views') + '/index.html');
+		//res.sendFile(app.get('views') + '/index.html');
+	});
 
 	// All other routes should redirect to error page
-    app.route('*')
-        .get(function(req, res) {
-            res.sendFile(app.get('views') + '/404.html');
-        });
+  app.route('*').get(function(req, res) {
+    res.sendFile(app.get('views') + '/404.html');
+  });
 };

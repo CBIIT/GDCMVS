@@ -1,7 +1,7 @@
 
-let tmpl = '{{for options}}<div>'
-			+'<span style="width:96%;float:left;">{{:id}}</span>'
-			+'<label>{{:type}}</label>'
+let tmpl = '{{for options}}<div class="suggest__object">'
+			+'<span class="suggest__name">{{:id}}</span>'
+			+'<label class="suggest__type">{{:type}}</label>'
 			+'</div>{{/for}}';
 
 export default tmpl;
