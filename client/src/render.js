@@ -31,7 +31,7 @@ export default function render(keyword, option, items){
 
   $("#root").html(html);
 
-  $("#treeview .treeview__trigger").click(function (event) {
+  $('#treeview .treeview__toggle').click(function (event) {
       event.preventDefault();
       let $this = $(this);
       let $target = $this.closest('.treeview__parent');
@@ -71,11 +71,11 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('#tree_toggle').click(function(){
+  $('#trs_toggle').click(function(){
     let $this = $(this);
     let $tview_ul = $('.treeview .treeview__ul');
     let $tview_li = $('.treeview .treeview__parent');
-    let $tview_trigger = $('.treeview .treeview__trigger');
+    let $tview_trigger = $('.treeview .treeview__toggle');
     if($this.hasClass('active')){
       $tview_ul.hide();
       $tview_li.removeClass('treeview__parent--open');
@@ -119,40 +119,36 @@ export default function render(keyword, option, items){
 
   $('.show-more-less').click(function (event) {
     event.preventDefault();
-    let target = $(this);
-    let parentTable = $(this).parent().parent().parent();
-    let targets = parentTable.find('.table__row--toggle');
-    if(target.hasClass('more')){
-      target.removeClass('more');
-      target.attr('aria-expanded', 'false');
-      targets.slideToggle(350);
-      target.html('<i class="fa fa-angle-down"></i> Show More ('+ target.attr('data-hidden') +')');
+    let $this = $(this);
+    let $target = $(this).closest('.table__values').find('.table__row--toggle');
+    if($this.hasClass('more')){
+      $this.removeClass('more');
+      $this.attr('aria-expanded', 'false');
+      $target.slideToggle(350);
+      $this.html('<i class="fa fa-angle-down"></i> Show More ('+ $this.attr('data-hidden') +')');
     } else {
-      target.addClass('more');
-      target.attr('aria-expanded', 'true');
-      targets.slideToggle(350).css({display: 'flex'});
-      target.html('<i class="fa fa-angle-up"></i> Show Less');
+      $this.addClass('more');
+      $this.attr('aria-expanded', 'true');
+      $target.slideToggle(350);
+      $this.html('<i class="fa fa-angle-up"></i> Show Less');
     }
   });
 
-  $('.collapser').click(function(event){
+  $('.table__toggle').click(function(event){
     event.preventDefault();
-    let target = $(this);
-    let parentTable = $(this).parent().parent().parent();
-
-    let dataContainer = parentTable.find('.data-content');
-
-    dataContainer.slideToggle(400, function(){
-      if(dataContainer.is(":visible")){
-        target.attr('title', 'collapse');
-        target.attr('aria-label', 'collapse');
-        target.attr('aria-expanded', 'true');
-        target.html('<i class="fa fa-minus"></i>');
+    let $this = $(this);
+    let $target = $(this).closest('.table__gdc-values, .table__cde-values').find('.data-content');
+    $target.slideToggle(400, function(){
+      if($target.is(":visible")){
+        $this.attr('title', 'collapse');
+        $this.attr('aria-label', 'collapse');
+        $this.attr('aria-expanded', 'true');
+        $this.html('<i class="fa fa-minus"></i>');
       } else {
-        target.attr('title', 'expand');
-        target.attr('aria-label', 'expand');
-        target.attr('aria-expanded', 'false');
-        target.html('<i class="fa fa-plus"></i>');
+        $this.attr('title', 'expand');
+        $this.attr('aria-label', 'expand');
+        $this.attr('aria-expanded', 'false');
+        $this.html('<i class="fa fa-plus"></i>');
       }
     });
   });
