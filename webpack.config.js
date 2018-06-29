@@ -4,7 +4,7 @@ const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 module.exports = {
     entry: {
-      main: ['./client/src/index.js', './client/src/style.scss'],
+      main: ['./client/src/index.js', './client/src/style.css'],
     },
     output: {
       filename: 'bundle.js',
@@ -25,7 +25,7 @@ module.exports = {
           },
     
           // CSS
-          { test: /\.scss$/,
+          { test: /\.css$/,
             use: ExtractTextPlugin.extract({
               fallback: 'style-loader',
               use: [
@@ -34,8 +34,7 @@ module.exports = {
                   options: {
                     minimize: true
                   }
-              }, 
-              'sass-loader']
+              }]
             })
           }
         ]
