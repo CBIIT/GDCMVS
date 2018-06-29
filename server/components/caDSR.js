@@ -235,10 +235,15 @@ var loadSynonyms_continue = function(){
 		
 	}
 	let ncit = [];
-	
+	let ctcae = [];
 	ncitids.forEach(function(id){
 		if(!(id in synonyms)){
-			ncit.push(id);
+			if(id.indexOf('E') >= 0){
+				ctcae.push(id);
+			}
+			else{
+				ncit.push(id);
+			}
 		}
 		else{
 			logger.debug("in the synonyms:" + id );
@@ -248,6 +253,9 @@ var loadSynonyms_continue = function(){
 	logger.debug("length of NCIt codes: \n" + ncit.length);
 	//get data
 	synchronziedLoadSynonmysfromNCIT(ncit, 0);
+	if(ctcae){
+		synchronziedLoadSynonmysfromCTCAE(ctcae, 0);
+	}
 };
 
 
@@ -255,7 +263,7 @@ var synchronziedLoadSynonmysfromNCIT = function(ncitids, idx){
 	if(idx >= ncitids.length){
 		return;
 	}
-	logger.debug("searching synonyms using NCIT code (#"+idx+"): "+ ncitids[idx]);
+	logger.debug("searching synonyms using NCIT code (#"+idx+"): total= " +ncitids.length+ ": "+ ncitids[idx]);
 	let syn = [];
 	https.get(config.NCIt_url[4]+ncitids[idx], (rsp) => {
 		  let html = '';
