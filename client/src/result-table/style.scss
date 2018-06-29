@@ -1,7 +1,7 @@
 .treeview , .treeview ul {
   list-style: none;
   padding: 0;
-} 
+}
 
 .treeview .treeview__parent > ul {
   display: none;
@@ -34,7 +34,7 @@
   position: relative;
 }
 
-.treeview__trigger {
+.treeview__toggle {
   padding-left: 8px;
   padding-right: 8px;
   position: absolute;
