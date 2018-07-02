@@ -10,6 +10,7 @@
     "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --config webpack.dev.config.js",
+    "gdcdocs": "webpack --watch --config webpack.docs.config.js",
     "start": "node app.js"
   },
   "author": "CBIIT",
