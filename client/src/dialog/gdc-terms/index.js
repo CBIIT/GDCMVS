@@ -11,13 +11,14 @@ export default function getGDCTerms(uid, tgts){
     let targets = null;
     let icdo = false;
     let windowEl = $(window);
-
+    let new_item = [];
     if(tgts !== null && tgts !== undefined){
       targets = tgts.split("#");
 
       items.forEach(function(item){
         if(item.i_c !== undefined){
           icdo = true;
+          new_item.push(item);
         }
         if (targets.indexOf(item.n) > -1){
           item.e = true;
@@ -27,6 +28,7 @@ export default function getGDCTerms(uid, tgts){
       items.forEach(function(item){
         if(item.i_c !== undefined){
           icdo = true;
+          new_item.push(item);
         }
       });
     }
@@ -50,8 +52,36 @@ export default function getGDCTerms(uid, tgts){
       it.s_r = tmp_s;
     });
 
-    let header = $.templates(tmpl.header).render({targets: targets, icdo: icdo, items_length: items.length })
-    let html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
+    new_item.forEach(function(it){
+      if(it.s == undefined) return;
+      let cache = {};
+      let tmp_s = [];
+      it.s.forEach(function(s){
+        let lc = s.trim().toLowerCase();
+        if(!(lc in cache)){
+          cache[lc] = [];
+        }
+        cache[lc].push(s);
+      });
+      for(let idx in cache){
+        //find the term with the first character capitalized
+        let word = findWord(cache[idx]);
+        tmp_s.push(word);
+      }
+      it.s_r = tmp_s;
+    });
+    let html = "";
+    let header = "";
+    if(icdo){
+      header = $.templates(tmpl.header).render({targets: targets, icdo: icdo, items_length: new_item.length })
+      html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, icdo: icdo, items: new_item });
+    }
+    else{
+      header = $.templates(tmpl.header).render({targets: targets, icdo: icdo, items_length: items.length })
+      html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
+    }
+
+
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
 
     //display result in a table
