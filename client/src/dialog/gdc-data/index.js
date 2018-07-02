@@ -11,28 +11,22 @@ export default function gdcData(prop, item) {
 
     let windowEl = $(window);
     let icdo = false;
-    let new_item = [];
+    let icdo_items = [];
+
     items.forEach(function(item){
       if(item.i_c !== undefined){
         icdo = true;
-        new_item.push(item);
+        icdo_items.push(item);
       }
     });
-    //console.log(items);
-    let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
-    let html = "";
-    let header = "";
-    if(icdo){
-      header = $.templates(tmpl.header).render({target: target, icdo: icdo, items_length: new_item.length});
-      html = $.templates(tmpl.body).render({target: target, icdo: icdo, items: new_item});
-    }else{
-      header = $.templates(tmpl.header).render({target: target, icdo: icdo, items_length: items.length});
-      html = $.templates(tmpl.body).render({target: target, icdo: icdo, items: items});
 
+    if(icdo){
+      items = icdo_items;
     }
 
-
-
+    let target = item == undefined ? item : item.replace(/<b>/g,"").replace(/<\/b>/g, "");
+    let header = $.templates(tmpl.header).render({target: target, icdo: icdo, items_length: items.length});
+    let html = $.templates(tmpl.body).render({target: target, icdo: icdo, items: items});
 
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
 

@@ -20,6 +20,19 @@ const func = {
             $('#compare_dialog').remove();
         }
         let windowEl = $(window);
+        let icdo = false;
+        let icdo_items = [];
+        items.forEach(function(item){
+          if(item.i_c !== undefined){
+            icdo = true;
+            icdo_items.push(item);
+          }
+        });
+
+        if(icdo){
+          items = icdo_items;
+        }
+
         let html = $.templates(tmpl.toCompare).render({items: items});
 
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
@@ -28,7 +41,6 @@ const func = {
         $("#compare_dialog").dialog({
             modal: false,
             position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-            //width:"60%",
             width: 750,
             height: 630,
             minWidth: 750,
@@ -97,7 +109,6 @@ const func = {
         });
         let table = generateCompareGDCResult(fromV, toV, opt);
         let html = '<div id="cpGDC_result_option">'
-                        //+'<div class="option-left"><input type="checkbox" id="compareGDC_filter"> Case Sensitive</div><div class="option-right"><input type="checkbox" id="compareGDC_unmatched"> Hide Unmatched Values</div></div><div class="clearfix"></div>'
                     +'<div id="cpGDC_result_table" class="table__container">'+table+'</div>'
                     +'</div>';
 
@@ -109,7 +120,6 @@ const func = {
         $("#compareGDC_dialog").dialog({
                 modal: false,
                 position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
-                //width:"50%",
                 width: 750,
                 height: 550,
                 minWidth: 715,
