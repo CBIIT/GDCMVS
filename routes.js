@@ -23,16 +23,6 @@ module.exports = function(app){
 	});
 
 	app.use('/search', require('./server/service/search'));
-	
-	// app.use('/ui', function(req, res){
-	// 	let idx = req.query.idx;
-	// 	if(idx == 1){
-	// 		res.sendFile(app.get('viewPath') + '/index.html');
-	// 	}
-	// 	else{
-	// 		res.sendFile(app.get('viewPath') + '/index_1.html');
-	// 	}
-	// })
 
 	//put all the routers here
 	app.use('/', function(req, res){
