@@ -537,7 +537,11 @@ var getGDCandCDEData = function (req, res) {
 
 var preloadCadsrData = function (req, res) {
 	elastic.preloadDataFromCaDSR(function (result) {
+		if(result === "CDE data Refreshed!!"){
+			res.end('Success!!');
+		}else{
 			res.write(result);
+		}
 	});
 }
 
