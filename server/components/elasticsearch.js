@@ -348,14 +348,13 @@ function bulkIndex(next){
 	gdc_values = JSON.parse(gv);
 	let content_1 = fs.readFileSync("./cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
+	cdeData = JSON.parse(content_1);
 	let content_2 = fs.readFileSync("./synonyms.js").toString();
 	content_2 = content_2.replace(/}{/g, ",");
-	cdeData = JSON.parse(content_1);
+	let syns = JSON.parse(content_2);
 	let content_3 = fs.readFileSync("./cdeDataType.js").toString();
 	content_3 = content_3.replace(/}{/g, ",");
 	cdeDataType = JSON.parse(content_3);
-	cdeData = JSON.parse(content_1);
-	let syns = JSON.parse(content_2);
 	for(var c in cdeData){
 		let pvs = cdeData[c];
 		pvs.forEach(function(pv){
@@ -518,7 +517,7 @@ function createIndexes(params, next){
 
 exports.createIndexes = createIndexes;
 
-function preloadDataFromCaDSR(res){
+function preloadDataFromCaDSR(next){
 	let folderPath = path.join(__dirname, '..','data');
 	let termsJson = yaml.load(folderPath+'/_terms.yaml');
 	let content_1 = fs.readFileSync("./cdeData.js").toString();
@@ -541,7 +540,9 @@ function preloadDataFromCaDSR(res){
 		}
 	}
 	logger.debug(ids);
-	caDSR.loadData(ids, res);
+	caDSR.loadData(ids, function(data){
+		return next(data);
+	});
 	// next(1);
 }
 

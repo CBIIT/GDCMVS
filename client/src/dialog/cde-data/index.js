@@ -57,7 +57,6 @@ export default function cdeData(uid, tgts){
     if($('#caDSR_data').length){
       $('#caDSR_data').remove();
     }
-
     let header = $.templates(tmpl.header).render({targets: targets, items_length: items.length });
 
     let html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, items: tmp });

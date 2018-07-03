@@ -11,6 +11,7 @@ export default function getGDCTerms(uid, tgts){
     let targets = null;
     let icdo = false;
     let windowEl = $(window);
+    let icdo_items = [];
 
     if(tgts !== null && tgts !== undefined){
       targets = tgts.split("#");
@@ -18,6 +19,7 @@ export default function getGDCTerms(uid, tgts){
       items.forEach(function(item){
         if(item.i_c !== undefined){
           icdo = true;
+          icdo_items.push(item);
         }
         if (targets.indexOf(item.n) > -1){
           item.e = true;
@@ -27,8 +29,13 @@ export default function getGDCTerms(uid, tgts){
       items.forEach(function(item){
         if(item.i_c !== undefined){
           icdo = true;
+          icdo_items.push(item);
         }
       });
+    }
+
+    if(icdo){
+      items = icdo_items;
     }
 
     items.forEach(function(it){
@@ -52,6 +59,7 @@ export default function getGDCTerms(uid, tgts){
 
     let header = $.templates(tmpl.header).render({targets: targets, icdo: icdo, items_length: items.length })
     let html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
+
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
 
     //display result in a table
@@ -70,13 +78,8 @@ export default function getGDCTerms(uid, tgts){
         //add new custom header
         $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
 
-        // $(this).prev('.ui-dialog-titlebar').remove();
-        // $(this).before(header);
-        //$(this).before(header);
         var target = $(this).parent();
 
-        // target.find('.ui-dialog-titlebar').append(titleComponent);
-        // target.find('.ui-dialog-titlebar-close').html('');
 
         if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
             target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
