@@ -537,16 +537,10 @@ var getGDCandCDEData = function (req, res) {
 
 var preloadCadsrData = function (req, res) {
 	elastic.preloadDataFromCaDSR(function (result) {
-		if (result === 1) {
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
-		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
+		if(result === "CDE data Refreshed!!"){
+			res.end('Success!!');
+		}else{
+			res.write(result);
 		}
 	});
 }
@@ -1661,6 +1655,8 @@ var parseExcel = function (req, res) {
 	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
+	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
 			var dataParsed = [];
@@ -1709,7 +1705,7 @@ var parseExcel = function (req, res) {
 					}
 				}
 			});
-
+			
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
@@ -1746,9 +1742,22 @@ var parseExcel = function (req, res) {
 					});
 
 				} else {
+					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+					let c_n_p = all_gdc_values[category_node_property];
+					delete all_gdc_values[category_node_property];
+					if(c_n_p){
+						all_gdc_values[category_node_property] = [];
+						c_n_p.forEach(function (prop_values){
+							if(dataParsed[dp].value === prop_values.nm && !prop_values.n_c){
+								prop_values.n_c = dataParsed[dp].ncit_code;
+							}
+							all_gdc_values[category_node_property].push(prop_values);
+						});					
+						
+					}
+					
 					var cc = {};
 					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
-					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (concept[category_node_property]) {
 						//If category.node.property already exists in the conceptCode.js file, then delete it.
 						delete concept[category_node_property]
@@ -1780,6 +1789,12 @@ var parseExcel = function (req, res) {
 					});
 				}
 			}
+			
+		}
+	});
+	fs.writeFileSync("./gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+		if (err) {
+			return logger.error(err);
 		}
 	});
 	res.json({
