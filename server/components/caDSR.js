@@ -12,7 +12,7 @@ var logger = require('./logger');
 var datas = {};
 var syns = {};
 
-var loadData = function(ids){
+var loadData = function(ids, next){
 	if(ids.length > 0){
 		logger.debug(ids.length);
 		let ncitids = [];
@@ -70,20 +70,22 @@ var loadData = function(ids){
 				   			//save to local
 				   			let str = {};
 				   			str[uid] = data;
-				   			fs.appendFile("./cdeData.js", JSON.stringify(str), function(err) {
+				   			fs.appendFileSync("./cdeData.js", JSON.stringify(str), function(err) {
 							    if(err) {
 							        return logger.error(err);
 							    }
 
 							    logger.debug(" "+data.length+" PVs for caDSR :" +uid );
 							});
-					   		count++;
-					   		logger.debug("finished number:" + count);
-					   		// if(count >= ids.length){
-					   		// 	logger.debug("will search "+ ncitids.length + " NCIt element for synonyms.");
-					   		// 	synchronziedLoadSynonmys(ncitids, 0);
-					   		// }
-					   	});
+							count++;
+							logger.debug("finished number:" + count);
+					   		if(count == ids.length){
+					   			next('CDE data Refreshed!!');	
+							}else{
+								next("finished number: " + count + " of " +ids.length +"\n");
+							}
+					   		
+						});
 					}).on('error', (e) => {
 						logger.error(e);
 					});
