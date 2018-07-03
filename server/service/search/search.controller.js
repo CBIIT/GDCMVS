@@ -537,7 +537,7 @@ var getGDCandCDEData = function (req, res) {
 
 var preloadCadsrData = function (req, res) {
 	elastic.preloadDataFromCaDSR(function (result) {
-		return res.json(result);
+			res.write(result);
 	});
 }
 
