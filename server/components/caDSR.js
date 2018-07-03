@@ -81,7 +81,10 @@ var loadData = function(ids, next){
 					   		logger.debug("finished number:" + count);
 					   		if(count == ids.length){
 					   			next('CDE data Refreshed!!');	
+							}else{
+								next("finished number: " + count + " of " +ids.length +"\n");
 							}
+							
 							
 					   	});
 					}).on('error', (e) => {
