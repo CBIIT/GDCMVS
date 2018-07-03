@@ -155,10 +155,15 @@ export default function render(keyword, option, items){
 
   $('.gdc-details').click(function(event){
     event.preventDefault();
-    let target = $(this);
-    let parentTarget = $(this).parent();
-    let gdcLinks = parentTarget.find('.gdc-links');
-    gdcLinks.slideToggle(350);
+    let $this = $(this);
+    let $target = $(this).parent().find('.gdc-links');
+    $target.slideToggle(350 ,function(){
+      if($target.is(":visible")){
+        $this.attr('aria-expanded', 'true');
+      } else {
+        $this.attr('aria-expanded', 'false');
+      }
+    });
   });
 
   $('.cde-suggest').click(function(event){
