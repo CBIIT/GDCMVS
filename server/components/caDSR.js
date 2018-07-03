@@ -77,16 +77,15 @@ var loadData = function(ids, next){
 
 							    logger.debug(" "+data.length+" PVs for caDSR :" +uid );
 							});
-					   		count++;
-					   		logger.debug("finished number:" + count);
+							count++;
+							logger.debug("finished number:" + count);
 					   		if(count == ids.length){
 					   			next('CDE data Refreshed!!');	
 							}else{
 								next("finished number: " + count + " of " +ids.length +"\n");
 							}
-							
-							
-					   	});
+					   		
+						});
 					}).on('error', (e) => {
 						logger.error(e);
 					});
