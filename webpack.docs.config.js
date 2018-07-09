@@ -41,15 +41,15 @@ module.exports = {
       },
       plugins: [
         new ExtractTextPlugin("styles.css"),
-        new FileManagerPlugin({
-        onEnd: [{
-            copy: [
-                { source: './client/views/body.html', destination: path.resolve(__dirname, 'gdc-docs/docs/Data_Dictionary/gdcmvs.md') },
-                { source: './client/static/dist/*', destination: path.resolve(__dirname, 'gdc-docs/theme/apps/gdcmvs/dist') },
-                { source: './client/static/lib/**/*', destination: path.resolve(__dirname, 'gdc-docs/theme/apps/gdcmvs/lib') }
-            ]
-            }]
-        })
+        // new FileManagerPlugin({
+        // onEnd: [{
+        //     copy: [
+        //         { source: './client/views/body.html', destination: path.resolve(__dirname, 'gdc-docs/docs/Data_Dictionary/gdcmvs.md') },
+        //         { source: './client/static/dist/*.{js,css}', destination: path.resolve(__dirname, 'gdc-docs/theme/apps/gdcmvs/dist') },
+        //         { source: './client/static/lib/**/*', destination: path.resolve(__dirname, 'gdc-docs/theme/apps/gdcmvs/lib') }
+        //     ]
+        //     }]
+        // })
       ],
       mode: 'production'
 }
