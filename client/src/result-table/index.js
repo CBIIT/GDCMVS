@@ -277,6 +277,7 @@ const func = {
     });
 
     let newtrs = [];
+    let all_enums = [];
     trs.forEach(function (data) {
       let temp_categ = {
         nodes: []
@@ -313,14 +314,18 @@ const func = {
                 trs.forEach(function (data3) {
                   if (data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id) {
                       let temp_value = {};
-                      temp_value.title = data3.title;
-                      temp_value.type = data3.type;
-                      temp_prop.all_values.push(temp_value);
-                      if (data3.exist) {
-                        temp_prop.hl_values.push(temp_value);
+                      if(all_enums.indexOf(data1.title+"."+data2.title+"."+data3.title) == -1){
+                        all_enums.push(data1.title+"."+data2.title+"."+data3.title);
+                        temp_value.title = data3.title;
+                        temp_value.type = data3.type;
+                        temp_prop.all_values.push(temp_value);
+                        if (data3.exist) {
+                          temp_prop.hl_values.push(temp_value);
+                        }
                       }
                   }
                   if(data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
+
                     let temp_value = {};
                     temp_value.url = data3.url;
                     temp_value.type = data3.type;
@@ -338,7 +343,6 @@ const func = {
         newtrs.push(temp_categ);
       }
     });
-
     let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 310;
     h = (h < 430) ? 430 : h;
