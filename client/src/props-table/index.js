@@ -3,7 +3,9 @@ import tmpl from './view';
 const func = {
   render(items) {
  	//data preprocessing
- 	let props = [];
+  let props = [];
+  //options render
+  let options = {};
  	items.forEach(function(item){
  		let hl = item.highlight;
  		let source = item._source;
@@ -24,19 +26,18 @@ const func = {
  						prop.syn = true;
  					}
  				});
- 			}
+       }
  			prop.ref = source.name +"@" +source.node +"@" + source.category;
  			prop.cdeId = source.cde !== undefined ? source.cde.id : "";
  			prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
  			prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
- 			prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
+      prop.type =  Array.isArray(source.type) ? source.type[0] : source.type;
  			if(source.cde !== undefined && source.cde.dt !== undefined){
  				prop.type = source.cde.dt;
-       }
+      }
       if(prop.type){
         prop.type = prop.type.toLowerCase();
       }
-
  			props.push(prop);
  		}
  	});
@@ -48,8 +49,12 @@ const func = {
  	else{
  		let offset = $('#root').offset().top;
  		let h = window.innerHeight - offset - 310;
- 		h = (h < 430) ? 430 : h;
- 		html = $.templates(tmpl).render({mh: h,props: props});
+    options.height = (h < 430) ? 430 : h;
+    options.redirect = false;
+    if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
+      options.redirect = true;
+    }
+ 		html = $.templates(tmpl).render({options: options, props: props});
  	}
 
     let result = {};

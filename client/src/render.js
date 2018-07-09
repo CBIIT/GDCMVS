@@ -91,14 +91,6 @@ export default function render(keyword, option, items){
     }
   });
 
-  $('a.redirect').bind('click', function(event) {
-    if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
-      event.preventDefault();
-      let href = $(this).attr('href');
-      window.open('https://docs.gdc.cancer.gov' + href, '_blank');
-    }
-  });
-
   $('#tab-values').bind('click', function(){
     let option = JSON.parse(localStorage.getItem('option'));
     option.activeTab = 0;
