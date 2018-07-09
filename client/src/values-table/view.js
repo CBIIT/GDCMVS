@@ -9,7 +9,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     +'</div>'
   +'</div>'
 +'</div>'
-+'<div id="table-body" class="table__body table__body--overflow row" style="max-height: {{:mh}}px;"><div class="col-xs-12">{{for values}}'
++'<div id="table-body" class="table__body table__body--overflow row" style="max-height: {{:options.height}}px;"><div class="col-xs-12">{{for values}}'
 +'<div class="table__row row table__row--striped table__row--flex">'
   +'<div class="table__td col-xs-3">'
       +'{{:category}}<ul class="table__ul">'

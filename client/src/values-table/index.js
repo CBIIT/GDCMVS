@@ -3,9 +3,10 @@ import tmpl from './view';
 const func = {
   render(items) {
     //data preprocessing
-
     let values = [];
     let len = 0;
+    //options render
+    let options = {};
     items.forEach(function (item) {
       let hl = item.highlight;
       if (hl["enum.n"] == undefined && hl["enum.n.have"] == undefined &&
@@ -347,12 +348,12 @@ const func = {
     } else {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 310;
-      h = (h < 430) ? 430 : h;
+      options.height = (h < 430) ? 430 : h;
       html = $.templates({
         markup: tmpl,
         allowCode: true
       }).render({
-        mh: h,
+        options: options,
         values: values
       });
     }
