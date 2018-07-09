@@ -19,6 +19,8 @@ const func = {
     //final result
     let result = {};
     result.len = 0;
+    //options render
+    let options = {};
 
     items.forEach(function (item) {
       let hl = item.highlight;
@@ -345,9 +347,13 @@ const func = {
     });
     let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 310;
-    h = (h < 430) ? 430 : h;
+    options.height = (h < 430) ? 430 : h;
+    options.redirect = false;
+    if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
+      options.redirect = true;
+    }
     let html = $.templates(tmpl).render({
-      mh: h,
+      options: options,
       newtrs: newtrs
     });
 
