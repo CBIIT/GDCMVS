@@ -566,8 +566,10 @@ function preloadDataTypeFromCaDSR(next){
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
 function loadSynonyms(next){
-	caDSR.loadSynonyms();
-	next(1);
+	caDSR.loadSynonyms(function(data){
+		return next(data);
+	});
+	//next(1);
 }
 
 exports.loadSynonyms = loadSynonyms;
