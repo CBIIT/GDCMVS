@@ -569,10 +569,17 @@ function loadSynonyms(next){
 	caDSR.loadSynonyms(function(data){
 		return next(data);
 	});
-	//next(1);
 }
 
 exports.loadSynonyms = loadSynonyms;
+
+function loadSynonymsCtcae(next){
+	caDSR.loadSynonymsCtcae(function(data){
+		return next(data);
+	});
+}
+
+exports.loadSynonymsCtcae = loadSynonymsCtcae;
 
 function loadSynonyms_continue(next){
 	caDSR.loadSynonyms_continue();

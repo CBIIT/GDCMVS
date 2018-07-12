@@ -7,6 +7,7 @@ var router = express.Router();
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
 router.get('/preload', controller.preload);
+router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
 router.get('/preloadCadsrData', controller.preloadCadsrData);
 router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
 //router.get('/parseExcel', controller.parseExcel);
