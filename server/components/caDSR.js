@@ -224,6 +224,81 @@ var loadSynonyms = function (next) {
 	// });
 };
 
+var loadSynonymsCtcae = function (next) {
+	let ncitids = [];
+	//load cde ncit codes
+	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	cdeData = cdeData.replace(/}{/g, ",");
+	let cde = JSON.parse(cdeData);
+	//load concept codes
+	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	//load ICD-0 codes
+	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let icdo = JSON.parse(gdcValues);
+	for (let c in cde) {
+		let arr = cde[c];
+		if (arr.length !== 0) {
+			arr.forEach(function (pv) {
+				if (pv.pvc && pv.pvc !== "") {
+					if (pv.pvc.indexOf(':') >= 0) {
+						let cs = pv.pvc.split(":");
+						cs.forEach(function (c) {
+							if (ncitids.indexOf(c) === -1) {
+								ncitids.push(c);
+							}
+						});
+					} else {
+						if (ncitids.indexOf(pv.pvc) === -1) {
+							ncitids.push(pv.pvc);
+						}
+					}
+				}
+			});
+		}
+	}
+	for (let cc in concept) {
+		let dict = concept[cc];
+		for (let v in dict) {
+			if (dict[v] !== "" && ncitids.indexOf(dict[v]) == -1) {
+				ncitids.push(dict[v]);
+			}
+		}
+	}
+	for (let ic in icdo) {
+		let arr = icdo[ic];
+		arr.forEach(function (dict) {
+			if (dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1) {
+				ncitids.push(dict.n_c);
+			}
+		});
+
+	}
+	let ncit = [];
+	let ctcae = [];
+
+	ncitids.forEach(function (id) {
+		if (id.indexOf('E') >= 0) {
+			ctcae.push(id);
+		} else {
+			ncit.push(id);
+		}
+	});
+	//get data
+	fs.truncate('./synonyms.js', 0, function(){
+		console.log('synonyms.js truncated')
+	});
+	fs.truncate('./synonyms_ctcae.js', 0, function(){
+		console.log('synonyms_ctcae.js truncated')
+	});
+	// synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
+	// 	return next(data);
+	// });
+	synchronziedLoadSynonmysfromCTCAE(ctcae, 0, function(data){
+		return next(data);
+	});
+};
+
 var loadSynonyms_continue = function () {
 	let ncitids = [];
 	let content_2 = fs.readFileSync("./synonyms.js").toString();
@@ -409,6 +484,7 @@ module.exports = {
 	loadData,
 	loadDataType,
 	loadSynonyms,
+	loadSynonymsCtcae,
 	loadSynonyms_continue,
 	getData,
 	getSynonyms
