@@ -571,6 +571,16 @@ var preload = function (req, res) {
 	});
 };
 
+var preloadSynonumsCtcae = function (req, res) {
+	elastic.loadSynonymsCtcae(function (result) {
+		if(result === "Success"){
+			res.end('Success!!');
+		}else{
+			res.write(result);
+		}
+	})
+};
+
 var exportAllValues = function (req, res) {
 	let merges = [];
 	let data = [];
@@ -2039,6 +2049,7 @@ module.exports = {
 	getGDCandCDEData,
 	searchICDO3Data,
 	preload,
+	preloadSynonumsCtcae,
 	export2Excel,
 	getNCItInfo,
 	indexing,
