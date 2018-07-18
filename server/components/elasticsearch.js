@@ -566,11 +566,20 @@ function preloadDataTypeFromCaDSR(next){
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
 function loadSynonyms(next){
-	caDSR.loadSynonyms();
-	next(1);
+	caDSR.loadSynonyms(function(data){
+		return next(data);
+	});
 }
 
 exports.loadSynonyms = loadSynonyms;
+
+function loadSynonymsCtcae(next){
+	caDSR.loadSynonymsCtcae(function(data){
+		return next(data);
+	});
+}
+
+exports.loadSynonymsCtcae = loadSynonymsCtcae;
 
 function loadSynonyms_continue(next){
 	caDSR.loadSynonyms_continue();
