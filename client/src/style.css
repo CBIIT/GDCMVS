@@ -1,45 +1,22 @@
-html, body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background-color: rgb(249, 249, 249);
-  color: #3a3a3a;
-  line-height: 2rem;
-}
-
 body {
   min-width: 970px;
-  padding-top: 64px;
-  position: relative;
-  font-size: 1.4rem;
 }
 
 #body {
-  min-height: 768px;
-  max-width: 1280px;
-  margin: 0 auto;
   margin-top: 0 !important;
-  margin-bottom: 130px;
-}
-
-.parent-container{
-  min-height: calc(100% - 10px);
 }
 
 .main-container {
-  padding: 2rem;
+  padding-bottom: 127px;
   font-size: 1.3rem;
 }
 
-.version-content{
+.version-content {
   text-align: right;
   margin: 0.5em 0;
 }
 
-footer{
-  min-width: 970px;
+footer {
   margin: 0;
   position: absolute;
   bottom: 0;
