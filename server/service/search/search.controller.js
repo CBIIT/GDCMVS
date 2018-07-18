@@ -563,26 +563,22 @@ var preloadDataTypeFromCaDSR  = function (req, res) {
 
 var preload = function (req, res) {
 	elastic.loadSynonyms(function (result) {
-		if (result === 1) {
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
-		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
+		if(result === "Success"){
+			res.end('Success!!');
+		}else{
+			res.write(result);
 		}
 	});
-	// elastic.preloadDataTypeFromCaDSR(function(result){
-	// 	if(result === 1){
-	// 		res.json({"status":"success", "message":"preparing data type..."});
-	// 	}
-	// 	else{
-	// 		res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
-	// 	}
-	// });
+};
+
+var preloadSynonumsCtcae = function (req, res) {
+	elastic.loadSynonymsCtcae(function (result) {
+		if(result === "Success"){
+			res.end('Success!!');
+		}else{
+			res.write(result);
+		}
+	})
 };
 
 var exportAllValues = function (req, res) {
@@ -2053,6 +2049,7 @@ module.exports = {
 	getGDCandCDEData,
 	searchICDO3Data,
 	preload,
+	preloadSynonumsCtcae,
 	export2Excel,
 	getNCItInfo,
 	indexing,
