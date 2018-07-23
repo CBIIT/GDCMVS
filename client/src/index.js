@@ -15,10 +15,12 @@ $(document).on('click',func.removeBox);
 
 var heightSlider = $('.navbar .container').height();
 $('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
+$('.parent-container').attr('style', 'min-height: calc(100vh - '+ (heightSlider + 10) +'px)');
 
 $(window).resize(function() {
   heightSlider = $('.navbar .container').height();
   $('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
+  $('.parent-container').attr('style', 'min-height: calc(100vh - '+ (heightSlider + 10) +'px)');
 });
 
 function getGDCData(prop, target){
