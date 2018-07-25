@@ -1379,7 +1379,7 @@
         "3": "C105726",
         "4": "C105727",
         "5": "C105728",
-        "": "C105722"
+        "0": "C105722"
     },
     "clinical.follow_up.estrogen_receptor_percent_positive_ihc": {
         "<10%": "",
