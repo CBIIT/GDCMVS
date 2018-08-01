@@ -77,15 +77,19 @@ const func = {
     },
     suggest(){
         let area = document.getElementById("suggestBox");
+        let clear = $('#searchclear');
 
         if($("#keywords").hasClass('search-bar__input--has-error')){
             $("#keywords").removeClass('search-bar__input--has-error');
         }
 
+        clear.show();
+
         if($(this).val().trim() === ''){
             area.style.display = "none";
             displayBoxIndex = -1;
             area.innerHTML = "";
+            clear.hide();
             return;
         }
 
