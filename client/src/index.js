@@ -23,6 +23,12 @@ $(window).resize(function() {
   $('.parent-container').attr('style', 'min-height: calc(100vh - '+ (heightSlider + 10) +'px)');
 });
 
+$('#searchclear').click( function(event){
+  event.preventDefault();
+  $(this).hide();
+  $('#keywords').val('').focus();
+});
+
 function getGDCData(prop, target){
 	let uid = prop.replace(/@/g, '/');
 	dialog.getGDCData(uid, target);
@@ -325,6 +331,8 @@ $(function() {
         if(option.syn != false){
           $("#i_syn").prop('checked', true);
         }
+
+        $('#searchclear').show();
 
         render(keyword, option, items);
         //todo: close progress bar
