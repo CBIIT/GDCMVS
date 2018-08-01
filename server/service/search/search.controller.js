@@ -537,15 +537,15 @@ var getGDCandCDEData = function (req, res) {
 
 var preloadCadsrData = function (req, res) {
 	elastic.preloadDataFromCaDSR(function (result) {
-		if(result === "CDE data Refreshed!!"){
+		if (result === "CDE data Refreshed!!") {
 			res.end('Success!!');
-		}else{
+		} else {
 			res.write(result);
 		}
 	});
 }
 
-var preloadDataTypeFromCaDSR  = function (req, res) {
+var preloadDataTypeFromCaDSR = function (req, res) {
 	elastic.preloadDataTypeFromCaDSR(function (result) {
 		if (result === 1) {
 			res.json({
@@ -563,9 +563,9 @@ var preloadDataTypeFromCaDSR  = function (req, res) {
 
 var preload = function (req, res) {
 	elastic.loadSynonyms(function (result) {
-		if(result === "Success"){
+		if (result === "Success") {
 			res.end('Success!!');
-		}else{
+		} else {
 			res.write(result);
 		}
 	});
@@ -573,9 +573,9 @@ var preload = function (req, res) {
 
 var preloadSynonumsCtcae = function (req, res) {
 	elastic.loadSynonymsCtcae(function (result) {
-		if(result === "Success"){
+		if (result === "Success") {
 			res.end('Success!!');
-		}else{
+		} else {
 			res.write(result);
 		}
 	})
@@ -641,7 +641,94 @@ var exportAllValues = function (req, res) {
 
 };
 
+var getPV = function (req, res) {
+	let query = {
+		"match_all": {}
+	};
+
+	elastic.query(config.index_p, query, null, function (result) {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		let cc = [];
+		data.forEach(function (entry) {
+			let vs = entry._source.enum;
+			if (vs) {
+				vs.forEach(function (v) {
+					if (v.n_c && cc.indexOf(v.n_c) == -1) {
+						cc.push(v.n_c);
+
+					}
+
+				})
+			}
+		})
+		fs.truncate('./ncit_details.js', 0, function () {
+			console.log('ncit_details.js truncated')
+		});
+		getPVFunc(cc, 0, function (data) {
+			res.write(data);
+		});
+	})
+}
+
+var getPVFunc = function (ncitids, idx, next) {
+	if (idx >= ncitids.length) {
+		return;
+	}
+	https.get(config.NCIt_url[4] + ncitids[idx], (rsp) => {
+		let html = '';
+		rsp.on('data', (dt) => {
+			html += dt;
+		});
+		rsp.on('end', function () {
+			if (html.trim() !== '') {
+				let d = JSON.parse(html);
+				if (d.preferredName !== undefined) {
+					let tmp = {}
+					tmp[ncitids[idx]] = {};
+					tmp[ncitids[idx]].preferredName = d.preferredName;
+					tmp[ncitids[idx]].code = d.code;
+					tmp[ncitids[idx]].definitions = d.definitions;
+					tmp[ncitids[idx]].synonyms = d.synonyms;
+
+					fs.appendFile("./ncit_details.js", JSON.stringify(tmp), function (err) {
+						if (err) {
+							return logger.error(err);
+						}
+					});
+				}
+			}
+
+			idx++;
+			getPVFunc(ncitids, idx, next);
+			if (ncitids.length == idx) {
+				return next('Success');
+			} else {
+				return next("NCIT finished number: " + idx + " of " + ncitids.length + "\n");
+			}
+
+		});
+
+	}).on('error', (e) => {
+		logger.debug(e);
+	});
+};
+
 var export2Excel = function (req, res) {
+	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	cdeData = cdeData.replace(/}{/g, ",");
+	let cde_file = JSON.parse(cdeData);
+
+	let pv = fs.readFileSync("./ncit_details.js").toString();
+	pv = pv.replace(/}{/g, ",");
+	let ncit_pv = JSON.parse(pv);
+
+	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	// console.log(concept);
+
 	let query = {
 		"match_all": {}
 	};
@@ -653,39 +740,136 @@ var export2Excel = function (req, res) {
 		let data = result.hits.hits;
 		let ds = [];
 		data.forEach(function (entry) {
-			console.log(entry);
 			let vs = entry._source.enum;
 			if (vs) {
-				let cde = entry._source.cde_pv;
-				vs.forEach(function (v) {
-					let tmp = {};
-					tmp.c = entry._source.category;
-					tmp.n = entry._source.node;
-					tmp.p = entry._source.name;
-					tmp.v = v.n;
-					tmp.ncit = v.n_c;
-					// if (v.i_c) {
-					// 	tmp.icdo = v.i_c.c;
-					// } else {
-					// 	tmp.icdo = "";
-					// }
-					// if (tmp.n == 'follow_up' && tmp.p == 'adverse_event') {
-					// 	cde.forEach(function (c) {
-					// 		if (c.n.trim().toLowerCase() == tmp.v.trim().toLowerCase()) {
-					// 			tmp.ctcae = c.ss[0].c;
-					// 		}
-					// 	});
-					// } else {
-					// 	tmp.ctcae = "";
-					// }
-					ds.push(tmp);
-				});
+				let cde = entry._source.cde;
+				let cde_pv = entry._source.cde_pv;
+				if (cde && cde_pv) {
+					let common_values = [];
+					vs.forEach(function (v) {
+						cde_pv.forEach(function (cpv) {
+							if (v.n.trim().toLowerCase() == cpv.n.trim().toLowerCase()) {
+								common_values.push(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n.trim().toLowerCase());
+								let tmp = {};
+								tmp.c = entry._source.category;
+								tmp.n = entry._source.node;
+								tmp.p = entry._source.name;
+								tmp.gdc_v = v.n;
+								if (v.n_c) {
+									// let res = sync_request("GET", 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + v.n_c);
+									// let temp_data = res.getBody().toString();
+									// let json_data = JSON.parse(temp_data);
+									tmp.ncit_v = ncit_pv[v.n_c].preferredName;
+									tmp.ncit_cc = v.n_c;
+								} else {
+									tmp.ncit_v = "";
+									tmp.ncit_cc = "";
+								}
 
+								tmp.cpv = cpv.m;
+								let all_cpvc = "";
+								if (cpv.ss.length > 0) {
+									for (let tmp_index in cpv.ss) {
+										if (tmp_index == 0) {
+											all_cpvc = all_cpvc + cpv.ss[tmp_index].c;
+										} else {
+											all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
+										}
+									}
+								}
+								tmp.cpvc = all_cpvc;
+								tmp.cid = cde.id;
+								ds.push(tmp);
+							}
+						});
+					});
+
+					vs.forEach(function (v) {
+						if (common_values.indexOf(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n.trim().toLowerCase()) == -1) {
+							let tmp = {};
+							tmp.c = entry._source.category;
+							tmp.n = entry._source.node;
+							tmp.p = entry._source.name;
+							tmp.gdc_v = v.n;
+							// tmp.ncit_v = v.n;
+							// tmp.ncit_cc = v.n_c;
+							if (v.n_c) {
+								// let res = sync_request("GET", 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + v.n_c);
+								// let temp_data = res.getBody().toString();
+								// let json_data = JSON.parse(temp_data);
+								tmp.ncit_v = ncit_pv[v.n_c].preferredName;
+								tmp.ncit_cc = v.n_c;
+							} else {
+								tmp.ncit_v = "";
+								tmp.ncit_cc = "";
+							}
+							tmp.cpv = "";
+							tmp.cpvc = "";
+							tmp.cid = cde.id;
+							ds.push(tmp);
+						}
+					});
+					cde_pv.forEach(function (cpv) {
+						if (common_values.indexOf(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + cpv.n.trim().toLowerCase()) == -1) {
+							let tmp = {};
+							tmp.c = entry._source.category;
+							tmp.n = entry._source.node;
+							tmp.p = entry._source.name;
+							tmp.gdc_v = cpv.n;
+							tmp.ncit_v = "";
+							tmp.ncit_cc = "";
+							tmp.cpv = cpv.m;
+							let all_cpvc = "";
+							if (cpv.ss.length > 0) {
+								for (let tmp_index in cpv.ss) {
+									if (tmp_index == 0) {
+										all_cpvc = all_cpvc + cpv.ss[tmp_index].c;
+									} else {
+										all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
+									}
+								}
+							}
+							tmp.cpvc = all_cpvc;
+							tmp.cid = cde.id;
+							ds.push(tmp);
+						}
+					});
+
+				} else {
+					vs.forEach(function (v) {
+						let tmp = {};
+						tmp.c = entry._source.category;
+						tmp.n = entry._source.node;
+						tmp.p = entry._source.name;
+						tmp.gdc_v = v.n;
+						// tmp.ncit_v = v.n;
+						// tmp.ncit_cc = v.n_c;
+						if (v.n_c) {
+							// let res = sync_request("GET", 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + v.n_c);
+							// let temp_data = res.getBody().toString();
+							// let json_data = JSON.parse(temp_data);
+							tmp.ncit_v = ncit_pv[v.n_c].preferredName;
+							tmp.ncit_cc = v.n_c;
+						} else {
+							tmp.ncit_v = "";
+							tmp.ncit_cc = "";
+						}
+						tmp.cpv = "";
+						tmp.cpvc = "";
+						if (cde) {
+							tmp.cid = cde.id;
+						} else {
+							tmp.cid = "";
+						}
+						ds.push(tmp);
+
+					})
+
+				}
 			}
 		});
-		console.log(ds);
 		let heading = [
-			['Category', 'Node', 'Property', 'Value']
+			['Category', 'Node', 'Property', 'GDC Values', 'NCIt PV', 'NCIt Code', 'CDE PV Meaning', 'CDE PV Meaning concept codes', 'CDE ID']
 		];
 		let merges = [];
 		let specification = {
@@ -698,7 +882,22 @@ var export2Excel = function (req, res) {
 			p: {
 				width: 200
 			},
-			v: {
+			gdc_v: {
+				width: 200
+			},
+			ncit_v: {
+				width: 200
+			},
+			ncit_cc: {
+				width: 200
+			},
+			cpv: {
+				width: 200
+			},
+			cpvc: {
+				width: 200
+			},
+			cid: {
 				width: 200
 			}
 		};
@@ -722,22 +921,28 @@ var export2Excel = function (req, res) {
 
 var getNCItInfo = function (req, res) {
 	let code = req.query.code;
-	let url = config.NCIt_url[4] + code;
-	https.get(url, (rsp) => {
-		let html = '';
-		rsp.on('data', (dt) => {
-			html += dt;
+	let pv = fs.readFileSync("./ncit_details.js").toString();
+	pv = pv.replace(/}{/g, ",");
+	let ncit_pv = JSON.parse(pv);
+	if (ncit_pv[code]) {
+		res.json(ncit_pv[code]);
+	} else {
+		let url = config.NCIt_url[4] + code;
+		https.get(url, (rsp) => {
+			let html = '';
+			rsp.on('data', (dt) => {
+				html += dt;
+			});
+			rsp.on('end', function () {
+				if (html.trim() !== '') {
+					let data = JSON.parse(html);
+					res.json(data);
+				}
+			});
+		}).on('error', (e) => {
+			logger.debug(e);
 		});
-		rsp.on('end', function () {
-			if (html.trim() !== '') {
-				let data = JSON.parse(html);
-				res.json(data);
-			}
-		});
-
-	}).on('error', (e) => {
-		logger.debug(e);
-	});
+	}
 };
 
 var export_common = function (req, res) {
@@ -1701,7 +1906,7 @@ var parseExcel = function (req, res) {
 					}
 				}
 			});
-			
+
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
@@ -1741,17 +1946,17 @@ var parseExcel = function (req, res) {
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					let c_n_p = all_gdc_values[category_node_property];
 					delete all_gdc_values[category_node_property];
-					if(c_n_p){
+					if (c_n_p) {
 						all_gdc_values[category_node_property] = [];
-						c_n_p.forEach(function (prop_values){
-							if(dataParsed[dp].value === prop_values.nm && !prop_values.n_c){
+						c_n_p.forEach(function (prop_values) {
+							if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
 								prop_values.n_c = dataParsed[dp].ncit_code;
 							}
 							all_gdc_values[category_node_property].push(prop_values);
-						});					
-						
+						});
+
 					}
-					
+
 					var cc = {};
 					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
 					if (concept[category_node_property]) {
@@ -1785,7 +1990,7 @@ var parseExcel = function (req, res) {
 					});
 				}
 			}
-			
+
 		}
 	});
 	fs.writeFileSync("./gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
@@ -2042,6 +2247,7 @@ var export_difference = function (req, res) {
 module.exports = {
 	suggestion,
 	searchP,
+	getPV,
 	getDataFromCDE,
 	getCDEData,
 	getDataFromGDC,
