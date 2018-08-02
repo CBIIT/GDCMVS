@@ -4,7 +4,7 @@ id: "case"
 title: Case
 type: object
 namespace: https://gdc.cancer.gov
-category: administrative
+category: case
 program: '*'
 project: '*'
 description: >
