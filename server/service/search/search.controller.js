@@ -717,17 +717,9 @@ var getPVFunc = function (ncitids, idx, next) {
 };
 
 var export2Excel = function (req, res) {
-	let cdeData = fs.readFileSync("./cdeData.js").toString();
-	cdeData = cdeData.replace(/}{/g, ",");
-	let cde_file = JSON.parse(cdeData);
-
 	let pv = fs.readFileSync("./ncit_details.js").toString();
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
-
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
-	// console.log(concept);
 
 	let query = {
 		"match_all": {}
@@ -756,16 +748,12 @@ var export2Excel = function (req, res) {
 								tmp.p = entry._source.name;
 								tmp.gdc_v = v.n;
 								if (v.n_c) {
-									// let res = sync_request("GET", 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + v.n_c);
-									// let temp_data = res.getBody().toString();
-									// let json_data = JSON.parse(temp_data);
 									tmp.ncit_v = ncit_pv[v.n_c].preferredName;
 									tmp.ncit_cc = v.n_c;
 								} else {
 									tmp.ncit_v = "";
 									tmp.ncit_cc = "";
 								}
-
 								tmp.cpv = cpv.m;
 								let all_cpvc = "";
 								if (cpv.ss.length > 0) {
@@ -791,12 +779,7 @@ var export2Excel = function (req, res) {
 							tmp.n = entry._source.node;
 							tmp.p = entry._source.name;
 							tmp.gdc_v = v.n;
-							// tmp.ncit_v = v.n;
-							// tmp.ncit_cc = v.n_c;
 							if (v.n_c) {
-								// let res = sync_request("GET", 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + v.n_c);
-								// let temp_data = res.getBody().toString();
-								// let json_data = JSON.parse(temp_data);
 								tmp.ncit_v = ncit_pv[v.n_c].preferredName;
 								tmp.ncit_cc = v.n_c;
 							} else {
@@ -834,7 +817,6 @@ var export2Excel = function (req, res) {
 							ds.push(tmp);
 						}
 					});
-
 				} else {
 					vs.forEach(function (v) {
 						let tmp = {};
@@ -842,12 +824,7 @@ var export2Excel = function (req, res) {
 						tmp.n = entry._source.node;
 						tmp.p = entry._source.name;
 						tmp.gdc_v = v.n;
-						// tmp.ncit_v = v.n;
-						// tmp.ncit_cc = v.n_c;
 						if (v.n_c) {
-							// let res = sync_request("GET", 'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/' + v.n_c);
-							// let temp_data = res.getBody().toString();
-							// let json_data = JSON.parse(temp_data);
 							tmp.ncit_v = ncit_pv[v.n_c].preferredName;
 							tmp.ncit_cc = v.n_c;
 						} else {
@@ -862,9 +839,7 @@ var export2Excel = function (req, res) {
 							tmp.cid = "";
 						}
 						ds.push(tmp);
-
 					})
-
 				}
 			}
 		});
@@ -912,8 +887,6 @@ var export2Excel = function (req, res) {
 				}
 			]
 		);
-
-		// You can then return this straight 
 		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
 		res.send(report);
 	});

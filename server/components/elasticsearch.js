@@ -340,6 +340,9 @@ function extendDef(termsJson, defJson){
 }
 
 function bulkIndex(next){
+	let searchable_nodes = ["case","demographic","diagnosis","exposure","family_history","follow_up","molecular_test","treatment","slide","sample","read_group","portion","analyte",
+							"aliquot","slide_image","analysis_metadata","clinical_supplement","experiment_metadata","pathology_report","run_metadata","biospecimen_supplement",
+							"submitted_aligned_reads","submitted_genomic_profile","submitted_methylation_beta_value","submitted_tangent_copy_number","submitted_unaligned_reads"];
 	//load synonyms data file to memory
 	let cc = fs.readFileSync("./conceptCode.js").toString();
 	let ccode = JSON.parse(cc);
@@ -386,7 +389,7 @@ function bulkIndex(next){
 	fs.readdirSync(folderPath).forEach(file =>{
 		if(file.indexOf('_') !== 0){
 			let fileJson = yaml.load(folderPath+'/'+file);
-			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema"){
+			if(fileJson.category !=="TBD" && fileJson.id !== "metaschema" && searchable_nodes.indexOf(fileJson.id) !== -1){
 				logger.debug(folderPath+'/'+file);
 				helper(fileJson, termsJson, defJson, ccode, syns);
 			}
