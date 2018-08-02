@@ -18,7 +18,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     +'</li></ul>'
   +'</div>'
   +'<div class="table__td col-xs-2 table__td--word-break">'
-    +'<a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}&anchor={{:nm}}" {{if ~root.options.redirect}}target="_blank"{{/if}}>{{:nm}}</a>'
+    +'<a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}&anchor={{:nm_link}}" {{if ~root.options.redirect}}target="_blank"{{/if}}>{{:nm}}</a>'
   +'</div>'
   +'<div class="table__td col-xs-4">{{:desc}}</div>'
   +'<div class="table__td col-xs-2">'
