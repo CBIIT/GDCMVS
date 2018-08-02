@@ -261,7 +261,7 @@
     "clinical.family_history.type": {
         "family_history": "C29878"
     },
-    "administrative.case.disease_type": {
+    "case.case.disease_type": {
         "Acinar Cell Neoplasms": "C4197",
         "Acute Lymphoblastic Leukemia": "C3167",
         "Acute Myeloid Leukemia": "C3171",
@@ -365,16 +365,16 @@
         "Uterine Corpus Endometrial Carcinoma": "C7558",
         "Uveal Melanoma": "C7712"
     },
-    "administrative.case.index_date": {
+    "case.case.index_date": {
         "Diagnosis": "C15220",
         "First Patient Visit": "",
         "Study Enrollment": "C139171"
     },
-    "administrative.case.lost_to_followup": {
+    "case.case.lost_to_followup": {
         "No": "C49487",
         "Yes": "C49488"
     },
-    "administrative.case.primary_site": {
+    "case.case.primary_site": {
         "Accessory sinuses": "C12763",
         "Adrenal gland": "C12666",
         "Adrenal Gland": "C12666",
