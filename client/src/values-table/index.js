@@ -343,7 +343,7 @@ const func = {
     if (values.length == 0) {
       let keyword = $("#keywords").val();
       html =
-        '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">' +
+        '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
         keyword + '</span></div>';
     } else {
       let offset = $('#root').offset().top;
