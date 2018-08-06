@@ -98,7 +98,7 @@
     "clinical.diagnosis.best_overall_response": {
         "AJ-Adjuvant Therapy": "C15675",
         "CPD-Clinical Progression": "C17747",
-        "CR-Complete Response": "C123574",
+        "CR-Complete Response": "C4870",
         "CRU-Complete Response Unconfirmed": "",
         "DU-Disease Unchanged": "C71687",
         "IMR-Immunoresponse": "C131144",
@@ -109,19 +109,19 @@
         "NPB-No Palliative Benefit": "",
         "NR-No Response": "C123600",
         "PA-Palliative Therapy": "C15292",
-        "PB-Palliative Benefit": "",
+        "PB-Palliative Benefit": "C101516",
         "PD-Progressive Disease": "C8510",
-        "PPD-Pseudoprogression": "",
+        "PPD-Pseudoprogression": "C98298",
         "PR-Partial Response": "C18058",
-        "PSR-Pseudoresponse": "",
+        "PSR-Pseudoresponse": "C131142",
         "RD-Responsive Disease": "",
         "RPD-Radiographic Progressive Disease": "",
         "RP-Response": "",
-        "sCR-Stringent Complete Response": "",
-        "SD-Stable Disease": "",
+        "sCR-Stringent Complete Response": "C123614",
+        "SD-Stable Disease": "C18213",
         "SPD-Surgical Progression": "",
         "TE-Too Early": "C133441",
-        "VGPR-Very Good Partial Response": ""
+        "VGPR-Very Good Partial Response": "C123618"
     },
     "clinical.diagnosis.burkitt_lymphoma_clinical_variant": {
         "Endemic": "C27122",
@@ -134,17 +134,17 @@
         "Unknown": "C17998"
     },
     "clinical.diagnosis.cause_of_death": {
-        "Cancer Related": "",
+        "Cancer Related": "C8278",
         "Not Cancer Related": "",
         "Unknown": "C17998"
     },
     "clinical.diagnosis.classification_of_tumor": {
-        "metastasis": "C14174",
+        "metastasis": "C3261",
         "Not Allowed To Collect": "C141478",
         "not reported": "C43234",
         "other": "C17649",
         "primary": "C8509",
-        "recurrence": "C3352",
+        "recurrence": "C4798",
         "Unknown": "C17998"
     },
     "clinical.diagnosis.colon_polyps_history": {
@@ -172,15 +172,16 @@
         "Not Allowed To Collect": "C141478",
         "Not Applicable": "C48660",
         "Not Reported": "C43234",
-        "Progression of Disease": "",
-        "Recurrence": "C3352",
-        "Regional Lymph Node": "",
+        "Progression of Disease": "C17747",
+        "Recurrence": "C4798",
+        "Regional Lymph Node": "C49018",
         "Unknown": "C17998"
     },
     "clinical.diagnosis.perineural_invasion_present": {
         "No": "C49487",
         "Unknown": "C17998",
-        "Yes": "C49488"
+        "Yes": "C49488",
+        "Not Reported": "C43234"
     },
     "clinical.diagnosis.prior_malignancy": {
         "no": "C49487",
@@ -212,7 +213,9 @@
         "R0": "C139578",
         "R1": "C139579",
         "R2": "C139580",
-        "RX": "C139581"
+        "RX": "C139581",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
     },
     "clinical.diagnosis.vascular_invasion_present": {
         "No": "C49487",
@@ -228,7 +231,8 @@
         "Not Allowed To Collect": "C141478",
         "not reported": "C43234",
         "pending": "C53470",
-        "unknown": "C17998"
+        "unknown": "C17998",
+        "not allowed to collect": "C141478"
     },
     "clinical.exposure.tobacco_smoking_status": {
         "1": "",
@@ -1033,7 +1037,7 @@
         "Hypopharyngeal aspect of aryepiglottic fold": "",
         "Hypopharynx, NOS": "C12246",
         "Ileum": "C12387",
-        "Ill-defined sites within respiratory system": "",
+        "Ill-defined sites within respiratory system": "C148338",
         "Intestinal tract, NOS": "C12736",
         "Intra-abdominal lymph nodes": "C12360",
         "Intrahepatic bile duct": "C12677",
@@ -1093,7 +1097,7 @@
         "Optic nerve": "C12761",
         "Orbit, NOS": "C12347",
         "Oropharynx, NOS": "C12762",
-        "Other ill-defined sites": "",
+        "Other ill-defined sites": "C147919",
         "Other specified parts of female genital organs": "",
         "Other specified parts of male genital organs": "",
         "Other specified parts of pancreas": "C12273",
@@ -1234,7 +1238,166 @@
         "Vertebral column": "C12998",
         "Vestibule of mouth": "",
         "Vulva, NOS": "C12408",
-        "Waldeyer ring": "C73468"
+        "Waldeyer ring": "C73468",
+        "Appendix": "C12380",
+        "Blood": "C12434",
+        "Bone marrow": "C12431",
+        "C00.9": "C12220",
+        "C02.1": "C32130",
+        "C02.9": "C12422",
+        "C03.0": "C54205",
+        "C03.1": "C54204",
+        "C03.9": "C32677",
+        "C04.9": "C54187",
+        "C05.0": "C12230",
+        "C05.9": "C12229",
+        "C06.0": "C12505",
+        "C06.2": "C54223",
+        "C06.9": "C12421",
+        "C08.0": "C12233",
+        "C09.9": "C33250",
+        "C10.3": "C12240",
+        "C10.9": "C12762",
+        "C13.9": "C12246",
+        "C15.3": "C12253",
+        "C15.4": "C12254",
+        "C15.5": "C12255",
+        "C15.9": "C12389",
+        "C16.0": "C12256",
+        "C16.1": "C12257",
+        "C16.2": "C12258",
+        "C16.3": "C12259",
+        "C16.5": "C12261",
+        "C16.9": "C12391",
+        "C17.9": "C12386",
+        "C18.0": "C12381",
+        "C18.2": "C12265",
+        "C18.3": "C12266",
+        "C18.4": "C12385",
+        "C18.5": "C12267",
+        "C18.6": "C12268",
+        "C18.7": "C12384",
+        "C18.9": "C12382",
+        "C22.0": "C12392",
+        "C22.1": "C12677",
+        "C24.0": "C32573",
+        "C24.1": "C13011",
+        "C25.0": "C12269",
+        "C25.1": "C12270",
+        "C25.2": "C12271",
+        "C25.9": "C12393",
+        "C32.1": "C12279",
+        "C32.9": "C12420",
+        "C34.0": "C12284",
+        "C34.1": "C12285",
+        "C34.2": "C12286",
+        "C34.3": "C12287",
+        "C34.9": "C12468",
+        "C38.0": "C12727",
+        "C38.1": "C32098",
+        "C38.3": "C12748",
+        "C38.4": "C12469",
+        "C40.2": "C12717",
+        "C40.3": "C32078",
+        "C41.0": "C12711",
+        "C41.1": "C12290",
+        "C44.2": "C12292",
+        "C44.3": "C33561",
+        "C44.4": "C12294",
+        "C44.5": "C12295",
+        "C44.6": "C12296",
+        "C44.7": "C12297",
+        "C44.9": "C12470",
+        "C47.1": "C12682",
+        "C48.0": "C12298",
+        "C48.1": "C113599",
+        "C48.2": "C12770",
+        "C49.0": "C12687",
+        "C49.1": "C12838",
+        "C49.2": "C12715",
+        "C49.3": "C12669",
+        "C49.4": "C32040",
+        "C49.5": "C12726",
+        "C49.9": "C12472",
+        "C50.2": "C12301",
+        "C50.3": "C12302",
+        "C50.4": "C12303",
+        "C50.5": "C12304",
+        "C50.9": "C12971",
+        "C51.9": "C12408",
+        "C53.0": "C12309",
+        "C53.1": "C12310",
+        "C53.9": "C12311",
+        "C54.0": "C12312",
+        "C54.1": "C12313",
+        "C54.2": "C12314",
+        "C54.3": "C12315",
+        "C54.9": "C12316",
+        "C56.9": "C12404",
+        "C61.9": "C12410",
+        "C62.9": "C12412",
+        "C63.1": "C12329",
+        "C64.9": "C12415",
+        "C67.0": "C12331",
+        "C67.1": "C12332",
+        "C67.2": "C12333",
+        "C67.3": "C12334",
+        "C67.4": "C12335",
+        "C67.5": "C12336",
+        "C67.6": "C12337",
+        "C67.9": "C12414",
+        "C70.1": "C12350",
+        "C71.0": "C12447",
+        "C71.1": "C12352",
+        "C71.2": "C12353",
+        "C71.3": "C12354",
+        "C71.4": "C12355",
+        "C71.6": "C12445",
+        "C71.7": "C12441",
+        "C71.8": "C12446",
+        "C71.9": "C12439",
+        "C72.0": "C12464",
+        "C72.9": "C12755",
+        "C74.0": "C12396",
+        "C74.1": "C12397",
+        "C74.9": "C12666",
+        "C75.5": "C94826",
+        "C76.0": "C13070",
+        "C76.1": "C12799",
+        "C76.2": "C77608",
+        "C76.3": "C12767",
+        "C77.0": "C12358",
+        "C77.1": "C12359",
+        "C77.2": "C12360",
+        "C77.3": "C63705",
+        "C77.4": "C12362",
+        "C77.5": "C12363",
+        "C77.9": "C12745",
+        "Conjunctiva": "C12341",
+        "Corpus uteri": "C12316",
+        "Gallbladder": "C12377",
+        "Heart": "C12727",
+        "Liver": "C12392",
+        "Mandible": "C12290",
+        "not reported": "C43234",
+        "Not Reported": "C43234",
+        "Ovary": "C12404",
+        "Parotid gland": "C12427",
+        "Placenta": "C13272",
+        "Prostate gland": "C12410",
+        "Pyriform sinus": "C33439",
+        "Rectosigmoid junction": "C54188",
+        "Renal pelvis": "C12887",
+        "Retroperitoneum": "C12298",
+        "Thymus": "C12433",
+        "Thyroid gland": "C12400",
+        "Trachea": "C12428",
+        "Unknown": "C17998",
+        "Unknown primary site": "C48322",
+        "Ureter": "C12416",
+        "Ureteric orifice": "C12337",
+        "Urethra": "C12417",
+        "Uterus, NOS": "C12405"
     },
     "clinical.follow_up.comorbidity": {
         "Acute Renal Failure": "C26808",
@@ -1343,12 +1506,32 @@
         "Transient Ischemic Attack": "C50781",
         "Tuberculosis": "C3423",
         "Ulcerative Colitis": "C2952",
-        "Unknown": "C17998"
+        "Unknown": "C17998",
+        "Adenocarcinoma": "C2852",
+        "Adenomatous Polyposis Coli": "C3339",
+        "Beckwith-Wiedemann": "C34415",
+        "Celiac Disease": "C26714",
+        "Crohn's Disease": "C2965",
+        "Diabetes, Type II": "C26747",
+        "Familial Adenomatous Polyposis": "C3339",
+        "Fanconi Anemia": "C62505",
+        "Glycogen Storage Disease": "C61272",
+        "Gorlin Syndrome": "C2892",
+        "H. pylori Infection": "C39293",
+        "Hereditary Non-polyposis Colon Cancer": "C120083",
+        "Intraductal Papillary Mucinous Neoplasm": "C38342",
+        "Li-Fraumeni Syndrome": "C3476",
+        "Lynch Syndrome": "C8494",
+        "Neuroendocrine Tumor": "C3809",
+        "Peutz-Jeghers Disease": "C3324",
+        "Rubinstein-Taybi Syndrome": "C75466",
+        "Turcot Syndrome": "C3938",
+        "Tyrosinemia": "C98640"
     },
     "clinical.follow_up.disease_response": {
         "AJ-Adjuvant Therapy": "C15675",
         "CPD-Clinical Progression": "C17747",
-        "CR-Complete Response": "C123574",
+        "CR-Complete Response": "C4870",
         "CRU-Complete Response Unconfirmed": "",
         "DU-Disease Unchanged": "C71687",
         "IMR-Immunoresponse": "C131144",
@@ -1359,11 +1542,11 @@
         "NPB-No Palliative Benefit": "",
         "NR-No Response": "C123600",
         "PA-Palliative Therapy": "C15292",
-        "PB-Palliative Benefit": "",
+        "PB-Palliative Benefit": "C101516",
         "PD-Progressive Disease": "C8510",
         "PPD-Pseudoprogression": "C98298",
         "PR-Partial Response": "C18058",
-        "PSR-Pseudoresponse": "",
+        "PSR-Pseudoresponse": "C131142",
         "RD-Responsive Disease": "",
         "RPD-Radiographic Progressive Disease": "",
         "RP-Response": "C50995",
@@ -1371,15 +1554,15 @@
         "SD-Stable Disease": "C18213",
         "SPD-Surgical Progression": "",
         "TE-Too Early": "C133441",
-        "VGPR-Very Good Partial Response": ""
+        "VGPR-Very Good Partial Response": "C123618"
     },
     "clinical.follow_up.ecog_performance_status": {
+        "0": "C105722",
         "1": "C105723",
         "2": "C105725",
         "3": "C105726",
         "4": "C105727",
-        "5": "C105728",
-        "0": "C105722"
+        "5": "C105728"
     },
     "clinical.follow_up.estrogen_receptor_percent_positive_ihc": {
         "<10%": "",
@@ -1834,43 +2017,52 @@
     "clinical.treatment.treatment_outcome": {
         "Complete Response": "C4870",
         "Not Reported": "C43234",
-        "Partial Response": "",
-        "Progressive Disease": "C17747",
-        "Stable Disease": "",
+        "Partial Response": "C18058",
+        "Progressive Disease": "C35571",
+        "Stable Disease": "C18213",
         "Treatment Ongoing": "",
         "Treatment Stopped Due to Toxicity": "",
-        "Unknown": "C17998"
+        "Unknown": "C17998",
+        "Very Good Partial Response": "C123618"
     },
     "clinical.treatment.treatment_type": {
         "Ablation": "C20985",
         "Brachytherapy": "C15195",
         "Chemoembolization": "C15752",
         "Chemotherapy": "C15632",
-        "Concurrent Chemoradiation": "",
+        "Concurrent Chemoradiation": "C141342",
         "Cryoablation": "C15215",
         "Embolization": "C15230",
-        "Ethanol Injection Ablation": "",
+        "Ethanol Injection Ablation": "C67444",
         "External Beam Radiation": "C15751",
         "Hormone Therapy": "C15445",
         "I-131 Radiation Therapy": "",
         "Immunotherapy (Including Vaccines)": "C15262",
         "Internal Radiation": "C15195",
-        "Microwave Ablation": "",
+        "Microwave Ablation": "C116643",
         "Not Allowed To Collect": "C141478",
-        "Not Reported": "C43270",
+        "Not Reported": "C43234",
         "Other": "C17649",
-        "Pharmaceutical Therapy": "C15632",
+        "Pharmaceutical Therapy": "C15986",
         "Radiation": "C15313",
         "Radiation Therapy": "C15313",
         "Radioembolization": "C93340",
         "Radiofrequency Ablation": "C15666",
-        "Radioisotope Radiation": "",
+        "Radioisotope Radiation": "C15470",
         "Radiosurgical Ablation": "",
-        "Stem Cell Transplantation": "",
+        "Stem Cell Transplantation": "C15431",
         "Stem Cell Treatment": "",
         "Surgery": "C15329",
         "Targeted Molecular Therapy": "C76243",
-        "Unknown": "C17998"
+        "Unknown": "C17998",
+        "Brachytherapy, High Dose": "C15651",
+        "Brachytherapy, Low Dose": "C85254",
+        "Radiation Therapy, NOS": "C15313",
+        "Radiation, 3D Conformal": "C16035",
+        "Radiation, Intensity-Modulated Radiotherapy": "C16135",
+        "Radiation, Proton Beam": "C66897",
+        "Radiation, Stereotactic Body": "C118286",
+        "Stereotactic Radiosurgery": "C15358"
     },
     "clinical.treatment.type": {
         "treatment": "C70742"
@@ -4653,7 +4845,7 @@
         "Ilium": "C32765",
         "Index Finger": "C52835",
         "Ischium": "C32884",
-        "Islet Cells": "C12608",
+        "Islet Cells": "C32885",
         "Jaw": "C48821",
         "Jejunum": "C12388",
         "Joint": "C13044",
@@ -4688,7 +4880,7 @@
         "Lymph Node(s) Parotid": "C33278",
         "Lymph Node(s) Pelvic": "C12363",
         "Lymph Node(s) Popliteal": "C53146",
-        "Lymph Node(s) Regional": "",
+        "Lymph Node(s) Regional": "C49018",
         "Lymph Node(s) Retroperitoneal": "C98189",
         "Lymph Node(s) Scalene": "C89780",
         "Lymph Node(s) Splenic": "C142320",
@@ -4712,13 +4904,13 @@
         "Neck": "C13063",
         "Nerve": "C12466",
         "Nerve(s) Cranial": "C12700",
-        "Not Allowed To Collect": "",
+        "Not Allowed To Collect": "C141478",
         "Not Reported": "C43234",
         "Occipital Cortex": "C12355",
         "Ocular Orbits": "C12347",
         "Omentum": "C33209",
         "Oral Cavity": "C12421",
-        "Oral Cavity - Mucosa Only": "",
+        "Oral Cavity - Mucosa Only": "C77637",
         "Oropharynx": "C12762",
         "Other": "C17649",
         "Ovary": "C12404",
@@ -4766,7 +4958,7 @@
         "Skin": "C12470",
         "Skull": "C12789",
         "Small Bowel": "C12386",
-        "Small Bowel - Mucosa Only": "",
+        "Small Bowel - Mucosa Only": "C33568",
         "Small Finger": "C52838",
         "Soft Tissue": "C12471",
         "Spinal Column": "C12998",
@@ -4775,7 +4967,7 @@
         "Splenic Flexure": "C12267",
         "Sternum": "C12793",
         "Stomach": "C12391",
-        "Stomach - Mucosa Only": "",
+        "Stomach - Mucosa Only": "C32656",
         "Subcutaneous Tissue": "C33645",
         "Synovium": "C12473",
         "Temporal Cortex": "C12353",
@@ -4808,7 +5000,8 @@
         "Venous": "C25291",
         "Vertebra": "C12933",
         "Vulva": "C12408",
-        "White Blood Cells": "C12529"
+        "White Blood Cells": "C12529",
+        "Wrist": "C33894"
     },
     "clinical.diagnosis.tissue_or_organ_of_origin": {
         "8140/3": "C2852",
@@ -5081,7 +5274,7 @@
         "Hypopharyngeal aspect of aryepiglottic fold": "",
         "Hypopharynx, NOS": "C12246",
         "Ileum": "C12387",
-        "Ill-defined sites within respiratory system": "",
+        "Ill-defined sites within respiratory system": "C148338",
         "Intestinal tract, NOS": "C12736",
         "Intra-abdominal lymph nodes": "C12360",
         "Intrahepatic bile duct": "C12677",
@@ -5113,7 +5306,7 @@
         "Lower-outer quadrant of breast": "C12304",
         "Lung, NOS": "C12468",
         "Lymph node, NOS": "C12745",
-        "Lymph nodes of axilla or arm": "",
+        "Lymph nodes of axilla or arm": "C12904",
         "Lymph nodes of head, face and neck": "C12358",
         "Lymph nodes of inguinal region or leg": "C12362",
         "Lymph nodes of multiple regions": "",
@@ -5145,7 +5338,7 @@
         "Optic nerve": "C12761",
         "Orbit, NOS": "C12347",
         "Oropharynx, NOS": "C12762",
-        "Other ill-defined sites": "",
+        "Other ill-defined sites": "C147919",
         "Other specified parts of female genital organs": "",
         "Other specified parts of male genital organs": "",
         "Other specified parts of pancreas": "C12273",
@@ -5420,7 +5613,7 @@
         "Natural Child": "C100807",
         "Natural Daughter": "C25165",
         "Natural Father": "C96572",
-        "Natural Grandchild": "",
+        "Natural Grandchild": "C100805",
         "Natural Grandfather": "C96573",
         "Natural Grandmother": "C96574",
         "Natural Grandparent": "C100806",
@@ -5428,12 +5621,12 @@
         "Natural Parent": "",
         "Natural Sibling": "C100809",
         "Natural Sister": "C96586",
-        "Natural Son": "",
+        "Natural Son": "C150888",
         "Nephew": "C71409",
         "Niece": "C71408",
         "Niece Second Degree Relative": "",
         "Not Reported": "C43234",
-        "Other": "",
+        "Other": "C17649",
         "Parent": "C42709",
         "Paternal Aunt": "",
         "Paternal First Cousin": "",
@@ -5496,7 +5689,7 @@
         "Femoral lymph nodes": "C98183",
         "Gallbladder": "C12377",
         "Gastrointestinal/Abdominal": "",
-        "Head & Neck": "",
+        "Head & Neck": "C12418",
         "Heart": "C12727",
         "Hilar lymph nodes": "C102330",
         "Hypopharynx": "C12246",
@@ -5510,7 +5703,7 @@
         "Ipsilateral Lymph Nodes": "",
         "Ipsilateral Pleura": "",
         "Kidney": "C12415",
-        "Large Intestine": "C12382",
+        "Large Intestine": "C12379",
         "Larynx": "C12420",
         "Leptomeninges": "C32979",
         "Liver": "C12392",
@@ -5672,7 +5865,7 @@
         "Fibroblasts": "C12482",
         "Fibula": "C12718",
         "Finger": "C32608",
-        "Floor of Mouth": "",
+        "Floor of Mouth": "C54187",
         "Fluid": "C25278",
         "Foot": "C32622",
         "Forearm": "C32628",
@@ -5692,7 +5885,7 @@
         "Hand": "C32712",
         "Hard Palate": "C12230",
         "Head - Face Or Neck, Nos": "",
-        "Head and Neck": "",
+        "Head and Neck": "C12418",
         "Heart": "C12727",
         "Hepatic": "C13308",
         "Hepatic Duct": "C32730",
@@ -5707,7 +5900,7 @@
         "Ilium": "C32765",
         "Index Finger": "C52835",
         "Ischium": "C32884",
-        "Islet Cells": "C12608",
+        "Islet Cells": "C32885",
         "Jaw": "C48821",
         "Jejunum": "C12388",
         "Joint": "C13044",
@@ -5772,7 +5965,7 @@
         "Ocular Orbits": "C12347",
         "Omentum": "C33209",
         "Oral Cavity": "C12421",
-        "Oral Cavity - Mucosa Only": "",
+        "Oral Cavity - Mucosa Only": "C77637",
         "Oropharynx": "C12762",
         "Other": "C17649",
         "Ovary": "C12404",
@@ -5826,12 +6019,12 @@
         "Skeletal Muscle": "C13050",
         "Skin": "C12470",
         "Skin, lower extremity, local": "",
-        "Skin, total": "",
-        "Skin, trunk, local": "",
+        "Skin, total": "C12470",
+        "Skin, trunk, local": "C12295",
         "Skin, upper extremity, local": "",
         "Skull": "C12789",
         "Small Bowel": "C12386",
-        "Small Bowel - Mucosa Only": "",
+        "Small Bowel - Mucosa Only": "C33568",
         "Small Finger": "C52838",
         "Soft Tissue": "C12471",
         "Spinal Column": "C12998",
@@ -5841,7 +6034,7 @@
         "Splenic Flexure": "C12267",
         "Sternum": "C12793",
         "Stomach": "C12391",
-        "Stomach - Mucosa Only": "",
+        "Stomach - Mucosa Only": "C32656",
         "Subcutaneous Tissue": "C33645",
         "Synovium": "C12473",
         "Temporal Cortex": "C12353",
@@ -5875,7 +6068,50 @@
         "Vertebra": "C12933",
         "Vulva": "C12408",
         "White Blood Cells": "C12529",
-        "Wrist": "C33894"
+        "Wrist": "C33894",
+        "Axillary": "C12674",
+        "Brain, focal": "",
+        "Brain, whole": "",
+        "Brain-C2": "",
+        "Cervical": "C12844",
+        "Distant Recurrence": "",
+        "Effusion": "C3003",
+        "Femoral": "C12717",
+        "Gastrointestinal, Colon": "C12382",
+        "Gastrointestinal, Gallbladder": "C12377",
+        "Gastrointestinal, Liver": "C12392",
+        "Gastrointestinal, NOS": "C12378",
+        "Gastrointestinal, Pancreas": "C12393",
+        "Gastrointestinal, Rectum": "C12390",
+        "Gastrointestinal, Stomach": "C12391",
+        "Genitourinary, Bladder": "C12414",
+        "Genitourinary, Kidney": "C12415",
+        "Genitourinary, Prostate": "C12410",
+        "Genitourinary, Prostate and Seminal Vesicles": "",
+        "Head": "C12419",
+        "Head, Face, or Neck": "",
+        "Iliac-common": "",
+        "Iliac-external": "",
+        "Inguinal": "C12726",
+        "Internal Mammary Nodes": "C32853",
+        "Local Recurrence": "",
+        "Lymph node, distant (specify site)": "",
+        "Lymph node, locoregional (specify site)": "",
+        "Lymph Nodes": "C12745",
+        "Mediastinal": "C25310",
+        "Mesenteric": "C25226",
+        "Not Allowed To Collect": "C141478",
+        "Occipital": "",
+        "Paraaortic": "C25316",
+        "Parotid": "C12427",
+        "Popliteal": "",
+        "Retroperitoneal": "C12298",
+        "Seminal vesicles": "C12787",
+        "Spine, whole": "",
+        "Splenic": "",
+        "Submandibular": "C129462",
+        "Supraclavicular": "C25329",
+        "Supraclavicular/Axillary Level 3": ""
     },
     "clinical.treatment.treatment_intent_type": {
         "Adjuvant": "C25722",
@@ -5884,7 +6120,7 @@
         "Initial": "C25509",
         "Neoadjuvant": "C15665",
         "Not Reported": "C43234",
-        "Palliative": "C101516",
+        "Palliative": "C15292",
         "Prevention": "C15843",
         "Progression": "C35571",
         "Unknown": "C17998"
@@ -8303,5 +8539,619 @@
         "Nullizygous": "C148063",
         "Unknown": "C17998",
         "Not Reported": "C43234"
+    },
+    "biospecimen.analyte.analyte_type": {
+        "DNA": "C449",
+        "RNA": "C812"
+    },
+    "biospecimen.analyte.normal_tumor_genotype_snp_match": {
+        "No": "C49487",
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "biospecimen.read_group.instrument_model": {
+        "Other": "C17649"
+    },
+    "biospecimen.read_group.library_selection": {
+        "Other": "C17649",
+        "PCR": "C17003"
+    },
+    "biospecimen.read_group.library_strand": {
+        "Not Applicable": "C48660"
+    },
+    "biospecimen.read_group.library_strategy": {
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "biospecimen.read_group.platform": {
+        "Illumina": "C146817",
+        "Other": "C17649"
+    },
+    "biospecimen.read_group.target_capture_kit": {
+        "Not Applicable": "C48660",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.biospecimen_laterality": {
+        "Not Reported": "C43234",
+        "Right": "C25228",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.composition": {
+        "Granulocytes": "C12530",
+        "Lymphocytes": "C12535",
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "Peripheral Whole Blood": "C41067",
+        "Plasma": "C13356",
+        "Pleural Effusion": "C3331",
+        "Saliva": "C13275",
+        "Serum": "C13325",
+        "Sputum": "C13278",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.diagnosis_pathologically_confirmed": {
+        "No": "C49487",
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "biospecimen.sample.distance_normal_to_tumor": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.method_of_sample_procurement": {
+        "Autopsy": "C25153",
+        "Biopsy": "C15189",
+        "Bone Marrow Aspirate": "C133261",
+        "Core Biopsy": "C15680",
+        "Enucleation": "C48601",
+        "Excisional Biopsy": "C15385",
+        "Fine Needle Aspiration": "C15361",
+        "Full Hysterectomy": "C15701",
+        "Gross Total Resection": "C131672",
+        "Hysterectomy NOS": "C15256",
+        "Incisional Biopsy": "C15386",
+        "Lobectomy": "C15272",
+        "Local Resection (Exoresection; wall resection)": "C118358",
+        "Lumpectomy": "C15755",
+        "Modified Radical Mastectomy": "C15278",
+        "Needle Biopsy": "C15190",
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "Orchiectomy": "C15288",
+        "Other": "C17649",
+        "Pancreatectomy": "C15294",
+        "Pan-Procto Colectomy": "C103239",
+        "Paracentesis": "C15310",
+        "Pneumonectomy": "C15305",
+        "Sigmoid Colectomy": "C91838",
+        "Simple Mastectomy": "C15281",
+        "Subtotal Resection": "C131680",
+        "Surgical Resection": "C15232",
+        "Total Colectomy": "C51924",
+        "Total Mastectomy": "C15281",
+        "Transurethral resection (TURBT)": "C116651",
+        "Transverse Colectomy": "C51612",
+        "Unknown": "C17998",
+        "Wedge Resection": "C51690",
+        "Whipple Procedure": "C15356"
+    },
+    "biospecimen.sample.preservation_method": {
+        "Cryopreserved": "C16475",
+        "FFPE": "C143028",
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "OCT": "C63523",
+        "Snap Frozen": "C63521",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.sample_type": {
+        "Cell Lines": "C16403",
+        "DNA": "C449",
+        "Granulocytes": "C12530",
+        "Metastatic": "C3261",
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "Pleural Effusion": "C3331",
+        "Primary Tumor": "C8509",
+        "Recurrent Tumor": "C4798",
+        "RNA": "C812",
+        "Tumor": "C18009",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.tissue_type": {
+        "Not Allowed To Collect": "C141478",
+        "Not Reported": "C43234",
+        "Tumor": "C18009",
+        "Unknown": "C17998"
+    },
+    "biospecimen.sample.tumor_code": {
+        "Acute Leukemia of Ambiguous Lineage (ALAL)": "C7464",
+        "Acute lymphoblastic leukemia (ALL)": "C3167",
+        "Acute myeloid leukemia (AML)": "C3171",
+        "Ewing sarcoma": "C4817",
+        "Neuroblastoma (NBL)": "C3270",
+        "Osteosarcoma (OS)": "C9145",
+        "Rhabdomyosarcoma": "C3359",
+        "Wilms tumor (WT)": "C3267"
+    },
+    "biospecimen.sample.tumor_descriptor": {
+        "Metastatic": "C3261",
+        "NOS": "C19594",
+        "Not Allowed To Collect": "C141478",
+        "Not Applicable": "C48660",
+        "Not Reported": "C43234",
+        "Primary": "C8509",
+        "Recurrence": "C4798",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.ajcc_staging_system_edition": {
+        "6th": "C90529",
+        "7th": "C90530",
+        "8th": "C132248"
+    },
+    "clinical.diagnosis.anaplasia_present_type": {
+        "Equivocal": "C86071",
+        "Present": "C36113",
+        "Sclerosis": "C69309"
+    },
+    "clinical.diagnosis.child_pugh_classification": {
+        "A": "C113691",
+        "A5": "C146790",
+        "A6": "C146791",
+        "B": "C113692",
+        "B7": "C146792",
+        "B8": "C146793",
+        "B9": "C146794",
+        "C": "C113694",
+        "C10": "C146795",
+        "C11": "C146796",
+        "C12": "C146797",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.cog_liver_stage": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.cog_neuroblastoma_risk_group": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.cog_renal_stage": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.cog_rhabdomyosarcoma_risk_group": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.enneking_msts_grade": {
+        "High Grade (G2)": "C140261",
+        "Low Grade (G1)": "C140260",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.enneking_msts_metastasis": {
+        "No Metastasis (M0)": "C147528",
+        "Not Reported": "C43234",
+        "Regional or Distant Metastasis (M1)": "C147529",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.enneking_msts_stage": {
+        "Not Reported": "C43234",
+        "Stage IA": "C146701",
+        "Stage IB": "C146702",
+        "Stage IIA": "C146703",
+        "Stage IIB": "C146704",
+        "Stage III": "C146705",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.enneking_msts_tumor_site": {
+        "Extracompartmental (T2)": "C140265",
+        "Intracompartmental (T1)": "C140263",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.esophageal_columnar_dysplasia_degree": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.esophageal_columnar_metaplasia_present": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.diagnosis.first_symptom_prior_to_diagnosis": {
+        "Headaches": "C34661",
+        "Not Reported": "C43234",
+        "Seizures": "C2962",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.gastric_esophageal_junction_involvement": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.diagnosis.goblet_cells_columnar_mucosa_present": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.diagnosis.inpc_grade": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.inpc_histologic_group": {
+        "Not Reported": "C43234",
+        "Unfavorable": "C102561",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.inrg_stage": {
+        "L1": "C133428",
+        "L2": "C133429",
+        "M": "C133430",
+        "Ms": "C133431",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.inss_stage": {
+        "Not Reported": "C43234",
+        "Stage 1": "C85417",
+        "Stage 2A": "C85418",
+        "Stage 2B": "C85419",
+        "Stage 3": "C85420",
+        "Stage 4": "C85421",
+        "Stage 4S": "C85422",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.irs_group": {
+        "Group I": "C148012",
+        "Group Ia": "C148013",
+        "Group Ib": "C148014",
+        "Group II": "C148015",
+        "Group IIa": "C148016",
+        "Group IIb": "C148017",
+        "Group IIc": "C148018",
+        "Group III": "C148019",
+        "Group IIIa": "C148020",
+        "Group IIIb": "C148021",
+        "Group IV": "C148022",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.irs_stage": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.ishak_fibrosis_score": {
+        "0 - No Fibrosis": "C95150",
+        "5 - Nodular Formation and Incomplete Cirrhosis": "C95155",
+        "6 - Established Cirrhosis": "C95156",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.medulloblastoma_molecular_classification": {
+        "Non-WNT/non-SHH Activated": "C129444",
+        "Not Determined": "C129447",
+        "Not Reported": "C43234",
+        "SHH-Activated": "C129441",
+        "Unknown": "C17998",
+        "WNT-Activated": "C129440"
+    },
+    "clinical.diagnosis.metastasis_at_diagnosis": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.metastasis_at_diagnosis_site": {
+        "Abdomen": "C12664",
+        "Adrenal Gland": "C12666",
+        "Bone": "C12366",
+        "Bone Marrow": "C12431",
+        "Brain": "C12439",
+        "Central Nervous System": "C12438",
+        "Cerebrospinal Fluid": "C12692",
+        "Liver": "C12392",
+        "Lung": "C12468",
+        "Lymph Node(s)": "C12745",
+        "Lymph Node(s) Axilla": "C12904",
+        "Mediastinum": "C12748",
+        "Not Reported": "C43234",
+        "Peritoneal Cavity": "C12769",
+        "Peritoneum": "C12770",
+        "Pleura": "C12469",
+        "Skin": "C12470",
+        "Soft Tissue": "C12471",
+        "Spinal Cord": "C12464",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.micropapillary_features": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.mitosis_karyorrhexis_index": {
+        "Low": "C54722",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.morphology": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.peripancreatic_lymph_nodes_positive": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.supratentorial_localization": {
+        "Cerebral Cortex": "C12443",
+        "Not Reported": "C43234",
+        "Spinal Cord": "C12464",
+        "Unknown": "C17998",
+        "White Matter": "C33892"
+    },
+    "clinical.diagnosis.synchronous_malignancy": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.diagnosis.tumor_confined_to_organ_of_origin": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.diagnosis.tumor_grade": {
+        "G1": "C28077",
+        "G2": "C28078",
+        "G3": "C28079",
+        "G4": "C28082",
+        "GB": "C113729",
+        "GX": "C113730",
+        "not reported": "C43234",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.vascular_invasion_type": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.wilms_tumor_histologic_subtype": {
+        "Not Reported": "C43234",
+        "Unfavorable": "C102561",
+        "Unknown": "C17998"
+    },
+    "clinical.exposure.alcohol_history": {
+        "no": "C49487",
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "yes": "C49488",
+        "Yes": "C49488"
+    },
+    "clinical.exposure.alcohol_intensity": {
+        "Drinker": "C126383",
+        "Heavy Drinker": "C126384",
+        "Not Reported": "C43234",
+        "Occasional Drinker": "C126382",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.barretts_esophagus_goblet_cells_present": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.follow_up.comorbidity_method_of_diagnosis": {
+        "Histology": "C16681",
+        "Not Reported": "C43234",
+        "Pathology": "C18189",
+        "Radiology": "C19187",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.diabetes_treatment_type": {
+        "Alpha-Glucosidase Inhibitor": "C139651",
+        "Biguanide": "C98234",
+        "Insulin": "C581",
+        "Not Reported": "C43234",
+        "Other": "C17649",
+        "Sulfonylurea": "C97936",
+        "Thiazolidinedione": "C98241",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.karnofsky_performance_status": {
+        "0": "C105720",
+        "10": "C105718",
+        "20": "C105716",
+        "30": "C105715",
+        "40": "C105714",
+        "50": "C105713",
+        "60": "C105712",
+        "70": "C105711",
+        "80": "C105710",
+        "90": "C105709",
+        "100": "C105707",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.menopause_status": {
+        "Not Reported": "C43234",
+        "Perimenopausal": "C15692",
+        "Postmenopausal": "C15421",
+        "Premenopausal": "C15491",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.progression_or_recurrence_type": {
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.reflux_treatment": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.follow_up.reflux_treatment_type": {
+        "Antacids": "C29633",
+        "H2 Blockers": "C29702",
+        "Not Applicable": "C48660",
+        "Not Reported": "C43234",
+        "Proton Pump Inhibitors": "C29723",
+        "Unknown": "C17998"
+    },
+    "clinical.follow_up.risk_factor": {
+        "Beckwith-Wiedemann": "C34415",
+        "Colon Polyps": "C2954",
+        "Denys-Drash Syndrome": "C84668",
+        "Diabetes, Type II": "C26747",
+        "Familial Adenomatous Polyposis": "C3339",
+        "Fanconi Anemia": "C62505",
+        "Gorlin Syndrome": "C2892",
+        "Hemihypertrophy": "C88541",
+        "Li-Fraumeni Syndrome": "C3476",
+        "Lynch Syndrome": "C8494",
+        "Not Reported": "C43234",
+        "Obesity": "C3283",
+        "Rubinstein-Taybi Syndrome": "C75466",
+        "Turcot Syndrome": "C3938",
+        "Unknown": "C17998",
+        "Wagr Syndrome": "C3718"
+    },
+    "clinical.follow_up.viral_hepatitis_serologies": {
+        "HBV Core Antibody": "C62797",
+        "HBV Genotype": "C117108",
+        "HBV Surface Antibody": "C62796",
+        "Hepatitis B Surface Antigen": "C62786",
+        "Hepatitis C Antibody": "C116400",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "data_file.aggregated_somatic_mutation.experimental_strategy": {
+        "Targeted Sequencing": "C130177",
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.aligned_reads.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "Total RNA-Seq": "C124261",
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.aligned_reads_metric.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "Total RNA-Seq": "C124261",
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.annotated_somatic_mutation.experimental_strategy": {
+        "Targeted Sequencing": "C130177",
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.biospecimen_supplement.data_category": {
+        "Biospecimen": "C70699"
+    },
+    "data_file.copy_number_estimate.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.copy_number_estimate.experimental_strategy": {
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294"
+    },
+    "data_file.copy_number_estimate.platform": {
+        "Illumina": "C146817"
+    },
+    "data_file.copy_number_segment.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.copy_number_segment.experimental_strategy": {
+        "Targeted Sequencing": "C130177"
+    },
+    "data_file.copy_number_segment.platform": {
+        "Illumina": "C146817"
+    },
+    "data_file.filtered_copy_number_segment.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.gene_expression.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "Total RNA-Seq": "C124261"
+    },
+    "data_file.masked_somatic_mutation.experimental_strategy": {
+        "Targeted Sequencing": "C130177",
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.pathology_report.data_type": {
+        "Pathology Report": "C28277"
+    },
+    "data_file.sample_level_maf.experimental_strategy": {
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.simple_germline_variation.experimental_strategy": {
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.simple_somatic_mutation.experimental_strategy": {
+        "Targeted Sequencing": "C130177",
+        "Validation": "C16237",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.slide_image.data_category": {
+        "Biospecimen": "C70699"
+    },
+    "data_file.slide_image.experimental_strategy": {
+        "Cell Culture": "C16396"
+    },
+    "data_file.structural_variation.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.submitted_aligned_reads.experimental_strategy": {
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.submitted_genomic_profile.data_category": {
+        "Genomic Profiling": "C94411"
+    },
+    "data_file.submitted_genomic_profile.experimental_strategy": {
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294"
+    },
+    "data_file.submitted_tangent_copy_number.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.submitted_unaligned_reads.experimental_strategy": {
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
     }
 }
