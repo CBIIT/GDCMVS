@@ -26,7 +26,7 @@ export default function render(keyword, option, items){
   } else if (option.error == true) {
     html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
   } else {
-  	html = '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">'+keyword+'</span></div>';
+  	html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">'+keyword+'</span></div>';
   }
 
   $("#root").html(html);
