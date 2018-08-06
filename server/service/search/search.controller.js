@@ -724,7 +724,9 @@ var export2Excel = function (req, res) {
 	let pv = fs.readFileSync("./ncit_details.js").toString();
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
-
+	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	cdeData = cdeData.replace(/}{/g, ",");
+	let file_cde = JSON.parse(cdeData);
 	let query = {
 		"match_all": {}
 	};
@@ -745,7 +747,8 @@ var export2Excel = function (req, res) {
 					vs.forEach(function (v) {
 						cde_pv.forEach(function (cpv) {
 							if (v.n.trim().toLowerCase() == cpv.n.trim().toLowerCase()) {
-								common_values.push(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n.trim().toLowerCase());
+								let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
+								common_values.push(c_vs.trim().toLowerCase());
 								let tmp = {};
 								tmp.c = entry._source.category;
 								tmp.n = entry._source.node;
@@ -768,6 +771,14 @@ var export2Excel = function (req, res) {
 											all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
 										}
 									}
+								}else{
+									if(file_cde[cde.id]){
+										file_cde[cde.id].forEach(function (cde_pvs){
+											if(cde_pvs.pv === tmp.gdc_v){
+												all_cpvc = all_cpvc + cde_pvs.pvc;
+											}
+										});
+									}
 								}
 								tmp.cpvc = all_cpvc;
 								tmp.cid = cde.id;
@@ -777,7 +788,8 @@ var export2Excel = function (req, res) {
 					});
 
 					vs.forEach(function (v) {
-						if (common_values.indexOf(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n.trim().toLowerCase()) == -1) {
+						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
+						if (common_values.indexOf(c_vs.trim().toLowerCase()) == -1) {
 							let tmp = {};
 							tmp.c = entry._source.category;
 							tmp.n = entry._source.node;
@@ -797,7 +809,8 @@ var export2Excel = function (req, res) {
 						}
 					});
 					cde_pv.forEach(function (cpv) {
-						if (common_values.indexOf(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + cpv.n.trim().toLowerCase()) == -1) {
+						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + cpv.n;
+						if (common_values.indexOf(c_vs.trim().toLowerCase()) == -1) {
 							let tmp = {};
 							tmp.c = entry._source.category;
 							tmp.n = entry._source.node;
@@ -814,6 +827,14 @@ var export2Excel = function (req, res) {
 									} else {
 										all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
 									}
+								}
+							}else{
+								if(file_cde[cde.id]){
+									file_cde[cde.id].forEach(function (cde_pvs){
+										if(cde_pvs.pv === tmp.gdc_v){
+											all_cpvc = all_cpvc + cde_pvs.pvc;
+										}
+									});
 								}
 							}
 							tmp.cpvc = all_cpvc;
