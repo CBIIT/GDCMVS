@@ -668,7 +668,11 @@ var getPV = function (req, res) {
 			console.log('ncit_details.js truncated')
 		});
 		getPVFunc(cc, 0, function (data) {
-			res.write(data);
+			if(data === "Success"){
+				res.end(data);
+			}else{
+				res.write(data);
+			}
 		});
 	})
 }
@@ -843,6 +847,17 @@ var export2Excel = function (req, res) {
 				}
 			}
 		});
+		let cnpv = [];
+		let new_ds = [];
+		
+		for(let temp_data in ds){
+			let c_n_p_v = ds[temp_data].c+"."+ds[temp_data].n+"."+ds[temp_data].p+"."+ds[temp_data].gdc_v;
+			if(cnpv.indexOf(c_n_p_v) == -1){
+				cnpv.push(c_n_p_v);
+				new_ds.push(ds[temp_data]);
+			}
+			
+		}
 		let heading = [
 			['Category', 'Node', 'Property', 'GDC Values', 'NCIt PV', 'NCIt Code', 'CDE PV Meaning', 'CDE PV Meaning concept codes', 'CDE ID']
 		];
@@ -883,11 +898,11 @@ var export2Excel = function (req, res) {
 					heading: heading, // <- Raw heading array (optional) 
 					merges: merges, // <- Merge cell ranges 
 					specification: specification, // <- Report specification 
-					data: ds // <-- Report data 
+					data: new_ds // <-- Report data 
 				}
 			]
 		);
-		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.attachment('Report-'+new Date()+'.xlsx'); // This is sails.js specific (in general you need to set headers) 
 		res.send(report);
 	});
 };
@@ -1917,6 +1932,7 @@ var parseExcel = function (req, res) {
 
 				} else {
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+
 					let c_n_p = all_gdc_values[category_node_property];
 					delete all_gdc_values[category_node_property];
 					if (c_n_p) {
@@ -1934,26 +1950,43 @@ var parseExcel = function (req, res) {
 					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
 					if (concept[category_node_property]) {
 						//If category.node.property already exists in the conceptCode.js file, then delete it.
-						delete concept[category_node_property]
-					}
-					var helper_cc = {};
-					helper_cc[category_node_property] = {}
-					var temp_cc = {};
-					for (let temp_dp in dataParsed) {
-						if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-							if (dataParsed[temp_dp].ncit_code) {
-								temp_cc[category_node_property] = {
-									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+						//delete concept[category_node_property]
+						var temp_cc = {};
+						for (let temp_dp in dataParsed) {
+							if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+								if (dataParsed[temp_dp].ncit_code) {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+									}
+								} else {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: ""
+									}
 								}
-							} else {
-								temp_cc[category_node_property] = {
-									[dataParsed[temp_dp].value]: ""
-								}
+								Object.assign(concept[category_node_property], temp_cc[category_node_property]);
 							}
-							Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
 						}
+					} else {
+						var helper_cc = {};
+						helper_cc[category_node_property] = {}
+						var temp_cc = {};
+						for (let temp_dp in dataParsed) {
+							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+
+								if (dataParsed[temp_dp].ncit_code) {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+									}
+								} else {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: ""
+									}
+								}
+								Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
+							}
+						}
+						cc = helper_cc;
 					}
-					cc = helper_cc;
 					Object.assign(concept, cc);
 					fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
 						if (err) {
