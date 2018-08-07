@@ -12,6 +12,7 @@ router.get('/preloadCadsrData', controller.preloadCadsrData);
 router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
 router.get('/getPV', controller.getPV);
 router.get('/parseExcel', controller.parseExcel);
+//router.get('/removeDeprecated', controller.removeDeprecated);
 //router.get('/external/caDSR', controller.getDataFromCDE);
 //router.get('/local', controller.getDataFromGDC);
 //router.get('/export_ICDO3', controller.export_ICDO3);
