@@ -668,7 +668,11 @@ var getPV = function (req, res) {
 			console.log('ncit_details.js truncated')
 		});
 		getPVFunc(cc, 0, function (data) {
-			res.write(data);
+			if (data === "Success") {
+				res.end(data);
+			} else {
+				res.write(data);
+			}
 		});
 	})
 }
@@ -716,11 +720,95 @@ var getPVFunc = function (ncitids, idx, next) {
 	});
 };
 
+var removeDeprecated = function (req, res) {
+	let deprecated_properties = [];
+	let deprecated_enum = [];
+	var folderPath = path.join(__dirname, '..', '..', 'data');
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			let fileJson = yaml.load(folderPath + '/' + file);
+			let category = fileJson.category;
+			let node = fileJson.id;
+
+			if (fileJson.deprecated) {
+				fileJson.deprecated.forEach(function (d_p) {
+					let tmp_d_p = category + "." + node + "." + d_p;
+					deprecated_properties.push(tmp_d_p);
+				})
+			}
+
+			for (let keys in fileJson.properties) {
+				if (fileJson.properties[keys].deprecated_enum) {
+					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+						let tmp_d_e = category + "." + node + "." + keys + ".#" + d_e;
+						deprecated_enum.push(tmp_d_e);
+					});
+				}
+			}
+		}
+	});
+	//console.log(deprecated_properties);
+	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	deprecated_properties.forEach( function (d_p){
+		if(concept[d_p]){
+			delete concept[d_p];
+		}
+	});
+	deprecated_enum.forEach( function (d_e){
+		let cnp = d_e.split(".#")[0];
+		let cnp_key = d_e.split(".#")[1];
+		if(concept[cnp]){
+			for(let key in concept[cnp]){
+				if(key === cnp_key){
+					let tmp_value = concept[cnp];
+					delete tmp_value[cnp_key];
+					//console.log(concept[cnp]);
+				}
+			}
+		} 
+	});
+	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+	res.send("success!!!");
+}
+
 var export2Excel = function (req, res) {
+	let deprecated_properties = [];
+	let deprecated_enum = [];
+	var folderPath = path.join(__dirname, '..', '..', 'data');
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			let fileJson = yaml.load(folderPath + '/' + file);
+			let category = fileJson.category;
+			let node = fileJson.id;
+
+			if (fileJson.deprecated) {
+				fileJson.deprecated.forEach(function (d_p) {
+					let tmp_d_p = category + "." + node + "." + d_p;
+					deprecated_properties.push(tmp_d_p);
+				})
+			}
+
+			for (let keys in fileJson.properties) {
+				if (fileJson.properties[keys].deprecated_enum) {
+					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+						let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
+						deprecated_enum.push(tmp_d_e);
+					});
+				}
+			}
+		}
+	});
 	let pv = fs.readFileSync("./ncit_details.js").toString();
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
-
+	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	cdeData = cdeData.replace(/}{/g, ",");
+	let file_cde = JSON.parse(cdeData);
 	let query = {
 		"match_all": {}
 	};
@@ -741,7 +829,56 @@ var export2Excel = function (req, res) {
 					vs.forEach(function (v) {
 						cde_pv.forEach(function (cpv) {
 							if (v.n.trim().toLowerCase() == cpv.n.trim().toLowerCase()) {
-								common_values.push(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n.trim().toLowerCase());
+								let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
+								let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
+
+								if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
+									let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
+									common_values.push(c_vs.trim().toLowerCase());
+									let tmp = {};
+									tmp.c = entry._source.category;
+									tmp.n = entry._source.node;
+									tmp.p = entry._source.name;
+									tmp.gdc_v = v.n;
+									if (v.n_c) {
+										tmp.ncit_v = ncit_pv[v.n_c].preferredName;
+										tmp.ncit_cc = v.n_c;
+									} else {
+										tmp.ncit_v = "";
+										tmp.ncit_cc = "";
+									}
+									tmp.cpv = cpv.m;
+									let all_cpvc = "";
+									if (cpv.ss.length > 0) {
+										for (let tmp_index in cpv.ss) {
+											if (tmp_index == 0) {
+												all_cpvc = all_cpvc + cpv.ss[tmp_index].c;
+											} else {
+												all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
+											}
+										}
+									} else {
+										if (file_cde[cde.id]) {
+											file_cde[cde.id].forEach(function (cde_pvs) {
+												if (cde_pvs.pv === tmp.gdc_v) {
+													all_cpvc = all_cpvc + cde_pvs.pvc;
+												}
+											});
+										}
+									}
+									tmp.cpvc = all_cpvc;
+									tmp.cid = cde.id;
+									ds.push(tmp);
+								}
+							}
+						});
+					});
+
+					vs.forEach(function (v) {
+						let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
+						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
+						if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
+							if (common_values.indexOf(c_vs.trim().toLowerCase()) == -1) {
 								let tmp = {};
 								tmp.c = entry._source.category;
 								tmp.n = entry._source.node;
@@ -754,6 +891,25 @@ var export2Excel = function (req, res) {
 									tmp.ncit_v = "";
 									tmp.ncit_cc = "";
 								}
+								tmp.cpv = "";
+								tmp.cpvc = "";
+								tmp.cid = cde.id;
+								ds.push(tmp);
+							}
+						}
+					});
+					cde_pv.forEach(function (cpv) {
+						let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
+						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + cpv.n;
+						if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
+							if (common_values.indexOf(c_vs.trim().toLowerCase()) == -1) {
+								let tmp = {};
+								tmp.c = entry._source.category;
+								tmp.n = entry._source.node;
+								tmp.p = entry._source.name;
+								tmp.gdc_v = cpv.n;
+								tmp.ncit_v = "";
+								tmp.ncit_cc = "";
 								tmp.cpv = cpv.m;
 								let all_cpvc = "";
 								if (cpv.ss.length > 0) {
@@ -764,16 +920,26 @@ var export2Excel = function (req, res) {
 											all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
 										}
 									}
+								} else {
+									if (file_cde[cde.id]) {
+										file_cde[cde.id].forEach(function (cde_pvs) {
+											if (cde_pvs.pv === tmp.gdc_v) {
+												all_cpvc = all_cpvc + cde_pvs.pvc;
+											}
+										});
+									}
 								}
 								tmp.cpvc = all_cpvc;
 								tmp.cid = cde.id;
 								ds.push(tmp);
 							}
-						});
+						}
 					});
-
+				} else {
 					vs.forEach(function (v) {
-						if (common_values.indexOf(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n.trim().toLowerCase()) == -1) {
+						let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
+						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
+						if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
 							let tmp = {};
 							tmp.c = entry._source.category;
 							tmp.n = entry._source.node;
@@ -788,61 +954,28 @@ var export2Excel = function (req, res) {
 							}
 							tmp.cpv = "";
 							tmp.cpvc = "";
-							tmp.cid = cde.id;
-							ds.push(tmp);
-						}
-					});
-					cde_pv.forEach(function (cpv) {
-						if (common_values.indexOf(entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + cpv.n.trim().toLowerCase()) == -1) {
-							let tmp = {};
-							tmp.c = entry._source.category;
-							tmp.n = entry._source.node;
-							tmp.p = entry._source.name;
-							tmp.gdc_v = cpv.n;
-							tmp.ncit_v = "";
-							tmp.ncit_cc = "";
-							tmp.cpv = cpv.m;
-							let all_cpvc = "";
-							if (cpv.ss.length > 0) {
-								for (let tmp_index in cpv.ss) {
-									if (tmp_index == 0) {
-										all_cpvc = all_cpvc + cpv.ss[tmp_index].c;
-									} else {
-										all_cpvc = all_cpvc + ":" + cpv.ss[tmp_index].c;
-									}
-								}
+							if (cde) {
+								tmp.cid = cde.id;
+							} else {
+								tmp.cid = "";
 							}
-							tmp.cpvc = all_cpvc;
-							tmp.cid = cde.id;
 							ds.push(tmp);
 						}
-					});
-				} else {
-					vs.forEach(function (v) {
-						let tmp = {};
-						tmp.c = entry._source.category;
-						tmp.n = entry._source.node;
-						tmp.p = entry._source.name;
-						tmp.gdc_v = v.n;
-						if (v.n_c) {
-							tmp.ncit_v = ncit_pv[v.n_c].preferredName;
-							tmp.ncit_cc = v.n_c;
-						} else {
-							tmp.ncit_v = "";
-							tmp.ncit_cc = "";
-						}
-						tmp.cpv = "";
-						tmp.cpvc = "";
-						if (cde) {
-							tmp.cid = cde.id;
-						} else {
-							tmp.cid = "";
-						}
-						ds.push(tmp);
 					})
 				}
 			}
 		});
+		let cnpv = [];
+		let new_ds = [];
+
+		for (let temp_data in ds) {
+			let c_n_p_v = ds[temp_data].c + "." + ds[temp_data].n + "." + ds[temp_data].p + "." + ds[temp_data].gdc_v;
+			if (cnpv.indexOf(c_n_p_v) == -1) {
+				cnpv.push(c_n_p_v);
+				new_ds.push(ds[temp_data]);
+			}
+
+		}
 		let heading = [
 			['Category', 'Node', 'Property', 'GDC Values', 'NCIt PV', 'NCIt Code', 'CDE PV Meaning', 'CDE PV Meaning concept codes', 'CDE ID']
 		];
@@ -883,11 +1016,11 @@ var export2Excel = function (req, res) {
 					heading: heading, // <- Raw heading array (optional) 
 					merges: merges, // <- Merge cell ranges 
 					specification: specification, // <- Report specification 
-					data: ds // <-- Report data 
+					data: new_ds // <-- Report data 
 				}
 			]
 		);
-		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.attachment('Report-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
 		res.send(report);
 	});
 };
@@ -1917,6 +2050,7 @@ var parseExcel = function (req, res) {
 
 				} else {
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+
 					let c_n_p = all_gdc_values[category_node_property];
 					delete all_gdc_values[category_node_property];
 					if (c_n_p) {
@@ -1934,26 +2068,43 @@ var parseExcel = function (req, res) {
 					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
 					if (concept[category_node_property]) {
 						//If category.node.property already exists in the conceptCode.js file, then delete it.
-						delete concept[category_node_property]
-					}
-					var helper_cc = {};
-					helper_cc[category_node_property] = {}
-					var temp_cc = {};
-					for (let temp_dp in dataParsed) {
-						if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-							if (dataParsed[temp_dp].ncit_code) {
-								temp_cc[category_node_property] = {
-									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+						//delete concept[category_node_property]
+						var temp_cc = {};
+						for (let temp_dp in dataParsed) {
+							if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+								if (dataParsed[temp_dp].ncit_code) {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+									}
+								} else {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: ""
+									}
 								}
-							} else {
-								temp_cc[category_node_property] = {
-									[dataParsed[temp_dp].value]: ""
-								}
+								Object.assign(concept[category_node_property], temp_cc[category_node_property]);
 							}
-							Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
 						}
+					} else {
+						var helper_cc = {};
+						helper_cc[category_node_property] = {}
+						var temp_cc = {};
+						for (let temp_dp in dataParsed) {
+							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+
+								if (dataParsed[temp_dp].ncit_code) {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+									}
+								} else {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: ""
+									}
+								}
+								Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
+							}
+						}
+						cc = helper_cc;
 					}
-					cc = helper_cc;
 					Object.assign(concept, cc);
 					fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
 						if (err) {
@@ -2238,5 +2389,6 @@ module.exports = {
 	preloadCadsrData,
 	parseExcel,
 	exportAllValues,
-	preloadDataTypeFromCaDSR
+	preloadDataTypeFromCaDSR,
+	removeDeprecated
 };
