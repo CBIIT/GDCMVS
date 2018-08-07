@@ -13,6 +13,7 @@ var config_dev = require('../config/dev');
 var logger = require('./logger');
 var caDSR = require('./caDSR');
 var extend = require('util')._extend;
+var _ = require('lodash');
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
@@ -332,7 +333,6 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		}
 		allProperties.push(p);
 	}
-
 	return doc;
 }
 
@@ -348,6 +348,32 @@ function extendDef(termsJson, defJson) {
 }
 
 function bulkIndex(next) {
+	let deprecated_properties = [];
+	let deprecated_enum = [];
+	var folderPath = path.join(__dirname, '..', 'data');
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			let fileJson = yaml.load(folderPath + '/' + file);
+			let category = fileJson.category;
+			let node = fileJson.id;
+
+			if (fileJson.deprecated) {
+				fileJson.deprecated.forEach(function (d_p) {
+					let tmp_d_p = category + "." + node + "." + d_p;
+					deprecated_properties.push(tmp_d_p.trim().toLowerCase());
+				})
+			}
+
+			for (let keys in fileJson.properties) {
+				if (fileJson.properties[keys].deprecated_enum) {
+					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+						let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
+						deprecated_enum.push(tmp_d_e.trim().toLowerCase());
+					});
+				}
+			}
+		}
+	});
 	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
 		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
 		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
@@ -401,6 +427,14 @@ function bulkIndex(next) {
 			let fileJson = yaml.load(folderPath + '/' + file);
 			if (fileJson.category !== "TBD" && fileJson.id !== "metaschema" && searchable_nodes.indexOf(fileJson.id) !== -1) {
 				logger.debug(folderPath + '/' + file);
+				for(let keys in fileJson.properties){
+					if(fileJson.properties[keys].deprecated_enum){
+						fileJson.properties[keys].enum = _.difference(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum);
+					}
+					if(fileJson.deprecated && deprecated_properties.indexOf(fileJson.category+"."+fileJson.id+"."+keys) !== -1){
+						delete fileJson.properties[keys];
+					}
+				}
 				helper(fileJson, termsJson, defJson, ccode, syns);
 			}
 
