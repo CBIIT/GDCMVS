@@ -323,7 +323,7 @@ $(function() {
         $("#keywords").val(keyword);
 
         if(option.match != 'partial'){
-          $("#i_syn").prop('checked', true);
+          $("#i_ematch").prop('checked', true);
         }
         if(option.desc != false){
           $("#i_desc").prop('checked', true);
