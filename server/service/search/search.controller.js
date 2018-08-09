@@ -760,10 +760,15 @@ var removeDeprecated = function (req, res) {
 		let cnp_key = d_e.split(".#")[1];
 		if(concept[cnp]){
 			for(let key in concept[cnp]){
+				if(key.charAt(0).match(/[C]/) && key.charAt(1).match(/[0-9]/)){
+					key = key.replace('C', 'c');
+				}
 				if(key === cnp_key){
+					if(cnp_key.charAt(0).match(/[c]/) && cnp_key.charAt(1).match(/[0-9]/)){
+						cnp_key = cnp_key.replace('c', 'C');
+					}
 					let tmp_value = concept[cnp];
 					delete tmp_value[cnp_key];
-					//console.log(concept[cnp]);
 				}
 			}
 		} 
