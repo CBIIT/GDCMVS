@@ -11,7 +11,7 @@ const func = {
  		let source = item._source;
  		if(("name" in hl) || ("name.have" in hl) || ("desc" in hl)){
  			let prop = {};
-      prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]["0"]) : source.name;
+      prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"]["0"] || hl["name.have"]["0"]) : source.name;
       prop.nm_link = prop.nm.replace(/<b>/g, "").replace(/<\/b>/g, "");
  			prop.nd = source.node;
  			prop.ct = source.category;
