@@ -704,7 +704,6 @@ var getPVFunc = function (ncitids, idx, next) {
 					});
 				}
 			}
-
 			idx++;
 			getPVFunc(ncitids, idx, next);
 			if (ncitids.length == idx) {
@@ -712,9 +711,7 @@ var getPVFunc = function (ncitids, idx, next) {
 			} else {
 				return next("NCIT finished number: " + idx + " of " + ncitids.length + "\n");
 			}
-
 		});
-
 	}).on('error', (e) => {
 		logger.debug(e);
 	});
