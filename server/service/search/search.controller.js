@@ -2052,7 +2052,6 @@ var parseExcel = function (req, res) {
 
 				} else {
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
-
 					let c_n_p = all_gdc_values[category_node_property];
 					delete all_gdc_values[category_node_property];
 					if (c_n_p) {
@@ -2124,6 +2123,7 @@ var parseExcel = function (req, res) {
 			return logger.error(err);
 		}
 	});
+	Unmapped();
 	res.json({
 		"status": "success",
 		"message": "Done"
@@ -2370,6 +2370,63 @@ var export_difference = function (req, res) {
 	res.send(report);
 
 }
+
+function Unmapped(){
+	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	var folderPath = path.join(__dirname, '..', '..', 'data');
+
+	for(let keys in concept){
+		let node = keys.split('.')[1];
+		let property = keys.split('.')[2];
+		if(fs.existsSync(folderPath+'/'+node+'.yaml')){
+			let fileData = yaml.load(folderPath+'/'+node+'.yaml');
+			if(fileData.properties[property]){
+				let local_property = fileData.properties[property];
+				if(local_property.deprecated_enum){
+					let local_enum = local_property.enum;
+					let local_d_enum = local_property.deprecated_enum;
+					let final_d_enum = [];
+					local_d_enum.forEach(function (em){
+						if(em.charAt(0).match(/[c]/) && em.charAt(1).match(/[0-9]/)){
+							final_d_enum.push(em.replace('c', 'C'));
+						}else{
+							final_d_enum.push(em);
+						}
+					})
+					let final_enum = _.differenceWith(local_enum, final_d_enum, _.isEqual);
+					let local_values = [];
+					for(let file_values in concept[keys]){
+						local_values.push(file_values);
+					}
+					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
+					value_not_found.forEach(function(new_val){
+						let local_obj = concept[keys];
+						local_obj[new_val] = "";
+					});
+				}else{
+					let final_enum = local_property.enum;
+					let local_values = [];
+					for(let file_values in concept[keys]){
+						local_values.push(file_values);
+					}
+					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
+					value_not_found.forEach(function(new_val){
+						let local_obj = concept[keys];
+						local_obj[new_val] = "";
+					});
+				}
+			}
+		}
+	}
+	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+	
+}
+
 module.exports = {
 	suggestion,
 	searchP,
