@@ -7,15 +7,15 @@ const func = {
   //options render
   let options = {};
  	items.forEach(function(item){
-     let hl = item.highlight;
+    let hl = item.highlight;
  		let source = item._source;
  		if(("name" in hl) || ("name.have" in hl) || ("desc" in hl)){
  			let prop = {};
       prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : source.name;
       if(typeof prop.nm === 'object'){
-      prop.nm_link = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "");
+        prop.nm_link = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "");
       }else{
-      prop.nm_link = prop.nm.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        prop.nm_link = prop.nm.replace(/<b>/g, "").replace(/<\/b>/g, "");
       }
  			prop.nd = source.node;
  			prop.ct = source.category;
