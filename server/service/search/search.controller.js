@@ -2123,7 +2123,6 @@ var parseExcel = function (req, res) {
 			return logger.error(err);
 		}
 	});
-	Unmapped();
 	res.json({
 		"status": "success",
 		"message": "Done"
@@ -2371,7 +2370,7 @@ var export_difference = function (req, res) {
 
 }
 
-function Unmapped(){
+var Unmapped = function(req, res){
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	var folderPath = path.join(__dirname, '..', '..', 'data');
@@ -2425,6 +2424,8 @@ function Unmapped(){
 		}
 	});
 	
+	res.send("Success");
+	
 }
 
 module.exports = {
@@ -2449,5 +2450,6 @@ module.exports = {
 	parseExcel,
 	exportAllValues,
 	preloadDataTypeFromCaDSR,
-	removeDeprecated
+	removeDeprecated,
+	Unmapped
 };
