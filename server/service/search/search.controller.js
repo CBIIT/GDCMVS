@@ -717,7 +717,7 @@ var getPVFunc = function (ncitids, idx, next) {
 	});
 };
 
-var removeDeprecated = function (req, res) {
+function removeDeprecated() {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
 	var folderPath = path.join(__dirname, '..', '..', 'data');
@@ -775,7 +775,6 @@ var removeDeprecated = function (req, res) {
 			return logger.error(err);
 		}
 	});
-	res.send("success!!!");
 }
 
 var export2Excel = function (req, res) {
@@ -2123,6 +2122,8 @@ var parseExcel = function (req, res) {
 			return logger.error(err);
 		}
 	});
+	removeDeprecated();
+	Unmapped();
 	res.json({
 		"status": "success",
 		"message": "Done"
@@ -2370,7 +2371,7 @@ var export_difference = function (req, res) {
 
 }
 
-var Unmapped = function(req, res){
+function Unmapped(){
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	var folderPath = path.join(__dirname, '..', '..', 'data');
@@ -2423,9 +2424,6 @@ var Unmapped = function(req, res){
 			return logger.error(err);
 		}
 	});
-	
-	res.send("Success");
-	
 }
 
 module.exports = {
@@ -2449,7 +2447,5 @@ module.exports = {
 	preloadCadsrData,
 	parseExcel,
 	exportAllValues,
-	preloadDataTypeFromCaDSR,
-	removeDeprecated,
-	Unmapped
+	preloadDataTypeFromCaDSR
 };
