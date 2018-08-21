@@ -2383,6 +2383,7 @@
 {"nm":"Chronic myelogenous leukemia, NOS","i_c":"9863/3","n_c":"C3174"},
 {"nm":"Acute myeloid leukemia with t(6;9)(p23;q34); DEK-NUP214","i_c":"9865/3","n_c":"C82423"},
 {"nm":"Acute promyelocytic leukemia, t(15;17)(q22;q11-12)","i_c":"9866/3","n_c":"C3182"},
+{"nm":"Acute promyelocytic leukaemia, t(15;17)(q22;q11-12)","i_c":"9866/3","n_c":"C3182"},
 {"nm":"Acute myeloid leukemia, PML/RAR-alpha","i_c":"9866/3","n_c":"C3182"},
 {"nm":"Acute myeloid leukemia, t(15;17)(q22;q11-12)","i_c":"9866/3","n_c":""},
 {"nm":"Acute promyelocytic leukemia, NOS","i_c":"9866/3","n_c":"C3182"},
