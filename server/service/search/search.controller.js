@@ -744,7 +744,6 @@ function removeDeprecated() {
 			}
 		}
 	});
-	//console.log(deprecated_properties);
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	deprecated_properties.forEach( function (d_p){
