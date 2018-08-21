@@ -74,15 +74,16 @@ var searchICDO3Data = function (req, res) {
 				ICDO3Data.node = data[d]._source.node;
 				ICDO3Data.property = data[d]._source.name;
 				ICDO3Data.enums = [];
-
 				for (let e in enums) {
-					let value = enums[e].i_c.have;
-					value.map(function (x) {
-						return x.toString().toUpperCase()
-					})
+						if(enums[e].i_c){
+							let value = enums[e].i_c.have;
+						value.map(function (x) {
+							return x.toString().toUpperCase()
+						})
 
-					if ((value).indexOf(icdo3_code.toUpperCase()) > -1) {
-						ICDO3Data.enums.push(enums[e]);
+						if ((value).indexOf(icdo3_code.toUpperCase()) > -1) {
+							ICDO3Data.enums.push(enums[e]);
+						}
 					}
 				}
 				mainData.push(ICDO3Data);
