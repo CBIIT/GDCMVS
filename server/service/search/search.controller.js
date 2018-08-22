@@ -2419,6 +2419,19 @@ function Unmapped(){
 			}
 		}
 	}
+	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let icdo = JSON.parse(gdcValues);
+	for(let keys in icdo){
+		if(concept[keys]){
+			let cc_values = concept[keys];
+			icdo[keys].forEach( function (value){
+				if(cc_values[value.nm] || cc_values[value.nm] == ""){
+					delete cc_values[value.nm];
+				}
+			});
+		}
+		
+	}
 	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
 		if (err) {
 			return logger.error(err);
