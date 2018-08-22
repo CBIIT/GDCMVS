@@ -2426,12 +2426,23 @@ function Unmapped(){
 			let cc_values = concept[keys];
 			icdo[keys].forEach( function (value){
 				if(cc_values[value.nm] || cc_values[value.nm] == ""){
-					delete cc_values[value.nm];
+					if(cc_values[value.nm] == value.n_c || cc_values[value.nm] == ""){
+						delete cc_values[value.nm];
+					}
+					if(value.n_c == "" && cc_values[value.nm]){
+						value.n_c = cc_values[value.nm];
+						delete cc_values[value.nm];
+					}
 				}
 			});
 		}
 		
 	}
+	fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
 	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
 		if (err) {
 			return logger.error(err);
