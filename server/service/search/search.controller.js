@@ -2373,7 +2373,7 @@ var export_difference = function (req, res) {
 
 }
 
-function Unmapped(){
+var Unmapped = function(req, res){
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	var folderPath = path.join(__dirname, '..', '..', 'data');
@@ -2476,11 +2476,12 @@ function Unmapped(){
 			}	
 		}
 	}
-	fs.writeFileSync("./conceptCode.js", JSON.stringify(tmp_concept), function (err) {
-		if (err) {
-			return logger.error(err);
-		}
-	});
+	// fs.writeFileSync("./conceptCode.js", JSON.stringify(tmp_concept), function (err) {
+	// 	if (err) {
+	// 		return logger.error(err);
+	// 	}
+	// });
+	res.send("Success");
 }
 
 module.exports = {
@@ -2504,5 +2505,6 @@ module.exports = {
 	preloadCadsrData,
 	parseExcel,
 	exportAllValues,
-	preloadDataTypeFromCaDSR
+	preloadDataTypeFromCaDSR,
+	Unmapped
 };
