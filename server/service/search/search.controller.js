@@ -908,7 +908,9 @@ var export2Excel = function (req, res) {
 								tmp.c = entry._source.category;
 								tmp.n = entry._source.node;
 								tmp.p = entry._source.name;
-								tmp.gdc_v = cpv.n;
+								//Fix this Part
+								tmp.gdc_v = "";
+								tmp.gdc_v1 = cpv.n;
 								tmp.ncit_v = "";
 								tmp.ncit_cc = "";
 								tmp.cpv = cpv.m;
@@ -924,7 +926,7 @@ var export2Excel = function (req, res) {
 								} else {
 									if (file_cde[cde.id]) {
 										file_cde[cde.id].forEach(function (cde_pvs) {
-											if (cde_pvs.pv === tmp.gdc_v) {
+											if (cde_pvs.pv === tmp.gdc_v1) {
 												all_cpvc = all_cpvc + cde_pvs.pvc;
 											}
 										});
@@ -2090,7 +2092,7 @@ var parseExcel = function (req, res) {
 						var temp_cc = {};
 						for (let temp_dp in dataParsed) {
 							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-
+								
 								if (dataParsed[temp_dp].ncit_code) {
 									temp_cc[category_node_property] = {
 										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
@@ -2444,6 +2446,37 @@ function Unmapped(){
 		}
 	});
 	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+
+	//Remove old properties and values that don't exists in GDC Dictionary
+	let folderPath_gdcdata = path.join(__dirname, '..','..', 'data');
+	let gdc_data = {};
+	fs.readdirSync(folderPath_gdcdata).forEach(file => {
+		gdc_data[file.replace('.yaml','')] = yaml.load(folderPath_gdcdata+'/'+file);
+	});
+	let tmp_conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let tmp_concept = JSON.parse(conceptCode);
+	for(let keys in tmp_concept){
+		let category = keys.split(".")[0];
+		let node =  keys.split(".")[1];
+		let property =  keys.split(".")[2];
+		if(!gdc_data[node]){
+			delete tmp_concept[keys];
+		}
+		if(gdc_data[node] && !gdc_data[node].properties[property]){
+			delete tmp_concept[keys];
+		}
+		let tmp_obj = tmp_concept[keys];
+		for(let values in tmp_obj){
+			if(gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum.indexOf(values) == -1){
+				delete tmp_obj[values];
+			}	
+		}
+	}
+	fs.writeFileSync("./conceptCode.js", JSON.stringify(tmp_concept), function (err) {
 		if (err) {
 			return logger.error(err);
 		}
