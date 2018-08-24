@@ -300,7 +300,6 @@ const func = {
     });
 
     let newtrs = [];
-    let all_enums = [];
     trs.forEach(function (data) {
       let temp_categ = {
         nodes: []
