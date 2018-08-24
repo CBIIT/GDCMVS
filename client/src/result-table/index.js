@@ -27,6 +27,10 @@ const func = {
       let source = item._source;
       let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl[
         'enum.s'] || hl["enum.s.have"] : [];
+
+      let enum_i_c = ("enum.i_c" in hl) || ("enum.i_c.have" in hl) ?
+        hl["enum.i_c.s"] || hl["enum.i_c.have"] : [];
+
       let enum_s_icdo3 = [];
       let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
         "enum.n"] || hl["enum.n.have"] : [];
@@ -38,6 +42,9 @@ const func = {
       let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ?
         hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let arr_enum_s = [];
+
+      let arr_enum_i_c = [];
+
       let arr_enum_s_icdo3 = [];
       let arr_enum_n = [];
       let arr_cde_n = [];
@@ -52,6 +59,10 @@ const func = {
       enum_s.forEach(function (s) {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_s.push(tmp);
+      });
+      enum_i_c.forEach(function (i_c) {
+        let tmp = i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        arr_enum_i_c.push(tmp);
       });
       enum_n.forEach(function (n) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -145,8 +156,10 @@ const func = {
       }
       //put value to tree table
       if (source.enum != undefined) {
-        if (enum_n.length == 0 && enum_s.length == 0 && matched_pv.length ==
-          0) {
+        if (enum_n.length == 0 &&
+            enum_s.length == 0 &&
+            enum_i_c.length == 0 &&
+            matched_pv.length == 0) {
           //if no values show in the values tab
           p.node = "branch";
           trs.push(p);
@@ -207,11 +220,19 @@ const func = {
               count_s--;
               e.exist = true;
             } else {
+
               if (arr_enum_n.indexOf(v.n) !== -1) {
                 e.exist = true;
               }
 
-              if (v.s !== undefined && e.exist != true) {
+              if (v.i_c !== undefined && e.exist !== true) {
+
+                if (arr_enum_i_c.indexOf(v.i_c.c) !== -1) {
+                  e.exist = true;
+                }
+              }
+
+              if (v.s !== undefined && e.exist !== true) {
                 v.s.forEach(function (syn) {
                   if (arr_enum_s.indexOf(syn) !== -1) {
                     e.exist = true;
@@ -302,29 +323,26 @@ const func = {
 
             trs.forEach(function (data2) {
               if (data2.type === "property" && data2.data_tt_parent_id === data1.data_tt_id) {
-                  let temp_prop = {};
-                  temp_prop.title = data2.title;
-                  temp_prop.desc = data2.desc;
-                  temp_prop.len = data2.len;
-                  temp_prop.type = data2.type;
-                  temp_prop.parent_l_id = data2.parent_l_id;
-                  temp_prop.l_id = data2.l_id;
-                  temp_prop.hl_values = [];
-                  temp_prop.all_values = [];
-                  temp_prop.link_values = [];
+                let temp_prop = {};
+                temp_prop.title = data2.title;
+                temp_prop.desc = data2.desc;
+                temp_prop.len = data2.len;
+                temp_prop.type = data2.type;
+                temp_prop.parent_l_id = data2.parent_l_id;
+                temp_prop.l_id = data2.l_id;
+                temp_prop.hl_values = [];
+                temp_prop.all_values = [];
+                temp_prop.link_values = [];
 
                 trs.forEach(function (data3) {
                   if (data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id) {
-                      let temp_value = {};
-                      if(all_enums.indexOf(data1.title+"."+data2.title+"."+data3.title) == -1){
-                        all_enums.push(data1.title+"."+data2.title+"."+data3.title);
+                        let temp_value = {};
                         temp_value.title = data3.title;
                         temp_value.type = data3.type;
                         temp_prop.all_values.push(temp_value);
                         if (data3.exist) {
                           temp_prop.hl_values.push(temp_value);
                         }
-                      }
                   }
                   if(data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
 
