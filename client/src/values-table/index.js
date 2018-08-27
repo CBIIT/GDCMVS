@@ -285,7 +285,7 @@ const func = {
               return;
             }
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            if(item_i_c in temp_i_c){
+            if(item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1){
               temp_i_c[item_i_c].n.push(item.n);
             } else {
               let tmp_arr = [];
