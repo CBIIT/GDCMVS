@@ -288,8 +288,15 @@ const func = {
             if(item_i_c in temp_i_c){
               temp_i_c[item_i_c].n.push(item.n);
             } else {
+              let tmp_arr = [];
               temp_i_c[item_i_c] = {i_c: item.i_c, n: [item.n]};
-
+              tmp_arr.push(item.n.replace(/<b>/g, "").replace(/<\/b>/g, ""));
+              source.enum.forEach(function (em){
+                if(em.i_c && em.i_c.c == item_i_c && tmp_arr.indexOf(em.n) == -1){
+                  temp_i_c[item_i_c].n.push(em.n);
+                  tmp_arr.push(em.n.replace(/<b>/g, "").replace(/<\/b>/g, ""));
+                }
+              });
             }
           });
 
