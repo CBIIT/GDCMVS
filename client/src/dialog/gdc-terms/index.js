@@ -17,20 +17,16 @@ export default function getGDCTerms(uid, tgts){
       targets = tgts.split("#");
 
       items.forEach(function(item){
-        if(item.i_c !== undefined){
           icdo = true;
           icdo_items.push(item);
-        }
         if (targets.indexOf(item.n) > -1){
           item.e = true;
         }
       });
     } else{
       items.forEach(function(item){
-        if(item.i_c !== undefined){
           icdo = true;
           icdo_items.push(item);
-        }
       });
     }
 
