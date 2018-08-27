@@ -14,10 +14,8 @@ export default function gdcData(prop, item) {
     let icdo_items = [];
 
     items.forEach(function(item){
-      if(item.i_c !== undefined){
         icdo = true;
         icdo_items.push(item);
-      }
     });
 
     if(icdo){
