@@ -75,8 +75,8 @@ var searchICDO3Data = function (req, res) {
 				ICDO3Data.property = data[d]._source.name;
 				ICDO3Data.enums = [];
 				for (let e in enums) {
-						if(enums[e].i_c){
-							let value = enums[e].i_c.have;
+					if (enums[e].i_c) {
+						let value = enums[e].i_c.have;
 						value.map(function (x) {
 							return x.toString().toUpperCase()
 						})
@@ -747,28 +747,28 @@ function removeDeprecated() {
 	});
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
-	deprecated_properties.forEach( function (d_p){
-		if(concept[d_p]){
+	deprecated_properties.forEach(function (d_p) {
+		if (concept[d_p]) {
 			delete concept[d_p];
 		}
 	});
-	deprecated_enum.forEach( function (d_e){
+	deprecated_enum.forEach(function (d_e) {
 		let cnp = d_e.split(".#")[0];
 		let cnp_key = d_e.split(".#")[1];
-		if(concept[cnp]){
-			for(let key in concept[cnp]){
-				if(key.charAt(0).match(/[C]/) && key.charAt(1).match(/[0-9]/)){
+		if (concept[cnp]) {
+			for (let key in concept[cnp]) {
+				if (key.charAt(0).match(/[C]/) && key.charAt(1).match(/[0-9]/)) {
 					key = key.replace('C', 'c');
 				}
-				if(key === cnp_key){
-					if(cnp_key.charAt(0).match(/[c]/) && cnp_key.charAt(1).match(/[0-9]/)){
+				if (key === cnp_key) {
+					if (cnp_key.charAt(0).match(/[c]/) && cnp_key.charAt(1).match(/[0-9]/)) {
 						cnp_key = cnp_key.replace('c', 'C');
 					}
 					let tmp_value = concept[cnp];
 					delete tmp_value[cnp_key];
 				}
 			}
-		} 
+		}
 	});
 	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
 		if (err) {
@@ -2092,7 +2092,7 @@ var parseExcel = function (req, res) {
 						var temp_cc = {};
 						for (let temp_dp in dataParsed) {
 							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-								
+
 								if (dataParsed[temp_dp].ncit_code) {
 									temp_cc[category_node_property] = {
 										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
@@ -2125,7 +2125,6 @@ var parseExcel = function (req, res) {
 		}
 	});
 	removeDeprecated();
-	Unmapped();
 	res.json({
 		"status": "success",
 		"message": "Done"
@@ -2373,47 +2372,47 @@ var export_difference = function (req, res) {
 
 }
 
-var Unmapped = function(req, res){
+var Unmapped = function (req, res) {
 	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	var folderPath = path.join(__dirname, '..', '..', 'data');
 
-	for(let keys in concept){
+	for (let keys in concept) {
 		let node = keys.split('.')[1];
 		let property = keys.split('.')[2];
-		if(fs.existsSync(folderPath+'/'+node+'.yaml')){
-			let fileData = yaml.load(folderPath+'/'+node+'.yaml');
-			if(fileData.properties[property]){
+		if (fs.existsSync(folderPath + '/' + node + '.yaml')) {
+			let fileData = yaml.load(folderPath + '/' + node + '.yaml');
+			if (fileData.properties[property]) {
 				let local_property = fileData.properties[property];
-				if(local_property.deprecated_enum){
+				if (local_property.deprecated_enum) {
 					let local_enum = local_property.enum;
 					let local_d_enum = local_property.deprecated_enum;
 					let final_d_enum = [];
-					local_d_enum.forEach(function (em){
-						if(em.charAt(0).match(/[c]/) && em.charAt(1).match(/[0-9]/)){
+					local_d_enum.forEach(function (em) {
+						if (em.charAt(0).match(/[c]/) && em.charAt(1).match(/[0-9]/)) {
 							final_d_enum.push(em.replace('c', 'C'));
-						}else{
+						} else {
 							final_d_enum.push(em);
 						}
 					})
 					let final_enum = _.differenceWith(local_enum, final_d_enum, _.isEqual);
 					let local_values = [];
-					for(let file_values in concept[keys]){
+					for (let file_values in concept[keys]) {
 						local_values.push(file_values);
 					}
 					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
-					value_not_found.forEach(function(new_val){
+					value_not_found.forEach(function (new_val) {
 						let local_obj = concept[keys];
 						local_obj[new_val] = "";
 					});
-				}else{
+				} else {
 					let final_enum = local_property.enum;
 					let local_values = [];
-					for(let file_values in concept[keys]){
+					for (let file_values in concept[keys]) {
 						local_values.push(file_values);
 					}
 					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
-					value_not_found.forEach(function(new_val){
+					value_not_found.forEach(function (new_val) {
 						let local_obj = concept[keys];
 						local_obj[new_val] = "";
 					});
@@ -2423,22 +2422,28 @@ var Unmapped = function(req, res){
 	}
 	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
 	let icdo = JSON.parse(gdcValues);
-	for(let keys in icdo){
-		if(concept[keys]){
+	for (let keys in icdo) {
+		if (concept[keys]) {
 			let cc_values = concept[keys];
-			icdo[keys].forEach( function (value){
-				if(cc_values[value.nm] || cc_values[value.nm] == ""){
-					if(cc_values[value.nm] == value.n_c || cc_values[value.nm] == ""){
+			icdo[keys].forEach(function (value) {
+				//if the "value" in conceptCode.js is similar to "icdo3" code in gdc_values.js, remove that value from conceptCode.js
+				for(let val in cc_values){
+					if(val === value.i_c){
+						delete cc_values[val];
+					}
+				}
+				if (cc_values[value.nm] || cc_values[value.nm] == "") {
+					if (cc_values[value.nm] == value.n_c || cc_values[value.nm] == "") {
 						delete cc_values[value.nm];
 					}
-					if(value.n_c == "" && cc_values[value.nm]){
+					if (value.n_c == "" && cc_values[value.nm]) {
 						value.n_c = cc_values[value.nm];
 						delete cc_values[value.nm];
 					}
 				}
 			});
 		}
-		
+
 	}
 	fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
 		if (err) {
@@ -2451,36 +2456,36 @@ var Unmapped = function(req, res){
 		}
 	});
 
-	//Remove old properties and values that don't exists in GDC Dictionary
-	let folderPath_gdcdata = path.join(__dirname, '..','..', 'data');
+	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
+	let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
 	let gdc_data = {};
 	fs.readdirSync(folderPath_gdcdata).forEach(file => {
-		gdc_data[file.replace('.yaml','')] = yaml.load(folderPath_gdcdata+'/'+file);
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
 	});
 	let tmp_conceptCode = fs.readFileSync("./conceptCode.js").toString();
-	let tmp_concept = JSON.parse(conceptCode);
-	for(let keys in tmp_concept){
+	let tmp_concept = JSON.parse(tmp_conceptCode);
+	for (let keys in tmp_concept) {
 		let category = keys.split(".")[0];
-		let node =  keys.split(".")[1];
-		let property =  keys.split(".")[2];
-		if(!gdc_data[node]){
+		let node = keys.split(".")[1];
+		let property = keys.split(".")[2];
+		if (!gdc_data[node]) {
 			delete tmp_concept[keys];
 		}
-		if(gdc_data[node] && !gdc_data[node].properties[property]){
+		if (gdc_data[node] && !gdc_data[node].properties[property]) {
 			delete tmp_concept[keys];
 		}
 		let tmp_obj = tmp_concept[keys];
-		for(let values in tmp_obj){
-			if(gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum.indexOf(values) == -1){
+		for (let values in tmp_obj) {
+			if (gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum.indexOf(values) == -1) {
 				delete tmp_obj[values];
-			}	
+			}
 		}
 	}
-	// fs.writeFileSync("./conceptCode.js", JSON.stringify(tmp_concept), function (err) {
-	// 	if (err) {
-	// 		return logger.error(err);
-	// 	}
-	// });
+	fs.writeFileSync("./conceptCode.js", JSON.stringify(tmp_concept), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
 	res.send("Success");
 }
 
