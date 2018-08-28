@@ -7829,18 +7829,7 @@
     },
     "clinical.diagnosis.morphology": {
         "Not Reported": "C43234",
-        "Unknown": "C17998",
-        "8041/34": "",
-        "8070/33": "",
-        "8140/33": "",
-        "8370/1": "",
-        "8507/3": "",
-        "8521/1": "",
-        "8522/1": "",
-        "9751/1": "",
-        "9752/1": "",
-        "9753/1": "",
-        "9754/3": ""
+        "Unknown": "C17998"
     },
     "clinical.diagnosis.peripancreatic_lymph_nodes_positive": {
         "0": "C70430",
