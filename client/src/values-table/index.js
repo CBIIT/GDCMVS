@@ -192,7 +192,6 @@ const func = {
               //v.s = em.s;
               v.s = tmp_s;
             }
-
           }
 
           //check if it contains icd-0-3 codes.
@@ -229,8 +228,6 @@ const func = {
             }
 
           }
-
-
 
           let lc = em.n.toLowerCase();
           if (lc in matched_pv) {
