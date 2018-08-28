@@ -40,9 +40,7 @@ const func = {
       let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ?
         hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let arr_enum_s = [];
-
       let arr_enum_i_c = [];
-
       let arr_enum_s_icdo3 = [];
       let arr_enum_n = [];
       let arr_cde_n = [];
@@ -321,16 +319,15 @@ const func = {
 
                 trs.forEach(function (data3) {
                   if (data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id) {
-                        let temp_value = {};
-                        temp_value.title = data3.title;
-                        temp_value.type = data3.type;
-                        temp_prop.all_values.push(temp_value);
-                        if (data3.exist) {
-                          temp_prop.hl_values.push(temp_value);
-                        }
+                    let temp_value = {};
+                    temp_value.title = data3.title;
+                    temp_value.type = data3.type;
+                    temp_prop.all_values.push(temp_value);
+                    if (data3.exist) {
+                      temp_prop.hl_values.push(temp_value);
+                    }
                   }
-                  if(data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
-
+                  if (data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
                     let temp_value = {};
                     temp_value.url = data3.url;
                     temp_value.type = data3.type;
