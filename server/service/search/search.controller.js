@@ -8,7 +8,6 @@ var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var yaml = require('yamljs');
-const excel = require('node-excel-export');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
 var cdeData = {};
