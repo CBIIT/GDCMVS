@@ -281,18 +281,21 @@ const func = {
               return;
             }
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            let item_n_c = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+            let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
             if(item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1){
               temp_i_c[item_i_c].n.push(item.n);
-              temp_i_c[item_i_c].n_c.push(item_n_c);
+              temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              if(temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1){
+                temp_i_c[item_i_c].n_syn.push({n_c:item.n_c, s: item.s});
+                temp_i_c[item_i_c].checker_n_c.push(item.n_c);
+              }
             } else {
-              temp_i_c[item_i_c] = {i_c: item.i_c, n: [item.n], n_c: [item_n_c]};
+              temp_i_c[item_i_c] = {i_c: item.i_c, n: [item.n], n_clr: [item_n_clr], n_syn:[{n_c: item.n_c, s: item.s}], checker_n_c: [item.n_c]};
             }
           });
-
           for(let index_i_c in temp_i_c) {
             source.enum.forEach(function (em){
-              if(em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_c.indexOf(em.n) === -1){
+              if(em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1){
                 temp_i_c[index_i_c].n.push(em.n);
               }
             });
@@ -317,6 +320,12 @@ const func = {
                 if(item_i_c in temp_i_c){
                   item.term_i_c = temp_i_c[item_i_c];
                 }
+            }
+            if(item.temp_i_c && item.temp_i_c.checker_n_c){
+              delete item.term_i_c.checker_n_c;
+            }
+            if(item.term_i_c && item.term_i_c.n_clr){
+              delete item.term_i_c.n_clr
             }
             new_vs.push(item)
           });
