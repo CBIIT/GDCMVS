@@ -326,7 +326,9 @@ const func = {
         }
         len += row.vs.length;
       }
-      values.push(row);
+      if(row.vs.length !== 0){
+        values.push(row);
+      }
     });
     let html = "";
     if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
