@@ -84,7 +84,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			if (entryRaw['$ref'] !== undefined) {
 				if (entryRaw['$ref'].indexOf("_terms.yaml") == -1 && entryRaw['$ref'].indexOf("_definitions.yaml") == -1) {
 					entry = extend(entry, parseRefYaml(entryRaw['$ref'], termsJson, defJson));
-				}else{
+				} else {
 					entry = extend(entry, parseRef(entryRaw['$ref'], termsJson, defJson));
 				}
 				delete entryRaw['$ref'];
@@ -427,11 +427,11 @@ function bulkIndex(next) {
 			let fileJson = yaml.load(folderPath + '/' + file);
 			if (fileJson.category !== "TBD" && fileJson.id !== "metaschema" && searchable_nodes.indexOf(fileJson.id) !== -1) {
 				logger.debug(folderPath + '/' + file);
-				for(let keys in fileJson.properties){
-					if(fileJson.properties[keys].deprecated_enum){
+				for (let keys in fileJson.properties) {
+					if (fileJson.properties[keys].deprecated_enum) {
 						fileJson.properties[keys].enum = removeDeprecatedEnums(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum);
 					}
-					if(fileJson.deprecated && deprecated_properties.indexOf(fileJson.category+"."+fileJson.id+"."+keys) !== -1){
+					if (fileJson.deprecated && deprecated_properties.indexOf(fileJson.category + "." + fileJson.id + "." + keys) !== -1) {
 						delete fileJson.properties[keys];
 					}
 				}
@@ -458,6 +458,28 @@ function bulkIndex(next) {
 	}
 	//build property index
 	let propertyBody = [];
+	let gdc_data = {};
+	let folderPath_gdcdata = path.join(__dirname, '..', 'data');
+	fs.readdirSync(folderPath_gdcdata).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+	});
+	allProperties.forEach(function (p) {
+		let node = p.node;
+		let property = p.name;
+		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
+			if (p.enum) {
+				p.enum.forEach(function (em) {
+					if (em.i_c !== undefined) {
+						if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
+							em.gdc_d = true;
+						} else {
+							em.gdc_d = false;
+						}
+					}
+				})
+			}
+		}
+	});
 	allProperties.forEach(function (ap) {
 		let doc = extend(ap, {});
 		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
@@ -505,12 +527,12 @@ function bulkIndex(next) {
 
 }
 
-let removeDeprecatedEnums = function (arr1, arr2){
+let removeDeprecatedEnums = function (arr1, arr2) {
 	let arr3 = []
-	arr1.forEach( function (tmp_e){
-		if(tmp_e.charAt(0).match(/[C]/) && tmp_e.charAt(1).match(/[0-9]/)){
+	arr1.forEach(function (tmp_e) {
+		if (tmp_e.charAt(0).match(/[C]/) && tmp_e.charAt(1).match(/[0-9]/)) {
 			arr3.push(tmp_e.replace('C', 'c'));
-		}else{
+		} else {
 			arr3.push(tmp_e);
 		}
 	});
