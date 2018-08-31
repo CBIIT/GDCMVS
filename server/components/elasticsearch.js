@@ -469,14 +469,12 @@ function bulkIndex(next) {
 		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
 			if (p.enum) {
 				p.enum.forEach(function (em) {
-					if (em.i_c !== undefined) {
-						if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
-							em.gdc_d = true;
-						} else {
-							em.gdc_d = false;
-						}
+					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
+						em.gdc_d = true;
+					} else {
+						em.gdc_d = false;
 					}
-				})
+				});
 			}
 		}
 	});
