@@ -56,7 +56,6 @@ const func = {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_s.push(tmp);
       });
-
       enum_n.forEach(function (n) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_n.push(tmp);
@@ -210,7 +209,7 @@ const func = {
 
               if (v.i_c !== undefined && e.exist !== true) {
                 v.i_c.have.forEach(function(v_i_c_have) {
-                  if (arr_enum_i_c.indexOf(v_i_c_have) !== -1) {
+                  if (arr_enum_i_c.indexOf(v_i_c_have) !== -1 && arr_enum_n.length === 0) {
                     e.exist = true;
                   }
                 });
@@ -327,7 +326,7 @@ const func = {
                       temp_prop.hl_values.push(temp_value);
                     }
                   }
-                  if (data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id){
+                  if (data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id) {
                     let temp_value = {};
                     temp_value.url = data3.url;
                     temp_value.type = data3.type;
