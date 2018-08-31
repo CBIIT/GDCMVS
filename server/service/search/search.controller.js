@@ -221,6 +221,24 @@ var searchP = function (req, res) {
 				delete entry._type;
 				delete entry._id;
 			});
+			let node = data[0]._source.node;
+			let property = data[0]._source.name;
+			let gdc_data = {};
+			let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
+			fs.readdirSync(folderPath_gdcdata).forEach(file => {
+				gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+			});
+			if(gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property]){
+				data[0]._source.enum.forEach(function (em){
+					if(em.i_c){
+						if(gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1){
+							em.gdc_d = true;
+						}else if(gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(em.n) == -1){
+							em.gdc_d = false;
+						}
+					}
+				})
+			}
 			res.json(data);
 		});
 	}
@@ -975,8 +993,8 @@ var Unmapped = function (req, res) {
 			let cc_values = concept[keys];
 			icdo[keys].forEach(function (value) {
 				//if the "value" in conceptCode.js is similar to "icdo3" code in gdc_values.js, remove that value from conceptCode.js
-				for(let val in cc_values){
-					if(val === value.i_c){
+				for (let val in cc_values) {
+					if (val === value.i_c) {
 						delete cc_values[val];
 					}
 				}
