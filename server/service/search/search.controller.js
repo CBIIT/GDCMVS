@@ -221,24 +221,26 @@ var searchP = function (req, res) {
 				delete entry._type;
 				delete entry._id;
 			});
-			if (data[0] && data[0]._source) {
-				let node = data[0]._source.node;
-				let property = data[0]._source.name;
-				let gdc_data = {};
-				let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
-				fs.readdirSync(folderPath_gdcdata).forEach(file => {
-					gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
-				});
-				if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
-					data[0]._source.enum.forEach(function (em) {
-						if (em.i_c) {
-							if (gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
-								em.gdc_d = true;
-							} else if (gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(em.n) == -1) {
-								em.gdc_d = false;
+			for(let index in data){
+				if (data[index] && data[index]._source) {
+					let node = data[index]._source.node;
+					let property = data[index]._source.name;
+					let gdc_data = {};
+					let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
+					fs.readdirSync(folderPath_gdcdata).forEach(file => {
+						gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+					});
+					if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
+						data[index]._source.enum.forEach(function (em) {
+							if (em.i_c !== undefined) {
+								if (gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
+									em.gdc_d = true;
+								} else {
+									em.gdc_d = false;
+								}
 							}
-						}
-					})
+						})
+					}
 				}
 			}
 			res.json(data);
