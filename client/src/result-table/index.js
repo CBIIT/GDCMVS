@@ -62,7 +62,7 @@ const func = {
       });
       enum_i_c.forEach(function (i_c) {
         let tmp = i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        if(arr_enum_n.indexOf(tmp) === -1){
+        if (arr_enum_n.indexOf(tmp) === -1) {
           arr_enum_i_c.push(tmp);
         }
       });
@@ -155,9 +155,9 @@ const func = {
       //put value to tree table
       if (source.enum != undefined) {
         if (enum_n.length == 0 &&
-            enum_s.length == 0 &&
-            enum_i_c.length == 0 &&
-            matched_pv.length == 0) {
+          enum_s.length == 0 &&
+          enum_i_c.length == 0 &&
+          matched_pv.length == 0) {
           //if no values show in the values tab
           p.node = "branch";
           trs.push(p);
@@ -192,7 +192,7 @@ const func = {
           let values = source.enum;
           let tmp_trs = [];
           values.forEach(function (v) {
-            if(v.gdc_d !== undefined && !v.gdc_d){
+            if (v.gdc_d !== undefined && !v.gdc_d) {
               return;
             }
             count++;
@@ -211,8 +211,9 @@ const func = {
               }
 
               if (v.i_c !== undefined && e.exist !== true) {
-                v.i_c.have.forEach(function(v_i_c_have) {
-                  if (arr_enum_i_c.indexOf(v_i_c_have) !== -1 && arr_enum_n.length === 0) {
+                v.i_c.have.forEach(function (v_i_c_have) {
+                  if (arr_enum_i_c.indexOf(v_i_c_have) !== -1 &&
+                    arr_enum_n.length === 0) {
                     e.exist = true;
                   }
                 });
@@ -297,7 +298,8 @@ const func = {
         temp_categ.id = data.id;
 
         trs.forEach(function (data1) {
-          if (data1.type == "folder" && data1.data_tt_parent_id === data.data_tt_id) {
+          if (data1.type == "folder" && data1.data_tt_parent_id ===
+            data.data_tt_id) {
             let temp_node = {};
             temp_node.title = data1.title;
             temp_node.desc = data1.desc;
@@ -307,7 +309,8 @@ const func = {
             temp_node.properties = [];
 
             trs.forEach(function (data2) {
-              if (data2.type === "property" && data2.data_tt_parent_id === data1.data_tt_id) {
+              if (data2.type === "property" && data2.data_tt_parent_id ===
+                data1.data_tt_id) {
                 let temp_prop = {};
                 temp_prop.title = data2.title;
                 temp_prop.desc = data2.desc;
@@ -320,7 +323,8 @@ const func = {
                 temp_prop.link_values = [];
 
                 trs.forEach(function (data3) {
-                  if (data3.type === "value" && data3.data_tt_parent_id === data2.data_tt_id) {
+                  if (data3.type === "value" && data3.data_tt_parent_id ===
+                    data2.data_tt_id) {
                     let temp_value = {};
                     temp_value.title = data3.title;
                     temp_value.type = data3.type;
@@ -329,7 +333,8 @@ const func = {
                       temp_prop.hl_values.push(temp_value);
                     }
                   }
-                  if (data3.type === "link" && data3.data_tt_parent_id === data2.data_tt_id) {
+                  if (data3.type === "link" && data3.data_tt_parent_id ===
+                    data2.data_tt_id) {
                     let temp_value = {};
                     temp_value.url = data3.url;
                     temp_value.type = data3.type;
@@ -347,21 +352,30 @@ const func = {
         newtrs.push(temp_categ);
       }
     });
-    let offset = $('#root').offset().top;
-    let h = window.innerHeight - offset - 313;
-    options.height = (h < 430) ? 430 : h;
-    options.redirect = false;
-    if(window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0){
-      options.redirect = true;
+    let html = "";
+    if (newtrs.length == 0 || (newtrs.length === 1 && newtrs[0].nodes[0].properties[
+        0].all_values.length === 0)) {
+      let keyword = $("#keywords").val();
+      html =
+        '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
+        keyword + '</span></div>';
+      result.html = html;
+      return result;
+    } else {
+      let offset = $('#root').offset().top;
+      let h = window.innerHeight - offset - 313;
+      options.height = (h < 430) ? 430 : h;
+      options.redirect = false;
+      if (window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0) {
+        options.redirect = true;
+      }
+      html = $.templates(tmpl).render({
+        options: options,
+        newtrs: newtrs
+      });
+      result.html = html;
+      return result;
     }
-    let html = $.templates(tmpl).render({
-      options: options,
-      newtrs: newtrs
-    });
-
-    result.html = html;
-    return result;
-
   }
 };
 
