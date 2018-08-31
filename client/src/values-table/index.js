@@ -189,7 +189,6 @@ const func = {
               v.n = dict_enum_n[em.n];
               v.ref = row.ref;
               v.n_c = em.n_c;
-              //v.s = em.s;
               v.s = tmp_s;
             }
           }
@@ -197,12 +196,12 @@ const func = {
           //check if it contains icd-0-3 codes.
           if (em.i_c !== undefined) {
             if (arr_enum_c.indexOf(em.i_c.c) >= 0) {
+              v.gdc_d = em.gdc_d;
               v.i_c = "<b>" + em.i_c.c + "</b>";
               if (v.n == undefined) {
                 v.n = em.n;
                 v.ref = row.ref;
                 v.n_c = em.n_c;
-                //v.s = em.s;
                 v.s = tmp_s;
               }
             } else {
@@ -215,15 +214,16 @@ const func = {
               });
               if (has) {
                 v.i_c = "<b>" + em.i_c.c + "</b>";
+                v.gdc_d = em.gdc_d;
                 if (v.n == undefined) {
                   v.n = em.n;
                   v.ref = row.ref;
                   v.n_c = em.n_c;
-                  //v.s = em.s;
                   v.s = tmp_s;
                 }
               } else {
                 v.i_c = em.i_c.c;
+                v.gdc_d = em.gdc_d;
               }
             }
 
@@ -235,7 +235,6 @@ const func = {
               v.n = em.n;
               v.ref = row.ref;
               v.n_c = em.n_c;
-              //v.s = em.s;
               v.s = tmp_s;
             }
 
@@ -301,6 +300,11 @@ const func = {
 
           let check_n = [];
           row.vs.forEach(function (item){
+            //remove if it's not gdc value
+            if(item.gdc_d !== undefined && !item.gdc_d){
+              console.log(item);
+              return;
+            }
             let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
             if(item_n in temp_i_c){
                 item.term_i_c = temp_i_c[item_n];
@@ -317,18 +321,15 @@ const func = {
             }
             new_vs.push(item)
           });
-          if(new_vs.length !== 0){
-            row.vs = new_vs;
-          }
+          //add the reformated to vs values
+          row.vs = new_vs;
         }
         len += row.vs.length;
       }
-
       values.push(row);
-
     });
     let html = "";
-    if (values.length == 0) {
+    if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
       let keyword = $("#keywords").val();
       html =
         '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
