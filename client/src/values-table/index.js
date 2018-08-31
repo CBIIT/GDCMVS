@@ -302,7 +302,6 @@ const func = {
           row.vs.forEach(function (item){
             //remove if it's not gdc value
             if(item.gdc_d !== undefined && !item.gdc_d){
-              console.log(item);
               return;
             }
             let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");

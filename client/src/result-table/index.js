@@ -192,6 +192,9 @@ const func = {
           let values = source.enum;
           let tmp_trs = [];
           values.forEach(function (v) {
+            if(v.gdc_d !== undefined && !v.gdc_d){
+              return;
+            }
             count++;
             let e = {};
             e.id = count + "_" + v.n;
