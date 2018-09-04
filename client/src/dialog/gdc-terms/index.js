@@ -12,7 +12,12 @@ export default function getGDCTerms(uid, tgts){
     let icdo = false;
     let windowEl = $(window);
     let icdo_items = [];
-
+    let tmp_obj ={};
+    items.forEach(function (item) {
+      if (item.i_c !== undefined) {
+        tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: item.n};
+      }
+    });
     if(tgts !== null && tgts !== undefined){
       targets = tgts.split("#");
 
@@ -20,7 +25,27 @@ export default function getGDCTerms(uid, tgts){
           if(item.i_c !== undefined){
             icdo = true;
           }
-          icdo_items.push(item);
+          if (item.gdc_d === true) {
+            if(tmp_obj[item.n] !== undefined){
+              let tmp_data = {};
+              tmp_data.n = item.n;
+              tmp_data.i_c = tmp_obj[item.n];
+              tmp_data.n_c = item.n_c;
+              tmp_data.s = item.s;
+              tmp_data.s_r = item.s_r;
+              icdo_items.push(tmp_data);
+            } else {
+              let tmp_data = {};
+              if (item.i_c !== undefined) {
+                tmp_data.i_c = item.i_c;
+              }
+              tmp_data.n = item.n;
+              tmp_data.n_c = item.n_c;
+              tmp_data.s = item.s;
+              tmp_data.s_r = item.s_r;
+              icdo_items.push(tmp_data);
+            }
+          }
         if (targets.indexOf(item.n) > -1){
           item.e = true;
         }
@@ -30,13 +55,34 @@ export default function getGDCTerms(uid, tgts){
         if(item.i_c !== undefined){
           icdo = true;
         }
-          icdo_items.push(item);
+        if (item.gdc_d === true) {
+          if(tmp_obj[item.n] !== undefined){
+            let tmp_data = {};
+            tmp_data.n = item.n;
+            tmp_data.i_c = tmp_obj[item.n];
+            tmp_data.n_c = item.n_c;
+            tmp_data.s = item.s;
+            tmp_data.s_r = item.s_r;
+            icdo_items.push(tmp_data);
+          } else {
+            let tmp_data = {};
+            if (item.i_c !== undefined) {
+              tmp_data.i_c = item.i_c;
+            }
+            tmp_data.n = item.n;
+            tmp_data.n_c = item.n_c;
+            tmp_data.s = item.s;
+            tmp_data.s_r = item.s_r;
+            icdo_items.push(tmp_data);
+          }
+        }
       });
     }
 
     if(icdo){
       items = icdo_items;
     }
+    console.log(items);
 
     items.forEach(function(it){
       if(it.s == undefined) return;
