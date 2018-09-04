@@ -10,7 +10,7 @@ export default function gdcData(prop, item) {
     }
     let windowEl = $(window);
     let icdo = false;
-    let icdo_items = [];
+    let new_items = [];
     let tmp_obj ={};
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
@@ -32,7 +32,7 @@ export default function gdcData(prop, item) {
           tmp_data.i_c = tmp_obj[item.n];
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
-          icdo_items.push(tmp_data);
+          new_items.push(tmp_data);
         } else {
           let tmp_data = {};
           if (item.i_c !== undefined) {
@@ -41,13 +41,13 @@ export default function gdcData(prop, item) {
           tmp_data.n = item.n;
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
-          icdo_items.push(tmp_data);
+          new_items.push(tmp_data);
         }
       }
     });
-    if (icdo === true) {
-      items = icdo_items;
-    }
+
+    items = new_items;
+
     let target = item == undefined ? item : item.replace(/<b>/g, "").replace(
       /<\/b>/g, "");
     let header = $.templates(tmpl.header).render({
