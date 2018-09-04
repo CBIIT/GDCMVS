@@ -13,6 +13,9 @@ export default function getGDCTerms(uid, tgts) {
     let windowEl = $(window);
     let new_items = [];
     let tmp_obj = {};
+    if (tgts !== null && tgts !== undefined) {
+      targets = tgts.split("#");
+    }
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
@@ -38,69 +41,36 @@ export default function getGDCTerms(uid, tgts) {
         }
       }
     });
-    if (tgts !== null && tgts !== undefined) {
-      targets = tgts.split("#");
-
-      items.forEach(function (item) {
-        if (item.i_c !== undefined) {
-          icdo = true;
+    items.forEach(function (item) {
+      if (item.i_c !== undefined) {
+        icdo = true;
+      }
+      if (item.gdc_d === true) {
+        let tmp_data = {};
+        if (tmp_obj[item.n] !== undefined) {
+          tmp_data.n = item.n;
+          tmp_data.i_c = tmp_obj[item.n];
+          tmp_data.n_c = item.n_c;
+          tmp_data.s = item.s;
+          tmp_data.s_r = item.s_r;
+        } else {
+          if (item.i_c !== undefined) {
+            tmp_data.i_c = tmp_obj[item.i_c.c];
+          }
+          tmp_data.n = item.n;
+          tmp_data.n_c = item.n_c;
+          tmp_data.s = item.s;
+          tmp_data.s_r = item.s_r;
         }
-        if (item.gdc_d === true) {
-          let tmp_data = {};
-          if (tmp_obj[item.n] !== undefined) {
-            tmp_data.n = item.n;
-            tmp_data.i_c = tmp_obj[item.n];
-            tmp_data.n_c = item.n_c;
-            tmp_data.s = item.s;
-            tmp_data.s_r = item.s_r;
-          } else {
-            if (item.i_c !== undefined) {
-              tmp_data.i_c = tmp_obj[item.i_c.c];
-            }
-            tmp_data.n = item.n;
-            tmp_data.n_c = item.n_c;
-            tmp_data.s = item.s;
-            tmp_data.s_r = item.s_r;
-          }
-          if (targets.indexOf(item.n) !== -1) {
-            tmp_data.e = true;
-          }
-          if (tmp_data.i_c !== undefined && tmp_data.i_c.checker_n_c) {
-            delete tmp_data.i_c.checker_n_c;
-          }
-          new_items.push(tmp_data);
+        if (targets.indexOf(item.n) !== -1) {
+          tmp_data.e = true;
         }
-      });
-    } else {
-      items.forEach(function (item) {
-        if (item.i_c !== undefined) {
-          icdo = true;
+        if (tmp_data.i_c !== undefined && tmp_data.i_c.checker_n_c) {
+          delete tmp_data.i_c.checker_n_c;
         }
-        if (item.gdc_d === true) {
-          let tmp_data = {};
-          if (tmp_obj[item.n] !== undefined) {
-            tmp_data.n = item.n;
-            tmp_data.i_c = tmp_obj[item.n];
-            tmp_data.n_c = item.n_c;
-            tmp_data.s = item.s;
-            tmp_data.s_r = item.s_r;
-          } else {
-            if (item.i_c !== undefined) {
-              tmp_data.i_c = tmp_obj[item.i_c.c];
-            }
-            tmp_data.n = item.n;
-            tmp_data.n_c = item.n_c;
-            tmp_data.s = item.s;
-            tmp_data.s_r = item.s_r;
-          }
-          if (tmp_data.i_c !== undefined && tmp_data.i_c.checker_n_c) {
-            delete tmp_data.i_c.checker_n_c;
-          }
-          new_items.push(tmp_data);
-        }
-      });
-    }
-
+        new_items.push(tmp_data);
+      }
+    });
     items = new_items;
     items.forEach(function (it) {
       if (it.s == undefined) return;
