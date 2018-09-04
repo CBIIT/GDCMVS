@@ -14,7 +14,11 @@ export default function gdcData(prop, item) {
     let tmp_obj ={};
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
-        tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: item.n};
+        if(item.i_c.c in tmp_obj){
+          tmp_obj[item.i_c.c].n.push(item.n);
+        }else{
+          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: [item.n]};
+        }
       }
     });
     items.forEach(function (item) {
@@ -32,7 +36,7 @@ export default function gdcData(prop, item) {
         } else {
           let tmp_data = {};
           if (item.i_c !== undefined) {
-            tmp_data.i_c = item.i_c;
+            tmp_data.i_c = tmp_obj[item.i_c.c];
           }
           tmp_data.n = item.n;
           tmp_data.n_c = item.n_c;
