@@ -16,7 +16,7 @@ let tmpl = {
       +'{{if icdo !== false}}'
       +'<div class="table__container">'
         +'<div class="table__thead row">'
-          +'<div class="table__th col-xs-4">GDC Values</div>'
+          +'<div class="table__th col-xs-4">GDC Term</div>'
           +'<div class="table__th col-xs-3">ICD-O-3 Code</div>'
           +'<div class="table__th col-xs-5">ICD-O-3 Term</div>'
         +'</div>'
