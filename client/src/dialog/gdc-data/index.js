@@ -83,7 +83,7 @@ export default function gdcData(prop, item) {
             '7.5em').html(header);
         } else {
           $(this).prev('.ui-dialog-titlebar').css('padding-top',
-            '3.5em').html(header);
+            '3.8em').html(header);
         }
 
         var target = $(this).parent();
