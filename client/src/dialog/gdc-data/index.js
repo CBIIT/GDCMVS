@@ -13,8 +13,8 @@ export default function gdcData(prop, item) {
     let icdo_items = [];
     let tmp_obj ={};
     items.forEach(function (item) {
-      if (item.gdc_d === false && item.i_c !== undefined) {
-        tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: item.n}
+      if (item.i_c !== undefined) {
+        tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: item.n};
       }
     });
     items.forEach(function (item) {
@@ -31,6 +31,9 @@ export default function gdcData(prop, item) {
           icdo_items.push(tmp_data);
         } else {
           let tmp_data = {};
+          if (item.i_c !== undefined) {
+            tmp_data.i_c = item.i_c;
+          }
           tmp_data.n = item.n;
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
