@@ -13,7 +13,7 @@ export default function gdcData(prop, item) {
     let icdo_items = [];
     let tmp_obj ={};
     items.forEach(function (item) {
-      if (item.gdc_d === false && item.i_c) {
+      if (item.gdc_d === false && item.i_c !== undefined) {
         tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: item.n}
       }
     });
@@ -21,15 +21,15 @@ export default function gdcData(prop, item) {
       if (item.i_c !== undefined) {
         icdo = true;
       }
-      if (item.gdc_d) {
-        if(tmp_obj[item.n]){
+      if (item.gdc_d === true) {
+        if(tmp_obj[item.n] !== undefined){
           let tmp_data = {};
           tmp_data.n = item.n;
           tmp_data.i_c = tmp_obj[item.n];
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           icdo_items.push(tmp_data);
-        }else{
+        } else {
           let tmp_data = {};
           tmp_data.n = item.n;
           tmp_data.n_c = item.n_c;
@@ -38,7 +38,7 @@ export default function gdcData(prop, item) {
         }
       }
     });
-    if (icdo) {
+    if (icdo === true) {
       items = icdo_items;
     }
     let target = item == undefined ? item : item.replace(/<b>/g, "").replace(
