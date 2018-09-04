@@ -23,7 +23,12 @@ const func = {
         let icdo = false;
         let icdo_items = [];
         items.forEach(function(item){
-          icdo = true;
+          if (item.i_c !== undefined) {
+            icdo = true;
+          }
+          if(item.gdc_d === false){
+            return;
+          }
           icdo_items.push(item);
         });
 
