@@ -82,7 +82,6 @@ export default function getGDCTerms(uid, tgts){
     if(icdo){
       items = icdo_items;
     }
-    console.log(items);
 
     items.forEach(function(it){
       if(it.s == undefined) return;
