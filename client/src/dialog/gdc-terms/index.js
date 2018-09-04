@@ -11,14 +11,14 @@ export default function getGDCTerms(uid, tgts){
     let targets = null;
     let icdo = false;
     let windowEl = $(window);
-    let icdo_items = [];
+    let new_items = [];
     let tmp_obj ={};
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: item.n};
       }
     });
-    if(tgts !== null && tgts !== undefined){
+    if (tgts !== null && tgts !== undefined) {
       targets = tgts.split("#");
 
       items.forEach(function(item){
@@ -26,16 +26,14 @@ export default function getGDCTerms(uid, tgts){
             icdo = true;
           }
           if (item.gdc_d === true) {
+            let tmp_data = {};
             if(tmp_obj[item.n] !== undefined){
-              let tmp_data = {};
               tmp_data.n = item.n;
               tmp_data.i_c = tmp_obj[item.n];
               tmp_data.n_c = item.n_c;
               tmp_data.s = item.s;
               tmp_data.s_r = item.s_r;
-              icdo_items.push(tmp_data);
             } else {
-              let tmp_data = {};
               if (item.i_c !== undefined) {
                 tmp_data.i_c = item.i_c;
               }
@@ -43,29 +41,28 @@ export default function getGDCTerms(uid, tgts){
               tmp_data.n_c = item.n_c;
               tmp_data.s = item.s;
               tmp_data.s_r = item.s_r;
-              icdo_items.push(tmp_data);
             }
+            if (targets.indexOf(item.n) !== -1){
+              tmp_data.e = true;
+              console.log(tmp_data);
+            }
+            new_items.push(tmp_data);
           }
-        if (targets.indexOf(item.n) > -1){
-          item.e = true;
-        }
       });
-    } else{
+    } else {
       items.forEach(function(item){
-        if(item.i_c !== undefined){
+        if (item.i_c !== undefined) {
           icdo = true;
         }
         if (item.gdc_d === true) {
+          let tmp_data = {};
           if(tmp_obj[item.n] !== undefined){
-            let tmp_data = {};
             tmp_data.n = item.n;
             tmp_data.i_c = tmp_obj[item.n];
             tmp_data.n_c = item.n_c;
             tmp_data.s = item.s;
             tmp_data.s_r = item.s_r;
-            icdo_items.push(tmp_data);
           } else {
-            let tmp_data = {};
             if (item.i_c !== undefined) {
               tmp_data.i_c = item.i_c;
             }
@@ -73,15 +70,13 @@ export default function getGDCTerms(uid, tgts){
             tmp_data.n_c = item.n_c;
             tmp_data.s = item.s;
             tmp_data.s_r = item.s_r;
-            icdo_items.push(tmp_data);
           }
+          new_items.push(tmp_data);
         }
       });
     }
 
-    if(icdo){
-      items = icdo_items;
-    }
+    items = new_items;
 
     items.forEach(function(it){
       if(it.s == undefined) return;
@@ -102,9 +97,10 @@ export default function getGDCTerms(uid, tgts){
       it.s_r = tmp_s;
     });
 
+    console.log(items);
+
     let header = $.templates(tmpl.header).render({targets: targets, icdo: icdo, items_length: items.length })
     let html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, icdo: icdo, items: items });
-
     let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
 
     //display result in a table
@@ -115,25 +111,20 @@ export default function getGDCTerms(uid, tgts){
       position: { my: "center top+"+tp, at: "center top", of:$('#docs-container')},
       width: 900,
       height: 'auto',
-      minWidth: 700,
+      minWidth: 900,
       maxWidth: 1000,
       minHeight: 300,
       maxHeight: 600,
       open: function() {
         //add new custom header
         $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
-
         var target = $(this).parent();
-
-
         if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
             target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
         }
-
         $('#close_gdc_terms_data').bind('click', function(){
           $("#gdc_terms_data").dialog('close');
         });
-
         $('#gdc-data-invariant').bind('click', function(){
           $("#gdc-syn-data-list").find('div[name="syn_area"]').each(function(){
             let rp = $(this).html();
