@@ -71,9 +71,9 @@ export default function gdcData(prop, item) {
         of: $('#docs-container')
       },
       width: 600,
-      height: 450,
-      minWidth: 420,
-      maxWidth: 800,
+      height: 550,
+      minWidth: 540,
+      maxWidth: 900,
       minHeight: 350,
       maxHeight: 650,
       open: function () {
