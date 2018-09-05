@@ -8,7 +8,7 @@ export default function getGDCTerms(uid, tgts) {
       $('#gdc_terms_data').remove();
     }
 
-    let targets = null;
+    let targets = [];
     let icdo = false;
     let windowEl = $(window);
     let new_items = [];
@@ -20,11 +20,13 @@ export default function getGDCTerms(uid, tgts) {
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
           if (tmp_obj[item.i_c.c].checker_n_c.indexOf(item.n_c) == -1) {
-            tmp_obj[item.i_c.c].n_syn.push({
-              n_c: item.n_c,
-              s: item.s
-            });
-            tmp_obj[item.i_c.c].checker_n_c.push(item.n_c);
+            if(item.n_c !== "" && item.s.length !== 0) {
+              tmp_obj[item.i_c.c].n_syn.push({
+                n_c: item.n_c,
+                s: item.s
+              });
+              tmp_obj[item.i_c.c].checker_n_c.push(item.n_c);
+            }
           }
           tmp_obj[item.i_c.c].n.push(item.n);
         } else {
@@ -71,7 +73,33 @@ export default function getGDCTerms(uid, tgts) {
         new_items.push(tmp_data);
       }
     });
+
     items = new_items;
+
+
+    //new synonyms list for i_c without duplicates
+    items.forEach(function (item) {
+      if (item.i_c == undefined) return;
+      item.i_c.n_syn.forEach( function (n_syn){
+        let cache = {};
+        let tmp_s = [];
+        n_syn.s.forEach(function (s) {
+          let lc = s.trim().toLowerCase();
+          if (!(lc in cache)) {
+            cache[lc] = [];
+          }
+          cache[lc].push(s);
+        });
+        for (let idx in cache) {
+          //find the term with the first character capitalized
+          let word = findWord(cache[idx]);
+          tmp_s.push(word);
+        }
+        n_syn.s_r = tmp_s;
+      });
+    });
+
+    //new synonyms list without duplicates
     items.forEach(function (it) {
       if (it.s == undefined) return;
       let cache = {};
