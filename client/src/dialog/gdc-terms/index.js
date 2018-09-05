@@ -16,6 +16,27 @@ export default function getGDCTerms(uid, tgts) {
     if (tgts !== null && tgts !== undefined) {
       targets = tgts.split("#");
     }
+
+    //new synonyms list without duplicates
+    items.forEach(function (it) {
+      if (it.s == undefined) return;
+      let cache = {};
+      let tmp_s = [];
+      it.s.forEach(function (s) {
+        let lc = s.trim().toLowerCase();
+        if (!(lc in cache)) {
+          cache[lc] = [];
+        }
+        cache[lc].push(s);
+      });
+      for (let idx in cache) {
+        //find the term with the first character capitalized
+        let word = findWord(cache[idx]);
+        tmp_s.push(word);
+      }
+      it.s_r = tmp_s;
+    });
+
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
@@ -23,7 +44,8 @@ export default function getGDCTerms(uid, tgts) {
             if(item.n_c !== "" && item.s.length !== 0) {
               tmp_obj[item.i_c.c].n_syn.push({
                 n_c: item.n_c,
-                s: item.s
+                s: item.s,
+                s_r: item.s_r
               });
               tmp_obj[item.i_c.c].checker_n_c.push(item.n_c);
             }
@@ -36,7 +58,8 @@ export default function getGDCTerms(uid, tgts) {
             n: [item.n],
             n_syn: [{
               n_c: item.n_c,
-              s: item.s
+              s: item.s,
+              s_r: item.s_r
             }],
             checker_n_c: [item.n_c]
           };
@@ -76,48 +99,6 @@ export default function getGDCTerms(uid, tgts) {
 
     items = new_items;
 
-
-    //new synonyms list for i_c without duplicates
-    items.forEach(function (item) {
-      if (item.i_c == undefined) return;
-      item.i_c.n_syn.forEach( function (n_syn){
-        let cache = {};
-        let tmp_s = [];
-        n_syn.s.forEach(function (s) {
-          let lc = s.trim().toLowerCase();
-          if (!(lc in cache)) {
-            cache[lc] = [];
-          }
-          cache[lc].push(s);
-        });
-        for (let idx in cache) {
-          //find the term with the first character capitalized
-          let word = findWord(cache[idx]);
-          tmp_s.push(word);
-        }
-        n_syn.s_r = tmp_s;
-      });
-    });
-
-    //new synonyms list without duplicates
-    items.forEach(function (it) {
-      if (it.s == undefined) return;
-      let cache = {};
-      let tmp_s = [];
-      it.s.forEach(function (s) {
-        let lc = s.trim().toLowerCase();
-        if (!(lc in cache)) {
-          cache[lc] = [];
-        }
-        cache[lc].push(s);
-      });
-      for (let idx in cache) {
-        //find the term with the first character capitalized
-        let word = findWord(cache[idx]);
-        tmp_s.push(word);
-      }
-      it.s_r = tmp_s;
-    });
     let header = $.templates(tmpl.header).render({
       targets: targets,
       icdo: icdo,
