@@ -7,6 +7,7 @@ var fs = require('fs');
 var path = require('path');
 var yaml = require('yamljs');
 const excel = require('node-excel-export');
+var _ = require('lodash');
 
 var export_ICDO3 = function (req, res) {
 	let heading = [
@@ -1135,6 +1136,83 @@ var export_difference = function (req, res) {
 	res.send(report);
 
 };
+
+function preProcess(searchable_nodes, data){
+	// Remove deprecated properties and nodes
+	for(let key in data){
+		if(searchable_nodes.indexOf(key) === -1){
+			delete data[key];
+		}
+		else if(searchable_nodes.indexOf(key) !== -1 && data[key].deprecated){
+			let deprecated_p = data[key].deprecated;
+			deprecated_p.forEach(function (d_p){
+				delete data[key].properties[d_p];
+			});
+		}
+	}
+	// get data from $ref: "analyte.yaml#/properties/analyte_type"
+	for(let key in data){
+		if(data[key].properties){
+			let p = data[key].properties;
+			for(let key in p){
+				if(key !== '$ref'){
+					if(p[key].$ref && p[key].$ref.indexOf("_terms.yaml") === -1 && p[key].$ref.indexOf("_definitions.yaml") === -1){
+						let ref = p[key].$ref;
+						let node = ref.split('#/')[0].replace('.yaml','');
+						let remaining = ref.split('#/')[1];
+						let type = remaining.split('/')[0];
+						let prop = remaining.split('/')[1];
+						if(data[node] && data[node][type] && data[node][type][prop]){
+							p[key] = data[node][type][prop];
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// remove deprecated_enum from enums
+	for(let key in data){
+		if(data[key].properties){
+			let p = data[key].properties;
+			for(let key in p){
+				if(p[key].deprecated_enum && p[key].enum){
+					p[key].new_enum = _.differenceWith(p[key].enum, p[key].deprecated_enum, _.isEqual);
+				}
+			}
+		}
+	}
+	return data;
+}
+
+var exportDifference = function (req, res) {
+	let merges = [];
+	let data = [];
+	let folderPath = path.join(__dirname, '../..', 'data');
+	let folderPath_old = path.join(__dirname, '../..', 'data');
+	let old_data = {};
+	let new_data = {};
+	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
+		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"];
+	fs.readdirSync(folderPath).forEach(file => {
+		if(file.indexOf('_') !== 0){
+			new_data[file.replace('.yaml','')] = yaml.load(folderPath+'/'+file);
+		}
+	});
+	fs.readdirSync(folderPath_old).forEach(file => {
+		if(file.indexOf('_') !== 0){
+			old_data[file.replace('.yaml','')] = yaml.load(folderPath_old+'/'+file);
+		}
+	});
+
+	new_data = preProcess(searchable_nodes, new_data);
+	old_data = preProcess(searchable_nodes, old_data);
+	console.log(new_data);
+	console.log(old_data);
+	res.send('Success!!!');
+}
+
 var export_common = function (req, res) {
 	let heading = [
 		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'Term', 'NCIt Code']
@@ -1457,6 +1535,7 @@ module.exports = {
     export_ICDO3,
     export2Excel,
     exportAllValues,
-    export_difference,
+	export_difference,
+	exportDifference,
     export_common
 }

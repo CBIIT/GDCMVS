@@ -23,6 +23,7 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // router.get('/export_all', report.export2Excel);
 // router.get('/exportAllValues', report.exportAllValues);
 // router.get('/export', report.export_difference);
+//router.get('/exportDifference', report.exportDifference);
 // router.get('/export_common', report.export_common)
 
 //property based api
