@@ -23,9 +23,6 @@ export default function render(keyword, option, items){
       trsHtml.active = true;
     }
     if(trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0){
-      trsHtml.active = false;
-      psHtml.active = false;
-      vsHtml.active = false;
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">'+keyword+'</span></div>';
     }else{
       html = tabs(trsHtml, psHtml, vsHtml, keyword);
