@@ -67,6 +67,18 @@ export default function gdcData(prop, item) {
     //display result in a table
     $(document.body).append(html);
 
+    let dialog_width = {
+      width: 450,
+      minWidth: 350,
+      maxWidth: 700
+    }
+
+    if(icdo){
+      dialog_width.width = 700;
+      dialog_width.minWidth = 600;
+      dialog_width.maxWidth = 900;
+    }
+
     $('#gdc_data').dialog({
       modal: false,
       position: {
@@ -74,10 +86,10 @@ export default function gdcData(prop, item) {
         at: 'center top',
         of: $('#docs-container')
       },
-      width: 600,
+      width: dialog_width.width,
+      minWidth: dialog_width.minWidth,
+      maxWidth: dialog_width.maxWidth,
       height: 550,
-      minWidth: 540,
-      maxWidth: 900,
       minHeight: 350,
       maxHeight: 650,
       open: function () {
