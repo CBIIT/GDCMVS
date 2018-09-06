@@ -22,16 +22,15 @@ module.exports = function(app){
 		}
 	});
 
-	app.use('/search', require('./server/service/search'));
+	app.use('/search/', require('./server/service/search'));
 
 	//put all the routers here
-	app.use('/', function(req, res){
-		res.render(app.get('views') + '/index.html');
-		//res.sendFile(app.get('views') + '/index.html');
+	app.get('/', function(req, res){
+		res.status(200).render(app.get('views') + '/index.html');
 	});
 
 	// All other routes should redirect to error page
-  app.route('*').get(function(req, res) {
-    res.sendFile(app.get('views') + '/404.html');
+  app.get('*', function(req, res) {
+		res.status(404).sendFile(app.get('views') + '/404.html');
   });
 };
