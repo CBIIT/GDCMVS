@@ -7,11 +7,11 @@ import shared from './shared'
 export default function render(keyword, option, items){
   let html = "";
   if(items.length !== 0){
-  	let trsHtml = trs.render(items);
+    let trsHtml = trs.render(items);
     trsHtml.active = false;
-  	let psHtml = ps.render(items);
+    let psHtml = ps.render(items);
     psHtml.active = false;
-  	let vsHtml = vs.render(items);
+    let vsHtml = vs.render(items);
     vsHtml.active = false;
     if(option.activeTab == 0){
       vsHtml.active = true;
@@ -22,7 +22,14 @@ export default function render(keyword, option, items){
     else{
       trsHtml.active = true;
     }
-  	html = tabs(trsHtml, psHtml, vsHtml, keyword);
+    if(trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0){
+      trsHtml.active = false;
+      psHtml.active = false;
+      vsHtml.active = false;
+      html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">'+keyword+'</span></div>';
+    }else{
+      html = tabs(trsHtml, psHtml, vsHtml, keyword);
+    }
   } else if (option.error == true) {
     html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
   } else {
