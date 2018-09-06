@@ -31,6 +31,6 @@ module.exports = function(app){
 
 	// All other routes should redirect to error page
   app.get('*', function(req, res) {
-		res.status(400).sendFile(app.get('views') + '/404.html');
+		res.status(404).sendFile(app.get('views') + '/404.html');
   });
 };
