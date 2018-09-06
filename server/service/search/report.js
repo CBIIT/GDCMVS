@@ -1137,32 +1137,31 @@ var export_difference = function (req, res) {
 
 };
 
-function preProcess(searchable_nodes, data){
+function preProcess(searchable_nodes, data) {
 	// Remove deprecated properties and nodes
-	for(let key in data){
-		if(searchable_nodes.indexOf(key) === -1){
+	for (let key in data) {
+		if (searchable_nodes.indexOf(key) === -1) {
 			delete data[key];
-		}
-		else if(searchable_nodes.indexOf(key) !== -1 && data[key].deprecated){
+		} else if (searchable_nodes.indexOf(key) !== -1 && data[key].deprecated) {
 			let deprecated_p = data[key].deprecated;
-			deprecated_p.forEach(function (d_p){
+			deprecated_p.forEach(function (d_p) {
 				delete data[key].properties[d_p];
 			});
 		}
 	}
 	// get data from $ref: "analyte.yaml#/properties/analyte_type"
-	for(let key in data){
-		if(data[key].properties){
+	for (let key in data) {
+		if (data[key].properties) {
 			let p = data[key].properties;
-			for(let key in p){
-				if(key !== '$ref'){
-					if(p[key].$ref && p[key].$ref.indexOf("_terms.yaml") === -1 && p[key].$ref.indexOf("_definitions.yaml") === -1){
+			for (let key in p) {
+				if (key !== '$ref') {
+					if (p[key].$ref && p[key].$ref.indexOf("_terms.yaml") === -1 && p[key].$ref.indexOf("_definitions.yaml") === -1) {
 						let ref = p[key].$ref;
-						let node = ref.split('#/')[0].replace('.yaml','');
+						let node = ref.split('#/')[0].replace('.yaml', '');
 						let remaining = ref.split('#/')[1];
 						let type = remaining.split('/')[0];
 						let prop = remaining.split('/')[1];
-						if(data[node] && data[node][type] && data[node][type][prop]){
+						if (data[node] && data[node][type] && data[node][type][prop]) {
 							p[key] = data[node][type][prop];
 						}
 					}
@@ -1172,11 +1171,11 @@ function preProcess(searchable_nodes, data){
 	}
 
 	// remove deprecated_enum from enums
-	for(let key in data){
-		if(data[key].properties){
+	for (let key in data) {
+		if (data[key].properties) {
 			let p = data[key].properties;
-			for(let key in p){
-				if(p[key].deprecated_enum && p[key].enum){
+			for (let key in p) {
+				if (p[key].deprecated_enum && p[key].enum) {
 					p[key].new_enum = _.differenceWith(p[key].enum, p[key].deprecated_enum, _.isEqual);
 				}
 			}
@@ -1194,23 +1193,269 @@ var exportDifference = function (req, res) {
 	let new_data = {};
 	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
 		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"];
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	];
 	fs.readdirSync(folderPath).forEach(file => {
-		if(file.indexOf('_') !== 0){
-			new_data[file.replace('.yaml','')] = yaml.load(folderPath+'/'+file);
+		if (file.indexOf('_') !== 0) {
+			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
 		}
 	});
 	fs.readdirSync(folderPath_old).forEach(file => {
-		if(file.indexOf('_') !== 0){
-			old_data[file.replace('.yaml','')] = yaml.load(folderPath_old+'/'+file);
+		if (file.indexOf('_') !== 0) {
+			old_data[file.replace('.yaml', '')] = yaml.load(folderPath_old + '/' + file);
 		}
 	});
 
 	new_data = preProcess(searchable_nodes, new_data);
 	old_data = preProcess(searchable_nodes, old_data);
-	console.log(new_data);
-	console.log(old_data);
-	res.send('Success!!!');
+
+	//checking node in new data
+	for (let key in new_data) {
+		// If this node doesn't exists in old data
+		if (!old_data[key]) {
+			console.log(key + " Doesn't exists in new Data");
+			let new_p_array = new_data[key].properties;
+			for (let key_p in new_p_array) {
+				let category = new_data[key].category;
+				let node = new_data[key].id;
+				let property = key_p;
+				if (new_p_array[key_p].enum && !new_p_array[key_p].deprecated_enum) {
+					//if it doesn't have deprecated values
+					let enums = new_p_array[key_p].enum;
+					enums.forEach(function (em) {
+						let temp_data = {};
+						temp_data.c = category;
+						temp_data.n = node;
+						temp_data.p = property;
+						temp_data.value_old = "no match";
+						temp_data.value_new = em;
+						data.push(temp_data);
+					});
+				} else if (new_p_array[key_p].deprecated_enum && new_p_array[key_p].new_enum) {
+					// if it has deprecated values
+					let enums = new_p_array[key_p].new_enum;
+					enums.forEach(function (em) {
+						let temp_data = {};
+						temp_data.c = category;
+						temp_data.n = node;
+						temp_data.p = property;
+						temp_data.value_old = "no match";
+						temp_data.value_new = em;
+						data.push(temp_data);
+					});
+				}
+			}
+		} else if (new_data[key] && new_data[key]) {
+			// node exists in both old and new data
+			let new_p_array = new_data[key].properties;
+			let old_p_array = old_data[key].properties;
+
+			//checking properties in new data
+			for (let key_p in new_p_array) {
+				let category = new_data[key].category;
+				let node = new_data[key].id;
+				let property = key_p;
+
+				if (!old_p_array[property]) {
+					// If this property doesn't exists in old data
+					console.log("New property found!");
+					if (new_p_array[property].enum && !new_p_array[property].deprecated_enum) {
+						//if it doesn't have deprecated values
+						let enums = new_p_array[property].enum;
+						enums.forEach(function (em) {
+							let temp_data = {};
+							temp_data.c = category;
+							temp_data.n = node;
+							temp_data.p = property;
+							temp_data.value_old = "no match";
+							temp_data.value_new = em;
+							data.push(temp_data);
+						});
+					} else if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
+						// if it has deprecated values
+						let enums = new_p_array[property].new_enum;
+						enums.forEach(function (em) {
+							let temp_data = {};
+							temp_data.c = category;
+							temp_data.n = node;
+							temp_data.p = property;
+							temp_data.value_old = "no match";
+							temp_data.value_new = em;
+							data.push(temp_data);
+						});
+					}
+				} else if (old_p_array[property]) {
+					//if this property exists in both old and new data.
+					if (new_p_array[property].enum && !new_p_array[property].deprecated_enum) {
+						//if it doesn't have deprecated values
+						let old_enums_array;
+						if (old_p_array[property].deprecated_enum && old_p_array[property].new_enum) {
+							old_enums_array = old_p_array[property].new_enum;
+						} else {
+							old_enums_array = old_p_array[property].enum;
+						}
+						let new_enums_array = new_p_array[property].enum;
+						// Loop through new values and check if they exists in old values
+						new_enums_array.forEach(function (em) {
+							let temp_data = {};
+							temp_data.c = category;
+							temp_data.n = node;
+							temp_data.p = property;
+							//check if this value exists in old data
+							if (old_enums_array.indexOf(em) !== -1) {
+								temp_data.value_old = em;
+							} else {
+								temp_data.value_old = "no match";
+							}
+							temp_data.value_new = em;
+							data.push(temp_data);
+						});
+					}
+					if (old_p_array[property].enum && !old_p_array[property].deprecated_enum) {
+						// Loop through old values and check if it exists in new value
+						let new_enums_array;
+						if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
+							new_enums_array = new_p_array[property].new_enum;
+						} else {
+							new_enums_array = new_p_array[property].enum;
+						}
+						let old_enums_array = old_p_array[property].enum;
+						old_enums_array.forEach(function (em) {
+							if (new_enums_array.indexOf(em) === -1) {
+								let temp_data = {};
+								temp_data.c = category;
+								temp_data.n = node;
+								temp_data.p = property;
+								temp_data.value_old = em;
+								temp_data.value_new = "no match";;
+								data.push(temp_data);
+							}
+						});
+					}
+					if (old_p_array[property].deprecated_enum && old_p_array[property].new_enum) {
+						// Loop through old values and check if it exists in new value
+						let new_enums_array;
+						if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
+							new_enums_array = new_p_array[property].new_enum;
+						} else {
+							new_enums_array = new_p_array[property].enum;
+						}
+						let old_enums_array = old_p_array[property].new_enum;
+						old_enums_array.forEach(function (em) {
+							if (new_enums_array.indexOf(em) === -1) {
+								let temp_data = {};
+								temp_data.c = category;
+								temp_data.n = node;
+								temp_data.p = property;
+								temp_data.value_old = em;
+								temp_data.value_new = "no match";;
+								data.push(temp_data);
+							}
+						});
+					}
+					if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
+						// if it has deprecated values
+						let old_enums_array;
+						if (old_p_array[property].deprecated_enum && old_p_array[property].new_enum) {
+							old_enums_array = old_p_array[property].new_enum;
+						} else {
+							old_enums_array = old_p_array[property].enum;
+						}
+						let new_enums_array = new_p_array[property].new_enum;
+						new_enums_array.forEach(function (em) {
+							let temp_data = {};
+							temp_data.c = category;
+							temp_data.n = node;
+							temp_data.p = property;
+							//check if this value exists in old data
+							if (old_enums_array.indexOf(em) !== -1) {
+								temp_data.value_old = em;
+							} else {
+								temp_data.value_old = "no match";
+							}
+							temp_data.value_new = em;
+							data.push(temp_data);
+						});
+					}
+				}
+			}
+			// checking properties in old data
+			for (let key_p in old_p_array) {
+				let category = new_data[key].category;
+				let node = new_data[key].id;
+				let property = key_p;
+				if (!new_p_array[property]) {
+					// if this property doesn't exist in new data
+					console.log("Property deprecated: - " + property);
+					if (old_p_array[key_p].enum && !old_p_array[key_p].deprecated_enum) {
+						//if it doesn't have deprecated values
+						let enums = old_p_array[key_p].enum;
+						enums.forEach(function (em) {
+							let temp_data = {};
+							temp_data.c = category;
+							temp_data.n = node;
+							temp_data.p = property;
+							temp_data.value_old = em;
+							temp_data.value_new = "no match";
+							data.push(temp_data);
+						});
+					} else if (old_p_array[key_p].deprecated_enum && old_p_array[key_p].new_enum) {
+						// if it has deprecated values
+						let enums = old_p_array[key_p].new_enum;
+						enums.forEach(function (em) {
+							let temp_data = {};
+							temp_data.c = category;
+							temp_data.n = node;
+							temp_data.p = property;
+							temp_data.value_old = em;
+							temp_data.value_new = "no match";
+							data.push(temp_data);
+						});
+					}
+				}
+			}
+		}
+
+
+	}
+	let heading = [
+		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value']
+	];
+	let specification = {
+		c: {
+			width: 200,
+			displayName: 'Category'
+		},
+		n: {
+			width: 200,
+			displayName: 'Node'
+		},
+		p: {
+			width: 200,
+			displayName: 'Property'
+		},
+		value_old: {
+			width: 200,
+			displayName: 'Old GDC Dcitonary Value'
+		},
+		value_new: {
+			width: 200,
+			displayName: 'New GDC Dcitonary Value'
+		}
+	};
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				heading: heading,
+				name: 'Report', // <- Specify sheet name (optional) 
+				specification: specification, // <- Report specification 
+				data: data // <-- Report data 
+			}
+		]
+	);
+	res.attachment('Delta.xlsx');
+	res.send(report);
+	//res.send('Success!!!');
 }
 
 var export_common = function (req, res) {
@@ -1532,10 +1777,10 @@ var export_common = function (req, res) {
 };
 
 module.exports = {
-    export_ICDO3,
-    export2Excel,
-    exportAllValues,
+	export_ICDO3,
+	export2Excel,
+	exportAllValues,
 	export_difference,
 	exportDifference,
-    export_common
+	export_common
 }
