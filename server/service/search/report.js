@@ -853,6 +853,10 @@ var exportAllValues = function (req, res) {
 	let heading = [
 		['Category', 'Node', 'Property', 'Value']
 	];
+	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
+		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	];
 	let specification = {
 		c: {
 			width: 200
@@ -867,28 +871,45 @@ var exportAllValues = function (req, res) {
 			width: 200
 		}
 	};
+	let new_data = {};
 	let folderPath = path.join(__dirname, '../..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
-		if (file.indexOf("_") !== 0) {
-			let tmp_new = yaml.load(folderPath + '/' + file);
-			let properties = tmp_new.properties;
+		if (file.indexOf('_') !== 0) {
+			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+		}
+	});
+	new_data = preProcess(searchable_nodes, new_data);
+	for (let key in new_data){
+		let category = new_data[key].category;
+		let node = new_data[key].id;
+		if(new_data[key].properties){
+			let properties = new_data[key].properties
 			for (let property in properties) {
-				if (property.indexOf("$") !== 0) {
-					if (properties[property].enum) {
-						let values = properties[property].enum;
-						values.forEach(function (value) {
-							let temp_data = {};
-							temp_data.c = tmp_new.category;
-							temp_data.n = tmp_new.id;
-							temp_data.p = property;
-							temp_data.v = value;
-							data.push(temp_data);
-						});
-					}
+				if(properties[property].enum && !properties[property].deprecated_enum){
+					let enums = properties[property].enum;
+					enums.forEach( function(em){
+						let tmp_data = {};
+						tmp_data.c = category;
+						tmp_data.n = node;
+						tmp_data.p = property;
+						tmp_data.v = em;
+						data.push(tmp_data);
+					})
+				}else if(properties[property].deprecated_enum && properties[property].new_enum){
+					let enums = properties[property].new_enum;
+					enums.forEach( function(em){
+						let tmp_data = {};
+						tmp_data.c = category;
+						tmp_data.n = node;
+						tmp_data.p = property;
+						tmp_data.v = em;
+						data.push(tmp_data);
+					})
 				}
 			}
 		}
-	});
+	}
+
 	const report = excel.buildExport(
 		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
 			{
@@ -900,9 +921,7 @@ var exportAllValues = function (req, res) {
 			}
 		]
 	);
-
-	// You can then return this straight 
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.attachment('All_Values.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
 
 };
@@ -1208,7 +1227,6 @@ var exportDifference = function (req, res) {
 
 	new_data = preProcess(searchable_nodes, new_data);
 	old_data = preProcess(searchable_nodes, old_data);
-
 	//checking node in new data
 	for (let key in new_data) {
 		// If this node doesn't exists in old data
