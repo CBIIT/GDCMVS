@@ -310,6 +310,21 @@ a:hover, a:focus {
   background-color: #ffffff;
   border: 1px solid #cccccc;
 }
+.alert__error {
+  position: fixed;
+  top: 10em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #cc426c;
+  font-weight: bold;
+  padding: 1rem 1rem;
+  border: 1px solid #cc426c !important;
+  border-left: solid 5px #cc426c!important;
+  background-color: #fff6f9 !important;
+  z-index: 999;
+  border-radius: initial;
+  animation-duration: 4s;
+}
 
 @import url(./dialog/style.css);
 @import url(./result-table/style.css);
