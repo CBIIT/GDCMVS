@@ -70,7 +70,7 @@ var loadData = function (ids, next) {
 								//save to local
 								let str = {};
 								str[uid] = data;
-								fs.appendFileSync("./cdeData.js", JSON.stringify(str), function (err) {
+								fs.appendFileSync("./server/data_files/cdeData.js", JSON.stringify(str), function (err) {
 									if (err) {
 										return logger.error(err);
 									}
@@ -125,7 +125,7 @@ var loadDataType = function (ids) {
 								let str = {};
 								str[uid] = dataType;
 								logger.debug("save to file:" + uid);
-								fs.appendFile("./cdeDataType.js", JSON.stringify(str), function (err) {
+								fs.appendFile("./server/data_files/cdeDataType.js", JSON.stringify(str), function (err) {
 									if (err) {
 										return logger.error(err);
 									}
@@ -152,14 +152,14 @@ var loadDataType = function (ids) {
 var loadSynonyms = function (next) {
 	let ncitids = [];
 	//load cde ncit codes
-	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	cdeData = cdeData.replace(/}{/g, ",");
 	let cde = JSON.parse(cdeData);
 	//load concept codes
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let icdo = JSON.parse(gdcValues);
 	for (let c in cde) {
 		let arr = cde[c];
@@ -210,10 +210,10 @@ var loadSynonyms = function (next) {
 		}
 	});
 	//get data
-	fs.truncate('./synonyms.js', 0, function(){
+	fs.truncate('./server/data_files/synonyms.js', 0, function(){
 		console.log('synonyms.js truncated')
 	});
-	fs.truncate('./synonyms_ncit.js', 0, function(){
+	fs.truncate('./server/data_files/synonyms_ncit.js', 0, function(){
 		console.log('synonyms_ncit.js truncated')
 	});
 	synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
@@ -227,14 +227,14 @@ var loadSynonyms = function (next) {
 var loadSynonymsCtcae = function (next) {
 	let ncitids = [];
 	//load cde ncit codes
-	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	cdeData = cdeData.replace(/}{/g, ",");
 	let cde = JSON.parse(cdeData);
 	//load concept codes
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let icdo = JSON.parse(gdcValues);
 	for (let c in cde) {
 		let arr = cde[c];
@@ -285,10 +285,10 @@ var loadSynonymsCtcae = function (next) {
 		}
 	});
 	//get data
-	fs.truncate('./synonyms.js', 0, function(){
+	fs.truncate('./server/data_files/synonyms.js', 0, function(){
 		console.log('synonyms.js truncated')
 	});
-	fs.truncate('./synonyms_ctcae.js', 0, function(){
+	fs.truncate('./server/data_files/synonyms_ctcae.js', 0, function(){
 		console.log('synonyms_ctcae.js truncated')
 	});
 	// synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
@@ -301,11 +301,11 @@ var loadSynonymsCtcae = function (next) {
 
 var loadSynonyms_continue = function () {
 	let ncitids = [];
-	let content_2 = fs.readFileSync("./synonyms.js").toString();
+	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
 	content_2 = content_2.replace(/}{/g, ",");
 	let synonyms = JSON.parse(content_2);
 	//load concept codes
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let cc = JSON.parse(conceptCode);
 	for (let c in cc) {
 		let vs = cc[c];
@@ -365,7 +365,7 @@ var synchronziedLoadSynonmysfromNCIT = function (ncitids, idx, next) {
 					});
 					let str = {};
 					str[ncitids[idx]] = syn;
-					fs.appendFile("./synonyms_ncit.js", JSON.stringify(str), function(err) {
+					fs.appendFile("./server/data_files/synonyms_ncit.js", JSON.stringify(str), function(err) {
 					    if(err) {
 					        return logger.error(err);
 					    }
@@ -398,7 +398,7 @@ var synchronziedLoadSynonmysfromCTCAE = function (ids, idx, next) {
 		return;
 	}
 	logger.debug("searching synonyms using CTCAE code (#" + idx + ") total = " + ids.length + ": " + ids[idx]);
-	// fs.appendFile("./logs_synonyms_ctcae.txt", "\nsearching synonyms using CTCAE code (#" + idx + ") total= " + ids.length + ": " + ids[idx] + " " + new Date(), function (err) {
+	// fs.appendFile("./server/data_files/logs_synonyms_ctcae.txt", "\nsearching synonyms using CTCAE code (#" + idx + ") total= " + ids.length + ": " + ids[idx] + " " + new Date(), function (err) {
 	// 	if (err) {
 	// 		return logger.error(err);
 	// 	}
@@ -438,7 +438,7 @@ var synchronziedLoadSynonmysfromCTCAE = function (ids, idx, next) {
 				if (syn.length > 0) {
 					let str = {};
 					str[ids[idx]] = syn;
-					fs.appendFile("./synonyms_ctcae.js", JSON.stringify(str), function (err) {
+					fs.appendFile("./server/data_files/synonyms_ctcae.js", JSON.stringify(str), function (err) {
 						if (err) {
 							return logger.error(err);
 						}
