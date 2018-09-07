@@ -13,18 +13,19 @@ export default function render(keyword, option, items){
     psHtml.active = false;
     let vsHtml = vs.render(items);
     vsHtml.active = false;
-    if(option.activeTab == 0){
-      vsHtml.active = true;
-    }
-    else if(option.activeTab == 1){
-      psHtml.active = true;
-    }
-    else{
-      trsHtml.active = true;
-    }
     if(trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0){
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">'+keyword+'</span></div>';
-    }else{
+    }
+    else{
+      if(option.activeTab == 0){
+        vsHtml.active = true;
+      }
+      else if(option.activeTab == 1){
+        psHtml.active = true;
+      }
+      else{
+        trsHtml.active = true;
+      }
       html = tabs(trsHtml, psHtml, vsHtml, keyword);
     }
   } else if (option.error == true) {
