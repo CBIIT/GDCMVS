@@ -7,7 +7,7 @@ module.exports = {
     },
     output: {
       filename: 'bundle.js',
-      path: path.resolve(__dirname, 'client/static/dist')
+      path: path.resolve(__dirname, '../client/static/dist')
     },
     module: {
         rules: [
@@ -26,15 +26,20 @@ module.exports = {
           // CSS
           { test: /\.css$/,
             use: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader']
+              fallback: 'style-loader',
+              use: [
+                {
+                  loader: 'css-loader',
+                  options: {
+                    minimize: true
+                  }
+              }]
             })
           }
         ]
       },
       plugins: [
-        new ExtractTextPlugin("styles.css"),
+        new ExtractTextPlugin("styles.css")
       ],
-      mode: 'development',
-      devtool: 'source-map'
+      mode: 'production'
 }
