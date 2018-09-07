@@ -347,13 +347,14 @@ var indexing = function (req, res) {
 	configs.push(config_suggestion);
 	elastic.createIndexes(configs, function (result) {
 		if (result.acknowledged === undefined) {
-			return handleError.error(res, result);
+			console.log("1");
+			return res.status(500).send(result);
 		}
 		elastic.bulkIndex(function (data) {
-			if (data.indexed === undefined) {
-				return handleError.error(res, data);
+			if (data.property_indexed === undefined) {
+				return res.status(500).send(data);
 			}
-			return res.json(data);
+			return res.status(200).json(data);
 		});
 	});
 };
@@ -361,9 +362,9 @@ var indexing = function (req, res) {
 var getDataFromCDE = function (req, res) {
 	if (cdeData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./cdeData.js").toString();
+		let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
 		content_1 = content_1.replace(/}{/g, ",");
-		let content_2 = fs.readFileSync("./synonyms.js").toString();
+		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
 		content_2 = content_2.replace(/}{/g, ",");
 		cdeData = JSON.parse(content_1);
 		let syns = JSON.parse(content_2);
@@ -427,9 +428,9 @@ var getCDEData = function (req, res) {
 var getDataFromGDC = function (req, res) {
 	if (gdcData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./conceptCode.js").toString();
-		let content_2 = fs.readFileSync("./synonyms.js").toString();
-		let content_3 = fs.readFileSync("./gdc_values.js").toString();
+		let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
+		let content_3 = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 		content_2 = content_2.replace(/}{/g, ",");
 		let cc = JSON.parse(content_1);
 		let syns = JSON.parse(content_2);
@@ -605,7 +606,7 @@ var getPV = function (req, res) {
 				})
 			}
 		})
-		fs.truncate('./ncit_details.js', 0, function () {
+		fs.truncate('./server/data_files/ncit_details.js', 0, function () {
 			console.log('ncit_details.js truncated')
 		});
 		getPVFunc(cc, 0, function (data) {
@@ -638,7 +639,7 @@ var getPVFunc = function (ncitids, idx, next) {
 					tmp[ncitids[idx]].definitions = d.definitions;
 					tmp[ncitids[idx]].synonyms = d.synonyms;
 
-					fs.appendFile("./ncit_details.js", JSON.stringify(tmp), function (err) {
+					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), function (err) {
 						if (err) {
 							return logger.error(err);
 						}
@@ -685,7 +686,7 @@ function removeDeprecated() {
 			}
 		}
 	});
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	deprecated_properties.forEach(function (d_p) {
 		if (concept[d_p]) {
@@ -710,7 +711,7 @@ function removeDeprecated() {
 			}
 		}
 	});
-	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
 		if (err) {
 			return logger.error(err);
 		}
@@ -719,7 +720,7 @@ function removeDeprecated() {
 
 var getNCItInfo = function (req, res) {
 	let code = req.query.code;
-	let pv = fs.readFileSync("./ncit_details.js").toString();
+	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
 	if (ncit_pv[code]) {
@@ -745,9 +746,9 @@ var getNCItInfo = function (req, res) {
 
 var parseExcel = function (req, res) {
 	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
-	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
@@ -801,7 +802,7 @@ var parseExcel = function (req, res) {
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+					let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 					let icdo = JSON.parse(gdcValues);
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (icdo[category_node_property]) {
@@ -827,7 +828,7 @@ var parseExcel = function (req, res) {
 						icdo[category_node_property].push(temp_obj);
 					}
 					//write changes to file
-					fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
+					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), function (err) {
 						if (err) {
 							return logger.error(err);
 						}
@@ -890,7 +891,7 @@ var parseExcel = function (req, res) {
 						cc = helper_cc;
 					}
 					Object.assign(concept, cc);
-					fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
 						if (err) {
 							return logger.error(err);
 						}
@@ -901,7 +902,7 @@ var parseExcel = function (req, res) {
 
 		}
 	});
-	fs.writeFileSync("./gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
 		if (err) {
 			return logger.error(err);
 		}
@@ -924,7 +925,7 @@ function mappingExists(arr, obj) {
 }
 
 var Unmapped = function (req, res) {
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
 	var folderPath = path.join(__dirname, '..', '..', 'data');
 
@@ -971,7 +972,7 @@ var Unmapped = function (req, res) {
 			}
 		}
 	}
-	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let icdo = JSON.parse(gdcValues);
 	for (let keys in icdo) {
 		if (concept[keys]) {
@@ -996,12 +997,12 @@ var Unmapped = function (req, res) {
 		}
 
 	}
-	fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), function (err) {
 		if (err) {
 			return logger.error(err);
 		}
 	});
-	fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
 		if (err) {
 			return logger.error(err);
 		}
@@ -1013,7 +1014,7 @@ var Unmapped = function (req, res) {
 	fs.readdirSync(folderPath_gdcdata).forEach(file => {
 		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
 	});
-	let tmp_conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let tmp_conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let tmp_concept = JSON.parse(tmp_conceptCode);
 	for (let keys in tmp_concept) {
 		let category = keys.split(".")[0];
@@ -1032,7 +1033,7 @@ var Unmapped = function (req, res) {
 			}
 		}
 	}
-	fs.writeFileSync("./conceptCode.js", JSON.stringify(tmp_concept), function (err) {
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(tmp_concept), function (err) {
 		if (err) {
 			return logger.error(err);
 		}

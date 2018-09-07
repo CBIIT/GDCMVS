@@ -379,18 +379,18 @@ function bulkIndex(next) {
 		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
 	];
 	//load synonyms data file to memory
-	let cc = fs.readFileSync("./conceptCode.js").toString();
+	let cc = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let ccode = JSON.parse(cc);
 	//load suggestedTerm data file to memory
-	let gv = fs.readFileSync("./gdc_values.js").toString();
+	let gv = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	gdc_values = JSON.parse(gv);
-	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
 	cdeData = JSON.parse(content_1);
-	let content_2 = fs.readFileSync("./synonyms.js").toString();
+	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
 	content_2 = content_2.replace(/}{/g, ",");
 	let syns = JSON.parse(content_2);
-	let content_3 = fs.readFileSync("./cdeDataType.js").toString();
+	let content_3 = fs.readFileSync("./server/data_files/cdeDataType.js").toString();
 	content_3 = content_3.replace(/}{/g, ",");
 	cdeDataType = JSON.parse(content_3);
 	for (var c in cdeData) {
@@ -613,7 +613,7 @@ exports.createIndexes = createIndexes;
 function preloadDataFromCaDSR(next) {
 	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
-	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
 	let cdeDataJson;
 	if (content_1) {
@@ -641,7 +641,7 @@ function preloadDataFromCaDSR(next) {
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
 
 function preloadDataTypeFromCaDSR(next) {
-	let content_1 = fs.readFileSync("./cdeData.js").toString();
+	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
 	let cdeDataJson = JSON.parse(content_1);
 	let ids = [];
