@@ -43,7 +43,7 @@ var export_ICDO3 = function (req, res) {
 
 	let data = [];
 
-	let ICDO3_content = fs.readFileSync("./gdc_values.js").toString();
+	let ICDO3_content = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let ICDO3 = JSON.parse(ICDO3_content);
 	let ICDO3_1 = ICDO3["clinical.diagnosis.morphology"];
 	let ICDO3_dict = {};
@@ -65,7 +65,7 @@ var export_ICDO3 = function (req, res) {
 		ICDO3_dict_c[i.i_c].push(i);
 		nm_dict_c[i.nm.toLowerCase()] = i;
 	});
-	let content_1 = fs.readFileSync("./conceptCode.js").toString();
+	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let cc = JSON.parse(content_1);
 	let primary = cc["clinical.diagnosis.primary_diagnosis"];
 	let primary_diagnosis = {};
@@ -624,10 +624,10 @@ var export2Excel = function (req, res) {
 			}
 		}
 	});
-	let pv = fs.readFileSync("./ncit_details.js").toString();
+	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
-	let cdeData = fs.readFileSync("./cdeData.js").toString();
+	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	cdeData = cdeData.replace(/}{/g, ",");
 	let file_cde = JSON.parse(cdeData);
 	let query = {
@@ -1507,7 +1507,7 @@ var export_common = function (req, res) {
 	let merges = [];
 	let data = [];
 
-	let content_1 = fs.readFileSync("./conceptCode.js").toString();
+	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let cc = JSON.parse(content_1);
 	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
