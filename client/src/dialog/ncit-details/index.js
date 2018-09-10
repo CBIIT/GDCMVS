@@ -70,9 +70,10 @@ export default function ncitDetails(uid){
       containment: '#docs-container'
     });
 
-  }, function() {
+  }, function(status, errorThrown) {
     //show the notification alert error
     let alertError = $('#alert-error');
+    alertError.text('Error ' + status + ': ' + errorThrown);
     alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
     let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
     alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
