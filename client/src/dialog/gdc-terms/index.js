@@ -118,6 +118,20 @@ export default function getGDCTerms(uid, tgts) {
     //display result in a table
     $(document.body).append(html);
 
+
+    let dialog_width = {
+      width: 750,
+      minWidth: 650,
+      maxWidth: 900
+    }
+
+    if(icdo){
+      dialog_width.width = 900;
+      dialog_width.minWidth = 900;
+      dialog_width.maxWidth = 1000;
+    }
+
+
     $("#gdc_terms_data").dialog({
       modal: false,
       position: {
@@ -125,10 +139,10 @@ export default function getGDCTerms(uid, tgts) {
         at: "center top",
         of: $('#docs-container')
       },
-      width: 900,
+      width: dialog_width.width,
       height: 'auto',
-      minWidth: 900,
-      maxWidth: 1000,
+      minWidth: dialog_width.minWidth,
+      maxWidth: dialog_width.maxWidth,
       minHeight: 300,
       maxHeight: 600,
       open: function () {
