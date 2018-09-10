@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
-router.get('/preload', controller.preload);
+router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
 router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
 router.get('/preloadCadsrData', controller.preloadCadsrData);
 router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
@@ -22,6 +22,7 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // router.get('/export_ICDO3', report.export_ICDO3);
 // router.get('/export_all', report.export2Excel);
 // router.get('/exportAllValues', report.exportAllValues);
+// router.get('/exportMapping', report.exportMapping);
 // router.get('/export', report.export_difference);
 // router.get('/exportDifference', report.exportDifference);
 // router.get('/export_common', report.export_common)

@@ -879,15 +879,15 @@ var exportAllValues = function (req, res) {
 		}
 	});
 	new_data = preProcess(searchable_nodes, new_data);
-	for (let key in new_data){
+	for (let key in new_data) {
 		let category = new_data[key].category;
 		let node = new_data[key].id;
-		if(new_data[key].properties){
+		if (new_data[key].properties) {
 			let properties = new_data[key].properties
 			for (let property in properties) {
-				if(properties[property].enum && !properties[property].deprecated_enum){
+				if (properties[property].enum && !properties[property].deprecated_enum) {
 					let enums = properties[property].enum;
-					enums.forEach( function(em){
+					enums.forEach(function (em) {
 						let tmp_data = {};
 						tmp_data.c = category;
 						tmp_data.n = node;
@@ -895,9 +895,9 @@ var exportAllValues = function (req, res) {
 						tmp_data.v = em;
 						data.push(tmp_data);
 					})
-				}else if(properties[property].deprecated_enum && properties[property].new_enum){
+				} else if (properties[property].deprecated_enum && properties[property].new_enum) {
 					let enums = properties[property].new_enum;
-					enums.forEach( function(em){
+					enums.forEach(function (em) {
 						let tmp_data = {};
 						tmp_data.c = category;
 						tmp_data.n = node;
@@ -922,6 +922,151 @@ var exportAllValues = function (req, res) {
 		]
 	);
 	res.attachment('All_Values.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
+
+};
+var exportMapping = function (req, res) {
+	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeData = JSON.parse(content_1);
+
+	let content_2 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let cc = JSON.parse(content_2);
+
+	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
+	pv = pv.replace(/}{/g, ",");
+	let ncit_pv = JSON.parse(pv);
+
+	let merges = [];
+	let data = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
+	];
+	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
+		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	];
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		v: {
+			width: 200
+		},
+		ncit_v: {
+			width: 200
+		},
+		ncit_c: {
+			width: 200
+		},
+		cde_v: {
+			width: 200
+		},
+		cde_c: {
+			width: 200
+		},
+		cde_id: {
+			width: 200
+		}
+	};
+	let new_data = {};
+	let folderPath = path.join(__dirname, '../..', 'data');
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+		}
+	});
+	new_data = preProcess(searchable_nodes, new_data);
+	for (let key in new_data) {
+		let category = new_data[key].category;
+		let node = new_data[key].id;
+		if (new_data[key].properties) {
+			let properties = new_data[key].properties
+			for (let property in properties) {
+				if (properties[property].enum && !properties[property].deprecated_enum) {
+					let cde_id = "";
+					if (properties[property].relation && properties[property].relation.termDef && properties[property].relation.termDef.cde_id) {
+						cde_id = properties[property].relation.termDef.cde_id;
+					}
+					let enums = properties[property].enum;
+					enums.forEach(function (em) {
+						let tmp_data = {};
+						tmp_data.c = category;
+						tmp_data.n = node;
+						tmp_data.p = property;
+						tmp_data.v = em;
+						tmp_data.cde_id = cde_id;
+						tmp_data.cde_v = "";
+						tmp_data.cde_c = "";
+						tmp_data.ncit_v = "";
+						tmp_data.ncit_c = "";
+						if (cde_id !== "" && cdeData[cde_id]) {
+							cdeData[cde_id].forEach(function (value) {
+								if (value.pv === em) {
+									tmp_data.cde_v = value.pvm;
+									tmp_data.cde_c = value.pvc;
+								}
+							});
+						}
+						if (cc[category + "." + node + "." + property] && cc[category + "." + node + "." + property][em]) {
+							tmp_data.ncit_c = cc[category + "." + node + "." + property][em];
+							tmp_data.ncit_v = ncit_pv[cc[category + "." + node + "." + property][em]].preferredName;
+						}
+						data.push(tmp_data);
+					})
+				} else if (properties[property].deprecated_enum && properties[property].new_enum) {
+					let cde_id = "";
+					if (properties[property].relation && properties[property].relation.termDef && properties[property].relation.termDef.cde_id) {
+						cde_id = properties[property].relation.termDef.cde_id;
+					}
+					let enums = properties[property].new_enum;
+					enums.forEach(function (em) {
+						let tmp_data = {};
+						tmp_data.c = category;
+						tmp_data.n = node;
+						tmp_data.p = property;
+						tmp_data.v = em;
+						tmp_data.cde_id = cde_id;
+						tmp_data.cde_v = "";
+						tmp_data.cde_c = "";
+						tmp_data.ncit_v = "";
+						tmp_data.ncit_c = "";
+						if (cde_id !== "" && cdeData[cde_id]) {
+							cdeData[cde_id].forEach(function (value) {
+								if (value.pv === em) {
+									tmp_data.cde_v = value.pvm;
+									tmp_data.cde_c = value.pvc;
+								}
+							});
+						}
+						if (cc[category + "." + node + "." + property] && cc[category + "." + node + "." + property][em]) {
+							tmp_data.ncit_c = cc[category + "." + node + "." + property][em];
+							tmp_data.ncit_v = ncit_pv[cc[category + "." + node + "." + property][em]].preferredName;
+						}
+						data.push(tmp_data);
+					})
+				}
+			}
+		}
+	}
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				name: 'Report', // <- Specify sheet name (optional) 
+				heading: heading, // <- Raw heading array (optional) 
+				merges: merges, // <- Merge cell ranges 
+				specification: specification, // <- Report specification 
+				data: data // <-- Report data 
+			}
+		]
+	);
+	res.attachment('Report-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
 
 };
@@ -1157,6 +1302,7 @@ var export_difference = function (req, res) {
 };
 
 function preProcess(searchable_nodes, data) {
+	let folderPath = path.join(__dirname, '../..', 'data');
 	// Remove deprecated properties and nodes
 	for (let key in data) {
 		if (searchable_nodes.indexOf(key) === -1) {
@@ -1169,9 +1315,9 @@ function preProcess(searchable_nodes, data) {
 		}
 	}
 	// get data from $ref: "analyte.yaml#/properties/analyte_type"
-	for (let key in data) {
-		if (data[key].properties) {
-			let p = data[key].properties;
+	for (let key1 in data) {
+		if (data[key1].properties) {
+			let p = data[key1].properties;
 			for (let key in p) {
 				if (key !== '$ref') {
 					if (p[key].$ref && p[key].$ref.indexOf("_terms.yaml") === -1 && p[key].$ref.indexOf("_definitions.yaml") === -1) {
@@ -1190,12 +1336,35 @@ function preProcess(searchable_nodes, data) {
 	}
 
 	// remove deprecated_enum from enums
-	for (let key in data) {
-		if (data[key].properties) {
-			let p = data[key].properties;
+	for (let key1 in data) {
+		if (data[key1].properties) {
+			let p = data[key1].properties;
 			for (let key in p) {
 				if (p[key].deprecated_enum && p[key].enum) {
 					p[key].new_enum = _.differenceWith(p[key].enum, p[key].deprecated_enum, _.isEqual);
+				}
+			}
+		}
+	}
+
+	// get $ref for Property
+	for (let key1 in data) {
+		if (data[key1].properties) {
+			let p = data[key1].properties;
+			for (let key in p) {
+				let property_data = p[key];
+				if (property_data.term && property_data.term.$ref) {
+					if (property_data.term.$ref.indexOf('_terms.yaml') !== -1) {
+						let ref = property_data.term.$ref;
+						if (ref.indexOf('#/') !== -1) {
+							let file_name = ref.split('#/')[0];
+							let ref_property = ref.split('#/')[1];
+							let term_definition = yaml.load(folderPath + '/' + file_name);
+							if (term_definition[ref_property]) {
+								property_data.relation = term_definition[ref_property]
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1800,5 +1969,6 @@ module.exports = {
 	exportAllValues,
 	export_difference,
 	exportDifference,
-	export_common
+	export_common,
+	exportMapping
 }
