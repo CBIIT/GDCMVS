@@ -563,7 +563,7 @@ var preloadDataTypeFromCaDSR = function (req, res) {
 	});
 }
 
-var preload = function (req, res) {
+var preloadSynonumsNcit = function (req, res) {
 	elastic.loadSynonyms(function (result) {
 		if (result === "Success") {
 			res.end('Success!!');
@@ -1051,7 +1051,7 @@ module.exports = {
 	getGDCData,
 	getGDCandCDEData,
 	searchICDO3Data,
-	preload,
+	preloadSynonumsNcit,
 	preloadSynonumsCtcae,
 	getNCItInfo,
 	indexing,
