@@ -364,30 +364,19 @@ const func = {
         newtrs.push(temp_categ);
       }
     });
-    let html = "";
-    if (newtrs.length == 0 || (newtrs.length === 1 && newtrs[0].nodes[0].properties[
-        0].all_values.length === 0)) {
-      let keyword = $("#keywords").val();
-      html =
-        '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
-        keyword + '</span></div>';
-      result.html = html;
-      return result;
-    } else {
-      let offset = $('#root').offset().top;
-      let h = window.innerHeight - offset - 313;
-      options.height = (h < 430) ? 430 : h;
-      options.redirect = false;
-      if (window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0) {
-        options.redirect = true;
-      }
-      html = $.templates(tmpl).render({
-        options: options,
-        newtrs: newtrs
-      });
-      result.html = html;
-      return result;
+    let offset = $('#root').offset().top;
+    let h = window.innerHeight - offset - 313;
+    options.height = (h < 430) ? 430 : h;
+    options.redirect = false;
+    if (window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0) {
+      options.redirect = true;
     }
+    let html = $.templates(tmpl).render({
+      options: options,
+      newtrs: newtrs
+    });
+    result.html = html;
+    return result;
   }
 };
 
