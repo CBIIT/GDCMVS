@@ -177,8 +177,20 @@ const func = {
             });
           }
         } else {
+          // if the values of this property are not part of GDC
+          let checker = false;
+          enum_n.forEach(function (n) {
+            let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+            source.enum.forEach(function (em) {
+              if (em.n === tmp && em.gdc_d === false) {
+                checker = true;
+              }
+            });
+          });
           p.node = "branch";
-          trs.push(p);
+          if (!checker) {
+            trs.push(p);
+          }
           //show values, need to highlight if necessary
           let list = [];
           if (("enum.n" in hl) || ("enum.n.have" in hl)) {
