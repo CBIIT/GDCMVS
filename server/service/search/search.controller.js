@@ -239,6 +239,12 @@ var indexing = function (req, res) {
 							"lowercase"
 						]
 					},
+					"my_keyword": {
+						"tokenizer": "keyword",
+						"filter": [
+							"lowercase"
+						]
+					},
 					"my_standard": {
 						"tokenizer": "my_tokenizer",
 						"char_filter": ["my_filter"],
@@ -326,11 +332,11 @@ var indexing = function (req, res) {
 					},
 					"enum.i_c.c": {
 						"type": "text",
-						"analyzer": "case_insensitive"
+						"analyzer": "my_keyword"
 					},
 					"enum.i_c.have": {
 						"type": "text",
-						"analyzer": "case_insensitive"
+						"analyzer": "my_keyword"
 					},
 					"enum.gdc_d": {
 						"type": "text"
