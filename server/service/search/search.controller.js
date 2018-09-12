@@ -97,8 +97,6 @@ var searchP = function (req, res) {
 	let keyword = req.query.keyword;
 	if (keyword.trim() === '') {
 		res.json([]);
-		// query = {"match_all": {}};
-		// highlight = null;
 	} else {
 		let option = JSON.parse(req.query.option);
 		let words = [];
@@ -236,17 +234,28 @@ var indexing = function (req, res) {
 			"analysis": {
 				"analyzer": {
 					"case_insensitive": {
-						"tokenizer": "keyword",
+						"tokenizer": "my_tokenizer",
 						"filter": [
 							"lowercase"
 						]
 					},
 					"my_standard": {
-						"tokenizer": "standard",
+						"tokenizer": "my_tokenizer",
 						"char_filter": ["my_filter"],
 						"filter": ["standard", "lowercase"]
 					}
 				},
+				"tokenizer": {
+					"my_tokenizer": {
+					  "type": "ngram",
+					  "min_gram": 1,
+					  "max_gram": 1,
+					  "token_chars": [
+						"letter",
+						"digit"
+					  ]
+					}
+				  },
 				"char_filter": {
 					"my_filter": {
 						"type": "mapping",
@@ -281,7 +290,8 @@ var indexing = function (req, res) {
 						"type": "text",
 						"fields": {
 							"have": {
-								"type": "text"
+								"type": "text",
+								"analyzer": "case_insensitive"
 							}
 						},
 						"analyzer": "case_insensitive"
@@ -290,7 +300,8 @@ var indexing = function (req, res) {
 						"type": "text",
 						"fields": {
 							"have": {
-								"type": "text"
+								"type": "text",
+								"analyzer": "case_insensitive"
 							}
 						},
 						"analyzer": "case_insensitive"
@@ -347,7 +358,6 @@ var indexing = function (req, res) {
 	configs.push(config_suggestion);
 	elastic.createIndexes(configs, function (result) {
 		if (result.acknowledged === undefined) {
-			console.log("1");
 			return res.status(500).send(result);
 		}
 		elastic.bulkIndex(function (data) {
