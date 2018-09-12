@@ -258,7 +258,8 @@ var indexing = function (req, res) {
 					  "max_gram": 1,
 					  "token_chars": [
 						"letter",
-						"digit"
+						"digit",
+						"symbol"
 					  ]
 					}
 				  },
