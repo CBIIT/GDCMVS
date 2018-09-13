@@ -106,38 +106,37 @@ var searchP = function (req, res) {
 		query.bool.should = [];
 		if (option.match !== "exact") {
 			let m = {};
-			m.match_phrase = {};
-			m.match_phrase["name.have"] = keyword;
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["name.have"] = keyword;
 			query.bool.should.push(m);
 			if (option.desc) {
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["desc"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["desc"] = keyword;
 				query.bool.should.push(m);
 			}
 			if (option.syn) {
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["enum.s.have"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["enum.s.have"] = keyword;
 				query.bool.should.push(m);
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["cde_pv.n.have"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
 				query.bool.should.push(m);
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["cde_pv.ss.s.have"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
 				query.bool.should.push(m);
 			}
 			m = {};
-			m.match_phrase = {};
-			m.match_phrase["enum.n.have"] = keyword;
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.n.have"] = keyword;
 			query.bool.should.push(m);
 			m = {};
 			m.match = {};
 			m.match["enum.i_c.have"] = {};
 			m.match["enum.i_c.have"].query = keyword;
-			m.match["enum.i_c.have"].analyzer = "keyword";
 			query.bool.should.push(m);
 			highlight = {
 				"pre_tags": ["<b>"],
@@ -234,35 +233,17 @@ var indexing = function (req, res) {
 			"analysis": {
 				"analyzer": {
 					"case_insensitive": {
-						"tokenizer": "my_tokenizer",
-						"filter": [
-							"lowercase"
-						]
-					},
-					"my_keyword": {
 						"tokenizer": "keyword",
 						"filter": [
 							"lowercase"
 						]
 					},
 					"my_standard": {
-						"tokenizer": "my_tokenizer",
+						"tokenizer": "standard",
 						"char_filter": ["my_filter"],
 						"filter": ["standard", "lowercase"]
 					}
 				},
-				"tokenizer": {
-					"my_tokenizer": {
-					  "type": "ngram",
-					  "min_gram": 1,
-					  "max_gram": 1,
-					  "token_chars": [
-						"letter",
-						"digit",
-						"symbol"
-					  ]
-					}
-				  },
 				"char_filter": {
 					"my_filter": {
 						"type": "mapping",
@@ -297,8 +278,7 @@ var indexing = function (req, res) {
 						"type": "text",
 						"fields": {
 							"have": {
-								"type": "text",
-								"analyzer": "case_insensitive"
+								"type": "text"
 							}
 						},
 						"analyzer": "case_insensitive"
@@ -307,8 +287,7 @@ var indexing = function (req, res) {
 						"type": "text",
 						"fields": {
 							"have": {
-								"type": "text",
-								"analyzer": "case_insensitive"
+								"type": "text"
 							}
 						},
 						"analyzer": "case_insensitive"
@@ -333,13 +312,9 @@ var indexing = function (req, res) {
 					},
 					"enum.i_c.c": {
 						"type": "text",
-						"analyzer": "my_keyword"
+						"analyzer": "case_insensitive"
 					},
 					"enum.i_c.have": {
-						"type": "text",
-						"analyzer": "my_keyword"
-					},
-					"enum.gdc_d": {
 						"type": "text"
 					}
 				}
