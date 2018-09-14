@@ -7,6 +7,9 @@ const func = {
     let len = 0;
     //options render
     let options = {};
+    // RegExp Keyword
+    let reg_key = new RegExp(keyword, "ig");
+
     items.forEach(function (item) {
       let hl = item.highlight;
       if (hl["enum.n"] == undefined && hl["enum.n.have"] == undefined &&
@@ -61,21 +64,21 @@ const func = {
         hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
       let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
-      enum_n.forEach(function (n) {
+      enum_n.forEach(function (n, i) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_enum_n[tmp] = n;
+        dict_enum_n[tmp] = n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       });
       enum_s.forEach(function (s) {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_enum_s[tmp] = s;
+        dict_enum_s[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       });
       cde_n.forEach(function (pn) {
         let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_cde_n[tmp] = pn;
+        dict_cde_n[tmp] = pn.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       });
       cde_s.forEach(function (ps) {
         let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_cde_s[tmp] = ps;
+        dict_cde_s[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       });
       enum_c.forEach(function (c) {
         let tmp = c.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -197,7 +200,7 @@ const func = {
           if (em.i_c !== undefined) {
             if (arr_enum_c.indexOf(em.i_c.c) >= 0) {
               v.gdc_d = em.gdc_d;
-              v.i_c = "<b>" + em.i_c.c + "</b>";
+              v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
               if (v.n == undefined) {
                 v.n = em.n;
                 v.ref = row.ref;
@@ -213,7 +216,7 @@ const func = {
                 }
               });
               if (has) {
-                v.i_c = "<b>" + em.i_c.c + "</b>";
+                v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
                 v.gdc_d = em.gdc_d;
                 if (v.n == undefined) {
                   v.n = em.n;
@@ -277,57 +280,54 @@ const func = {
           let temp_i_c = {};
           let new_vs = [];
           row.vs.forEach(function (item) {
-          let reg = new RegExp(keyword, "ig");
-          item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg,"<b>"+keyword.toLowerCase()+"</b>");
-            if(item.i_c === undefined){
+            if (item.i_c === undefined) {
               return;
             }
-            item.i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg,"<b>"+keyword.toLowerCase()+"</b>");
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
             let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            if(item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1){
+            if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
               temp_i_c[item_i_c].n.push(item.n);
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
-              if(temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1){
-                temp_i_c[item_i_c].n_syn.push({n_c:item.n_c, s: item.s});
+              if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
+                temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
                 temp_i_c[item_i_c].checker_n_c.push(item.n_c);
               }
             } else {
-              temp_i_c[item_i_c] = {i_c: item.i_c, n: [item.n], n_clr: [item_n_clr], n_syn:[{n_c: item.n_c, s: item.s}], checker_n_c: [item.n_c]};
+              temp_i_c[item_i_c] = { i_c: item.i_c, n: [item.n], n_clr: [item_n_clr], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
             }
           });
-          for(let index_i_c in temp_i_c) {
-            source.enum.forEach(function (em){
-              if(em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1){
+          for (let index_i_c in temp_i_c) {
+            source.enum.forEach(function (em) {
+              if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
                 temp_i_c[index_i_c].n.push(em.n);
               }
             });
           }
 
           let check_n = [];
-          row.vs.forEach(function (item){
+          row.vs.forEach(function (item) {
             //remove if it's not gdc value
-            if(item.gdc_d !== undefined && !item.gdc_d){
+            if (item.gdc_d !== undefined && !item.gdc_d) {
               return;
             }
             let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            if(item_n in temp_i_c){
-                item.term_i_c = temp_i_c[item_n];
-                check_n.push(item_n);
+            if (item_n in temp_i_c) {
+              item.term_i_c = temp_i_c[item_n];
+              check_n.push(item_n);
             }
-            if(item.i_c !== undefined){
+            if (item.i_c !== undefined) {
               let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
-                if(check_n.indexOf(item_i_c) !== -1){
-                  return;
-                }
-                if(item_i_c in temp_i_c){
-                  item.term_i_c = temp_i_c[item_i_c];
-                }
+              if (check_n.indexOf(item_i_c) !== -1) {
+                return;
+              }
+              if (item_i_c in temp_i_c) {
+                item.term_i_c = temp_i_c[item_i_c];
+              }
             }
-            if(item.temp_i_c && item.temp_i_c.checker_n_c){
+            if (item.temp_i_c && item.temp_i_c.checker_n_c) {
               delete item.term_i_c.checker_n_c;
             }
-            if(item.term_i_c && item.term_i_c.n_clr){
+            if (item.term_i_c && item.term_i_c.n_clr) {
               delete item.term_i_c.n_clr
             }
             new_vs.push(item)
@@ -337,7 +337,7 @@ const func = {
         }
         len += row.vs.length;
       }
-      if(row.vs.length !== 0){
+      if (row.vs.length !== 0) {
         values.push(row);
       }
     });
