@@ -11,7 +11,7 @@ export default function render(keyword, option, items){
     trsHtml.active = false;
     let psHtml = ps.render(items);
     psHtml.active = false;
-    let vsHtml = vs.render(items);
+    let vsHtml = vs.render(items, keyword);
     vsHtml.active = false;
     if(trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0){
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">'+keyword+'</span></div>';
