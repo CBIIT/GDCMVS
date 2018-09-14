@@ -1,7 +1,7 @@
 import tmpl from './view';
 
 const func = {
-  render(items) {
+  render(items, keyword) {
     //data preprocessing
     let values = [];
     let len = 0;
@@ -277,9 +277,12 @@ const func = {
           let temp_i_c = {};
           let new_vs = [];
           row.vs.forEach(function (item) {
+          let reg = new RegExp(keyword, "ig");
+          item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg,"<b>"+keyword.toLowerCase()+"</b>");
             if(item.i_c === undefined){
               return;
             }
+            item.i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg,"<b>"+keyword.toLowerCase()+"</b>");
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
             let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
             if(item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1){
