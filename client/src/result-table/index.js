@@ -21,6 +21,8 @@ const func = {
     result.len = 0;
     //options render
     let options = {};
+    // RegExp Keyword
+    let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
       let hl = item.highlight;
@@ -143,8 +145,10 @@ const func = {
       p.parent_l_id = n.l_id;
       //may have highlighted terms in p.title and p.desc
       p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl[
-        "name.have"]) : source.name;
-      p.desc = ("desc" in hl) ? hl["desc"] : source.desc;
+        "name.have"]) : [source.name];
+      p.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
+      p.title[0] = p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+      p.desc[0] = p.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       p.data_tt_id = p.id;
       p.data_tt_parent_id = n.data_tt_id;
       p.type = "property";
@@ -199,7 +203,7 @@ const func = {
           let enums = {};
           list.forEach(function (em) {
             let e = em.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            enums[e] = em;
+            enums[e] = em.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");;
           });
           let values = source.enum;
           let tmp_trs = [];
