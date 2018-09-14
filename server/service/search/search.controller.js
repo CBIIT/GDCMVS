@@ -134,9 +134,10 @@ var searchP = function (req, res) {
 			m.match_phrase_prefix["enum.n.have"] = keyword;
 			query.bool.should.push(m);
 			m = {};
-			m.match = {};
-			m.match["enum.i_c.have"] = {};
-			m.match["enum.i_c.have"].query = keyword;
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.i_c.have"] = {};
+			m.match_phrase_prefix["enum.i_c.have"].query = keyword;
+			m.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
 			query.bool.should.push(m);
 			highlight = {
 				"pre_tags": ["<b>"],
