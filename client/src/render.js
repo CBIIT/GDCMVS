@@ -7,11 +7,16 @@ import shared from './shared'
 export default function render(keyword, option, items) {
   let html = "";
   if (items.length !== 0) {
-    let trsHtml = trs.render(items, keyword);
+    //deep copy for items array for each tab
+    let data1 = JSON.parse(JSON.stringify(items));
+    let data2 = JSON.parse(JSON.stringify(items));
+    let data3 = JSON.parse(JSON.stringify(items));
+    //render each tab
+    let trsHtml = trs.render(data1, keyword);
     trsHtml.active = false;
-    let psHtml = ps.render(items, keyword);
+    let psHtml = ps.render(data2, keyword);
     psHtml.active = false;
-    let vsHtml = vs.render(items, keyword);
+    let vsHtml = vs.render(data3, keyword);
     vsHtml.active = false;
     if (trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
