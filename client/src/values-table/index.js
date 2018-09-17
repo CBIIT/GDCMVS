@@ -66,19 +66,35 @@ const func = {
       let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
       enum_n.forEach(function (n, i) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_enum_n[tmp] = n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        if (keyword.indexOf(' ') === -1) {
+          dict_enum_n[tmp] = n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_enum_n[tmp] = n;
+        }
       });
       enum_s.forEach(function (s) {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_enum_s[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        if (keyword.indexOf(' ') === -1) {
+          dict_enum_s[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_enum_s[tmp] = s;
+        }
       });
       cde_n.forEach(function (pn) {
         let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_cde_n[tmp] = pn.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        if (keyword.indexOf(' ') === -1) {
+          dict_cde_n[tmp] = pn.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_cde_n[tmp] = pn;
+        }
       });
       cde_s.forEach(function (ps) {
         let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_cde_s[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        if (keyword.indexOf(' ') === -1) {
+          dict_cde_s[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_cde_s[tmp] = ps;
+        }
       });
       enum_c.forEach(function (c) {
         let tmp = c.replace(/<b>/g, "").replace(/<\/b>/g, "");

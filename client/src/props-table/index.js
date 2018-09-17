@@ -16,11 +16,15 @@ const func = {
         let prop = {};
         prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : [source.name];
         prop.nm_link = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "");
-        prop.nm[0] = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        if (keyword.indexOf(' ') === -1) {
+          prop.nm[0] = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        }
         prop.nd = source.node;
         prop.ct = source.category;
         prop.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
-        prop.desc[0] = prop.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        if (keyword.indexOf(' ') === -1) {
+          prop.desc[0] = prop.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        }
         prop.local = source.enum == undefined ? false : true;
         prop.syn = false;
         if (source.enum !== undefined) {
