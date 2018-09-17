@@ -13,7 +13,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
     +'<a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-entity-list&anchor='
       +'{{if ct == \'data_file\' || ct == \'metadata_file\'}}submittable_data_file{{else}}{{:ct}}{{/if}}" '
       +'{{if ~root.options.redirect}}target="_blank"{{/if}}>{{:ct}}</a>'
-    +'<ul><li class="table__td--word-break">'
+    +'<ul class="table__ul"><li class="table__li table__td--word-break">'
       +'<a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}" {{if ~root.options.redirect}}target="_blank"{{/if}}>{{:nd}}</a>'
     +'</li></ul>'
   +'</div>'
