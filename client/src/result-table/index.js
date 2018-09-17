@@ -90,7 +90,7 @@ const func = {
             });
           }
           exist = exist || (arr_cde_n.indexOf(pv.n) >= 0);
-          if (exist) {
+          if (exist && matched_pv.indexOf(pv.n.toLowerCase()) === -1) {
             matched_pv.push(pv.n.toLowerCase());
           }
         });
