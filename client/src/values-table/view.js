@@ -20,7 +20,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
         +'<a href="#" class="gdc-details" aria-expanded="false"><i class="fa fa-caret-down"></i> detail</a>'
         +'<div class="gdc-links" style="display: none;">'
           +'{{if local}}'
-            +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a></br>'
+            +'<a href="javascript:getGDCData(\'{{:ref}}\',null, null);">See All Values</a></br>'
             +'<a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a></br>'
           +'{{/if}}'
           +'{{if syn}}'

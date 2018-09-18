@@ -13,6 +13,8 @@ export default function gdcData(prop, tgt, keyword) {
     let new_items = [];
     let tmp_obj ={};
     // RegExp Keyword
+    // Don't replace with anything, if keyword is null
+    keyword = keyword === null ? '@#$%^' : keyword;
     let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
