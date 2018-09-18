@@ -2,7 +2,7 @@ import tmpl from './view';
 import api from '../../api';
 import shared from '../../shared';
 
-export default function gdcData(prop, item) {
+export default function gdcData(prop, tgt, keyword) {
   api.getGDCDataById(prop, function (id, items) {
 
     if ($('#gdc_data').length) {
@@ -12,12 +12,15 @@ export default function gdcData(prop, item) {
     let icdo = false;
     let new_items = [];
     let tmp_obj ={};
+    // RegExp Keyword
+    let reg_key = new RegExp(keyword, "ig");
+
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         if(item.i_c.c in tmp_obj){
-          tmp_obj[item.i_c.c].n.push(item.n);
+          tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>"));
         }else{
-          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: [item.n]};
+          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: [item.n.replace(reg_key, "<b>$&</b>")]};
         }
       }
     });
@@ -28,8 +31,9 @@ export default function gdcData(prop, item) {
       if (item.gdc_d === true) {
         if(tmp_obj[item.n] !== undefined){
           let tmp_data = {};
-          tmp_data.n = item.n;
+          tmp_data.n = item.n.replace(reg_key, "<b>$&</b>");
           tmp_data.i_c = tmp_obj[item.n];
+          tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           new_items.push(tmp_data);
@@ -37,8 +41,9 @@ export default function gdcData(prop, item) {
           let tmp_data = {};
           if (item.i_c !== undefined) {
             tmp_data.i_c = tmp_obj[item.i_c.c];
+            tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
           }
-          tmp_data.n = item.n;
+          tmp_data.n = item.n.replace(reg_key, "<b>$&</b>");
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           new_items.push(tmp_data);
@@ -48,8 +53,7 @@ export default function gdcData(prop, item) {
 
     items = new_items;
 
-    let target = item == undefined ? item : item.replace(/<b>/g, "").replace(
-      /<\/b>/g, "");
+    let target = tgt === null  || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
     let header = $.templates(tmpl.header).render({
       target: target,
       icdo: icdo,
@@ -57,6 +61,7 @@ export default function gdcData(prop, item) {
     });
     let html = $.templates(tmpl.body).render({
       target: target,
+      keyword: keyword,
       icdo: icdo,
       items: items
     });
@@ -104,9 +109,7 @@ export default function gdcData(prop, item) {
 
         var target = $(this).parent();
         if ((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()) {
-          target.css('top', (windowEl.scrollTop() + shared.headerOffset() +
-            20) + 'px');
-
+          target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20) + 'px');
         }
 
         $('#close_gdc_data').bind('click', function () {

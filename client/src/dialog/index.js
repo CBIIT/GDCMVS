@@ -7,10 +7,9 @@ import cdeData from './cde-data';
 import ncitDetails from './ncit-details';
 
 const func = {
-  getGDCData(prop, item) {
-    gdcData(prop, item);
+  getGDCData(prop, tgt, keyword) {
+    gdcData(prop, tgt, keyword);
   },
-
   getGDCTerms(uid, tgts) {
     gdcTerms(uid, tgts);
   },
