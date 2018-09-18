@@ -147,7 +147,7 @@ const func = {
       p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl[
         "name.have"]) : [source.name];
       p.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
-      if (keyword.indexOf(' ') === -1) {
+      if (p.title[0] !== undefined && p.desc[0] !== undefined && keyword.indexOf(' ') === -1) {
         p.title[0] = p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         p.desc[0] = p.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       }
