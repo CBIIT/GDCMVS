@@ -23,7 +23,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
   +'<div class="table__td col-xs-4">{{:desc}}</div>'
   +'<div class="table__td col-xs-2">'
   +'{{if local}}'
-  +'<a href="javascript:getGDCData(\'{{:ref}}\',null);">See All Values</a>'
+  +'<a href="javascript:getGDCData(\'{{:ref}}\',null, null);">See All Values</a>'
   +'<br><a href="javascript:toCompare(\'{{:ref}}\');"> Compare with User List</a>'
     +'{{if syn}}'
     +'<br><a href="javascript:getGDCTerms(\'{{:ref}}\',null);">See All Terms</a>'
