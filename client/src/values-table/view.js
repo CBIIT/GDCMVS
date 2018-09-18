@@ -54,7 +54,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
 
       +'{{else}}'
           +'<div class="row">'
-            +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\');">{{:n}}</a></div>'
+            +'<div class="col-xs-10"><a href="javascript:getGDCData(\'{{:ref}}\',\'{{:n}}\',\'{{:~root.options.keyword}}\');">{{:n}}</a></div>'
             +'<div class="col-xs-2 table__center">{{if s.length || term_i_c !== undefined}}<a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>{{/if}}</div>'
           +'</div>'
           +'<div class="data-content" style="display: none;">'

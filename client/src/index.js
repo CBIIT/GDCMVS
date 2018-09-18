@@ -29,9 +29,9 @@ $('#searchclear').click( function(event){
   $('#keywords').val('').focus();
 });
 
-function getGDCData(prop, target){
+function getGDCData(prop, target, keyword){
 	let uid = prop.replace(/@/g, '/');
-	dialog.getGDCData(uid, target);
+	dialog.getGDCData(uid, target, keyword);
 }
 
 window.getGDCData = getGDCData;
