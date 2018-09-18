@@ -33,7 +33,7 @@ let tmpl = {
                 +'{{if n == ~root.target }}'
                   +'<div class="table__row row" id="gdc_data_match">'
                     +'<div class="table__td table__td--slim col-xs-4">{{:n}}</div>'
-                    +'<div class="table__td table__td--slim col-xs-3">{{if i_c}}{{if n == i_c.c}}<b>{{:i_c.c}}</b>{{else}}{{:i_c.c}}{{/if}}{{/if}}</div>'
+                    +'<div class="table__td table__td--slim col-xs-3">{{if i_c}}{{:i_c.c}}{{/if}}</div>'
                     +'<div class="table__td table__td--slim col-xs-5">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}<b>{{:n}}</b>{{/if}}{{/if}}</div>'
                   +'</div>'
                 +'{{else}}'
