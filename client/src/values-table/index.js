@@ -367,6 +367,7 @@ const func = {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 310;
       options.height = (h < 430) ? 430 : h;
+      options.keyword = keyword;
       html = $.templates({
         markup: tmpl,
         allowCode: true
