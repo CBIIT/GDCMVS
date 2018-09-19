@@ -31,10 +31,19 @@ const func = {
         'enum.s'] || hl["enum.s.have"] : [];
       let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
         "enum.n"] || hl["enum.n.have"] : [];
+      let enum_gdc_n = [];
+        enum_n.forEach(function (n) {
+          let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+          source.enum.forEach(function (em) {
+            if (em.n === tmp && em.gdc_d === true) {
+              enum_gdc_n.push(n);
+            }
+          });
+        });
       let enum_i_c = ("enum.i_c" in hl) || ("enum.i_c.have" in hl) ?
         hl["enum.i_c.s"] || hl["enum.i_c.have"] : [];
       let enum_s_icdo3 = [];
-      if (enum_s.length === 0 && enum_n.length === 0) {
+      if (enum_s.length === 0 && enum_gdc_n.length === 0) {
         enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
       }
       let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl[
@@ -51,14 +60,16 @@ const func = {
 
       if (enum_s_icdo3.length > 0) {
         enum_s_icdo3.forEach(function (s) {
-          arr_enum_s_icdo3.push(s.n);
+          if(s.gdc_d === true){
+            arr_enum_s_icdo3.push(s.n);
+          }
         })
       }
       enum_s.forEach(function (s) {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_s.push(tmp);
       });
-      enum_n.forEach(function (n) {
+      enum_gdc_n.forEach(function (n) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_n.push(tmp);
       });
@@ -160,13 +171,21 @@ const func = {
       }
       //put value to tree table
       if (source.enum != undefined) {
-        if (enum_n.length == 0 &&
+        if (enum_gdc_n.length == 0 &&
           enum_s.length == 0 &&
           enum_i_c.length == 0 &&
           matched_pv.length == 0) {
           //if no values show in the values tab
           p.node = "branch";
-          trs.push(p);
+          let prop_checker = false;
+          p.title.forEach(function (data) {
+            if(data.indexOf(keyword) !== -1){
+              prop_checker = true;
+            }
+          });
+          if(prop_checker === true){
+            trs.push(p);
+          }
           if (arr_enum_s_icdo3.length > 0) {
             arr_enum_s_icdo3.sort();
             arr_enum_s_icdo3.forEach(function (s_i) {
@@ -183,20 +202,8 @@ const func = {
             });
           }
         } else {
-          // if the values of this property are not part of GDC
-          let checker = false;
-          enum_n.forEach(function (n) {
-            let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            source.enum.forEach(function (em) {
-              if (em.n === tmp && em.gdc_d === false) {
-                checker = true;
-              }
-            });
-          });
           p.node = "branch";
-          if (!checker) {
-            trs.push(p);
-          }
+          trs.push(p);
           //show values, need to highlight if necessary
           let list = [];
           if (("enum.n" in hl) || ("enum.n.have" in hl)) {
@@ -261,8 +268,10 @@ const func = {
           });
           if (count_v == 0) {
             p.node = "";
+            tmp_trs.forEach(function (tt) {
+              trs.push(tt);
+            });
           } else {
-
             tmp_trs.forEach(function (tt) {
               trs.push(tt);
             });
@@ -303,7 +312,6 @@ const func = {
       n.len += p.len + count_p;
       result.len += p.len + count_p;
     });
-
     let newtrs = [];
     trs.forEach(function (data) {
       let temp_categ = {
