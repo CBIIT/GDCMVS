@@ -22,8 +22,7 @@ const func = {
     //options render
     let options = {};
     // RegExp Keyword
-    let regSpecial = new RegExp('[. ,: -_]+', 'g');
-    keyword = keyword.replace(regSpecial, " ");
+    keyword = keyword.replace(/[\. ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
@@ -42,6 +41,8 @@ const func = {
           }
         });
       });
+      let prop = ("name.have" in hl) ? hl["name.have"] : [];
+      let desc = ("desc" in hl) ? hl["desc"] : [];
       let enum_i_c = ("enum.i_c" in hl) || ("enum.i_c.have" in hl) ?
         hl["enum.i_c.s"] || hl["enum.i_c.have"] : [];
       let enum_s_icdo3 = [];
@@ -59,6 +60,8 @@ const func = {
       let arr_cde_n = [];
       let arr_cde_s = [];
       let matched_pv = [];
+      let gdc_p = [];
+      let gdc_desc = {};
 
       if (enum_s_icdo3.length > 0) {
         enum_s_icdo3.forEach(function (s) {
@@ -67,6 +70,13 @@ const func = {
           }
         })
       }
+      desc.forEach(function (d){
+        if(gdc_p.indexOf(source.name) !== -1) return;
+        gdc_p.push(source.name);
+      });
+      prop.forEach(function (p){
+        gdc_p.push(p.replace(/<b>/g, "").replace(/<\/b>/g, ""));
+      });
       enum_s.forEach(function (s) {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_s.push(tmp);
@@ -160,8 +170,11 @@ const func = {
       p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl[
         "name.have"]) : [source.name];
       p.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
-      if (p.title[0] !== undefined && p.desc[0] !== undefined && keyword.indexOf(' ') === -1) {
+      if (p.title[0] !== undefined && keyword.indexOf(' ') === -1) {
         p.title[0] = p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+
+      }
+      if(p.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl){
         p.desc[0] = p.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       }
       p.data_tt_id = p.id;
@@ -174,37 +187,29 @@ const func = {
       //put value to tree table
       if (source.enum != undefined) {
         if (enum_gdc_n.length == 0 &&
-          enum_s.length == 0 &&
           enum_i_c.length == 0 &&
           matched_pv.length == 0) {
           //if no values show in the values tab
           p.node = "branch";
-          let prop_checker = false;
-          p.title.forEach(function (data) {
-            let tmp = data.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(regSpecial, "");
-            let tmp_key = keyword.replace(regSpecial, "");
-            if (tmp.indexOf(tmp_key) !== -1) {
-              prop_checker = true;
-            }
-          });
-          if (prop_checker === true) {
+          if (p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) !== -1) {
             trs.push(p);
           }
-          if (arr_enum_s_icdo3.length > 0) {
+          // if (arr_enum_s_icdo3.length > 0) {
             arr_enum_s_icdo3.sort();
-            arr_enum_s_icdo3.forEach(function (s_i) {
+            source.enum.forEach(function (s_i) {
+              if(s_i.gdc_d === false) return;
               let tmp_e = {};
               //count++;
-              tmp_e.title = s_i;
+              tmp_e.title = s_i.n;
               tmp_e.desc = "";
-              tmp_e.data_tt_id = count + "_" + s_i;
+              tmp_e.data_tt_id = count + "_" + s_i.n;
               tmp_e.data_tt_parent_id = p.id;
               tmp_e.type = "value";
               tmp_e.node = "leaf";
               tmp_e.exist = false;
               trs.push(tmp_e);
             });
-          }
+          // }
         } else {
           p.node = "branch";
           trs.push(p);
@@ -279,12 +284,25 @@ const func = {
             tmp_trs.forEach(function (tt) {
               trs.push(tt);
             });
+            if(p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1){
+              if(enum_gdc_n.length === 0 && matched_pv.length === 0) return;
+              let l = {};
+              l.id = count + "_l";
+              l.l_id = source.cde.id;
+              l.l_type = "cde";
+              l.url = source.cde.url;
+              l.desc = "";
+              l.data_tt_id = l.id;
+              l.data_tt_parent_id = p.id;
+              l.type = "link";
+              l.node = "leaf";
+              trs.push(l);
+            }
           } else {
             tmp_trs.forEach(function (tt) {
               trs.push(tt);
             });
           }
-
           count_s += matched_pv.length;
         }
       } else {

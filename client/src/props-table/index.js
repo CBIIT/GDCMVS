@@ -7,8 +7,7 @@ const func = {
     //options render
     let options = {};
     // RegExp Keyword
-    let regSpecial = new RegExp('[. ,: -_]+', 'g');
-    keyword = keyword.replace(regSpecial, " ");
+    keyword = keyword.replace(/[\. ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
@@ -24,7 +23,7 @@ const func = {
         prop.nd = source.node;
         prop.ct = source.category;
         prop.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
-        if (prop.desc[0] !== undefined && keyword.indexOf(' ') === -1) {
+        if (prop.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl) {
           prop.desc[0] = prop.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         }
         prop.local = source.enum == undefined ? false : true;
