@@ -34,14 +34,14 @@ const func = {
       let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
         "enum.n"] || hl["enum.n.have"] : [];
       let enum_gdc_n = [];
-        enum_n.forEach(function (n) {
-          let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          source.enum.forEach(function (em) {
-            if (em.n === tmp && em.gdc_d === true) {
-              enum_gdc_n.push(n);
-            }
-          });
+      enum_n.forEach(function (n) {
+        let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        source.enum.forEach(function (em) {
+          if (em.n === tmp && em.gdc_d === true) {
+            enum_gdc_n.push(n);
+          }
         });
+      });
       let enum_i_c = ("enum.i_c" in hl) || ("enum.i_c.have" in hl) ?
         hl["enum.i_c.s"] || hl["enum.i_c.have"] : [];
       let enum_s_icdo3 = [];
@@ -62,7 +62,7 @@ const func = {
 
       if (enum_s_icdo3.length > 0) {
         enum_s_icdo3.forEach(function (s) {
-          if(s.gdc_d === true){
+          if (s.gdc_d === true) {
             arr_enum_s_icdo3.push(s.n);
           }
         })
@@ -181,13 +181,13 @@ const func = {
           p.node = "branch";
           let prop_checker = false;
           p.title.forEach(function (data) {
-              let tmp = data.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(regSpecial, "");
-              let tmp_key = keyword.replace(regSpecial, "")
-              if(tmp.indexOf(tmp_key) !== -1){
+            let tmp = data.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(regSpecial, "");
+            let tmp_key = keyword.replace(regSpecial, "");
+            if (tmp.indexOf(tmp_key) !== -1) {
               prop_checker = true;
             }
           });
-          if(prop_checker === true){
+          if (prop_checker === true) {
             trs.push(p);
           }
           if (arr_enum_s_icdo3.length > 0) {
@@ -216,7 +216,11 @@ const func = {
           let enums = {};
           list.forEach(function (em) {
             let e = em.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            enums[e] = em.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");;
+            if (keyword.indexOf(' ') === -1) {
+              enums[e] = em.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");;
+            }else{
+              enums[e] = em;
+            }
           });
           let values = source.enum;
           let tmp_trs = [];
