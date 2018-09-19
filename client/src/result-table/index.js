@@ -22,6 +22,8 @@ const func = {
     //options render
     let options = {};
     // RegExp Keyword
+    let regSpecial = new RegExp('[. ,: -_]+', 'g');
+    keyword = keyword.replace(regSpecial, " ");
     let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
@@ -179,7 +181,9 @@ const func = {
           p.node = "branch";
           let prop_checker = false;
           p.title.forEach(function (data) {
-            if(data.indexOf(keyword) !== -1){
+              let tmp = data.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(regSpecial, "");
+              let tmp_key = keyword.replace(regSpecial, "")
+              if(tmp.indexOf(tmp_key) !== -1){
               prop_checker = true;
             }
           });
