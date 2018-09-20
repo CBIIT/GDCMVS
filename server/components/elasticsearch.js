@@ -17,6 +17,7 @@ var _ = require('lodash');
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
+var report = require('../service/search/report');
 var gdc_values = {};
 var allProperties = [];
 
@@ -463,6 +464,7 @@ function bulkIndex(next) {
 	fs.readdirSync(folderPath_gdcdata).forEach(file => {
 		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
 	});
+	gdc_data = report.preProcess(searchable_nodes, gdc_data);
 	allProperties.forEach(function (p) {
 		let node = p.node;
 		let property = p.name;

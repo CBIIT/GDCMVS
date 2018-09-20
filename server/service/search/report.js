@@ -1970,5 +1970,6 @@ module.exports = {
 	export_difference,
 	exportDifference,
 	export_common,
-	exportMapping
+	exportMapping,
+	preProcess
 }
