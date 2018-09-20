@@ -22,7 +22,7 @@ const func = {
     //options render
     let options = {};
     // RegExp Keyword
-    keyword = keyword.replace(/[\. ,:_-]+/g, " ");
+    keyword = keyword.replace(/[\ ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
     let gdc_p = [];
 
