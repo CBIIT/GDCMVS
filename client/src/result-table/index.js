@@ -24,6 +24,7 @@ const func = {
     // RegExp Keyword
     keyword = keyword.replace(/[\. ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
+    let gdc_p = [];
 
     items.forEach(function (item) {
       let hl = item.highlight;
@@ -60,7 +61,6 @@ const func = {
       let arr_cde_n = [];
       let arr_cde_s = [];
       let matched_pv = [];
-      let gdc_p = [];
       let gdc_desc = {};
 
       if (enum_s_icdo3.length > 0) {
@@ -99,7 +99,6 @@ const func = {
         let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_cde_s.push(tmp);
       });
-
       if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
         source.cde_pv.forEach(function (pv) {
           let exist = false;
@@ -188,7 +187,8 @@ const func = {
       if (source.enum != undefined) {
         if (enum_gdc_n.length == 0 &&
           enum_i_c.length == 0 &&
-          matched_pv.length == 0) {
+          matched_pv.length == 0 &&
+          arr_enum_s.length == 0) {
           //if no values show in the values tab
           p.node = "branch";
           if (p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) !== -1) {
@@ -395,6 +395,9 @@ const func = {
                     temp_prop.link_values.push(temp_value);
                   }
                 });
+                  if(gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0){
+                    return;
+                  }
                 temp_node.properties.push(temp_prop);
               }
             });
