@@ -94,7 +94,7 @@ var searchICDO3Data = function (req, res) {
 
 
 var searchP = function (req, res) {
-	let keyword = req.query.keyword;
+	let keyword = req.query.keyword.trim();
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
