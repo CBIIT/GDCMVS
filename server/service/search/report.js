@@ -921,7 +921,7 @@ var exportAllValues = function (req, res) {
 			}
 		]
 	);
-	res.attachment('All_Values.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.attachment('All-Values-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
 
 };
@@ -1376,7 +1376,7 @@ var exportDifference = function (req, res) {
 	let merges = [];
 	let data = [];
 	let folderPath = path.join(__dirname, '../..', 'data');
-	let folderPath_old = path.join(__dirname, '../..', 'data');
+	let folderPath_old = path.join(__dirname, '../..', 'data_old');
 	let old_data = {};
 	let new_data = {};
 	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
@@ -1640,7 +1640,7 @@ var exportDifference = function (req, res) {
 			}
 		]
 	);
-	res.attachment('Delta.xlsx');
+	res.attachment('Delta-' + new Date() + '.xlsx');
 	res.send(report);
 	//res.send('Success!!!');
 }

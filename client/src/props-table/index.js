@@ -7,7 +7,7 @@ const func = {
     //options render
     let options = {};
     // RegExp Keyword
-    keyword = keyword.replace(/[\ ,:_-]+/g, " ");
+    keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
