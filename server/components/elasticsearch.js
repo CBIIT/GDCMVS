@@ -167,6 +167,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				tmp.code = v.i_c;
 				tmp.pvc = v.n_c;
 				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
+				tmp.term_type = v.term_type;
 				entry.syns.push(tmp);
 				enums.push(v.nm);
 			});
@@ -252,6 +253,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				p.enum = [];
 				entry.syns.forEach(function (item) {
 					let tmp = {};
+					if(item.term_type){
+						tmp.term_type = item.term_type;
+					}
 					tmp.n = item.pv;
 					if (item.code !== undefined) {
 						tmp.i_c = {};
