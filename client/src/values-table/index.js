@@ -217,6 +217,9 @@ const func = {
           if (em.i_c !== undefined) {
             if (arr_enum_c.indexOf(em.i_c.c) >= 0) {
               v.gdc_d = em.gdc_d;
+              if (em.term_type) {
+                v.term_type = em.term_type;
+              }
               v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
               if (v.n == undefined) {
                 v.n = em.n;
@@ -235,6 +238,9 @@ const func = {
               if (has) {
                 v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
                 v.gdc_d = em.gdc_d;
+                if (em.term_type) {
+                  v.term_type = em.term_type;
+                }
                 if (v.n == undefined) {
                   v.n = em.n;
                   v.ref = row.ref;
@@ -244,6 +250,9 @@ const func = {
               } else {
                 v.i_c = em.i_c.c;
                 v.gdc_d = em.gdc_d;
+                if (em.term_type) {
+                  v.term_type = em.term_type;
+                }
               }
             }
 
@@ -302,8 +311,11 @@ const func = {
             }
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
             let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
-              temp_i_c[item_i_c].n.push(item.n);
+            let tt = item.term_type ? item.term_type : "";
+            let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' +tt + ')';
+            if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(
+                item.n) == -1) {
+              temp_i_c[item_i_c].n.push(item.n + " " + term_type);
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
               if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
                 temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
@@ -316,7 +328,39 @@ const func = {
           for (let index_i_c in temp_i_c) {
             source.enum.forEach(function (em) {
               if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
-                temp_i_c[index_i_c].n.push(em.n);
+                let tt = em.term_type ? em.term_type : "";
+                let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+                temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
+                  //remove depulicates in local synonyms
+                  let tmp_s = [];
+                  let t_s = [];
+                  if (em.s) {
+                    let cache = {};
+                    em.s.forEach(function (s) {
+                      let lc = s.trim().toLowerCase();
+                      if (!(lc in cache)) {
+                        cache[lc] = [];
+                      }
+                      cache[lc].push(s);
+                    });
+                    for (let idx in cache) {
+                      //find the term with the first character capitalized
+                      let word = findWord(cache[idx]);
+                      t_s.push(word);
+                    }
+                    t_s.forEach(function (s) {
+                      if (s in dict_enum_s) {
+                        exist = true;
+                        tmp_s.push(dict_enum_s[s])
+                      } else {
+                        tmp_s.push(s);
+                      }
+                    });
+                  }
+                  temp_i_c[index_i_c].checker_n_c.push(em.n_c);
+                  temp_i_c[index_i_c].n_syn.push({n_c: em.n_c, s: tmp_s });
+                }
               }
             });
           }
@@ -327,7 +371,7 @@ const func = {
             if (item.gdc_d !== undefined && !item.gdc_d) {
               return;
             }
-            let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+            let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g,"");
             if (item_n in temp_i_c) {
               item.term_i_c = temp_i_c[item_n];
               check_n.push(item_n);
