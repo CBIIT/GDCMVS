@@ -9,7 +9,7 @@ let tmpl = {
           +'<input id="gdc-data-invariant" class="checkbox__input" type="checkbox" value="">'
           +'<span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates'
         +'</label>'
-        +'{{if targets !== null}}'
+        +'{{if targets.length !== 0}}'
         +'<label class="checkbox__label checkbox__label--height">'
           +'<input id="show_all_gdc_syn" class="checkbox__input" type="checkbox" value="">'
           +'<span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values'
