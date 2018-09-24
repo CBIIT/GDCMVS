@@ -8,6 +8,7 @@ var path = require('path');
 var yaml = require('yamljs');
 const excel = require('node-excel-export');
 var _ = require('lodash');
+var xlsx = require('node-xlsx');
 
 var export_ICDO3 = function (req, res) {
 	let heading = [
@@ -1963,6 +1964,49 @@ var export_common = function (req, res) {
 	res.send(report);
 };
 
+let addTermType = function(req, res){
+	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\GDC_ICDO3\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
+	let data = {};
+	obj.forEach(function (sheet, index) {
+		if(index === 0) return;
+		var worksheet = sheet.data;
+		worksheet.forEach(function (dt, index){
+			let tmp_data = {};
+			if (index === 0 ) return;
+			tmp_data.code = dt[0];
+			tmp_data.level = dt[1];
+			tmp_data.tt = dt[2];
+			tmp_data.tt_desc = dt[3];
+			tmp_data.icdo_string = dt[4];
+			if(data[dt[0]] == undefined){
+				data[dt[0]] = [];
+			}
+			data[dt[0]].push(tmp_data);
+		});
+	});
+	for(let cnp in all_gdc_values){
+		all_gdc_values[cnp].forEach(em => {
+			let i_c = em.i_c;
+			let value = em.nm;
+			if(data[i_c]){
+				data[i_c].forEach(dt=>{
+					if(dt.code == i_c && dt.icdo_string == value){
+						em.term_type = dt.tt;
+					}
+				});
+			}
+		});
+	}
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+	res.send("Success");
+}
+
 module.exports = {
 	export_ICDO3,
 	export2Excel,
@@ -1971,5 +2015,6 @@ module.exports = {
 	exportDifference,
 	export_common,
 	exportMapping,
-	preProcess
+	preProcess,
+	addTermType
 }
