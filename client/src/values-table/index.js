@@ -313,8 +313,7 @@ const func = {
             let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
             let tt = item.term_type ? item.term_type : "";
             let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' +tt + ')';
-            if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(
-                item.n) == -1) {
+            if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
               temp_i_c[item_i_c].n.push(item.n + " " + term_type);
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
               if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
@@ -322,7 +321,7 @@ const func = {
                 temp_i_c[item_i_c].checker_n_c.push(item.n_c);
               }
             } else {
-              temp_i_c[item_i_c] = { i_c: item.i_c, n: [item.n], n_clr: [item_n_clr], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              temp_i_c[item_i_c] = { i_c: item.i_c, n: [item.n + " " + term_type], n_clr: [item_n_clr], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
             }
           });
           for (let index_i_c in temp_i_c) {
