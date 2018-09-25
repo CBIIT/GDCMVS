@@ -657,8 +657,9 @@ function preloadDataTypeFromCaDSR(next) {
 			ids.push(term);
 		}
 	}
-	caDSR.loadDataType(ids);
-	next(1);
+	caDSR.loadDataType(ids, function(data){
+		return next(data);
+	});
 }
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;

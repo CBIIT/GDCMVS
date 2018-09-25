@@ -542,16 +542,10 @@ var preloadCadsrData = function (req, res) {
 
 var preloadDataTypeFromCaDSR = function (req, res) {
 	elastic.preloadDataTypeFromCaDSR(function (result) {
-		if (result === 1) {
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
+		if (result === "CDE data Refreshed!!") {
+			res.end('Success!!');
 		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
+			res.write(result);
 		}
 	});
 }
