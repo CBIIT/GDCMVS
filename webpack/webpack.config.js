@@ -1,5 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -39,7 +40,7 @@ module.exports = {
         ]
       },
       plugins: [
-        new ExtractTextPlugin("styles.css")
-      ],
-      mode: 'production'
+        new ExtractTextPlugin("styles.css"),
+        new CleanWebpackPlugin(['dist'], {root: path.resolve(__dirname, '../client/static')})
+      ]
 }
