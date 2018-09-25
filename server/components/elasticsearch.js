@@ -434,7 +434,7 @@ function bulkIndex(next) {
 				logger.debug(folderPath + '/' + file);
 				for (let keys in fileJson.properties) {
 					if (fileJson.properties[keys].deprecated_enum) {
-						fileJson.properties[keys].enum = removeDeprecatedEnums(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum);
+						fileJson.properties[keys].enum = _.differenceWith(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
 					}
 					if (fileJson.deprecated && deprecated_properties.indexOf(fileJson.category + "." + fileJson.id + "." + keys) !== -1) {
 						delete fileJson.properties[keys];
@@ -529,19 +529,6 @@ function bulkIndex(next) {
 		});
 	});
 
-}
-
-let removeDeprecatedEnums = function (arr1, arr2) {
-	let arr3 = []
-	arr1.forEach(function (tmp_e) {
-		if (tmp_e.charAt(0).match(/[C]/) && tmp_e.charAt(1).match(/[0-9]/)) {
-			arr3.push(tmp_e.replace('C', 'c'));
-		} else {
-			arr3.push(tmp_e);
-		}
-	});
-
-	return _.differenceWith(arr3, arr2, _.isEqual);
 }
 
 exports.bulkIndex = bulkIndex;
