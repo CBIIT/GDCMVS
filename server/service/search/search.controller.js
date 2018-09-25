@@ -685,13 +685,7 @@ function removeDeprecated() {
 		let cnp_key = d_e.split(".#")[1];
 		if (concept[cnp]) {
 			for (let key in concept[cnp]) {
-				if (key.charAt(0).match(/[C]/) && key.charAt(1).match(/[0-9]/)) {
-					key = key.replace('C', 'c');
-				}
 				if (key === cnp_key) {
-					if (cnp_key.charAt(0).match(/[c]/) && cnp_key.charAt(1).match(/[0-9]/)) {
-						cnp_key = cnp_key.replace('c', 'C');
-					}
 					let tmp_value = concept[cnp];
 					delete tmp_value[cnp_key];
 				}
@@ -926,15 +920,7 @@ var Unmapped = function (req, res) {
 				if (local_property.deprecated_enum) {
 					let local_enum = local_property.enum;
 					let local_d_enum = local_property.deprecated_enum;
-					let final_d_enum = [];
-					local_d_enum.forEach(function (em) {
-						if (em.charAt(0).match(/[c]/) && em.charAt(1).match(/[0-9]/)) {
-							final_d_enum.push(em.replace('c', 'C'));
-						} else {
-							final_d_enum.push(em);
-						}
-					})
-					let final_enum = _.differenceWith(local_enum, final_d_enum, _.isEqual);
+					let final_enum = _.differenceWith(local_enum, local_d_enum, _.isEqual);
 					let local_values = [];
 					for (let file_values in concept[keys]) {
 						local_values.push(file_values);
