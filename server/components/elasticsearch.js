@@ -470,6 +470,7 @@ function bulkIndex(next) {
 	});
 	gdc_data = report.preProcess(searchable_nodes, gdc_data);
 	allProperties.forEach(function (p) {
+		let category = p.category;
 		let node = p.node;
 		let property = p.name;
 		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
@@ -482,6 +483,33 @@ function bulkIndex(next) {
 					}
 				});
 			}
+		}
+		// Add icdo3 data
+		let icdo3 = {};
+		let tmp_icdo3 = {};
+		for(let cnp in gdc_values){
+			if(cnp === category+'.'+node+'.'+property){
+				gdc_values[cnp].forEach(item => {
+					let item_i_c = item.i_c;
+					if (item_i_c in icdo3 && icdo3[item_i_c].n.indexOf(item.nm) == -1) {
+						let term_type = item.term_type === 'PT' ? '<b>(' + item.term_type + ')</b>' : '(' +item.term_type + ')';
+						icdo3[item_i_c].n.push(item.nm+" "+term_type);
+						if (tmp_icdo3[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
+							icdo3[item_i_c].n_syn.push({ n_c: item.n_c, s: syns[item.n_c] });
+							tmp_icdo3[item_i_c].checker_n_c.push(item.n_c);
+						  }
+					}
+					else{
+						let term_type = item.term_type === 'PT' ? '<b>(' + item.term_type + ')</b>' : '(' +item.term_type + ')';
+						icdo3[item_i_c] = { i_c: item.i_c, n: [item.nm+" "+ term_type], n_syn: [{ n_c: item.n_c, s: syns[item.n_c] }] };
+						tmp_icdo3[item_i_c] = {checker_n_c: [item.n_c]};
+					}
+				});
+			}
+		}
+		if(!_.isEmpty(icdo3)){
+			p.icdo = {};
+			p.icdo = icdo3
 		}
 	});
 	allProperties.forEach(function (ap) {
