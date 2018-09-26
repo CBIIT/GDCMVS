@@ -3,6 +3,8 @@ let prevScrollOffset = 0;
 let headerHeight = $('.navbar .container').height();
 let headerOffset = headerHeight;
 
+export const getHeaderOffset = () => headerOffset;
+
 export const onScroll = ($window) => {
   let currentScrollOffset = $window.scrollTop();
   let delta = currentScrollOffset - prevScrollOffset;
@@ -26,5 +28,3 @@ export const setHeight = ($docsContainer, $parentContainer) => {
   $docsContainer.attr('style', 'margin-top: ' + (headerHeight - 54) + 'px !important');
   $parentContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
 }
-
-export const getHeaderOffset = () => headerOffset;
