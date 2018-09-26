@@ -396,6 +396,22 @@ const func = {
           row.vs = new_vs;
         }
         len += row.vs.length;
+      }else{
+        // if it doesn't have any enums and matches with cde_ss
+        for (let idx in matched_pv) {
+          let v = {};
+          v.n = "no match";
+          v.ref = row.ref;
+          v.n_c = "";
+          v.s = [];
+          v.cde_s = matched_pv[idx].ss;
+          if (v.cde_s.length) {
+            v.cde_pv = matched_pv[idx].pv;
+            v.cde_pvm = matched_pv[idx].pvm;
+          }
+          row.vs.push(v);
+        }
+        len += row.vs.length;
       }
       if (row.vs.length !== 0) {
         values.push(row);
