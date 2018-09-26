@@ -1,4 +1,4 @@
-import func from './search-bar/';
+import * as search from './search-bar/';
 import dialog from './dialog/';
 import render from './render';
 import api from './api';
@@ -14,31 +14,40 @@ window.onload = () => {
     const $search = $("#search");
     const $keywords = $("#keywords");
     const $searchClear = $('#searchclear');
+    const $suggestBox = $('#suggestBox');
 
     const $docsContainer = $('#docs-container');
     const $parentContainer = $('.parent-container');
 
-    $search.click(func.search);
+    $search.click(() => { search.clickSearch($keywords) });
 
-    $keywords.bind("keypress", func.gotoSearch);
+    $keywords.keypress((event) => {
+      search.enterSearch(event, $keywords, $search);
+    });
 
-    $keywords.bind("keydown", func.selectSuggestion);
+    $keywords.keydown((event) => {
+      search.selectSuggestion(event, $suggestBox)
+    });
 
-    $keywords.bind("input", func.suggest);
+    $keywords.bind('input', (event) => {
+      search.suggest(event, $keywords, $searchClear, $suggestBox);
+    });
 
-    $document.on('click', func.removeBox);
+    $document.click(search.removeBox);
 
     $searchClear.click((event) => {
-      event.preventDefault();
-      $(this).hide();
-      $keywords.val('').focus();
+      search.clearSearch(event, $keywords);
     });
 
     setHeight($docsContainer, $parentContainer);
 
-    $window.scroll(() => { onScroll($window) });
+    $window.scroll(() => {
+      onScroll($window);
+    });
 
-    $window.resize(() => { onResize($docsContainer, $parentContainer) });
+    $window.resize(() => {
+      onResize($docsContainer, $parentContainer);
+    });
   }
 
   init();
