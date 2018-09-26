@@ -1,6 +1,6 @@
 import tmpl from './view';
 import api from '../../api';
-import shared from '../../shared';
+import { getHeaderOffset } from '../../shared';
 
 export default function cdeData(uid, tgts){
   api.getCDEDataById(uid, function(id, items) {
@@ -60,7 +60,7 @@ export default function cdeData(uid, tgts){
     let header = $.templates(tmpl.header).render({targets: targets, items_length: items.length });
 
     let html = $.templates({markup: tmpl.body, allowCode: true}).render({targets: targets, items: tmp });
-    let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+    let tp = (window.innerHeight * 0.2 < getHeaderOffset() )? getHeaderOffset() + 20 : window.innerHeight * 0.2;
 
     //display result in a table
     $(document.body).append(html);
@@ -80,8 +80,8 @@ export default function cdeData(uid, tgts){
         $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
 
         var target = $(this).parent();
-        if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-          target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+        if((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()){
+          target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20)+'px');
         }
 
         $('#close_caDSR_data').bind('click', function(){
@@ -126,7 +126,7 @@ export default function cdeData(uid, tgts){
     alertError.text('Error ' + status + ': ' + errorThrown);
     alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
     let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+    alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
       alertError.css({'display': 'none'})
     });
   });
