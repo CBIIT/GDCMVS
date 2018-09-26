@@ -5,7 +5,12 @@ import api from './api';
 
 window.onload = () => {
 
-  const _init = () => {
+  const setHeight = ($height, $docsContainer, $parentContainer) => {
+    $docsContainer.attr('style', 'margin-top: ' + ($height - 54) + 'px !important');
+    $parentContainer.attr('style', 'min-height: calc(100vh - ' + ($height + 10) + 'px)');
+  }
+
+  const init = () => {
 
     let $window = $(window);
     let $document = $(document);
@@ -28,22 +33,21 @@ window.onload = () => {
 
     $document.on('click', func.removeBox);
 
-    $searchClear.click(() => {
+    $searchClear.click((event) => {
+      event.preventDefault();
       $(this).hide();
       $keywords.val('').focus();
     });
 
-    $docsContainer.attr('style', 'margin-top: ' + ($height - 54) + 'px !important');
-    $parentContainer.attr('style', 'min-height: calc(100vh - ' + ($height + 10) + 'px)');
+    setHeight($height, $docsContainer, $parentContainer);
 
     $window.resize(() => {
       $height = $('.navbar .container').height();
-      $docsContainer.attr('style', 'margin-top: ' + ($height - 54) + 'px !important');
-      $parentContainer.attr('style', 'min-height: calc(100vh - ' + ($height + 10) + 'px)');
+      setHeight($height, $docsContainer, $parentContainer);
     });
   }
 
-  _init();
+  init();
 }
 
 function getGDCData(prop, target, keyword) {
