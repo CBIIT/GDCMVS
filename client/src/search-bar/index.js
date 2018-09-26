@@ -28,14 +28,19 @@ const func = {
             count++;
         });
 
+        //get options values
         option.desc = $("#i_desc").prop('checked');
         option.syn = $("#i_syn").prop('checked');
         option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
         option.activeTab = option.desc ? 1 : activeTab;
+
+        //hide suggestBox
         $("#suggestBox").css("display","none");
         displayBoxIndex = -1;
+
         //todo:show progress bar
         $('#gdc-loading-icon').fadeIn(100);
+
         api.searchAll(keyword, option, function(keyword, option, items) {
 
           //Save the data in localStorage
@@ -47,6 +52,7 @@ const func = {
           //todo: close progress bar
           $('#gdc-loading-icon').fadeOut('fast');
         }, function(status, errorThrown) {
+          //todo: close progress bar
           $('#gdc-loading-icon').fadeOut('fast');
           //show the notification alert error
           let alertError = $('#alert-error');
