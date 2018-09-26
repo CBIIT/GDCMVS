@@ -1,7 +1,7 @@
 import api from '../api';
 import render from '../render';
 import tmpl from './view';
-import shared from '../shared';
+import { getHeaderOffset } from '../shared';
 
 let displayBoxIndex = -1;
 let activeTab = 0;
@@ -59,7 +59,7 @@ const func = {
           alertError.text('Error ' + status + ': ' + errorThrown);
           alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
           let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-          alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+          alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
             alertError.css({'display': 'none'})
           });
         });

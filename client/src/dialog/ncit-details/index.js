@@ -1,6 +1,6 @@
 import tmpl from './view';
 import api from '../../api';
-import shared from '../../shared';
+import { getHeaderOffset } from '../../shared';
 
 export default function ncitDetails(uid){
   api.evsRestApi(uid, function(id, item) {
@@ -34,7 +34,7 @@ export default function ncitDetails(uid){
     }
 
     let windowEl = $(window);
-    let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+    let tp = (window.innerHeight * 0.2 < getHeaderOffset() )? getHeaderOffset() + 20 : window.innerHeight * 0.2;
     let header = $.templates(tmpl.header).render();
     let html = $.templates(tmpl.body).render({item: tmp});
 
@@ -55,8 +55,8 @@ export default function ncitDetails(uid){
 
         var target = $(this).parent();
         target.find('.ui-dialog-titlebar-close').html('');
-        if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-          target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+        if((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()){
+          target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20)+'px');
         }
 
         $('#close_ncit_details').bind('click', function(){
@@ -76,7 +76,7 @@ export default function ncitDetails(uid){
     alertError.text('Error ' + status + ': ' + errorThrown);
     alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
     let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+    alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
       alertError.css({'display': 'none'})
     });
   });

@@ -2,26 +2,21 @@ import func from './search-bar/';
 import dialog from './dialog/';
 import render from './render';
 import api from './api';
+import { onResize, onScroll, setHeight } from './shared';
 
 window.onload = () => {
 
-  const setHeight = ($height, $docsContainer, $parentContainer) => {
-    $docsContainer.attr('style', 'margin-top: ' + ($height - 54) + 'px !important');
-    $parentContainer.attr('style', 'min-height: calc(100vh - ' + ($height + 10) + 'px)');
-  }
-
   const init = () => {
 
-    let $window = $(window);
-    let $document = $(document);
+    const $window = $(window);
+    const $document = $(document);
 
-    let $search = $("#search");
-    let $keywords = $("#keywords");
-    let $searchClear = $('#searchclear');
+    const $search = $("#search");
+    const $keywords = $("#keywords");
+    const $searchClear = $('#searchclear');
 
-    let $height = $('.navbar .container').height();
-    let $docsContainer = $('#docs-container');
-    let $parentContainer = $('.parent-container');
+    const $docsContainer = $('#docs-container');
+    const $parentContainer = $('.parent-container');
 
     $search.click(func.search);
 
@@ -39,12 +34,11 @@ window.onload = () => {
       $keywords.val('').focus();
     });
 
-    setHeight($height, $docsContainer, $parentContainer);
+    setHeight($docsContainer, $parentContainer);
 
-    $window.resize(() => {
-      $height = $('.navbar .container').height();
-      setHeight($height, $docsContainer, $parentContainer);
-    });
+    $window.scroll(() => { onScroll($window) });
+
+    $window.resize(() => { onResize($docsContainer, $parentContainer) });
   }
 
   init();
