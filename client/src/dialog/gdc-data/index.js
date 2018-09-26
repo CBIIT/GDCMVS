@@ -1,6 +1,6 @@
 import tmpl from './view';
 import api from '../../api';
-import shared from '../../shared';
+import { getHeaderOffset } from '../../shared';
 
 export default function gdcData(prop, tgt, keyword) {
   api.getGDCDataById(prop, function (id, items) {
@@ -68,7 +68,7 @@ export default function gdcData(prop, tgt, keyword) {
       items: items
     });
 
-    let tp = (window.innerHeight * 0.2 < shared.headerOffset()) ? 20 :
+    let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 :
       window.innerHeight * 0.2;
 
     //display result in a table
@@ -110,8 +110,8 @@ export default function gdcData(prop, tgt, keyword) {
         }
 
         var target = $(this).parent();
-        if ((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()) {
-          target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20) + 'px');
+        if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
+          target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
         }
 
         $('#close_gdc_data').bind('click', function () {
@@ -150,7 +150,7 @@ export default function gdcData(prop, tgt, keyword) {
       alertError.text('Error ' + status + ': ' + errorThrown);
       alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
       let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-      alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+      alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
         alertError.css({'display': 'none'})
       });
   });

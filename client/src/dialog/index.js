@@ -1,6 +1,6 @@
 import tmpl from './view';
 import api from '../api';
-import shared from '../shared';
+import { getHeaderOffset } from '../shared';
 import gdcData from './gdc-data';
 import gdcTerms from './gdc-terms';
 import cdeData from './cde-data';
@@ -37,7 +37,7 @@ const func = {
 
         let html = $.templates(tmpl.toCompare).render({items: items});
 
-        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < getHeaderOffset() )? 20 : window.innerHeight * 0.2;
         //display result in a table
         $(document.body).append(html);
         $("#compare_dialog").dialog({
@@ -55,8 +55,8 @@ const func = {
                 var target = $(this).parent();
                 target.find('.ui-dialog-titlebar').css('padding','15px');
                 target.find('.ui-dialog-titlebar-close').html('');
-                if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                    target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+                if((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()){
+                    target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20)+'px');
                 }
 
                 $('#cp_result').css("display", "none");
@@ -84,7 +84,7 @@ const func = {
         alertError.text('Error ' + status + ': ' + errorThrown);
         alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
         let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+        alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
           alertError.css({'display': 'none'})
         });
     });
@@ -106,7 +106,7 @@ const func = {
                         +'<div id="compareGDC_result"></div>'
                     +'</div>';
         $(document.body).append(popup);
-        let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? shared.headerOffset() + 20 : window.innerHeight * 0.2;
+        let tp = (window.innerHeight * 0.2 < getHeaderOffset() )? getHeaderOffset() + 20 : window.innerHeight * 0.2;
         let toV = [];
         let fromV = [];
         let opt = {};
@@ -143,8 +143,8 @@ const func = {
                     var target = $(this).parent();
                     target.find('.ui-dialog-titlebar').css('padding','15px').append(titleComponent);
                     target.find('.ui-dialog-titlebar-close').html('');
-                    if((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()){
-                        target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20)+'px');
+                    if((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()){
+                        target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20)+'px');
                     }
 
                     $('#compareGDC_filter').bind('click', function(){
@@ -174,7 +174,7 @@ const func = {
       alertError.text('Error ' + status + ': ' + errorThrown);
       alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
       let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-      alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+      alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
         alertError.css({'display': 'none'})
       });
     });

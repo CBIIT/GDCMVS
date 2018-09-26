@@ -2,7 +2,7 @@ import trs from './result-table/';
 import ps from './props-table/';
 import vs from './values-table/';
 import tabs from './tabs/'
-import shared from './shared'
+import { getHeaderOffset } from './shared'
 
 export default function render(keyword, option, items) {
   let html = "";
@@ -170,7 +170,7 @@ export default function render(keyword, option, items) {
     var alertSuggest = $('#alert-suggest');
     alertSuggest.removeClass('animated fadeInDownUp').css({ 'display': 'none' });
     var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertSuggest.css({ 'display': 'block', 'top': (shared.headerOffset() + 20) + 'px' }).addClass('animated fadeInDownUp').one(animationEnd, function () {
+    alertSuggest.css({ 'display': 'block', 'top': (getHeaderOffset() + 20) + 'px' }).addClass('animated fadeInDownUp').one(animationEnd, function () {
       alertSuggest.css({ 'display': 'none' })
     });
   });
