@@ -3,9 +3,9 @@ import dialog from './dialog/';
 import render from './render';
 import api from './api';
 
-window.onload = function () {
+window.onload = () => {
 
-  function _init() {
+  const _init = () => {
 
     let $window = $(window);
     let $document = $(document);
@@ -28,7 +28,7 @@ window.onload = function () {
 
     $document.on('click', func.removeBox);
 
-    $searchClear.click(function () {
+    $searchClear.click(() => {
       $(this).hide();
       $keywords.val('').focus();
     });
@@ -36,12 +36,11 @@ window.onload = function () {
     $docsContainer.attr('style', 'margin-top: ' + ($height - 54) + 'px !important');
     $parentContainer.attr('style', 'min-height: calc(100vh - ' + ($height + 10) + 'px)');
 
-    $window.resize(function () {
+    $window.resize(() => {
       $height = $('.navbar .container').height();
       $docsContainer.attr('style', 'margin-top: ' + ($height - 54) + 'px !important');
       $parentContainer.attr('style', 'min-height: calc(100vh - ' + ($height + 10) + 'px)');
     });
-
   }
 
   _init();
