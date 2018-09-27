@@ -64,22 +64,6 @@
   display: none;
 }
 
-.alert__suggest {
-  position: fixed;
-  top: 10em;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #166aa2;
-  font-weight: bold;
-  padding: 1rem 1rem;
-  border: 1px solid #166aa2 !important;
-  border-left: solid 5px #166aa2 !important;
-  background-color: #daf2fb !important;
-  z-index: 999;
-  border-radius: initial;
-  animation-duration: 4s;
-}
-
 .dropdown-menu__gdc-links > li > a {
   font-size: 1.3rem;
   color: #3a3a3a;
@@ -93,30 +77,4 @@
   font-weight: bold;
   color: #888888;
   font-size: 13px;
-}
-
-@keyframes fadeInDownUp {
-  from {
-    opacity: 0;
-    transform: translate3d(-50%, -100%, 0);
-  }
-
-  20% {
-    opacity: 1;
-    transform: translate3d(-50%, 0, 0);
-  }
-
-  80% {
-    opacity: 1;
-    transform: translate3d(-50%, 0, 0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(-50%, -100%, 0);
-  }
-}
-
-.fadeInDownUp {
-  animation-name: fadeInDownUp;
 }
