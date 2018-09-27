@@ -14,7 +14,7 @@ export const apiSearchAll = (keyword, option, callback) => {
       errorNotification(xhr.status, errorThrown);
     });
 }
-export const apiGetGDCDataById = (id, callback, error) => {
+export const apiGetGDCDataById = (id, callback) => {
   $.getJSON(`${baseUrl}/p/local/vs`, {id:id}, function(result){
       callback(id,result);
     }).fail(function(xhr, textStatus, errorThrown){
@@ -22,7 +22,7 @@ export const apiGetGDCDataById = (id, callback, error) => {
     });
 }
 
-export const apiGetCDEDataById = (id, callback, error) => {
+export const apiGetCDEDataById = (id, callback) => {
   $.getJSON(`${baseUrl}/p/cde/vs`, {id:id}, function(result){
       callback(id,result);
     }).fail(function(xhr, textStatus, errorThrown){
@@ -30,7 +30,7 @@ export const apiGetCDEDataById = (id, callback, error) => {
     });
 }
 
-export const apiGetGDCandCDEDataById = (ids, callback, error) => {
+export const apiGetGDCandCDEDataById = (ids, callback) => {
   $.getJSON(`${baseUrl}/p/both/vs`, {local:ids.local, cde: ids.cde}, function(result){
       callback(ids,result);
     }).fail(function(xhr, textStatus, errorThrown){
@@ -38,10 +38,10 @@ export const apiGetGDCandCDEDataById = (ids, callback, error) => {
     });
 }
 
-export const apiEVSRest = (id, callback, error) => {
+export const apiEVSRest = (id, callback) => {
   $.getJSON(`${baseUrl}/ncit/detail?code=${id}`, function(result){
-    callback(id,result);
-  }).fail(function(xhr, textStatus, errorThrown){
-    errorNotification(xhr.status, errorThrown);
-  });
+      callback(id,result);
+    }).fail(function(xhr, textStatus, errorThrown){
+      errorNotification(xhr.status, errorThrown);
+    });
 }

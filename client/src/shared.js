@@ -2,6 +2,7 @@
 let prevScrollOffset = 0;
 let headerHeight = $('.navbar .container').height();
 let headerOffset = headerHeight;
+let notificationOn = false;
 
 export const getHeaderOffset = () => headerOffset;
 
@@ -9,7 +10,7 @@ export const onScroll = ($window) => {
   let currentScrollOffset = $window.scrollTop();
   let delta = currentScrollOffset - prevScrollOffset;
 
-  if(delta > 0) {
+  if (delta > 0) {
     headerOffset = headerHeight - 64;
     prevScrollOffset = currentScrollOffset;
   } else {
@@ -30,11 +31,16 @@ export const setHeight = ($docsContainer, $parentContainer) => {
 }
 
 export const errorNotification = (status, errorThrown) => {
+  if (notificationOn === true) return;
+  notificationOn = true;
   //todo: close progress bar
   $('#gdc-loading-icon').fadeOut('fast');
   //show the notification alert error
   let $alertError = $('#alert-error');
   $alertError.text('Error ' + status + ': ' + errorThrown);
   $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
-  setTimeout(function () { $alertError.removeClass('alert__show') }, 3900);
+  setTimeout(() => {
+    $alertError.removeClass('alert__show');
+    notificationOn = false;
+  }, 3900);
 };
