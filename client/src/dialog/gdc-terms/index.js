@@ -195,12 +195,8 @@ export default function getGDCTerms(uid, tgts) {
 
   }, function(status, errorThrown) {
     //show the notification alert error
-    let alertError = $('#alert-error');
-    alertError.text('Error ' + status + ': ' + errorThrown);
-    alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
-    let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertError.css({'display': 'block', 'top': (getHeaderOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
-      alertError.css({'display': 'none'})
-    });
+    let $alertError = $('#alert-error');
+    $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
+    setTimeout(function () { $alertError.removeClass('alert__show') }, 3900);
   });
 }
