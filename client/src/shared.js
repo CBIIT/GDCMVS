@@ -28,3 +28,13 @@ export const setHeight = ($docsContainer, $parentContainer) => {
   $docsContainer.attr('style', 'margin-top: ' + (headerHeight - 54) + 'px !important');
   $parentContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
 }
+
+export const errorNotification = (status, errorThrown) => {
+  //todo: close progress bar
+  $('#gdc-loading-icon').fadeOut('fast');
+  //show the notification alert error
+  let $alertError = $('#alert-error');
+  $alertError.text('Error ' + status + ': ' + errorThrown);
+  $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
+  setTimeout(function () { $alertError.removeClass('alert__show') }, 3900);
+};

@@ -1,9 +1,9 @@
 import tmpl from './view';
-import api from '../../api';
+import { apiGetGDCDataById } from '../../api';
 import { getHeaderOffset } from '../../shared';
 
 export default function gdcData(prop, tgt, keyword) {
-  api.getGDCDataById(prop, function (id, items) {
+  apiGetGDCDataById(prop, function (id, items) {
 
     if ($('#gdc_data').length) {
       $('#gdc_data').remove();
@@ -11,7 +11,7 @@ export default function gdcData(prop, tgt, keyword) {
     let windowEl = $(window);
     let icdo = false;
     let new_items = [];
-    let tmp_obj ={};
+    let tmp_obj = {};
     // RegExp Keyword
     // Don't replace with anything, if keyword is null
     keyword = keyword === null ? '@#$%^' : keyword;
@@ -19,10 +19,10 @@ export default function gdcData(prop, tgt, keyword) {
 
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
-        if(item.i_c.c in tmp_obj){
+        if (item.i_c.c in tmp_obj) {
           tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>"));
-        }else{
-          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: [item.n.replace(reg_key, "<b>$&</b>")]};
+        } else {
+          tmp_obj[item.i_c.c] = { c: item.i_c.c, have: item.i_c.have, n: [item.n.replace(reg_key, "<b>$&</b>")] };
         }
       }
     });
@@ -31,7 +31,7 @@ export default function gdcData(prop, tgt, keyword) {
         icdo = true;
       }
       if (item.gdc_d === true) {
-        if(tmp_obj[item.n] !== undefined){
+        if (tmp_obj[item.n] !== undefined) {
           let tmp_data = {};
           tmp_data.n = item.n.replace(reg_key, "<b>$&</b>");
           tmp_data.i_c = tmp_obj[item.n];
@@ -55,7 +55,7 @@ export default function gdcData(prop, tgt, keyword) {
 
     items = new_items;
 
-    let target = tgt === null  || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+    let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
     let header = $.templates(tmpl.header).render({
       target: target,
       icdo: icdo,
@@ -80,7 +80,7 @@ export default function gdcData(prop, tgt, keyword) {
       maxWidth: 700
     }
 
-    if(icdo){
+    if (icdo) {
       dialog_width.width = 700;
       dialog_width.minWidth = 600;
       dialog_width.maxWidth = 900;
@@ -144,7 +144,7 @@ export default function gdcData(prop, tgt, keyword) {
       });
     }
 
-  }, function(status, errorThrown) {
+  }, function (status, errorThrown) {
     //show the notification alert error
     let $alertError = $('#alert-error');
     $alertError.text('Error ' + status + ': ' + errorThrown);

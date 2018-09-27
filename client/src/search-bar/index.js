@@ -1,4 +1,4 @@
-import api from '../api';
+import { apiSuggest, apiSearchAll } from '../api';
 import render from '../render';
 import tmpl from './view';
 import { getHeaderOffset } from '../shared';
@@ -47,7 +47,7 @@ export const clickSearch = ($keywords) => {
   //todo:show progress bar
   $('#gdc-loading-icon').fadeIn(100);
 
-  api.searchAll(keyword, option, function (keyword, option, items) {
+  apiSearchAll(keyword, option, function (keyword, option, items) {
 
     //Save the data in localStorage
     localStorage.setItem('keyword', keywordCase);
@@ -57,14 +57,6 @@ export const clickSearch = ($keywords) => {
     render(keywordCase, option, items);
     //todo: close progress bar
     $('#gdc-loading-icon').fadeOut('fast');
-  }, function (status, errorThrown) {
-    //todo: close progress bar
-    $('#gdc-loading-icon').fadeOut('fast');
-    //show the notification alert error
-    let $alertError = $('#alert-error');
-    $alertError.text('Error ' + status + ': ' + errorThrown);
-    $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
-    setTimeout(function () { $alertError.removeClass('alert__show') }, 3900);
   });
 }
 
@@ -121,7 +113,7 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox) => {
     return;
   }
 
-  api.suggest($(event.currentTarget).val(), function (result) {
+  apiSuggest($this.val(), function (result) {
     if (result.length === 0) {
       $suggestBox.hide().html('');
       displayBoxIndex = -1;
@@ -140,9 +132,9 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox) => {
   });
 }
 
-export const removeBox = (event) => {
-  if ($(event.currentTarget) != $("#suggestBox")) {
-    $("#suggestBox").css("display", "none");
+export const removeBox = (event, $suggestBox) => {
+  if ($(event.currentTarget) != $suggestBox) {
+    $suggestBox.hide();
     displayBoxIndex = -1;
   }
 }
