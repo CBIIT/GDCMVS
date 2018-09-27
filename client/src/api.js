@@ -13,10 +13,10 @@ const api = {
     fetch(baseUrl+'/all/p?'+ $.param({keyword:keyword, option: JSON.stringify(option)}))
       .then(result => {
         if(result.ok === false) throw result;
-        return result.json();
-      })
-      .then(data =>{
-        callback(keyword, option, data);
+        result.json()
+          .then(data =>{
+            callback(keyword, option, data);
+          });
       })
       .catch(err => {
         error(err.status, err.statusText);
