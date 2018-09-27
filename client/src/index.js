@@ -1,7 +1,6 @@
 import * as search from './search-bar/';
 import dialog from './dialog/';
 import render from './render';
-import api from './api';
 import { onResize, onScroll, setHeight } from './shared';
 
 window.onload = () => {
@@ -33,7 +32,9 @@ window.onload = () => {
       search.suggest(event, $keywords, $searchClear, $suggestBox);
     });
 
-    $document.click(search.removeBox);
+    $document.click((event) => {
+      search.removeBox(event, $suggestBox)
+    });
 
     $searchClear.click((event) => {
       search.clearSearch(event, $keywords);

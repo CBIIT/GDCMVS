@@ -1,9 +1,9 @@
 import tmpl from './view';
-import api from '../../api';
+import { apiGetGDCDataById } from '../../api';
 import { getHeaderOffset } from '../../shared';
 
 export default function getGDCTerms(uid, tgts) {
-  api.getGDCDataById(uid, function (id, items) {
+  apiGetGDCDataById(uid, function (id, items) {
     if ($('#gdc_terms_data').length) {
       $('#gdc_terms_data').remove();
     }
@@ -41,7 +41,7 @@ export default function getGDCTerms(uid, tgts) {
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
           if (tmp_obj[item.i_c.c].checker_n_c.indexOf(item.n_c) == -1) {
-            if(item.n_c !== "" && item.s.length !== 0) {
+            if (item.n_c !== "" && item.s.length !== 0) {
               tmp_obj[item.i_c.c].n_syn.push({
                 n_c: item.n_c,
                 s: item.s,
@@ -125,7 +125,7 @@ export default function getGDCTerms(uid, tgts) {
       maxWidth: 900
     }
 
-    if(icdo){
+    if (icdo) {
       dialog_width.width = 900;
       dialog_width.minWidth = 900;
       dialog_width.maxWidth = 1000;
@@ -193,7 +193,7 @@ export default function getGDCTerms(uid, tgts) {
       });
     }
 
-  }, function(status, errorThrown) {
+  }, function (status, errorThrown) {
     //show the notification alert error
     let $alertError = $('#alert-error');
     $alertError.text('Error ' + status + ': ' + errorThrown);
