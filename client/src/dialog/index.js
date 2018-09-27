@@ -81,6 +81,7 @@ const func = {
     }, function(status, errorThrown) {
       //show the notification alert error
       let $alertError = $('#alert-error');
+      $alertError.text('Error ' + status + ': ' + errorThrown);
       $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
       setTimeout(function () { $alertError.removeClass('alert__show') }, 3900);
     });
@@ -167,6 +168,7 @@ const func = {
     }, function(status, errorThrown) {
       //show the notification alert error
       let $alertError = $('#alert-error');
+      $alertError.text('Error ' + status + ': ' + errorThrown);
       $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
       setTimeout(function () { $alertError.removeClass('alert__show') }, 3900);
     });
