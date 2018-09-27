@@ -167,12 +167,9 @@ export default function render(keyword, option, items) {
 
   $('.cde-suggest').click(function (event) {
     event.preventDefault();
-    var alertSuggest = $('#alert-suggest');
-    alertSuggest.removeClass('animated fadeInDownUp').css({ 'display': 'none' });
-    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    alertSuggest.css({ 'display': 'block', 'top': (getHeaderOffset() + 20) + 'px' }).addClass('animated fadeInDownUp').one(animationEnd, function () {
-      alertSuggest.css({ 'display': 'none' })
-    });
+    let alertSuggest = $('#alert-suggest');
+    alertSuggest.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
+    setTimeout(function () { alertSuggest.removeClass('alert__show') }, 3900);
   });
 
   var windowEl = $(window);

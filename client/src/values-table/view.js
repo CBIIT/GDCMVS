@@ -122,9 +122,4 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
 
 +'</div> {{/for}} </div></div></div>'
 
-+'<div id="alert-suggest" class="alert alert__suggest alert-info alert-dismissible" role="alert" style="display: none;">'
-  +'Coming soon: users will be able to suggest new vocabulary terms to the GDC via this link.'
-+'</div>';
-
-
 export default tmpl;
