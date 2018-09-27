@@ -17,8 +17,15 @@ window.onload = () => {
 
     const $docsContainer = $('#docs-container');
     const $parentContainer = $('.parent-container');
+    const $gdcLoadingIcon = $('#gdc-loading-icon');
 
-    $search.click(() => { search.clickSearch($keywords) });
+    search.removeExternalLinkIcons();
+
+    search.renderLocalStorach($keywords, $searchClear, $gdcLoadingIcon);
+
+    $search.click(() => {
+      search.clickSearch($keywords, $suggestBox, $gdcLoadingIcon)
+    });
 
     $keywords.keypress((event) => {
       search.enterSearch(event, $keywords, $search);
@@ -49,6 +56,7 @@ window.onload = () => {
     $window.resize(() => {
       onResize($docsContainer, $parentContainer);
     });
+
   }
 
   init();
@@ -322,48 +330,3 @@ function findWord(words) {
 };
 
 window.findWord = findWord;
-
-$(function () {
-
-  $('#body a[href^="http"]').each(function () {
-    let anchor = $(this);
-    anchor.removeClass('external-link');
-    anchor.html($.trim(anchor[0].innerText));
-  });
-
-  if (localStorage.hasOwnProperty('keyword') &&
-    localStorage.hasOwnProperty('option') &&
-    localStorage.hasOwnProperty('items')) {
-
-    $('#gdc-loading-icon').show();
-
-    setTimeout(function () {
-
-      let keyword = localStorage.getItem('keyword');
-      let option = JSON.parse(localStorage.getItem('option'));
-      let items = JSON.parse(localStorage.getItem('items'));
-
-      if (keyword != null || option != null || items != null) {
-
-        $("#keywords").val(keyword);
-
-        if (option.match != 'partial') {
-          $("#i_ematch").prop('checked', true);
-        }
-        if (option.desc != false) {
-          $("#i_desc").prop('checked', true);
-        }
-        if (option.syn != false) {
-          $("#i_syn").prop('checked', true);
-        }
-
-        $('#searchclear').show();
-
-        render(keyword, option, items);
-        //todo: close progress bar
-        $('#gdc-loading-icon').fadeOut('fast');
-      }
-
-    }, 100);
-  }
-});
