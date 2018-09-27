@@ -1,6 +1,6 @@
-import tmpl from './view';
+import tmpl from './tabs.html';
 
-export default function (trsHtml, psHtml, vsHtml, keyword) {
+export default (trsHtml, psHtml, vsHtml, keyword) => {
 
   let html = $.templates(tmpl).render({
     trs_active: trsHtml.active,

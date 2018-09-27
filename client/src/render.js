@@ -1,7 +1,7 @@
 import trs from './result-table/';
 import ps from './props-table/';
 import vs from './values-table/';
-import tabs from './tabs/'
+import tabs from './tabs/tabs'
 import { getHeaderOffset } from './shared'
 
 export default function render(keyword, option, items) {

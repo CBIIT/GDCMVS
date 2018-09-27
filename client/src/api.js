@@ -14,6 +14,7 @@ export const apiSearchAll = (keyword, option, callback) => {
       errorNotification(xhr.status, errorThrown);
     });
 }
+
 export const apiGetGDCDataById = (id, callback) => {
   $.getJSON(`${baseUrl}/p/local/vs`, {id:id}, function(result){
       callback(id,result);
