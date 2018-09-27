@@ -377,5 +377,5 @@ a:hover, a:focus {
 @import url(./dialog/style.css);
 @import url(./result-table/style.css);
 @import url(./search-bar/style.css);
-@import url(./tabs/style.css);
+@import url(./tabs/tabs.css);
 @import url(./values-table/style.css);
