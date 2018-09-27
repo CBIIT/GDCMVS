@@ -28,7 +28,7 @@ const getOption = (activeTab) => {
   return option;
 }
 
-export const clickSearch = ($keywords) => {
+export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val();
   let keyword = keywordCase.toLowerCase();
   let activeTab = getActiveTap();
@@ -41,11 +41,11 @@ export const clickSearch = ($keywords) => {
     return;
   }
   //hide suggestBox
-  $("#suggestBox").hide();
+  $suggestBox.hide();
   displayBoxIndex = -1;
 
   //todo:show progress bar
-  $('#gdc-loading-icon').fadeIn(100);
+  $gdcLoadingIcon.fadeIn(100);
 
   apiSearchAll(keyword, option, function (keyword, option, items) {
 
@@ -56,7 +56,7 @@ export const clickSearch = ($keywords) => {
 
     render(keywordCase, option, items);
     //todo: close progress bar
-    $('#gdc-loading-icon').fadeOut('fast');
+    $gdcLoadingIcon.fadeOut('fast');
   });
 }
 
@@ -143,4 +143,51 @@ export const clearSearch = (event, $keywords) => {
   event.preventDefault();
   $(event.currentTarget).hide();
   $keywords.val('').focus();
+}
+
+export const removeExternalLinkIcons = () => {
+  $('#body a[href^="http"]').each((index, element) => {
+    let $this = $(element);
+    $this.removeClass('external-link');
+    $this.html($.trim($this[0].innerText));
+  });
+}
+
+export const renderLocalStorach = ($keywords, $searchClear, $gdcLoadingIcon) => {
+
+  if (localStorage.hasOwnProperty('keyword') &&
+    localStorage.hasOwnProperty('option') &&
+    localStorage.hasOwnProperty('items')) {
+
+      $gdcLoadingIcon.show();
+
+    setTimeout(() => {
+
+      let keyword = localStorage.getItem('keyword');
+      let option = JSON.parse(localStorage.getItem('option'));
+      let items = JSON.parse(localStorage.getItem('items'));
+
+      if (keyword != null || option != null || items != null) {
+
+        $keywords.val(keyword);
+
+        if (option.match != 'partial') {
+          $("#i_ematch").prop('checked', true);
+        }
+        if (option.desc != false) {
+          $("#i_desc").prop('checked', true);
+        }
+        if (option.syn != false) {
+          $("#i_syn").prop('checked', true);
+        }
+
+        $searchClear.show();
+
+        render(keyword, option, items);
+        //todo: close progress bar
+        $gdcLoadingIcon.fadeOut('fast');
+      }
+
+    }, 100);
+  }
 }
