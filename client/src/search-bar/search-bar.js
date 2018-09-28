@@ -1,6 +1,6 @@
 import { apiSuggest, apiSearchAll } from '../api';
 import render from '../render';
-import tmpl from './view';
+import tmpl from './search-bar.html';
 import { getHeaderOffset } from '../shared';
 
 let displayBoxIndex = -1;
@@ -9,7 +9,7 @@ const getActiveTap = () => {
   let value = 0
   let count = 0;
   $('.tab-nav__li').each((index, element) => {
-    if ($(element).hasClass("active")) {
+    if ($(element).hasClass('active')) {
       value = count;
     }
     count++;
@@ -20,9 +20,9 @@ const getActiveTap = () => {
 const getOption = (activeTab) => {
   let option = {}
   //get options values
-  option.desc = $("#i_desc").prop('checked');
-  option.syn = $("#i_syn").prop('checked');
-  option.match = $("#i_ematch").prop('checked') ? "exact" : "partial";
+  option.desc = $('#i_desc').prop('checked');
+  option.syn = $('#i_syn').prop('checked');
+  option.match = $('#i_ematch').prop('checked') ? 'exact' : 'partial';
   option.activeTab = option.desc ? 1 : activeTab;
 
   return option;
@@ -34,7 +34,7 @@ export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
   let activeTab = getActiveTap();
   let option = getOption(activeTab);
 
-  if (keywordCase == "") {
+  if (keywordCase == '') {
     option.error = true;
     $keywords.addClass('search-bar__input--has-error');
     render(keywordCase, option, []);
@@ -44,10 +44,10 @@ export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
   $suggestBox.hide();
   displayBoxIndex = -1;
 
-  //todo:show progress bar
+  //show progress bar
   $gdcLoadingIcon.fadeIn(100);
 
-  apiSearchAll(keyword, option, function (keyword, option, items) {
+  apiSearchAll(keyword, option, (keyword, option, items) => {
 
     //Save the data in localStorage
     localStorage.setItem('keyword', keywordCase);
@@ -55,24 +55,23 @@ export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
     localStorage.setItem('items', JSON.stringify(items));
 
     render(keywordCase, option, items);
-    //todo: close progress bar
+    //close progress bar
     $gdcLoadingIcon.fadeOut('fast');
   });
 }
 
 export const enterSearch = (event, $keywords, $search) => {
-  const $selectedSuggest = $("#suggestBox .selected");
-
+  const $selectedSuggest = $('#suggestBox .selected');
+  const selectedTerm = $selectedSuggest.children('.suggest__name').text();;
   if (event.keyCode == 13) {
     event.preventDefault();
   }
   if (event.keyCode == 13 && $selectedSuggest.length !== 0) {
-    let term = $selectedSuggest.text();
-    $keywords.val(term.substr(0, term.length - 1));
-    $search.trigger("click");
+    $keywords.val(selectedTerm);
+    $search.trigger('click');
   }
   else if (event.keyCode == 13) {
-    $search.trigger("click");
+    $search.trigger('click');
   }
 }
 
@@ -80,13 +79,13 @@ export const selectSuggestion = (event, $suggestBox) => {
   let $this = $(event.currentTarget);
 
   if ((event.keyCode == 40 || event.keyCode == 38) &&
-    $this.val().trim() !== "" &&
+    $this.val().trim() !== '' &&
     $suggestBox.css('display') != 'none') {
 
     event.preventDefault();
     //focus to the first element
     displayBoxIndex += (event.keyCode == 40 ? 1 : -1);
-    let $boxCollection = $suggestBox.find("div");
+    let $boxCollection = $suggestBox.find('div');
     if (displayBoxIndex >= $boxCollection.length) {
       displayBoxIndex = 0;
     }
@@ -113,14 +112,14 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox) => {
     return;
   }
 
-  apiSuggest($this.val(), function (result) {
-    if (result.length === 0) {
+  apiSuggest($this.val(), (results) => {
+    if (results.length === 0) {
       $suggestBox.hide().html('');
       displayBoxIndex = -1;
       return;
     }
 
-    let html = $.templates(tmpl).render({ options: result });;
+    let html = $.templates(tmpl).render({ results: results });;
     displayBoxIndex = -1;
 
     $suggestBox.show().html(html);
@@ -159,7 +158,7 @@ export const renderLocalStorach = ($keywords, $searchClear, $gdcLoadingIcon) => 
     localStorage.hasOwnProperty('option') &&
     localStorage.hasOwnProperty('items')) {
 
-      $gdcLoadingIcon.show();
+    $gdcLoadingIcon.show();
 
     setTimeout(() => {
 
@@ -172,19 +171,19 @@ export const renderLocalStorach = ($keywords, $searchClear, $gdcLoadingIcon) => 
         $keywords.val(keyword);
 
         if (option.match != 'partial') {
-          $("#i_ematch").prop('checked', true);
+          $('#i_ematch').prop('checked', true);
         }
         if (option.desc != false) {
-          $("#i_desc").prop('checked', true);
+          $('#i_desc').prop('checked', true);
         }
         if (option.syn != false) {
-          $("#i_syn").prop('checked', true);
+          $('#i_syn').prop('checked', true);
         }
 
         $searchClear.show();
 
         render(keyword, option, items);
-        //todo: close progress bar
+        //close progress bar
         $gdcLoadingIcon.fadeOut('fast');
       }
 

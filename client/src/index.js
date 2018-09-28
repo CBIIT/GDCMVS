@@ -1,4 +1,4 @@
-import * as search from './search-bar/';
+import * as search from './search-bar/search-bar';
 import dialog from './dialog/';
 import render from './render';
 import { onResize, onScroll, setHeight } from './shared';
@@ -10,8 +10,8 @@ window.onload = () => {
     const $window = $(window);
     const $document = $(document);
 
-    const $search = $("#search");
-    const $keywords = $("#keywords");
+    const $search = $('#search');
+    const $keywords = $('#keywords');
     const $searchClear = $('#searchclear');
     const $suggestBox = $('#suggestBox');
 
