@@ -1,4 +1,4 @@
-import tmpl from './view';
+import tmpl from './props-table.html';
 
 export default (items, keyword) => {
   //data preprocessing
