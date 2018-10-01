@@ -47,7 +47,7 @@
 }
 
 .table__ul{
-  padding-left: 20px;
+  padding-left: 15px;
   list-style:none;
 }
 
@@ -58,6 +58,7 @@
   margin:0 5px 0 -15px;
   color: #acacac;
   transform: rotate(45deg);
+  position: absolute;
 }
 
 .table__row--toggle {
