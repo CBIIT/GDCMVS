@@ -1,0 +1,128 @@
+<div class="container table__container">
+  <div class="table__thead row">
+    <div class="col-xs-4">
+      <div class="table__th">Name</div>
+    </div>
+    <div class="col-xs-4">
+      <div class="table__th">Description</div>
+    </div>
+    <div class="col-xs-4">
+      <div class="table__th table__th--right">
+        <div class="checkbox checkbox-th">
+          <label class="checkbox__label">
+            <input class="checkbox__input" id="trs-checkbox" type="checkbox" value="">
+            <span class="checkbox__btn">
+              <i class="checkbox__icon fa fa-check"></i>
+            </span> Show all values
+          </label>
+        </div>
+        <button type="button" id="trs_toggle" class="btn btn-th" data-toggle="button" aria-pressed="false" autocomplete="off">
+          <i class="btn-th__icon fa fa-angle-down"></i> Expand All
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="table__body table__body--overflow row" style="max-height: {{:options.height}}px;">
+    <div class="col-xs-12">
+      <ul id="treeview" class="treeview">{{for newtrs}}
+        <li class="treeview__{{:type}} treeview__parent">
+          <div class="treeview__row row">
+            <div class="treeview__col col-xs-4">
+              <span class="treeview__indenter">
+                <a href="#" class="treeview__toggle" aria-label="expand">
+                  <i class="fa fa-angle-down"></i>
+                </a>
+              </span>
+              <a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-entity-list&anchor=
+              {{if id == 'data_file' || id == 'metadata_file'}}submittable_data_file{{else}}{{:id}}{{/if}}" {{if ~root.options.redirect}}target="_blank"{{/if}}>
+              {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+              </a>
+            </div>
+            <div class="treeview__col col-xs-8">{{:desc}}</div>
+          </div>
+          <ul class="treeview__ul">
+            {{for nodes}}
+            <li class="treeview__{{:type}} treeview__parent">
+              <div class="treeview__row row">
+                <div class="treeview__col col-xs-4">
+                  <span class="treeview__indenter">
+                    <a href="#" class="treeview__toggle" aria-label="expand">
+                      <i class="fa fa-angle-down"></i>
+                    </a>
+                  </span>
+                  <a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}"
+                    {{if ~root.options.redirect}}target="_blank" {{/if}}>
+                    {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+                  </a>
+                </div>
+                <div class="treeview__col col-xs-8">{{:desc}}</div>
+              </div>
+              <ul class="treeview__ul">{{for properties}}
+                <li class="treeview__{{:type}} treeview__parent">
+                  <div class="treeview__row row">
+                    <div class="treeview__col col-xs-4">
+                      <span class="treeview__indenter">{{if hl_values.length || all_values.length}}
+                        <a href="#" class="treeview__toggle" aria-label="expand">
+                          <i class="fa fa-angle-down"></i>
+                        </a>{{/if}}</span>
+                      <a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:parent_l_id}}&anchor={{:l_id}}"
+                        {{if ~root.options.redirect}}target="_blank" {{/if}}>
+                        {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+                      </a>
+                    </div>
+                    <div class="treeview__col col-xs-8">{{:desc}}</div>
+                  </div>
+                  <ul class="treeview__ul treeview__ul--hl">
+                  {{if hl_values.length}}
+                    {{for hl_values}}
+                    <li class="treeview__{{:type}}">
+                      <div class="treeview__row row">
+                        <div class="treeview__col col-xs-4">{{:title}}</div>
+                        <div class="treeview__col col-xs-8"></div>
+                      </div>
+                    </li>
+                    {{/for}}
+                  {{else}}
+                    {{if link_values.length}}
+                      {{for link_values}}
+                      <li class="treeview__{{:type}}">
+                        <div class="treeview__row row">
+                          <div class="treeview__col col-xs-4">
+                            {{if l_type == "cde"}} No values in GDC, reference values in
+                            <a href="javascript:getCDEData('{{:l_id}}');"
+                              class="table-td-link">caDSR</a>
+                            {{else}} No values in GDC, concept referenced in
+                            <a target="_blank" href="{{:url}}" class="table-td-link">NCIt</a>
+                            {{/if}}
+                          </div>
+                          <div class="treeview__col col-xs-8"></div>
+                        </div>
+                      </li>
+                      {{/for}}
+                    {{/if}}
+                  {{/if}}
+                  </ul>
+                  <ul class="treeview__ul--all">
+                  {{if all_values.length}}
+                    {{for all_values}}
+                    <li class="treeview__{{:type}}">
+                      <div class="treeview__row row">
+                        <div class="treeview__col col-xs-4">{{:title}}</div>
+                        <div class="treeview__col col-xs-8"></div>
+                      </div>
+                    </li>
+                    {{/for}}
+                  {{/if}}
+                  </ul>
+                </li>
+                {{/for}}
+              </ul>
+            </li>
+            {{/for}}
+          </ul>
+        </li>
+        {{/for}}
+      </ul>
+    </div>
+  </div>
+</div>
