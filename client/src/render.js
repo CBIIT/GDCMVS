@@ -1,5 +1,5 @@
 import trs from './result-table/';
-import ps from './props-table/';
+import ps from './props-table/props-table';
 import vs from './values-table/';
 import tabs from './tabs/tabs'
 import { getHeaderOffset } from './shared'
@@ -14,7 +14,7 @@ export default function render(keyword, option, items) {
     //render each tab
     let trsHtml = trs.render(data1, keyword);
     trsHtml.active = false;
-    let psHtml = ps.render(data2, keyword);
+    let psHtml = ps(data2, keyword);
     psHtml.active = false;
     let vsHtml = vs.render(data3, keyword);
     vsHtml.active = false;
