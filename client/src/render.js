@@ -1,6 +1,6 @@
 import trs from './result-table/';
 import ps from './props-table/props-table';
-import vs from './values-table/';
+import vs from './values-table/values-table';
 import tabs from './tabs/tabs'
 import { getHeaderOffset } from './shared'
 
@@ -16,7 +16,7 @@ export default function render(keyword, option, items) {
     trsHtml.active = false;
     let psHtml = ps(data2, keyword);
     psHtml.active = false;
-    let vsHtml = vs.render(data3, keyword);
+    let vsHtml = vs(data3, keyword);
     vsHtml.active = false;
     if (trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
