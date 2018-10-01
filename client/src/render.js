@@ -1,4 +1,4 @@
-import trs from './result-table/';
+import dt from './dict-table/dict-table';
 import ps from './props-table/props-table';
 import vs from './values-table/values-table';
 import tabs from './tabs/tabs'
@@ -12,13 +12,13 @@ export default function render(keyword, option, items) {
     let data2 = JSON.parse(JSON.stringify(items));
     let data3 = JSON.parse(JSON.stringify(items));
     //render each tab
-    let trsHtml = trs.render(data1, keyword);
-    trsHtml.active = false;
+    let dtHtml = dt(data1, keyword);
+    dtHtml.active = false;
     let psHtml = ps(data2, keyword);
     psHtml.active = false;
     let vsHtml = vs(data3, keyword);
     vsHtml.active = false;
-    if (trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
+    if (dtHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
     } else {
       if (option.activeTab == 0) {
@@ -26,9 +26,9 @@ export default function render(keyword, option, items) {
       } else if (option.activeTab == 1) {
         psHtml.active = true;
       } else {
-        trsHtml.active = true;
+        dtHtml.active = true;
       }
-      html = tabs(trsHtml, psHtml, vsHtml, keyword);
+      html = tabs(dtHtml, psHtml, vsHtml, keyword);
     }
   } else if (option.error == true) {
     html = '<div class="indicator indicator--has-error">Please, enter a valid keyword!</div>';
