@@ -366,9 +366,9 @@ export default (items, keyword) => {
         let check_n = [];
         row.vs.forEach(function (item) {
           //remove if it's not gdc value
-          if (item.gdc_d !== undefined && !item.gdc_d) {
-            return;
-          }
+          // if (item.gdc_d !== undefined && !item.gdc_d) {
+          //   return;
+          // }
           let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g,"");
           if (item_n in temp_i_c) {
             item.term_i_c = temp_i_c[item_n];
