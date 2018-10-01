@@ -31,7 +31,7 @@ export default function render(keyword, option, items) {
       html = tabs(trsHtml, psHtml, vsHtml, keyword);
     }
   } else if (option.error == true) {
-    html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
+    html = '<div class="indicator indicator--has-error">Please, enter a valid keyword!</div>';
   } else {
     html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
   }
