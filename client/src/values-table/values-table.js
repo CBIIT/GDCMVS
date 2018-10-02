@@ -1,6 +1,7 @@
 import tmpl from './values-table.html';
+import { getHeaderOffset } from '../shared'
 
-export default (items, keyword) => {
+export const vsRender = (items, keyword) => {
   //data preprocessing
   let values = [];
   let len = 0;
@@ -312,7 +313,7 @@ export default (items, keyword) => {
           let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let tt = item.term_type ? item.term_type : "";
-          let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' +tt + ')';
+          let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
           if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
             temp_i_c[item_i_c].n.push(item.n + " " + term_type);
             temp_i_c[item_i_c].n_clr.push(item_n_clr);
@@ -328,7 +329,7 @@ export default (items, keyword) => {
           source.enum.forEach(function (em) {
             if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
               let tt = em.term_type ? em.term_type : "";
-              let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+              let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
               temp_i_c[index_i_c].n.push(em.n + " " + term_type);
               if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
                 //remove depulicates in local synonyms
@@ -358,20 +359,19 @@ export default (items, keyword) => {
                   });
                 }
                 temp_i_c[index_i_c].checker_n_c.push(em.n_c);
-                temp_i_c[index_i_c].n_syn.push({n_c: em.n_c, s: tmp_s });
+                temp_i_c[index_i_c].n_syn.push({ n_c: em.n_c, s: tmp_s });
               }
             }
           });
         }
 
         let check_n = [];
-        //let cont = 0;
         row.vs.forEach(function (item) {
           //remove if it's not gdc value
           if (item.gdc_d !== undefined && !item.gdc_d) {
             gdc_d_cont++
           }
-          let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g,"");
+          let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
           if (item_n in temp_i_c) {
             item.term_i_c = temp_i_c[item_n];
             check_n.push(item_n);
@@ -426,4 +426,64 @@ export default (items, keyword) => {
   result.html = html;
   return result;
 
+}
+
+export const vsEvents = () => {
+  $('.table__toggle').click(function (event) {
+    event.preventDefault();
+    let $this = $(this);
+    let $target = $(this).closest('.table__gdc-values, .table__cde-values').find('.data-content');
+    $target.slideToggle(400, function () {
+      if ($target.is(":visible")) {
+        $this.attr('title', 'collapse');
+        $this.attr('aria-label', 'collapse');
+        $this.attr('aria-expanded', 'true');
+        $this.html('<i class="fa fa-minus"></i>');
+      } else {
+        $this.attr('title', 'expand');
+        $this.attr('aria-label', 'expand');
+        $this.attr('aria-expanded', 'false');
+        $this.html('<i class="fa fa-plus"></i>');
+      }
+    });
+  });
+
+  $('.gdc-details').click(function (event) {
+    event.preventDefault();
+    let $this = $(this);
+    let $target = $(this).parent().find('.gdc-links');
+    $target.slideToggle(350, function () {
+      if ($target.is(":visible")) {
+        $this.attr('aria-expanded', 'true');
+      } else {
+        $this.attr('aria-expanded', 'false');
+      }
+    });
+  });
+
+  $('.cde-suggest').click(function (event) {
+    event.preventDefault();
+    let alertSuggest = $('#alert-suggest');
+    alertSuggest.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
+    setTimeout(function () { alertSuggest.removeClass('alert__show') }, 3900);
+  });
+
+  $('.show-more-less').click(function (event) {
+    event.preventDefault();
+    let $this = $(this);
+    let $target = $(this).closest('.table__values').find('.table__row--toggle');
+    if ($this.hasClass('more')) {
+      $this.removeClass('more');
+      $this.attr('aria-expanded', 'false');
+      $target.slideToggle(350);
+      $this.html('<i class="fa fa-angle-down"></i> Show More (' + $this.attr('data-hidden') + ')');
+    } else {
+      $this.addClass('more');
+      $this.attr('aria-expanded', 'true');
+      $target.slideToggle(350);
+      $this.html('<i class="fa fa-angle-up"></i> Show Less');
+    }
+  });
+
+  $('.tooltip-target').tooltip();
 }
