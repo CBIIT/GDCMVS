@@ -43,3 +43,16 @@ export const errorNotification = (status, errorThrown) => {
     notificationOn = false;
   }, 3900);
 };
+
+export const dialogsOnResize = ($window) => {
+  const dialogs = $('#gdc_data, #gdc_syn_data, #compare_dialog, #caDSR_data, #compareGDC_dialog');
+  if (dialogs.length == 0) return;
+  dialogs.each((index, element) => {
+    const $target = $(element).parent();
+    if ($target.offset().top < headerOffset) {
+      $target.css('top', (headerOffset + 10) + "px");
+    } else if ($window.width() < ($target.offset().left + $target.width())) {
+      $target.css('left', ($window.width() - $target.width() - 10) + "px");
+    }
+  });
+}
