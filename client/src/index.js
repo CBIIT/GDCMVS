@@ -1,7 +1,7 @@
 import * as search from './search-bar/search-bar';
 import dialog from './dialog/';
 import render from './render';
-import { onResize, onScroll, setHeight } from './shared';
+import { onResize, onScroll, setHeight, dialogsOnResize } from './shared';
 
 window.onload = () => {
 
@@ -55,6 +55,7 @@ window.onload = () => {
 
     $window.resize(() => {
       onResize($docsContainer, $parentContainer);
+      dialogsOnResize($window);
     });
 
   }

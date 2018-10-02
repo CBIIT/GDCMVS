@@ -1,6 +1,6 @@
 import tmpl from './dict-table.html';
 
-export default (items, keyword) => {
+export const dtRender = (items, keyword) => {
   //data preprocessing
   //current category
   let c_c = "";
@@ -69,11 +69,11 @@ export default (items, keyword) => {
         }
       })
     }
-    desc.forEach(function (d){
-      if(gdc_p.indexOf(source.name) !== -1) return;
+    desc.forEach(function (d) {
+      if (gdc_p.indexOf(source.name) !== -1) return;
       gdc_p.push(source.name);
     });
-    prop.forEach(function (p){
+    prop.forEach(function (p) {
       gdc_p.push(p.replace(/<b>/g, "").replace(/<\/b>/g, ""));
     });
     enum_s.forEach(function (s) {
@@ -172,7 +172,7 @@ export default (items, keyword) => {
       p.title[0] = p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
 
     }
-    if(p.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl){
+    if (p.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl) {
       p.desc[0] = p.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
     }
     p.data_tt_id = p.id;
@@ -194,20 +194,20 @@ export default (items, keyword) => {
           trs.push(p);
         }
         // if (arr_enum_s_icdo3.length > 0) {
-          arr_enum_s_icdo3.sort();
-          source.enum.forEach(function (s_i) {
-            if(s_i.gdc_d === false) return;
-            let tmp_e = {};
-            //count++;
-            tmp_e.title = s_i.n;
-            tmp_e.desc = "";
-            tmp_e.data_tt_id = count + "_" + s_i.n;
-            tmp_e.data_tt_parent_id = p.id;
-            tmp_e.type = "value";
-            tmp_e.node = "leaf";
-            tmp_e.exist = false;
-            trs.push(tmp_e);
-          });
+        arr_enum_s_icdo3.sort();
+        source.enum.forEach(function (s_i) {
+          if (s_i.gdc_d === false) return;
+          let tmp_e = {};
+          //count++;
+          tmp_e.title = s_i.n;
+          tmp_e.desc = "";
+          tmp_e.data_tt_id = count + "_" + s_i.n;
+          tmp_e.data_tt_parent_id = p.id;
+          tmp_e.type = "value";
+          tmp_e.node = "leaf";
+          tmp_e.exist = false;
+          trs.push(tmp_e);
+        });
         // }
       } else {
         p.node = "branch";
@@ -222,7 +222,7 @@ export default (items, keyword) => {
           let e = em.replace(/<b>/g, "").replace(/<\/b>/g, "");
           if (keyword.indexOf(' ') === -1) {
             enums[e] = em.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");;
-          }else{
+          } else {
             enums[e] = em;
           }
         });
@@ -283,8 +283,8 @@ export default (items, keyword) => {
           tmp_trs.forEach(function (tt) {
             trs.push(tt);
           });
-          if(p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1){
-            if(enum_gdc_n.length === 0 && matched_pv.length === 0) return;
+          if (p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1) {
+            if (enum_gdc_n.length === 0 && matched_pv.length === 0) return;
             let l = {};
             l.id = count + "_l";
             l.l_id = source.cde.id;
@@ -394,9 +394,9 @@ export default (items, keyword) => {
                   temp_prop.link_values.push(temp_value);
                 }
               });
-                if(gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0){
-                  return;
-                }
+              if (gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0) {
+                return;
+              }
               temp_node.properties.push(temp_prop);
             }
           });
@@ -419,4 +419,66 @@ export default (items, keyword) => {
   });
   result.html = html;
   return result;
+}
+
+export const dtEvents = () => {
+  $('#treeview .treeview__toggle').click(function (event) {
+    event.preventDefault();
+    let $this = $(this);
+    let $target = $this.closest('.treeview__parent');
+    $target.find('>ul.treeview__ul').toggle();
+    if ($target.hasClass('treeview__parent--open')) {
+      $target.removeClass('treeview__parent--open');
+      $this.attr('aria-label', 'expand');
+      $this.html('<i class="fa fa-angle-down"></i>');
+    } else {
+      $target.addClass('treeview__parent--open');
+      $this.attr('aria-label', 'collapse');
+      $this.html('<i class="fa fa-angle-up"></i>');
+    }
+  });
+
+  $('#trs-checkbox').click(function () {
+    if (this.checked) {
+      $('.treeview__ul--all').addClass('treeview__ul').each(function () {
+        let $this = $(this);
+        let $prev = $this.prev('.treeview__ul--hl');
+        if ($prev.is(':visible')) {
+          $this.show();
+          $prev.hide();
+        }
+      });
+      $('.treeview__ul--hl').removeClass('treeview__ul');
+    } else {
+      $('.treeview__ul--hl').addClass('treeview__ul').each(function () {
+        let $this = $(this);
+        let $next = $this.next('.treeview__ul--all');
+        if ($next.is(':visible')) {
+          $this.show();
+          $next.hide();
+        }
+      });;
+      $('.treeview__ul--all').removeClass('treeview__ul');
+    }
+  });
+
+  $('#trs_toggle').click(function () {
+    let $this = $(this);
+    let $tview_ul = $('.treeview .treeview__ul');
+    let $tview_li = $('.treeview .treeview__parent');
+    let $tview_trigger = $('.treeview .treeview__toggle');
+    if ($this.hasClass('active')) {
+      $tview_ul.hide();
+      $tview_li.removeClass('treeview__parent--open');
+      $tview_trigger.attr('aria-label', 'expand');
+      $tview_trigger.html('<i class="fa fa-angle-down"></i>');
+      $this.html('<i class="fa fa-angle-down"></i> Expand All');
+    } else {
+      $tview_ul.show();
+      $tview_li.addClass('treeview__parent--open');
+      $tview_trigger.attr('aria-label', 'collapse');
+      $tview_trigger.html('<i class="fa fa-angle-up"></i>');
+      $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
+    }
+  });
 }
