@@ -311,8 +311,11 @@ const func = {
             }
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
             let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            let tt = item.term_type ? item.term_type : "";
-            let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' +tt + ')';
+            let tt = item.term_type !== undefined ? item.term_type : "";
+            let term_type = "";
+            if(tt !== ""){
+              term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+            }
             if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
               temp_i_c[item_i_c].n.push(item.n + " " + term_type);
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
@@ -327,8 +330,11 @@ const func = {
           for (let index_i_c in temp_i_c) {
             source.enum.forEach(function (em) {
               if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
-                let tt = em.term_type ? em.term_type : "";
-                let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+                let tt = em.term_type !== undefined ? em.term_type : "";
+                let term_type = "";
+                if(tt !== ""){
+                  term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+                }
                 temp_i_c[index_i_c].n.push(em.n + " " + term_type);
                 if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
                   //remove depulicates in local synonyms

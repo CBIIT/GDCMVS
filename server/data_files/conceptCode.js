@@ -1252,15 +1252,6 @@
         "Wrist": "C33894"
     },
     "clinical.diagnosis.tissue_or_organ_of_origin": {
-        "Connective, subcutaneous and other soft tissues of abdomen": "",
-        "Connective, subcutaneous and other soft tissues of head, face, and neck": "",
-        "Connective, subcutaneous and other soft tissues of lower limb and hip": "",
-        "Connective, subcutaneous and other soft tissues of pelvis": "",
-        "Connective, subcutaneous and other soft tissues of thorax": "",
-        "Connective, subcutaneous and other soft tissues of trunk, NOS": "",
-        "Connective, subcutaneous and other soft tissues of upper limb and shoulder": "",
-        "Connective, subcutaneous and other soft tissues, NOS": "",
-        "Intrahepatic bile duct": "C12677",
         "Not Reported": "C43234",
         "Unknown": "C17998"
     },
