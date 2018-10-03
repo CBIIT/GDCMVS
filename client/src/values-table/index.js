@@ -318,7 +318,11 @@ const func = {
             }
             if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
               if(item_n_clr !== item_i_c){
-                temp_i_c[item_i_c].n.push(item.n + " " + term_type);
+                if(tt === 'PT'){
+                  temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
+                }else{
+                  temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                }
                 temp_i_c[item_i_c].n_clr.push(item_n_clr);
               }
               if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
@@ -328,7 +332,11 @@ const func = {
             } else {
               temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
               if(item_n_clr !== item_i_c){
-                temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                if(tt === 'PT'){
+                  temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
+                }else{
+                  temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                }
                 temp_i_c[item_i_c].n_clr.push(item_n_clr);
               }
             }
@@ -342,7 +350,11 @@ const func = {
                   term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
                 }
                 if(em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")){
-                  temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                  if(tt === 'PT'){
+                    temp_i_c[index_i_c].n.unshift(em.n + " " + term_type);
+                  }else{
+                    temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                  }
                 }
                 if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
                   //remove depulicates in local synonyms
@@ -377,7 +389,7 @@ const func = {
               }
             });
           }
-
+          console.log(temp_i_c);
           let check_n = [];
           row.vs.forEach(function (item) {
             //remove if it's not gdc value
@@ -408,6 +420,7 @@ const func = {
             }
             new_vs.push(item)
           });
+
           //add the reformated to vs values
           row.vs = new_vs;
         }
@@ -462,5 +475,27 @@ const func = {
 
   }
 };
+function compareValues(key, order='asc') {
+  return function(a, b) {
+    if(!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+      // property doesn't exist on either object
+        return 0;
+    }
 
+    const varA = (typeof a[key] === 'string') ?
+      a[key].toUpperCase() : a[key];
+    const varB = (typeof b[key] === 'string') ?
+      b[key].toUpperCase() : b[key];
+
+    let comparison = 0;
+    if (varA > varB) {
+      comparison = 1;
+    } else if (varA < varB) {
+      comparison = -1;
+    }
+    return (
+      (order == 'desc') ? (comparison * -1) : comparison
+    );
+  };
+}
 export default func;
