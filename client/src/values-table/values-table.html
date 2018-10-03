@@ -41,7 +41,7 @@
             <a href="javascript:toCompare('{{:ref}}');"> Compare with User List</a></br>
             {{/if}}
             {{if syn}}
-            <a href="javascript:getGDCTerms('{{:ref}}', {{if tgts_enum_n === " "}}null{{else}}'{{:tgts_enum_n}}'{{/if}});">See All Terms</a></br>
+            <a href="javascript:getGDCTerms('{{:ref}}', {{if tgts_enum_n === ''}}null{{else}}'{{:tgts_enum_n}}'{{/if}});">See All Terms</a></br>
             {{/if}}
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
