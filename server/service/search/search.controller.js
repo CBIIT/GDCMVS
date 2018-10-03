@@ -38,15 +38,14 @@ var suggestion = function (req, res) {
 };
 
 var searchICDO3Data = function (req, res) {
-	var icdo3_code = req.query.icdo3;
-	let data = [];
+	var icdo3_code = req.query.icdo3.trim();
 	let query = {};
 
 	if (icdo3_code.trim() !== '') {
-		query.match_phrase = {};
-		query.match_phrase["enum.i_c.have"] = {};
-		query.match_phrase["enum.i_c.have"].query = icdo3_code;
-		query.match_phrase["enum.i_c.have"].analyzer = "case_insensitive";
+		query.match_phrase_prefix = {};
+		query.match_phrase_prefix["enum.i_c.have"] = {};
+		query.match_phrase_prefix["enum.i_c.have"].query = icdo3_code;
+		query.match_phrase_prefix["enum.i_c.have"].analyzer = "case_insensitive";
 		//query.analyzer = "keyword";
 		let highlight;
 
@@ -78,14 +77,17 @@ var searchICDO3Data = function (req, res) {
 							return x.toString().toUpperCase()
 						})
 
-						if ((value).indexOf(icdo3_code.toUpperCase()) > -1) {
+						if (value.indexOf(icdo3_code.toString().toUpperCase()) > -1) {
 							ICDO3Data.enums.push(enums[e]);
 						}
 					}
 				}
-				mainData.push(ICDO3Data);
+				if(ICDO3Data.enums.length > 0){
+					mainData.push(ICDO3Data);
+				}
 			}
-			res.json(mainData);
+			if(mainData.length > 0) res.json(mainData);
+			else res.send("No data found!");
 		});
 	} else {
 		res.send('No data found!');
