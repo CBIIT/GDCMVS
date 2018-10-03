@@ -24,7 +24,8 @@
   </div>
   <div class="table__body table__body--overflow row" style="max-height: {{:options.height}}px;">
     <div class="col-xs-12">
-      <ul id="treeview" class="treeview">{{for newtrs}}
+      <ul id="treeview" class="treeview">
+        {{for newtrs}}
         <li class="treeview__{{:type}} treeview__parent">
           <div class="treeview__row row">
             <div class="treeview__col col-xs-4">
@@ -33,10 +34,15 @@
                   <i class="fa fa-angle-down"></i>
                 </a>
               </span>
-              <a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-entity-list&anchor=
-              {{if id == 'data_file' || id == 'metadata_file'}}submittable_data_file{{else}}{{:id}}{{/if}}" {{if ~root.options.redirect}}target="_blank"{{/if}}>
-              {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+              {{if ~root.options.redirect === true}}
+              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-entity-list&anchor={{if id == 'data_file' || id == 'metadata_file'}}submittable_data_file{{else}}{{:id}}{{/if}}" target="_blank">
+                {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
               </a>
+              {{else}}
+              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-entity-list&anchor={{if id == 'data_file' || id == 'metadata_file'}}submittable_data_file{{else}}{{:id}}{{/if}}" target="_blank">
+                {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+              </a>
+              {{/if}}
             </div>
             <div class="treeview__col col-xs-8">{{:desc}}</div>
           </div>
@@ -50,25 +56,39 @@
                       <i class="fa fa-angle-down"></i>
                     </a>
                   </span>
-                  <a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}"
-                    {{if ~root.options.redirect}}target="_blank" {{/if}}>
+                  {{if ~root.options.redirect === true}}
+                  <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}" target="_blank">
                     {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
                   </a>
+                  {{else}}
+                  <a href="/Data_Dictionary/viewer/#?view=table-definition-view&id={{:l_id}}">
+                    {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+                  </a>
+                  {{/if}}
                 </div>
                 <div class="treeview__col col-xs-8">{{:desc}}</div>
               </div>
-              <ul class="treeview__ul">{{for properties}}
+              <ul class="treeview__ul">
+                {{for properties}}
                 <li class="treeview__{{:type}} treeview__parent">
                   <div class="treeview__row row">
                     <div class="treeview__col col-xs-4">
-                      <span class="treeview__indenter">{{if hl_values.length || all_values.length}}
+                      <span class="treeview__indenter">
+                        {{if hl_values.length || all_values.length}}
                         <a href="#" class="treeview__toggle" aria-label="expand">
                           <i class="fa fa-angle-down"></i>
-                        </a>{{/if}}</span>
-                      <a href="{{if ~root.options.redirect}}https://docs.gdc.cancer.gov{{/if}}/Data_Dictionary/viewer/#?view=table-definition-view&id={{:parent_l_id}}&anchor={{:l_id}}"
-                        {{if ~root.options.redirect}}target="_blank" {{/if}}>
+                        </a>
+                        {{/if}}
+                      </span>
+                      {{if ~root.options.redirect === true}}
+                      <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:parent_l_id}}&anchor={{:l_id}}" target="_blank">
                         {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
                       </a>
+                      {{else}}
+                      <a href="/Data_Dictionary/viewer/#?view=table-definition-view&id={{:parent_l_id}}&anchor={{:l_id}}">
+                        {{:title}} {{if len !== undefined}}({{:len}}){{/if}}
+                      </a>
+                      {{/if}}
                     </div>
                     <div class="treeview__col col-xs-8">{{:desc}}</div>
                   </div>
@@ -103,7 +123,7 @@
                   {{/if}}
                   </ul>
                   <ul class="treeview__ul--all">
-                  {{if all_values.length}}
+                  {{if all_values.length !== 0}}
                     {{for all_values}}
                     <li class="treeview__{{:type}}">
                       <div class="treeview__row row">
