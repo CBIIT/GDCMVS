@@ -317,14 +317,20 @@ const func = {
               term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
             }
             if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
-              temp_i_c[item_i_c].n.push(item.n + " " + term_type);
-              temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              if(item_n_clr !== item_i_c){
+                temp_i_c[item_i_c].n.push(item.n + " " + term_type);
+                temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              }
               if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
                 temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
                 temp_i_c[item_i_c].checker_n_c.push(item.n_c);
               }
             } else {
-              temp_i_c[item_i_c] = { i_c: item.i_c, n: [item.n + " " + term_type], n_clr: [item_n_clr], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              if(item_n_clr !== item_i_c){
+                temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              }
             }
           });
           for (let index_i_c in temp_i_c) {
@@ -335,7 +341,9 @@ const func = {
                 if(tt !== ""){
                   term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
                 }
-                temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                if(em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")){
+                  temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                }
                 if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
                   //remove depulicates in local synonyms
                   let tmp_s = [];
@@ -379,12 +387,14 @@ const func = {
             let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g,"");
             if (item_n in temp_i_c) {
               item.term_i_c = temp_i_c[item_n];
-              check_n.push(item_n);
+              // check_n.push(item_n);
             }
             if (item.i_c !== undefined) {
               let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
               if (check_n.indexOf(item_i_c) !== -1) {
                 return;
+              }else{
+                check_n.push(item_n);
               }
               if (item_i_c in temp_i_c) {
                 item.term_i_c = temp_i_c[item_i_c];
