@@ -1965,7 +1965,7 @@ var export_common = function (req, res) {
 };
 
 let addTermType = function(req, res){
-	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\GDC_ICDO3\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
+	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
 	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 	let data = {};
@@ -2008,7 +2008,7 @@ let addTermType = function(req, res){
 }
 
 let icdoMapping = function(req, res){
-	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\Mappings\\new_gdc_domiains-map.2018.09.28.xlsx');
+	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\Mappings\\new_gdc_domiains-map.2018.10.03.xlsx');
 	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 	let array = ["clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
@@ -2052,11 +2052,11 @@ let icdoMapping = function(req, res){
 	// 		return logger.error(err);
 	// 	}
 	// });
-	// fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
-	// 	if (err) {
-	// 		return logger.error(err);
-	// 	}
-	// });
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
 	res.send("Success");
 }
 
