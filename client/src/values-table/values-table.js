@@ -1,6 +1,62 @@
 import tmpl from './values-table.html';
 import { getHeaderOffset } from '../shared'
 
+const tableToggleHandle = (event) => {
+  event.preventDefault();
+  const $this = $(event.currentTarget);
+  const $target = $this.closest('.table__gdc-values, .table__cde-values').find('.data-content');
+  $target.slideToggle(400,() => {
+    if ($target.is(":visible")) {
+      $this.attr('title', 'collapse');
+      $this.attr('aria-label', 'collapse');
+      $this.attr('aria-expanded', 'true');
+      $this.html('<i class="fa fa-minus"></i>');
+    } else {
+      $this.attr('title', 'expand');
+      $this.attr('aria-label', 'expand');
+      $this.attr('aria-expanded', 'false');
+      $this.html('<i class="fa fa-plus"></i>');
+    }
+  });
+}
+
+const detailsToggleHandle = (event) => {
+  event.preventDefault();
+  const  $this = $(event.currentTarget);
+  const $target = $this.parent().find('.gdc-links');
+  $target.slideToggle(350,() => {
+    if ($target.is(":visible")) {
+      $this.attr('aria-expanded', 'true');
+    } else {
+      $this.attr('aria-expanded', 'false');
+    }
+  });
+}
+
+const suggestNotificationHandle = (event) => {
+  event.preventDefault();
+  const alertSuggest = $('#alert-suggest');
+  alertSuggest.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
+  setTimeout(() => { alertSuggest.removeClass('alert__show') }, 3900);
+}
+
+const showMoreToggleHandle = (event) => {
+  event.preventDefault();
+  const  $this = $(event.currentTarget);
+  const $target = $this.closest('.table__values').find('.table__row--toggle');
+  if ($this.hasClass('more')) {
+    $this.removeClass('more');
+    $this.attr('aria-expanded', 'false');
+    $target.slideToggle(350);
+    $this.html('<i class="fa fa-angle-down"></i> Show More (' + $this.attr('data-hidden') + ')');
+  } else {
+    $this.addClass('more');
+    $this.attr('aria-expanded', 'true');
+    $target.slideToggle(350);
+    $this.html('<i class="fa fa-angle-up"></i> Show Less');
+  }
+}
+
 export const vsRender = (items, keyword) => {
   //data preprocessing
   let values = [];
@@ -428,62 +484,24 @@ export const vsRender = (items, keyword) => {
 
 }
 
-export const vsEvents = () => {
-  $('.table__toggle').click(function (event) {
-    event.preventDefault();
-    let $this = $(this);
-    let $target = $(this).closest('.table__gdc-values, .table__cde-values').find('.data-content');
-    $target.slideToggle(400, function () {
-      if ($target.is(":visible")) {
-        $this.attr('title', 'collapse');
-        $this.attr('aria-label', 'collapse');
-        $this.attr('aria-expanded', 'true');
-        $this.html('<i class="fa fa-minus"></i>');
-      } else {
-        $this.attr('title', 'expand');
-        $this.attr('aria-label', 'expand');
-        $this.attr('aria-expanded', 'false');
-        $this.html('<i class="fa fa-plus"></i>');
-      }
-    });
+export const vsEvents = ($root) => {
+  $root.on('click', '.table__toggle', (event) => {
+    tableToggleHandle(event);
   });
 
-  $('.gdc-details').click(function (event) {
-    event.preventDefault();
-    let $this = $(this);
-    let $target = $(this).parent().find('.gdc-links');
-    $target.slideToggle(350, function () {
-      if ($target.is(":visible")) {
-        $this.attr('aria-expanded', 'true');
-      } else {
-        $this.attr('aria-expanded', 'false');
-      }
-    });
+  $root.on('click', '.gdc-details', (event) => {
+    detailsToggleHandle(event);
   });
 
-  $('.cde-suggest').click(function (event) {
-    event.preventDefault();
-    let alertSuggest = $('#alert-suggest');
-    alertSuggest.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
-    setTimeout(function () { alertSuggest.removeClass('alert__show') }, 3900);
+  $root.on('click', '.cde-suggest', (event) => {
+    suggestNotificationHandle(event);
   });
 
-  $('.show-more-less').click(function (event) {
-    event.preventDefault();
-    let $this = $(this);
-    let $target = $(this).closest('.table__values').find('.table__row--toggle');
-    if ($this.hasClass('more')) {
-      $this.removeClass('more');
-      $this.attr('aria-expanded', 'false');
-      $target.slideToggle(350);
-      $this.html('<i class="fa fa-angle-down"></i> Show More (' + $this.attr('data-hidden') + ')');
-    } else {
-      $this.addClass('more');
-      $this.attr('aria-expanded', 'true');
-      $target.slideToggle(350);
-      $this.html('<i class="fa fa-angle-up"></i> Show Less');
-    }
+  $root.on('click', '.show-more-less', (event) => {
+    showMoreToggleHandle(event);
   });
 
-  $('.tooltip-target').tooltip();
+  $root.tooltip({
+    selector: '[data-toggle="tooltip"]'
+  });
 }
