@@ -311,25 +311,51 @@ const func = {
             }
             let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
             let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            let tt = item.term_type ? item.term_type : "";
-            let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' +tt + ')';
+            let tt = item.term_type !== undefined ? item.term_type : "";
+            let term_type = "";
+            if(tt !== ""){
+              term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+            }
             if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
-              temp_i_c[item_i_c].n.push(item.n + " " + term_type);
-              temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              if(item_n_clr !== item_i_c){
+                if(tt === 'PT'){
+                  temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
+                }else{
+                  temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                }
+                temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              }
               if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
                 temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
                 temp_i_c[item_i_c].checker_n_c.push(item.n_c);
               }
             } else {
-              temp_i_c[item_i_c] = { i_c: item.i_c, n: [item.n + " " + term_type], n_clr: [item_n_clr], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              if(item_n_clr !== item_i_c){
+                if(tt === 'PT'){
+                  temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
+                }else{
+                  temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                }
+                temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              }
             }
           });
           for (let index_i_c in temp_i_c) {
             source.enum.forEach(function (em) {
               if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
-                let tt = em.term_type ? em.term_type : "";
-                let term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
-                temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                let tt = em.term_type !== undefined ? em.term_type : "";
+                let term_type = "";
+                if(tt !== ""){
+                  term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+                }
+                if(em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")){
+                  if(tt === 'PT'){
+                    temp_i_c[index_i_c].n.unshift(em.n + " " + term_type);
+                  }else{
+                    temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                  }
+                }
                 if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
                   //remove depulicates in local synonyms
                   let tmp_s = [];
@@ -363,7 +389,6 @@ const func = {
               }
             });
           }
-
           let check_n = [];
           row.vs.forEach(function (item) {
             //remove if it's not gdc value
@@ -373,12 +398,14 @@ const func = {
             let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g,"");
             if (item_n in temp_i_c) {
               item.term_i_c = temp_i_c[item_n];
-              check_n.push(item_n);
+              // check_n.push(item_n);
             }
             if (item.i_c !== undefined) {
               let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
               if (check_n.indexOf(item_i_c) !== -1) {
                 return;
+              }else{
+                check_n.push(item_n);
               }
               if (item_i_c in temp_i_c) {
                 item.term_i_c = temp_i_c[item_i_c];
@@ -392,10 +419,30 @@ const func = {
             }
             new_vs.push(item)
           });
+
           //add the reformated to vs values
           row.vs = new_vs;
         }
         len += row.vs.length;
+      }else{
+        // if it doesn't have any enums and matches with cde_ss
+        if(!_.isEmpty(matched_pv)){
+          for (let idx in matched_pv) {
+            let v = {};
+            v.n = "no match";
+            v.ref = row.ref;
+            v.n_c = "";
+            v.s = [];
+            v.cde_s = matched_pv[idx].ss;
+            if (v.cde_s.length) {
+              v.cde_pv = matched_pv[idx].pv;
+              v.cde_pvm = matched_pv[idx].pvm;
+            }
+            row.vs.push(v);
+          }
+          len += row.vs.length;
+        }
+
       }
       if (row.vs.length !== 0) {
         values.push(row);
@@ -427,5 +474,4 @@ const func = {
 
   }
 };
-
 export default func;
