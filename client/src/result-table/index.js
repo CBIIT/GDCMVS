@@ -44,8 +44,8 @@ const func = {
       });
       let prop = ("name.have" in hl) ? hl["name.have"] : [];
       let desc = ("desc" in hl) ? hl["desc"] : [];
-      let enum_i_c = ("enum.i_c" in hl) || ("enum.i_c.have" in hl) ?
-        hl["enum.i_c.s"] || hl["enum.i_c.have"] : [];
+      let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ?
+        hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
       let enum_s_icdo3 = [];
       if (enum_s.length === 0 && enum_gdc_n.length === 0) {
         enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
@@ -229,6 +229,7 @@ const func = {
           });
           let values = source.enum;
           let tmp_trs = [];
+          let tmp_checker_n = [];
           values.forEach(function (v) {
             if (v.gdc_d !== undefined && !v.gdc_d) {
               return;
@@ -266,9 +267,6 @@ const func = {
               }
             }
 
-            if (e.exist) {
-              count_v++;
-            }
             //may be highlighted
             e.title = (v.n in enums) ? enums[v.n] : v.n;
             e.desc = "";
@@ -276,8 +274,13 @@ const func = {
             e.data_tt_parent_id = p.id;
             e.type = "value";
             e.node = "leaf";
-            tmp_trs.push(e);
-
+            if(tmp_checker_n.indexOf(e.title) == -1){
+              if (e.exist) {
+                count_v++;
+                tmp_checker_n.push(e.title);
+              }
+              tmp_trs.push(e);
+            }
           });
           if (count_v == 0) {
             p.node = "";
@@ -395,9 +398,9 @@ const func = {
                     temp_prop.link_values.push(temp_value);
                   }
                 });
-                  if(gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0){
-                    return;
-                  }
+                  // if(gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0){
+                  //   return;
+                  // }
                 temp_node.properties.push(temp_prop);
               }
             });

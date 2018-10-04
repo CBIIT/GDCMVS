@@ -1965,7 +1965,7 @@ var export_common = function (req, res) {
 };
 
 let addTermType = function(req, res){
-	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\GDC_ICDO3\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
+	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
 	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 	let data = {};
@@ -2007,6 +2007,59 @@ let addTermType = function(req, res){
 	res.send("Success");
 }
 
+let icdoMapping = function(req, res){
+	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\Mappings\\new_gdc_domiains-map.2018.10.03.xlsx');
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
+	let array = ["clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
+	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let cc = JSON.parse(content_1);
+	all_gdc_values["clinical.diagnosis.tissue_or_organ_of_origin"] = [];
+	all_gdc_values["clinical.follow_up.progression_or_recurrence_anatomic_site"] = [];
+	all_gdc_values["clinical.diagnosis.primary_diagnosis"] = [];
+	
+	obj.forEach(function (sheet, index) {
+		if(index !== 0) return;
+		var worksheet = sheet.data;
+		worksheet.forEach(function(value, i) {
+			if (i === 0) return;
+			let n_c_1 = value[2] !== undefined ? value[2] : "";
+			let n_c_2 = value[5] !== undefined ? value[5] : "";
+			all_gdc_values["clinical.diagnosis.tissue_or_organ_of_origin"].push({nm:value[0] ,i_c:value[1], n_c:n_c_1});
+			all_gdc_values["clinical.follow_up.progression_or_recurrence_anatomic_site"].push({nm:value[3] ,i_c:value[4], n_c:n_c_2});
+		});
+	});
+	obj.forEach(function (sheet, index) {
+		if(index !== 1) return;
+		var worksheet = sheet.data;
+		worksheet.forEach(function(value, i) {
+			if (i === 0) return;
+			let n_c_1 = value[2] !== undefined ? value[2] : "";
+			all_gdc_values["clinical.diagnosis.primary_diagnosis"].push({nm:value[0] ,i_c:value[1], n_c:n_c_1});
+		});
+	});
+	array.forEach(function(cnp) {
+		all_gdc_values[cnp].forEach(function(value){
+			let em = value.nm;
+			let n_c = value.n_c;
+			if(cc[cnp] && cc[cnp][em] !== undefined){
+				delete cc[cnp][em];
+			}
+		});
+	});
+	// fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(cc), function (err) {
+	// 	if (err) {
+	// 		return logger.error(err);
+	// 	}
+	// });
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+	res.send("Success");
+}
+
 module.exports = {
 	export_ICDO3,
 	export2Excel,
@@ -2016,5 +2069,6 @@ module.exports = {
 	export_common,
 	exportMapping,
 	preProcess,
-	addTermType
+	addTermType,
+	icdoMapping
 }

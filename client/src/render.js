@@ -18,6 +18,9 @@ export default function render(keyword, option, items) {
     psHtml.active = false;
     let vsHtml = vs.render(data3, keyword);
     vsHtml.active = false;
+    if (vsHtml.len === 0 && psHtml.len === 0) {
+      trsHtml.len = 0;
+    }
     if (trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
     } else {
@@ -31,7 +34,7 @@ export default function render(keyword, option, items) {
       html = tabs(trsHtml, psHtml, vsHtml, keyword);
     }
   } else if (option.error == true) {
-    html = '<div class="indicator indicator--has-error">Please, enter a valid keyboard!</div>';
+    html = '<div class="indicator indicator--has-error">Please, enter a valid keyword!</div>';
   } else {
     html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
   }

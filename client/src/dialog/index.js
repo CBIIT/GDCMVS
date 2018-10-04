@@ -21,6 +21,7 @@ const func = {
         let windowEl = $(window);
         let icdo = false;
         let icdo_items = [];
+        let item_checker = {};
         items.forEach(function(item){
           if (item.i_c !== undefined) {
             icdo = true;
@@ -28,7 +29,8 @@ const func = {
           if(item.gdc_d === false){
             return;
           }
-          icdo_items.push(item);
+          if(item_checker[item.n] === undefined) icdo_items.push(item);
+          item_checker[item.n] = item;
         });
 
         if(icdo){
