@@ -1,5 +1,11 @@
 import tmpl from './tabs.html';
 
+const storageTabHandle = (valueTab) => {
+  const option = JSON.parse(localStorage.getItem('option'));
+  option.activeTab = valueTab;
+  localStorage.setItem('option', JSON.stringify(option));
+}
+
 export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
 
   let html = $.templates(tmpl).render({
@@ -18,22 +24,16 @@ export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
   return html;
 }
 
-export const tabsEvents = () => {
-  $('#tab-values').bind('click', function () {
-    let option = JSON.parse(localStorage.getItem('option'));
-    option.activeTab = 0;
-    localStorage.setItem('option', JSON.stringify(option));
+export const tabsEvents = ($root) => {
+  $root.on('click', '#tab-values', () => {
+    storageTabHandle(0);
   });
 
-  $('#tab-properties').bind('click', function () {
-    let option = JSON.parse(localStorage.getItem('option'));
-    option.activeTab = 1;
-    localStorage.setItem('option', JSON.stringify(option));
+  $root.on('click', '#tab-properties', () => {
+    storageTabHandle(1);
   });
 
-  $('#tab-dictionary').bind('click', function () {
-    let option = JSON.parse(localStorage.getItem('option'));
-    option.activeTab = 2;
-    localStorage.setItem('option', JSON.stringify(option));
+  $root.on('click', '#tab-dictionary', () => {
+    storageTabHandle(2);
   });
 }

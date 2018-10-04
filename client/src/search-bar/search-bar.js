@@ -28,7 +28,7 @@ const getOption = (activeTab) => {
   return option;
 }
 
-export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
+export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val();
   let keyword = keywordCase.toLowerCase();
   let activeTab = getActiveTap();
@@ -37,7 +37,7 @@ export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
   if (keywordCase == '') {
     option.error = true;
     $keywords.addClass('search-bar__input--has-error');
-    render(keywordCase, option, []);
+    render($root, keywordCase, option, []);
     return;
   }
   //hide suggestBox
@@ -54,7 +54,7 @@ export const clickSearch = ($keywords, $suggestBox, $gdcLoadingIcon) => {
     localStorage.setItem('option', JSON.stringify(option));
     localStorage.setItem('items', JSON.stringify(items));
 
-    render(keywordCase, option, items);
+    render($root, keywordCase, option, items);
     //close progress bar
     $gdcLoadingIcon.fadeOut('fast');
   });
@@ -152,7 +152,7 @@ export const removeExternalLinkIcons = () => {
   });
 }
 
-export const renderLocalStorach = ($keywords, $searchClear, $gdcLoadingIcon) => {
+export const renderLocalStorach = ($keywords, $root, $searchClear, $gdcLoadingIcon) => {
 
   if (localStorage.hasOwnProperty('keyword') &&
     localStorage.hasOwnProperty('option') &&
@@ -182,7 +182,7 @@ export const renderLocalStorach = ($keywords, $searchClear, $gdcLoadingIcon) => 
 
         $searchClear.show();
 
-        render(keyword, option, items);
+        render($root, keyword, option, items);
         //close progress bar
         $gdcLoadingIcon.fadeOut('fast');
       }

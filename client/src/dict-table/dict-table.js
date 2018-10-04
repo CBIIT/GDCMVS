@@ -1,5 +1,68 @@
 import tmpl from './dict-table.html';
 
+const treeviewToggleHandle = (event) => {
+  event.preventDefault();
+  const  $this = $(event.currentTarget);
+  const $target = $this.closest('.treeview__parent');
+  $target.find('>ul.treeview__ul').toggle();
+  if ($target.hasClass('treeview__parent--open')) {
+    $target.removeClass('treeview__parent--open');
+    $this.attr('aria-label', 'expand');
+    $this.html('<i class="fa fa-angle-down"></i>');
+  } else {
+    $target.addClass('treeview__parent--open');
+    $this.attr('aria-label', 'collapse');
+    $this.html('<i class="fa fa-angle-up"></i>');
+  }
+}
+
+const treeviewShowAllValuesHandle = (event) => {
+  const target = event.currentTarget;
+  const $treeviewHl = $('.treeview__ul--hl');
+  const $treeviewAll = $('.treeview__ul--all');
+  if (target.checked) {
+    $treeviewAll.addClass('treeview__ul').each((index, event) => {
+      const $this = $(event);
+      const $prev = $this.prev('.treeview__ul--hl');
+      if ($prev.is(':visible')) {
+        $this.show();
+        $prev.hide();
+      }
+    });
+    $treeviewHl.removeClass('treeview__ul');
+  } else {
+    $treeviewHl.addClass('treeview__ul').each((index, event) => {
+      const $this = $(event);
+      const $next = $this.next('.treeview__ul--all');
+      if ($next.is(':visible')) {
+        $this.show();
+        $next.hide();
+      }
+    });
+    $treeviewAll.removeClass('treeview__ul');
+  }
+}
+
+const treeviewToggleAllHandle = (event) => {
+  const $this = $(event.currentTarget);
+  const $tview_ul = $('.treeview .treeview__ul');
+  const $tview_li = $('.treeview .treeview__parent');
+  const $tview_trigger = $('.treeview .treeview__toggle');
+  if ($this.hasClass('active')) {
+    $tview_ul.hide();
+    $tview_li.removeClass('treeview__parent--open');
+    $tview_trigger.attr('aria-label', 'expand');
+    $tview_trigger.html('<i class="fa fa-angle-down"></i>');
+    $this.html('<i class="fa fa-angle-down"></i> Expand All');
+  } else {
+    $tview_ul.show();
+    $tview_li.addClass('treeview__parent--open');
+    $tview_trigger.attr('aria-label', 'collapse');
+    $tview_trigger.html('<i class="fa fa-angle-up"></i>');
+    $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
+  }
+}
+
 export const dtRender = (items, keyword) => {
   //data preprocessing
   //current category
@@ -421,64 +484,16 @@ export const dtRender = (items, keyword) => {
   return result;
 }
 
-export const dtEvents = () => {
-  $('#treeview .treeview__toggle').click(function (event) {
-    event.preventDefault();
-    let $this = $(this);
-    let $target = $this.closest('.treeview__parent');
-    $target.find('>ul.treeview__ul').toggle();
-    if ($target.hasClass('treeview__parent--open')) {
-      $target.removeClass('treeview__parent--open');
-      $this.attr('aria-label', 'expand');
-      $this.html('<i class="fa fa-angle-down"></i>');
-    } else {
-      $target.addClass('treeview__parent--open');
-      $this.attr('aria-label', 'collapse');
-      $this.html('<i class="fa fa-angle-up"></i>');
-    }
+export const dtEvents = ($root) => {
+  $root.on('click', '.treeview__toggle', (event) => {
+    treeviewToggleHandle(event);
   });
 
-  $('#trs-checkbox').click(function () {
-    if (this.checked) {
-      $('.treeview__ul--all').addClass('treeview__ul').each(function () {
-        let $this = $(this);
-        let $prev = $this.prev('.treeview__ul--hl');
-        if ($prev.is(':visible')) {
-          $this.show();
-          $prev.hide();
-        }
-      });
-      $('.treeview__ul--hl').removeClass('treeview__ul');
-    } else {
-      $('.treeview__ul--hl').addClass('treeview__ul').each(function () {
-        let $this = $(this);
-        let $next = $this.next('.treeview__ul--all');
-        if ($next.is(':visible')) {
-          $this.show();
-          $next.hide();
-        }
-      });;
-      $('.treeview__ul--all').removeClass('treeview__ul');
-    }
+  $root.on('click', '#trs-checkbox', (event) => {
+    treeviewShowAllValuesHandle(event);
   });
 
-  $('#trs_toggle').click(function () {
-    let $this = $(this);
-    let $tview_ul = $('.treeview .treeview__ul');
-    let $tview_li = $('.treeview .treeview__parent');
-    let $tview_trigger = $('.treeview .treeview__toggle');
-    if ($this.hasClass('active')) {
-      $tview_ul.hide();
-      $tview_li.removeClass('treeview__parent--open');
-      $tview_trigger.attr('aria-label', 'expand');
-      $tview_trigger.html('<i class="fa fa-angle-down"></i>');
-      $this.html('<i class="fa fa-angle-down"></i> Expand All');
-    } else {
-      $tview_ul.show();
-      $tview_li.addClass('treeview__parent--open');
-      $tview_trigger.attr('aria-label', 'collapse');
-      $tview_trigger.html('<i class="fa fa-angle-up"></i>');
-      $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
-    }
+  $root.on('click', '#trs_toggle', (event) => {
+    treeviewToggleAllHandle(event);
   });
 }

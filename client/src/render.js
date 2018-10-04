@@ -1,10 +1,10 @@
-import { dtRender, dtEvents } from './dict-table/dict-table';
+import { dtRender} from './dict-table/dict-table';
 import psRender from './props-table/props-table';
-import { vsRender, vsEvents } from './values-table/values-table';
-import { tabsRender, tabsEvents } from './tabs/tabs'
+import { vsRender } from './values-table/values-table';
+import { tabsRender } from './tabs/tabs'
 import { getHeaderOffset } from './shared'
 
-export default function render(keyword, option, items) {
+export default function render($root, keyword, option, items) {
   let html = "";
   if (items.length !== 0) {
     //deep copy for items array for each tab
@@ -36,9 +36,5 @@ export default function render(keyword, option, items) {
     html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
   }
 
-  $("#root").html(html);
-
-  tabsEvents();
-  dtEvents();
-  vsEvents();
+  $root.html(html);
 }

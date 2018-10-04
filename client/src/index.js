@@ -2,6 +2,9 @@ import * as search from './search-bar/search-bar';
 import dialog from './dialog/';
 import render from './render';
 import { onResize, onScroll, setHeight, dialogsOnResize } from './shared';
+import { dtEvents } from './dict-table/dict-table';
+import { vsEvents } from './values-table/values-table';
+import { tabsEvents } from './tabs/tabs'
 
 window.onload = () => {
 
@@ -9,6 +12,8 @@ window.onload = () => {
 
     const $window = $(window);
     const $document = $(document);
+    const $body = $(document.body);
+    const $root = $('#root');
 
     const $search = $('#search');
     const $keywords = $('#keywords');
@@ -21,10 +26,10 @@ window.onload = () => {
 
     search.removeExternalLinkIcons();
 
-    search.renderLocalStorach($keywords, $searchClear, $gdcLoadingIcon);
+    search.renderLocalStorach($keywords, $root, $searchClear, $gdcLoadingIcon);
 
     $search.click(() => {
-      search.clickSearch($keywords, $suggestBox, $gdcLoadingIcon)
+      search.clickSearch($keywords, $root, $suggestBox, $gdcLoadingIcon)
     });
 
     $keywords.keypress((event) => {
@@ -58,6 +63,10 @@ window.onload = () => {
       dialogsOnResize($window);
     });
 
+    //Add the handles events
+    dtEvents($root);
+    tabsEvents($root);
+    vsEvents($root);
   }
 
   init();
