@@ -477,9 +477,9 @@ function bulkIndex(next) {
 				p.enum.forEach(function (em) {
 					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
 						em.gdc_d = true;
-					} else if(em.i_c && gdc_data[node].properties[property].enum.indexOf(em.i_c.c) !== -1 && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1){
+					} /*else if(em.i_c && gdc_data[node].properties[property].enum.indexOf(em.i_c.c) !== -1 && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1){
 						em.gdc_d = true;
-					}else {
+					}*/else {
 						em.gdc_d = false;
 					}
 				});
