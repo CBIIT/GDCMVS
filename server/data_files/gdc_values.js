@@ -6883,7 +6883,6 @@
 {"nm":"Flat adenoma","i_c":"8212/0","n_c":"C65193","term_type":"PT"},
 {"nm":"Flat intraepithelial glandular neoplasia, high grade","i_c":"8148/2","n_c":"","term_type":"RT"},
 {"nm":"Flat intraepithelial neoplasia, high grade","i_c":"8148/2","n_c":"","term_type":"SY"},
-{"nm":"Flat intraepithelial neoplasia, high grade","i_c":"8148/2","n_c":"","term_type":"SY"},
 {"nm":"Florid osseous dysplasia","i_c":"9275/0","n_c":"C8381","term_type":"SY"},
 {"nm":"Follicular adenocarcinoma, moderately differentiated","i_c":"8332/3","n_c":"","term_type":"RT"},
 {"nm":"Follicular adenocarcinoma, NOS","i_c":"8330/3","n_c":"C8054","term_type":"PT"},
