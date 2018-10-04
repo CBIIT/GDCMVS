@@ -11,6 +11,7 @@ export default function gdcData(prop, tgt, keyword) {
     let windowEl = $(window);
     let icdo = false;
     let new_items = [];
+    let new_item_checker = {};
     let tmp_obj ={};
     // RegExp Keyword
     // Don't replace with anything, if keyword is null
@@ -18,11 +19,29 @@ export default function gdcData(prop, tgt, keyword) {
     let reg_key = new RegExp(keyword, "ig");
 
     items.forEach(function (item) {
+      let tt = item.term_type !== undefined ? item.term_type : "";
+      let term_type = "";
+      if(tt !== ""){
+        term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+      }
       if (item.i_c !== undefined) {
         if(item.i_c.c in tmp_obj){
-          tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>"));
+          if(item.n !== item.i_c.c){
+            if(tt === 'PT'){
+              tmp_obj[item.i_c.c].n.unshift(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+            }else{
+              tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+            }
+          }
         }else{
-          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: [item.n.replace(reg_key, "<b>$&</b>")]};
+          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: []};
+          if(item.n !== item.i_c.c){
+            if(tt === 'PT'){
+              tmp_obj[item.i_c.c].n.unshift(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+            }else{
+              tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+            }
+          }
         }
       }
     });
@@ -31,7 +50,7 @@ export default function gdcData(prop, tgt, keyword) {
         icdo = true;
       }
       if (item.gdc_d === true) {
-        if(tmp_obj[item.n] !== undefined){
+        if(tmp_obj[item.n] !== undefined && !new_item_checker[item.n]){
           let tmp_data = {};
           tmp_data.n = item.n.replace(reg_key, "<b>$&</b>");
           tmp_data.i_c = tmp_obj[item.n];
@@ -39,7 +58,8 @@ export default function gdcData(prop, tgt, keyword) {
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           new_items.push(tmp_data);
-        } else {
+          new_item_checker[item.n] = tmp_data;
+        } else if(!new_item_checker[item.n]){
           let tmp_data = {};
           if (item.i_c !== undefined) {
             tmp_data.i_c = tmp_obj[item.i_c.c];
@@ -49,10 +69,10 @@ export default function gdcData(prop, tgt, keyword) {
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           new_items.push(tmp_data);
+          new_item_checker[item.n] = tmp_data;
         }
       }
     });
-
     items = new_items;
 
     let target = tgt === null  || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
