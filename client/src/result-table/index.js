@@ -44,8 +44,8 @@ const func = {
       });
       let prop = ("name.have" in hl) ? hl["name.have"] : [];
       let desc = ("desc" in hl) ? hl["desc"] : [];
-      let enum_i_c = ("enum.i_c" in hl) || ("enum.i_c.have" in hl) ?
-        hl["enum.i_c.s"] || hl["enum.i_c.have"] : [];
+      let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ?
+        hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
       let enum_s_icdo3 = [];
       if (enum_s.length === 0 && enum_gdc_n.length === 0) {
         enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
