@@ -389,7 +389,6 @@ const func = {
               }
             });
           }
-          console.log(temp_i_c);
           let check_n = [];
           row.vs.forEach(function (item) {
             //remove if it's not gdc value
