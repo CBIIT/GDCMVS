@@ -18,7 +18,10 @@ export default function render($root, keyword, option, items) {
     psHtml.active = false;
     let vsHtml = vsRender(data3, keyword);
     vsHtml.active = false;
-    if (dtHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
+    if (vsHtml.len === 0 && psHtml.len === 0) {
+      trsHtml.len = 0;
+    }
+    if (trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
       html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
     } else {
       if (option.activeTab == 0) {
