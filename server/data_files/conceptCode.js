@@ -85,9 +85,7 @@
         "Not Allowed To Collect": "C141478",
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "Yes": "C49488",
-        "Extramural": "",
-        "Intramural": ""
+        "Yes": "C49488"
     },
     "clinical.diagnosis.vital_status": {
         "alive": "C37987",
@@ -185,7 +183,10 @@
     "case.case.index_date": {
         "Diagnosis": "C15220",
         "First Patient Visit": "",
-        "Study Enrollment": "C139171"
+        "Study Enrollment": "C139171",
+        "First Treatment": "",
+        "Initial Genomic Sequencing": "",
+        "Sample Procurement": ""
     },
     "case.case.lost_to_followup": {
         "No": "C49487",
@@ -306,7 +307,10 @@
         "Not Reported": "C43234",
         "Spinal Muscular Atrophy": "C85075",
         "Toxicity": "C27990",
-        "Unknown": "C17998"
+        "Unknown": "C17998",
+        "Cardiovascular Disorder, NOS": "",
+        "Renal Disorder, NOS": "",
+        "Surgical Complications": ""
     },
     "clinical.demographic.ethnicity": {
         "hispanic or latino": "C17459",
@@ -410,7 +414,8 @@
         "Stage IVC": "C28055",
         "Stage Tis": "C48738",
         "Stage X": "C95957",
-        "Unknown": "C17998"
+        "Unknown": "C17998",
+        "Stage IIIC1": ""
     },
     "clinical.diagnosis.ajcc_clinical_t": {
         "Not Reported": "C43234",
@@ -673,7 +678,10 @@
         "Surgical Resection": "C15232",
         "Thoracentesis": "C15392",
         "Ultrasound Guided Biopsy": "C93022",
-        "Unknown": "C17998"
+        "Unknown": "C17998",
+        "Imaging": "",
+        "Physical Exam": "",
+        "Pathologic Review": ""
     },
     "clinical.diagnosis.site_of_resection_or_biopsy": {
         "Acoustic nerve": "C12996",
@@ -815,7 +823,9 @@
         "Tyrosinemia": "C98640",
         "Alpha-1 Antitrypsin": "",
         "Biliary Disorder": "",
-        "Cirrhosis, Unknown Etiology": ""
+        "Cirrhosis, Unknown Etiology": "",
+        "Hepatitis A Infection": "",
+        "Herpes": ""
     },
     "clinical.follow_up.disease_response": {
         "AJ-Adjuvant Therapy": "C15675",
@@ -843,7 +853,12 @@
         "SD-Stable Disease": "C18213",
         "SPD-Surgical Progression": "",
         "TE-Too Early": "C133441",
-        "VGPR-Very Good Partial Response": "C123618"
+        "VGPR-Very Good Partial Response": "C123618",
+        "BED-Biochemical Evidence of Disease": "",
+        "PDM-Persistent Distant Metastasis": "",
+        "PLD-Persistent Locoregional Disease": "",
+        "TF-Tumor Free": "",
+        "WT-With Tumor": ""
     },
     "clinical.follow_up.ecog_performance_status": {
         "0": "C105722",
@@ -868,8 +883,10 @@
         "56": "C103003",
         "58": "C103004",
         "59": "C103005",
+        "63": "",
         "66": "C103006",
         "68": "C103007",
+        "70": "",
         "73": "C103008",
         "82": "C103009",
         "Not Reported": "C43234",
@@ -897,11 +914,11 @@
         "Unknown": "C17998",
         "Very Good Partial Response": "C123618",
         "Mixed Response": "",
-        "No Response": "C123600"
+        "No Response": "C123600",
+        "Persistent Disease": "C90169",
+        "No Measurable Disease": ""
     },
     "clinical.treatment.treatment_type": {
-        "Ablation": "C20985",
-        "Brachytherapy": "C15195",
         "Chemoembolization": "C15752",
         "Chemotherapy": "C15632",
         "Concurrent Chemoradiation": "C141342",
@@ -913,15 +930,9 @@
         "I-131 Radiation Therapy": "",
         "Immunotherapy (Including Vaccines)": "C15262",
         "Internal Radiation": "C15195",
-        "Microwave Ablation": "C116643",
         "Not Reported": "C43234",
         "Other": "C17649",
-        "Pharmaceutical Therapy": "C15986",
         "Radioembolization": "C93340",
-        "Radiofrequency Ablation": "C15666",
-        "Radioisotope Radiation": "C15470",
-        "Radiosurgical Ablation": "",
-        "Stem Cell Transplantation": "C15431",
         "Stem Cell Treatment": "",
         "Surgery": "C15329",
         "Targeted Molecular Therapy": "C76243",
@@ -932,9 +943,42 @@
         "Radiation, 3D Conformal": "C16035",
         "Radiation, Intensity-Modulated Radiotherapy": "C16135",
         "Radiation, Proton Beam": "C66897",
-        "Radiation, Stereotactic Body": "C118286",
         "Stereotactic Radiosurgery": "C15358",
-        "Radiation, 2D Conventional": ""
+        "Radiation, 2D Conventional": "",
+        "Ablation, Cryo": "",
+        "Ablation, Ethanol Injection": "",
+        "Ablation, Microwave": "",
+        "Ablation, NOS": "",
+        "Ablation, Radiofrequency": "",
+        "Ablation, Radiosurgical": "",
+        "Ancillary Treatment": "",
+        "Antiseizure Treatment": "",
+        "Bisphosphonate Therapy": "",
+        "Blinded Study, Treatment Unknown": "",
+        "Brachytherapy, NOS": "",
+        "Chemoprotectant": "",
+        "Isolated Limb Perfusion (ILP)": "",
+        "Organ Transplantation": "",
+        "Pharmaceutical Therapy, NOS": "",
+        "Pleurodesis": "",
+        "Radiation, Combination": "",
+        "Radiation, Cyberknife": "",
+        "Radiation, External Beam": "",
+        "Radiation, Implants": "",
+        "Radiation, Internal": "",
+        "Radiation, Radioisotope": "",
+        "Radiation, Stereotactic/Gamma Knife/SRS": "",
+        "Radiation, Systemic": "",
+        "Radioactive Iodine Therapy": "",
+        "Radiosensitizing Agent": "",
+        "Stem Cell Transplantation, Autologous": "",
+        "Stem Cell Transplantation, Double Autologous": "",
+        "Stem Cell Transplantation, Allogeneic": "",
+        "Stem Cell Transplantation, Non-Myeloablative": "",
+        "Stem Cell Transplantation, Syngenic": "",
+        "Stem Cell Transplantation, Haploidentical": "",
+        "Stem Cell Transplantation, NOS": "",
+        "Steroid Therapy": ""
     },
     "clinical.diagnosis.primary_diagnosis": {
         "Acinar cell tumor": "C4197",
@@ -1727,12 +1771,10 @@
         "Adjuvant": "C25722",
         "Cancer Control": "C15971",
         "Cure": "C62220",
-        "Initial": "C25509",
         "Neoadjuvant": "C15665",
         "Not Reported": "C43234",
         "Palliative": "C15292",
         "Prevention": "C15843",
-        "Progression": "C35571",
         "Unknown": "C17998"
     },
     "clinical.treatment.treatment_or_therapy": {
@@ -2557,7 +2599,9 @@
         "WGS": "C101294",
         "WXS": "C101295",
         "Unknown": "C17998",
-        "Not Reported": "C43234"
+        "Not Reported": "C43234",
+        "Cytogenetics, NOS": "",
+        "ISH": ""
     },
     "clinical.molecular_test.molecular_consequence": {
         "3 Prime UTR Variant": "C63433",
@@ -2604,7 +2648,9 @@
         "Low": "C54722",
         "Test Value Reported": "",
         "Unknown": "C17998",
-        "Not Reported": "C43234"
+        "Not Reported": "C43234",
+        "Abnormal, NOS": "",
+        "Normal": ""
     },
     "clinical.molecular_test.gene_symbol": {
         "A1CF": "C143031",
@@ -3312,7 +3358,8 @@
         "ZNRF3": "C118319",
         "ZRSR2": "C101120",
         "Unknown": "C17998",
-        "Not Reported": "C43234"
+        "Not Reported": "C43234",
+        "Not Applicable": ""
     },
     "clinical.molecular_test.second_gene_symbol": {
         "A1CF": "C143031",
@@ -4104,7 +4151,9 @@
         "Substitution": "C18133",
         "Translocation": "C3420",
         "Unknown": "C17998",
-        "Not Reported": "C43234"
+        "Not Reported": "C43234",
+        "Gain": "",
+        "Loss": ""
     },
     "clinical.molecular_test.ploidy": {
         "Aneuploid": "C2873",
@@ -4119,31 +4168,31 @@
     "clinical.molecular_test.antigen": {
         "CA19-9": "C327",
         "CEA": "C16384",
-        "Unknown": "C17998",
-        "Not Reported": "C43234"
-    },
-    "clinical.molecular_test.blood_test": {
-        "Albumin": "C64431",
-        "Beta 2 Microglobulin": "C81980",
-        "BUN": "C61019",
-        "Creatinine": "C64547",
-        "CRP": "C64548",
-        "Glucose": "C105585",
-        "Hemoglobin": "C64848",
-        "IgA": "C81969",
-        "IgG": "C81971",
-        "IgL Kappa": "C147379",
-        "IgL Lambda": "C147384",
-        "IgM": "C81972",
-        "IDH Level": "",
-        "M Protein": "C92291",
-        "Platelet Count": "C51951",
-        "Total Protein": "C64858",
-        "WBC": "C51948",
-        "Alpha Fetoprotein": "C74732",
-        "Total Bilirubin": "C38037",
-        "Unknown": "C17998",
-        "Not Reported": "C43234"
+        "BCL6": "",
+        "CCND1": "",
+        "CD10": "",
+        "CD117": "",
+        "CD138": "",
+        "CD14": "",
+        "CD15": "",
+        "CD19": "",
+        "CD20": "",
+        "CD22": "",
+        "CD23": "",
+        "CD25": "",
+        "CD3": "",
+        "CD30": "",
+        "CD33": "",
+        "CD34": "",
+        "CD45": "",
+        "CD5": "",
+        "CD56": "",
+        "CD7": "",
+        "CD79A": "",
+        "HLA-DR": "",
+        "Mesothelin": "",
+        "NSE": "",
+        "Squamous Cell Carcinoma Antigen (SCCA)": ""
     },
     "clinical.molecular_test.histone_family": {
         "H1": "C16683",
@@ -4268,7 +4317,10 @@
         "SureSelect Human All Exon v5": "",
         "TruSeq Amplicon Cancer Panel": "",
         "TruSeq Exome Enrichment - 62 Mb": "",
-        "TruSight Myeloid Sequencing Panel": ""
+        "TruSight Myeloid Sequencing Panel": "",
+        "Custom Personalis ACEcp VAREPOP-APOLLO Panel v2": "",
+        "SureSelect Human All Exon v5 + UTR": "",
+        "xGen Exome Research Panel v1.0": ""
     },
     "biospecimen.sample.biospecimen_laterality": {
         "Not Reported": "C43234",
@@ -4704,8 +4756,6 @@
         "Cerebrospinal Fluid": "C12692",
         "Liver": "C12392",
         "Lung": "C12468",
-        "Lymph Node(s)": "C12745",
-        "Lymph Node(s) Axilla": "C12904",
         "Mediastinum": "C12748",
         "Not Reported": "C43234",
         "Peritoneal Cavity": "C12769",
@@ -4717,7 +4767,17 @@
         "Unknown": "C17998",
         "Ascites": "C2885",
         "Distant Nodes": "",
-        "Distant Organ": ""
+        "Distant Organ": "",
+        "Colon": "C12382",
+        "Groin": "C12726",
+        "Omentum": "C33209",
+        "Ovary": "C12404",
+        "Pelvis": "C12767",
+        "Scalp": "C89807",
+        "Lymph Node, Axillary": "",
+        "Lymph Node, Inguinal": "",
+        "Lymph Node, NOS": "",
+        "Small Intestine": ""
     },
     "clinical.diagnosis.micropapillary_features": {
         "Not Reported": "C43234",
@@ -4791,7 +4851,9 @@
         "Unknown": "C17998",
         "Macro": "C43566",
         "Micro": "C25252",
-        "No Vascular Invasion": ""
+        "No Vascular Invasion": "",
+        "Extramural": "",
+        "Intramural": ""
     },
     "clinical.diagnosis.wilms_tumor_histologic_subtype": {
         "Not Reported": "C43234",
@@ -4867,7 +4929,8 @@
         "Unknown": "C17998",
         "Distant": "",
         "Local": "C36162",
-        "Regional": ""
+        "Regional": "",
+        "Biochemical": ""
     },
     "clinical.follow_up.reflux_treatment": {
         "No": "C49487",
@@ -4903,7 +4966,60 @@
         "Turcot Syndrome": "C3938",
         "Unknown": "C17998",
         "Wagr Syndrome": "C3718",
-        "Diet": "C15222"
+        "Diet": "C15222",
+        "Alcohol Consumption": "",
+        "Allergy, Animal, NOS": "",
+        "Allergy, Ant": "",
+        "Allergy, Bee": "",
+        "Allergy, Cat": "",
+        "Allergy, Dairy or Lactose": "",
+        "Allergy, Dog": "",
+        "Allergy, Eggs": "",
+        "Allergy, Food, NOS": "",
+        "Allergy, Fruit": "",
+        "Allergy, Meat": "",
+        "Allergy, Mold or Dust": "",
+        "Allergy, Nuts": "",
+        "Allergy, Processed Foods": "",
+        "Allergy, Seafood": "",
+        "Allergy, Wasp": "",
+        "Barrett's Esophagus": "",
+        "Behcet's Disease": "",
+        "Cancer": "",
+        "Cirrhosis": "",
+        "Common variable immune deficiency (CVID)": "",
+        "Diabetes, NOS": "",
+        "Diabetes, Type I": "",
+        "Diverticulitis": "",
+        "Eczema": "",
+        "Epstein-Barr Virus": "",
+        "Gilbert's Syndrome": "",
+        "Hashimoto's Thyroiditis": "",
+        "Hay Fever": "",
+        "Headache": "",
+        "Hematologic Disorder, NOS": "",
+        "Hepatic Encephalopathy": "",
+        "Hepatitis B Infection": "",
+        "Hepatitis C Infection": "",
+        "Hepatitis, NOS": "",
+        "HIV": "",
+        "Human Papillomavirus Infection": "",
+        "Hypospadias": "",
+        "Lymphocytic Thyroiditis": "",
+        "Myasthenia Gravis": "",
+        "Oral Contraceptives": "",
+        "Pancreatitis": "",
+        "Rheumatoid Arthritis": "",
+        "Sarcoidosis": "",
+        "Seizure": "",
+        "Sensory Changes": "",
+        "Tattoo": "",
+        "Thyroid Nodular Hyperplasia": "",
+        "Tobacco, NOS": "",
+        "Tobacco, Smokeless": "",
+        "Tobacco, Smoking": "",
+        "Undescended Testis": "",
+        "Vision Changes": ""
     },
     "clinical.follow_up.viral_hepatitis_serologies": {
         "HBV Core Antibody": "C62797",
@@ -4919,19 +5035,26 @@
     },
     "data_file.aggregated_somatic_mutation.experimental_strategy": {
         "Targeted Sequencing": "C130177",
-        "Validation": "C16237",
         "WGS": "C101294",
         "WXS": "C101295",
-        "Low Pass WGS": ""
+        "Low Pass WGS": "",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "miRNA-Seq": "",
+        "RNA-Seq": ""
     },
     "data_file.aligned_reads.experimental_strategy": {
         "RNA-Seq": "C124261",
-        "Total RNA-Seq": "C124261",
         "Validation": "C16237",
         "WGS": "C101294",
         "WXS": "C101295",
         "Low Pass WGS": "",
-        "miRNA-Seq": ""
+        "miRNA-Seq": "",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "Targeted Sequencing": ""
     },
     "data_file.aligned_reads_metric.experimental_strategy": {
         "RNA-Seq": "C124261",
@@ -4944,10 +5067,14 @@
     },
     "data_file.annotated_somatic_mutation.experimental_strategy": {
         "Targeted Sequencing": "C130177",
-        "Validation": "C16237",
         "WGS": "C101294",
         "WXS": "C101295",
-        "Low Pass WGS": ""
+        "Low Pass WGS": "",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "miRNA-Seq": "",
+        "RNA-Seq": ""
     },
     "data_file.biospecimen_supplement.data_category": {
         "Biospecimen": "C70699"
@@ -4985,32 +5112,39 @@
     },
     "data_file.masked_somatic_mutation.experimental_strategy": {
         "Targeted Sequencing": "C130177",
-        "Validation": "C16237",
         "WGS": "C101294",
         "WXS": "C101295",
-        "Low Pass WGS": ""
+        "Low Pass WGS": "",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "miRNA-Seq": "",
+        "RNA-Seq": ""
     },
     "data_file.pathology_report.data_type": {
         "Pathology Report": "C28277"
     },
-    "data_file.sample_level_maf.experimental_strategy": {
-        "Validation": "C16237",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": ""
-    },
     "data_file.simple_germline_variation.experimental_strategy": {
-        "Validation": "C16237",
         "WGS": "C101294",
         "WXS": "C101295",
-        "Low Pass WGS": ""
+        "Low Pass WGS": "",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "miRNA-Seq": "",
+        "RNA-Seq": "",
+        "Targeted Sequencing": ""
     },
     "data_file.simple_somatic_mutation.experimental_strategy": {
         "Targeted Sequencing": "C130177",
-        "Validation": "C16237",
         "WGS": "C101294",
         "WXS": "C101295",
-        "Low Pass WGS": ""
+        "Low Pass WGS": "",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "miRNA-Seq": "",
+        "RNA-Seq": ""
     },
     "data_file.slide_image.data_category": {
         "Biospecimen": "C70699"
@@ -5043,7 +5177,14 @@
     },
     "data_file.submitted_genomic_profile.experimental_strategy": {
         "Targeted Sequencing": "C130177",
-        "WGS": "C101294"
+        "WGS": "C101294",
+        "ATAC-Seq": "",
+        "Bisulfite-Seq": "",
+        "ChIP-Seq": "",
+        "Low Pass WGS": "",
+        "miRNA-Seq": "",
+        "RNA-Seq": "",
+        "WXS": ""
     },
     "data_file.submitted_tangent_copy_number.data_category": {
         "Copy Number Variation": "C40207"
