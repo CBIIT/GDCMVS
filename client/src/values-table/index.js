@@ -449,16 +449,16 @@ const func = {
       }
     });
     let html = "";
+    let searched_keyword = $("#keywords").val();
     if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
-      let keyword = $("#keywords").val();
       html =
         '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
-        keyword + '</span></div>';
+        searched_keyword + '</span></div>';
     } else {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 310;
       options.height = (h < 430) ? 430 : h;
-      options.keyword = keyword;
+      options.keyword = searched_keyword;
       html = $.templates({
         markup: tmpl,
         allowCode: true
