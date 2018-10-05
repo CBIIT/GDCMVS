@@ -102,7 +102,8 @@ var loadData = function (ids, next) {
 
 };
 
-var loadDataType = function (ids) {
+var loadDataType = function (ids, next) {
+	let count = 0;
 	if (ids.length > 0) {
 		logger.debug(ids.length);
 		ids.forEach(function (uid) {
@@ -132,6 +133,12 @@ var loadDataType = function (ids) {
 
 									logger.debug(" dataType for caDSR (" + uid + ") :" + dataType);
 								});
+								count++;
+								if (count == ids.length) {
+									next('CDE data Refreshed!!');
+								} else {
+									next("finished number: " + count + " of " + ids.length + "\n");
+								}
 							});
 						}).on('error', (e) => {
 							logger.error(e);
