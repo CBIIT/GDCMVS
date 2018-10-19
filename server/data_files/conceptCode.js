@@ -266,39 +266,6 @@
         "Vagina": "C12407",
         "Vulva": "C12408"
     },
-    "administrative.project.state": {
-        "closed": "C49070",
-        "legacy": "",
-        "open": "C49069",
-        "processed": "C29862",
-        "processing": "C48177",
-        "review": "C42729",
-        "submitted": "C25695"
-    },
-    "clinical.clinical.ethnicity": {
-        "hispanic or latino": "C17459",
-        "not hispanic or latino": "C41222"
-    },
-    "clinical.clinical.gender": {
-        "female": "C16576",
-        "male": "C20197",
-        "unknown": "C17998",
-        "unspecified": "C38046"
-    },
-    "clinical.clinical.race": {
-        "american indian or alaska native": "C41259",
-        "asian": "C41260",
-        "black or african american": "C16352",
-        "native hawaiian or other pacific islander": "C41219",
-        "not reported": "C43234",
-        "other": "C17649",
-        "white": "C41261"
-    },
-    "clinical.clinical.vital_status": {
-        "alive": "C37987",
-        "dead": "C28554",
-        "lost to follow-up": "C48227"
-    },
     "clinical.demographic.cause_of_death": {
         "Cancer Related": "C8278",
         "End-stage Renal Disease": "C9439",
@@ -5033,118 +5000,11 @@
         "HCV Genotype": "C117109",
         "Hepatitis C Virus RNA": "C113120"
     },
-    "data_file.aggregated_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
-    },
-    "data_file.aligned_reads.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Validation": "C16237",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "miRNA-Seq": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "Targeted Sequencing": ""
-    },
-    "data_file.aligned_reads_metric.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Total RNA-Seq": "C124261",
-        "Validation": "C16237",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "miRNA-Seq": ""
-    },
-    "data_file.annotated_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
-    },
     "data_file.biospecimen_supplement.data_category": {
         "Biospecimen": "C70699"
     },
-    "data_file.copy_number_estimate.data_category": {
-        "Copy Number Variation": "C40207"
-    },
-    "data_file.copy_number_estimate.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "Genotyping Array": ""
-    },
-    "data_file.copy_number_estimate.platform": {
-        "Illumina": "C146817",
-        "Affymetrix SNP 6.0": "",
-        "Ion Torrent": ""
-    },
-    "data_file.copy_number_segment.data_category": {
-        "Copy Number Variation": "C40207"
-    },
-    "data_file.copy_number_segment.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "Genotyping Array": ""
-    },
-    "data_file.copy_number_segment.platform": {
-        "Illumina": "C146817",
-        "Affymetrix SNP 6.0": ""
-    },
-    "data_file.filtered_copy_number_segment.data_category": {
-        "Copy Number Variation": "C40207"
-    },
-    "data_file.gene_expression.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Total RNA-Seq": "C124261"
-    },
-    "data_file.masked_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
-    },
     "data_file.pathology_report.data_type": {
         "Pathology Report": "C28277"
-    },
-    "data_file.simple_germline_variation.experimental_strategy": {
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": "",
-        "Targeted Sequencing": ""
-    },
-    "data_file.simple_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
     },
     "data_file.slide_image.data_category": {
         "Biospecimen": "C70699"
@@ -5153,12 +5013,6 @@
         "Cell Culture": "C16396",
         "Diagnostic Slide": "",
         "Tissue Slide": ""
-    },
-    "data_file.structural_variation.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295"
     },
     "data_file.submitted_aligned_reads.experimental_strategy": {
         "Bisulfite-Seq": "C106054",
@@ -5199,15 +5053,6 @@
         "ATAC-Seq": "",
         "Low Pass WGS": "",
         "miRNA-Seq": ""
-    },
-    "case.project.state": {
-        "closed": "C49070",
-        "legacy": "",
-        "open": "C49069",
-        "processed": "C29862",
-        "processing": "C48177",
-        "review": "C42729",
-        "submitted": "C25695"
     },
     "clinical.demographic.premature_at_birth": {
         "No": "C49487",

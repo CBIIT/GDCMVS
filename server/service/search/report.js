@@ -2190,7 +2190,7 @@ var releaseNote = function(req, res){
 
 		}
 	}
-
+	
 	const report = excel.buildExport(
 		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
 			{
@@ -2203,8 +2203,8 @@ var releaseNote = function(req, res){
 		]
 	);
 
-	// res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	// res.send(report);
+	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
 	// res.send("Success");
 }
 module.exports = {
