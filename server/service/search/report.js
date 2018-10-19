@@ -953,11 +953,12 @@ var exportMapping = function (req, res) {
 	// 			i_c_data[data.i_c].nm = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
 	// 		}else{
 	// 			i_c_data[data.i_c].n_c +=" | "+ data.n_c;
-	// 			i_c_data[data.i_c].nm += ncit_pv[data.n_c] ? " | " +ncit_pv[data.n_c].preferredName : "";
+	// 			if(ncit_pv[data.n_c]){
+	// 				i_c_data[data.i_c].nm += " | " +ncit_pv[data.n_c].preferredName;
+	// 			}
 	// 		}
 	// 	}
 	// });
-	// console.log(i_c_data);
 
 	let merges = [];
 	let data = [];
@@ -1050,8 +1051,8 @@ var exportMapping = function (req, res) {
 						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
 							all_gdc_values[category + "." + node + "." + property].forEach( function(data) {
 								if(em === data.nm){
-									// tmp_data.ncit_c = data.n_c;
-									// tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									tmp_data.ncit_c = data.n_c;
+									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
 									tmp_data.i_c = data.i_c;
 									tmp_data.t_t = data.term_type;
 								}
@@ -1092,8 +1093,8 @@ var exportMapping = function (req, res) {
 						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
 							all_gdc_values[category + "." + node + "." + property].forEach( function(data) {
 								if(em === data.nm){
-									// tmp_data.ncit_c = data.n_c;
-									// tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									tmp_data.ncit_c = data.n_c;
+									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
 									tmp_data.i_c = data.i_c;
 									tmp_data.t_t = data.term_type;
 								}
@@ -2149,9 +2150,9 @@ var releaseNote = function(req, res){
 		}
 	});
 	new_data = preProcess(searchable_nodes, new_data);
-
 	for(let key in cc){
-		if(tmp_array.indexOf(key) === -1){
+		let n = key.split(".")[1];
+		if(tmp_array.indexOf(key) === -1 && searchable_nodes.indexOf(n) !== -1){
 			let tmp_data = {};
 			tmp_data.p = key;
 			tmp_data.t = Object.keys(cc[key]).length;
@@ -2190,7 +2191,6 @@ var releaseNote = function(req, res){
 		}
 	}
 
-	console.log(data);
 	const report = excel.buildExport(
 		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
 			{
@@ -2203,8 +2203,8 @@ var releaseNote = function(req, res){
 		]
 	);
 
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
+	// res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	// res.send(report);
 	// res.send("Success");
 }
 module.exports = {
