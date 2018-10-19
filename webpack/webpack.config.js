@@ -1,6 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const FileManagerPlugin = require('filemanager-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -8,7 +8,7 @@ module.exports = {
     },
     output: {
       filename: 'bundle.js',
-      path: path.resolve(__dirname, 'client/static/dist')
+      path: path.resolve(__dirname, '../client/static/dist')
     },
     module: {
         rules: [
@@ -41,15 +41,6 @@ module.exports = {
       },
       plugins: [
         new ExtractTextPlugin("styles.css"),
-        new FileManagerPlugin({
-        onEnd: [{
-            copy: [
-                { source: './client/views/body.html', destination: path.resolve(__dirname, 'gdc-docs/docs/Data_Dictionary/gdcmvs.md') },
-                { source: './client/static/dist/*', destination: path.resolve(__dirname, 'gdc-docs/theme/apps/gdcmvs/dist') },
-                { source: './client/static/lib/**/*', destination: path.resolve(__dirname, 'gdc-docs/theme/apps/gdcmvs/lib') }
-            ]
-            }]
-        })
-      ],
-      mode: 'production'
+        new CleanWebpackPlugin(['dist'], {root: path.resolve(__dirname, '../client/static')})
+      ]
 }

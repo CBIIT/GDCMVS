@@ -1,7 +1,5 @@
 'use strict';
 
-var https = require('https');
-
 var elastic = require('../../components/elasticsearch');
 var handleError = require('../../components/handleError');
 var logger = require('../../components/logger');
@@ -10,7 +8,6 @@ var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var yaml = require('yamljs');
-const excel = require('node-excel-export');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
 var cdeData = {};
@@ -41,15 +38,14 @@ var suggestion = function (req, res) {
 };
 
 var searchICDO3Data = function (req, res) {
-	var icdo3_code = req.query.icdo3;
-	let data = [];
+	var icdo3_code = req.query.icdo3.trim();
 	let query = {};
 
 	if (icdo3_code.trim() !== '') {
-		query.match_phrase = {};
-		query.match_phrase["enum.i_c.have"] = {};
-		query.match_phrase["enum.i_c.have"].query = icdo3_code;
-		query.match_phrase["enum.i_c.have"].analyzer = "case_insensitive";
+		query.match_phrase_prefix = {};
+		query.match_phrase_prefix["enum.i_c.have"] = {};
+		query.match_phrase_prefix["enum.i_c.have"].query = icdo3_code;
+		query.match_phrase_prefix["enum.i_c.have"].analyzer = "case_insensitive";
 		//query.analyzer = "keyword";
 		let highlight;
 
@@ -74,20 +70,24 @@ var searchICDO3Data = function (req, res) {
 				ICDO3Data.node = data[d]._source.node;
 				ICDO3Data.property = data[d]._source.name;
 				ICDO3Data.enums = [];
-
 				for (let e in enums) {
-					let value = enums[e].i_c.have;
-					value.map(function (x) {
-						return x.toString().toUpperCase()
-					})
+					if (enums[e].i_c) {
+						let value = enums[e].i_c.have;
+						value.map(function (x) {
+							return x.toString().toUpperCase()
+						})
 
-					if ((value).indexOf(icdo3_code.toUpperCase()) > -1) {
-						ICDO3Data.enums.push(enums[e]);
+						if (value.indexOf(icdo3_code.toString().toUpperCase()) > -1) {
+							ICDO3Data.enums.push(enums[e]);
+						}
 					}
 				}
-				mainData.push(ICDO3Data);
+				if(ICDO3Data.enums.length > 0){
+					mainData.push(ICDO3Data);
+				}
 			}
-			res.json(mainData);
+			if(mainData.length > 0) res.json(mainData);
+			else res.send("No data found!");
 		});
 	} else {
 		res.send('No data found!');
@@ -96,11 +96,9 @@ var searchICDO3Data = function (req, res) {
 
 
 var searchP = function (req, res) {
-	let keyword = req.query.keyword;
+	let keyword = req.query.keyword.trim();
 	if (keyword.trim() === '') {
 		res.json([]);
-		// query = {"match_all": {}};
-		// highlight = null;
 	} else {
 		let option = JSON.parse(req.query.option);
 		let words = [];
@@ -110,38 +108,38 @@ var searchP = function (req, res) {
 		query.bool.should = [];
 		if (option.match !== "exact") {
 			let m = {};
-			m.match_phrase = {};
-			m.match_phrase["name.have"] = keyword;
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["name.have"] = keyword;
 			query.bool.should.push(m);
 			if (option.desc) {
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["desc"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["desc"] = keyword;
 				query.bool.should.push(m);
 			}
 			if (option.syn) {
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["enum.s.have"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["enum.s.have"] = keyword;
 				query.bool.should.push(m);
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["cde_pv.n.have"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
 				query.bool.should.push(m);
 				m = {};
-				m.match_phrase = {};
-				m.match_phrase["cde_pv.ss.s.have"] = keyword;
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
 				query.bool.should.push(m);
 			}
 			m = {};
-			m.match_phrase = {};
-			m.match_phrase["enum.n.have"] = keyword;
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.n.have"] = keyword;
 			query.bool.should.push(m);
 			m = {};
-			m.match = {};
-			m.match["enum.i_c.have"] = {};
-			m.match["enum.i_c.have"].query = keyword;
-			m.match["enum.i_c.have"].analyzer = "keyword";
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.i_c.have"] = {};
+			m.match_phrase_prefix["enum.i_c.have"].query = keyword;
+			m.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
 			query.bool.should.push(m);
 			highlight = {
 				"pre_tags": ["<b>"],
@@ -320,8 +318,7 @@ var indexing = function (req, res) {
 						"analyzer": "case_insensitive"
 					},
 					"enum.i_c.have": {
-						"type": "text",
-						"analyzer": "case_insensitive"
+						"type": "text"
 					}
 				}
 			}
@@ -346,13 +343,13 @@ var indexing = function (req, res) {
 	configs.push(config_suggestion);
 	elastic.createIndexes(configs, function (result) {
 		if (result.acknowledged === undefined) {
-			return handleError.error(res, result);
+			return res.status(500).send(result);
 		}
 		elastic.bulkIndex(function (data) {
-			if (data.indexed === undefined) {
-				return handleError.error(res, data);
+			if (data.property_indexed === undefined) {
+				return res.status(500).send(data);
 			}
-			return res.json(data);
+			return res.status(200).json(data);
 		});
 	});
 };
@@ -360,9 +357,9 @@ var indexing = function (req, res) {
 var getDataFromCDE = function (req, res) {
 	if (cdeData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./cdeData.js").toString();
+		let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
 		content_1 = content_1.replace(/}{/g, ",");
-		let content_2 = fs.readFileSync("./synonyms.js").toString();
+		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
 		content_2 = content_2.replace(/}{/g, ",");
 		cdeData = JSON.parse(content_1);
 		let syns = JSON.parse(content_2);
@@ -426,9 +423,9 @@ var getCDEData = function (req, res) {
 var getDataFromGDC = function (req, res) {
 	if (gdcData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./conceptCode.js").toString();
-		let content_2 = fs.readFileSync("./synonyms.js").toString();
-		let content_3 = fs.readFileSync("./gdc_values.js").toString();
+		let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
+		let content_3 = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 		content_2 = content_2.replace(/}{/g, ",");
 		let cc = JSON.parse(content_1);
 		let syns = JSON.parse(content_2);
@@ -537,115 +534,45 @@ var getGDCandCDEData = function (req, res) {
 
 var preloadCadsrData = function (req, res) {
 	elastic.preloadDataFromCaDSR(function (result) {
-		if(result === "CDE data Refreshed!!"){
+		if (result === "CDE data Refreshed!!") {
 			res.end('Success!!');
-		}else{
+		} else {
 			res.write(result);
 		}
 	});
 }
 
-var preloadDataTypeFromCaDSR  = function (req, res) {
+var preloadDataTypeFromCaDSR = function (req, res) {
 	elastic.preloadDataTypeFromCaDSR(function (result) {
-		if (result === 1) {
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
+		if (result === "CDE data Refreshed!!") {
+			res.end('Success!!');
 		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
+			res.write(result);
 		}
 	});
 }
 
-var preload = function (req, res) {
+var preloadSynonumsNcit = function (req, res) {
 	elastic.loadSynonyms(function (result) {
-		if (result === 1) {
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
+		if (result === "Success") {
+			res.end('Success!!');
 		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
+			res.write(result);
 		}
 	});
-	// elastic.preloadDataTypeFromCaDSR(function(result){
-	// 	if(result === 1){
-	// 		res.json({"status":"success", "message":"preparing data type..."});
-	// 	}
-	// 	else{
-	// 		res.json({"status":"failed", "message":"failed to loading data type from caDSR."});
-	// 	}
-	// });
 };
 
-var exportAllValues = function (req, res) {
-	let merges = [];
-	let data = [];
-	let heading = [
-		['Category', 'Node', 'Property', 'Value']
-	];
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		v: {
-			width: 200
+var preloadSynonumsCtcae = function (req, res) {
+	elastic.loadSynonymsCtcae(function (result) {
+		if (result === "Success") {
+			res.end('Success!!');
+		} else {
+			res.write(result);
 		}
-	};
-	let folderPath = path.join(__dirname, '../..', 'data');
-	fs.readdirSync(folderPath).forEach(file => {
-		if (file.indexOf("_") !== 0) {
-			let tmp_new = yaml.load(folderPath + '/' + file);
-			let properties = tmp_new.properties;
-			for (let property in properties) {
-				if (property.indexOf("$") !== 0) {
-					if (properties[property].enum) {
-						let values = properties[property].enum;
-						values.forEach(function (value) {
-							let temp_data = {};
-							temp_data.c = tmp_new.category;
-							temp_data.n = tmp_new.id;
-							temp_data.p = property;
-							temp_data.v = value;
-							data.push(temp_data);
-						});
-					}
-				}
-			}
-		}
-	});
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	);
-
-	// You can then return this straight 
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
-
+	})
 };
 
-var export2Excel = function (req, res) {
+var getPV = function (req, res) {
 	let query = {
 		"match_all": {}
 	};
@@ -655,1007 +582,156 @@ var export2Excel = function (req, res) {
 			return handleError.error(res, result);
 		}
 		let data = result.hits.hits;
-		let ds = [];
+		let cc = [];
 		data.forEach(function (entry) {
-			console.log(entry);
 			let vs = entry._source.enum;
 			if (vs) {
-				let cde = entry._source.cde_pv;
 				vs.forEach(function (v) {
-					let tmp = {};
-					tmp.c = entry._source.category;
-					tmp.n = entry._source.node;
-					tmp.p = entry._source.name;
-					tmp.v = v.n;
-					tmp.ncit = v.n_c;
-					// if (v.i_c) {
-					// 	tmp.icdo = v.i_c.c;
-					// } else {
-					// 	tmp.icdo = "";
-					// }
-					// if (tmp.n == 'follow_up' && tmp.p == 'adverse_event') {
-					// 	cde.forEach(function (c) {
-					// 		if (c.n.trim().toLowerCase() == tmp.v.trim().toLowerCase()) {
-					// 			tmp.ctcae = c.ss[0].c;
-					// 		}
-					// 	});
-					// } else {
-					// 	tmp.ctcae = "";
-					// }
-					ds.push(tmp);
-				});
+					if (v.n_c && cc.indexOf(v.n_c) == -1) {
+						cc.push(v.n_c);
 
+					}
+
+				})
+			}
+		})
+		fs.truncate('./server/data_files/ncit_details.js', 0, function () {
+			console.log('ncit_details.js truncated')
+		});
+		getPVFunc(cc, 0, function (data) {
+			if (data === "Success") {
+				res.end(data);
+			} else {
+				res.write(data);
 			}
 		});
-		console.log(ds);
-		let heading = [
-			['Category', 'Node', 'Property', 'Value']
-		];
-		let merges = [];
-		let specification = {
-			c: {
-				width: 200
-			},
-			n: {
-				width: 200
-			},
-			p: {
-				width: 200
-			},
-			v: {
-				width: 200
-			}
-		};
-		const report = excel.buildExport(
-			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-				{
-					name: 'Report', // <- Specify sheet name (optional) 
-					heading: heading, // <- Raw heading array (optional) 
-					merges: merges, // <- Merge cell ranges 
-					specification: specification, // <- Report specification 
-					data: ds // <-- Report data 
-				}
-			]
-		);
+	})
+}
 
-		// You can then return this straight 
-		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-		res.send(report);
-	});
-};
-
-var getNCItInfo = function (req, res) {
-	let code = req.query.code;
-	let url = config.NCIt_url[4] + code;
-	https.get(url, (rsp) => {
+var getPVFunc = function (ncitids, idx, next) {
+	if (idx >= ncitids.length) {
+		return;
+	}
+	https.get(config.NCIt_url[4] + ncitids[idx], (rsp) => {
 		let html = '';
 		rsp.on('data', (dt) => {
 			html += dt;
 		});
 		rsp.on('end', function () {
 			if (html.trim() !== '') {
-				let data = JSON.parse(html);
-				res.json(data);
+				let d = JSON.parse(html);
+				if (d.preferredName !== undefined) {
+					let tmp = {}
+					tmp[ncitids[idx]] = {};
+					tmp[ncitids[idx]].preferredName = d.preferredName;
+					tmp[ncitids[idx]].code = d.code;
+					tmp[ncitids[idx]].definitions = d.definitions;
+					tmp[ncitids[idx]].synonyms = d.synonyms;
+
+					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), function (err) {
+						if (err) {
+							return logger.error(err);
+						}
+					});
+				}
+			}
+			idx++;
+			getPVFunc(ncitids, idx, next);
+			if (ncitids.length == idx) {
+				return next('Success');
+			} else {
+				return next("NCIT finished number: " + idx + " of " + ncitids.length + "\n");
 			}
 		});
-
 	}).on('error', (e) => {
 		logger.debug(e);
 	});
 };
 
-var export_common = function (req, res) {
-	let heading = [
-		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'Term', 'NCIt Code']
-	];
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		old: {
-			width: 200
-		},
-		new: {
-			width: 200
-		},
-		evs_term: {
-			width: 200
-		},
-		evs_ncit: {
-			width: 200
-		}
-	};
-
-	let merges = [];
-	let data = [];
-
-	let content_1 = fs.readFileSync("./conceptCode.js").toString();
-	//let cc = JSON.parse(content_1);
-	let folderPath = path.join(__dirname, '../..', 'data');
-	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
-	let content = [];
+function removeDeprecated() {
+	let deprecated_properties = [];
+	let deprecated_enum = [];
+	var folderPath = path.join(__dirname, '..', '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
-		if (file.indexOf("_") !== 0) {
-			let tmp_new = yaml.load(folderPath + '/' + file);
+		if (file.indexOf('_') !== 0) {
+			let fileJson = yaml.load(folderPath + '/' + file);
+			let category = fileJson.category;
+			let node = fileJson.id;
 
-			let props_old = {};
-
-			if (fs.existsSync(folderPath_old + '/' + file)) {
-				let tmp_old = yaml.load(folderPath_old + '/' + file);
-				props_old = tmp_old.properties;
+			if (fileJson.deprecated) {
+				fileJson.deprecated.forEach(function (d_p) {
+					let tmp_d_p = category + "." + node + "." + d_p;
+					deprecated_properties.push(tmp_d_p);
+				})
 			}
-			let props = tmp_new.properties;
 
-			for (let p in props) {
-				let fn = tmp_new.category + "." + tmp_new.id + "." + p;
-				// if (fn == "clinical.diagnosis.primary_diagnosis" || fn == "clinical.diagnosis.morphology" || fn == "clinical.diagnosis.site_of_resection_or_biopsy" || fn == "clinical.diagnosis.tissue_or_organ_of_origin") {
-				// 	continue;
-				// } else {
-				//if (fn in cc) {
-				let tmp_cc = {};
-
-				if (props[p].enum) {
-					if (props_old[p] && props_old[p].enum) {
-						//situation:111
-						let ds = [];
-						let cache_0 = [];
-						let cache_1 = [];
-						props[p].enum.forEach(function (em) {
-							let lc = em.toLowerCase();
-							if ((lc in tmp_cc) && props_old[p].enum.indexOf(em) >= 0) {
-								cache_0.push(lc);
-								cache_1.push(em);
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = em;
-								tmp.new = em;
-								tmp.evs_term = tmp_cc[lc].term;
-								tmp.evs_ncit = tmp_cc[lc].ncit;
-								ds.push(tmp);
-							} else if ((lc in tmp_cc) && props_old[p].enum.indexOf(em) == -1) {
-								cache_0.push(lc);
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = em;
-								tmp.evs_term = tmp_cc[lc].term;
-								tmp.evs_ncit = tmp_cc[lc].ncit;
-								ds.push(tmp);
-							} else if (!(lc in tmp_cc) && props_old[p].enum.indexOf(em) >= 0) {
-								cache_1.push(em);
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = em;
-								tmp.new = em;
-								tmp.evs_term = "no match";
-								tmp.evs_ncit = "no match";
-								ds.push(tmp);
-							} else {
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = em;
-								tmp.evs_term = "no match";
-								tmp.evs_ncit = "no match";
-								ds.push(tmp);
-							}
-						});
-						let cache_2 = [];
-						props_old[p].enum.forEach(function (em) {
-							if (cache_1.indexOf(em) == -1) {
-
-								let lc = em.toString().toLowerCase();
-								if (lc in tmp_cc) {
-									cache_2.push(lc);
-									let tmp = {};
-									tmp.c = tmp_new.category;
-									tmp.n = tmp_new.id;
-									tmp.p = p;
-									tmp.old = em;
-									tmp.new = "no match";
-									tmp.evs_term = tmp_cc[lc].term;
-									tmp.evs_ncit = tmp_cc[lc].ncit;
-									ds.push(tmp);
-								} else {
-									let tmp = {};
-									tmp.c = tmp_new.category;
-									tmp.n = tmp_new.id;
-									tmp.p = p;
-									tmp.old = em;
-									tmp.new = "no match";
-									tmp.evs_term = "no match";
-									tmp.evs_ncit = "no match";
-									ds.push(tmp);
-								}
-							}
-						});
-						for (let m in tmp_cc) {
-							if (cache_0.indexOf(m) == -1 && cache_2.indexOf(m) == -1) {
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = "no match";
-								tmp.evs_term = tmp_cc[m].term;
-								tmp.evs_ncit = tmp_cc[m].ncit;
-								ds.push(tmp);
-							}
-						}
-						let dict = {};
-						dict.name = fn;
-						dict.heading = heading;
-						dict.merges = merges;
-						dict.specification = specification;
-						dict.data = ds;
-						content.push(dict);
-
-						data.push.apply(data, ds);
-					} else {
-						//situation:110
-						let ds = [];
-						let cache = [];
-						props[p].enum.forEach(function (em) {
-							let lc = em.toLowerCase();
-							if (lc in tmp_cc) {
-								cache.push(lc);
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = em;
-								tmp.evs_term = tmp_cc[lc].term;
-								tmp.evs_ncit = tmp_cc[lc].ncit;
-								ds.push(tmp);
-							} else {
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = em;
-								tmp.evs_term = "no match";
-								tmp.evs_ncit = "no match";
-								ds.push(tmp);
-							}
-						});
-						for (let b in tmp_cc) {
-							if (cache.indexOf(b) == -1) {
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = "no match";
-								tmp.evs_term = tmp_cc[b].term;
-								tmp.evs_ncit = tmp_cc[b].ncit;
-								ds.push(tmp);
-							}
-						}
-						let dict = {};
-						dict.name = fn;
-						dict.heading = heading;
-						dict.merges = merges;
-						dict.specification = specification;
-						dict.data = ds;
-						content.push(dict);
-
-						data.push.apply(data, ds);
-					}
-				} else {
-					if (props_old[p] && props_old[p].enum) {
-						//situation:101
-						let ds = [];
-						let cache = [];
-						props_old[p].enum.forEach(function (em) {
-							let lc = em.toLowerCase();
-							if (lc in tmp_cc) {
-								cache.push(lc);
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = em;
-								tmp.new = "no match";
-								tmp.evs_term = tmp_cc[lc].term;
-								tmp.evs_ncit = tmp_cc[lc].ncit;
-								ds.push(tmp);
-							} else {
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = em;
-								tmp.new = "no match";
-								tmp.evs_term = "no match";
-								tmp.evs_ncit = "no match";
-								ds.push(tmp);
-							}
-						});
-						for (let b in tmp_cc) {
-							if (cache.indexOf(b) == -1) {
-								let tmp = {};
-								tmp.c = tmp_new.category;
-								tmp.n = tmp_new.id;
-								tmp.p = p;
-								tmp.old = "no match";
-								tmp.new = "no match";
-								tmp.evs_term = tmp_cc[b].term;
-								tmp.evs_ncit = tmp_cc[b].ncit;
-								ds.push(tmp);
-							}
-						};
-						let dict = {};
-						dict.name = fn;
-						dict.heading = heading;
-						dict.merges = merges;
-						dict.specification = specification;
-						dict.data = ds;
-						content.push(dict);
-
-						data.push.apply(data, ds);
-					} else {
-						//situation:100
-						let ds = [];
-						for (let c in cc[fn]) {
-							let tmp = {};
-							tmp.c = tmp_new.category;
-							tmp.n = tmp_new.id;
-							tmp.p = p;
-							tmp.old = "no match";
-							tmp.new = "no match";
-							tmp.evs_term = c;
-							tmp.evs_ncit = cc[fn][c];
-							ds.push(tmp);
-						}
-
-						let dict = {};
-						dict.name = fn;
-						dict.heading = heading;
-						dict.merges = merges;
-						dict.specification = specification;
-						dict.data = ds;
-						content.push(dict);
-
-						data.push.apply(data, ds);
-
-					}
+			for (let keys in fileJson.properties) {
+				if (fileJson.properties[keys].deprecated_enum) {
+					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+						let tmp_d_e = category + "." + node + "." + keys + ".#" + d_e;
+						deprecated_enum.push(tmp_d_e);
+					});
 				}
-				//}
-				//}
 			}
 		}
-
 	});
-
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	deprecated_properties.forEach(function (d_p) {
+		if (concept[d_p]) {
+			delete concept[d_p];
+		}
+	});
+	deprecated_enum.forEach(function (d_e) {
+		let cnp = d_e.split(".#")[0];
+		let cnp_key = d_e.split(".#")[1];
+		if (concept[cnp]) {
+			for (let key in concept[cnp]) {
+				if (key === cnp_key) {
+					let tmp_value = concept[cnp];
+					delete tmp_value[cnp_key];
+				}
 			}
-		]
-	);
-
-	//const report = excel.buildExport(content);
-
-	// You can then return this straight 
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
-};
-
-var export_ICDO3 = function (req, res) {
-	let heading = [
-		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'ICD-O-3 Code', 'Term', 'NCIt Code']
-	];
-	let merges = [];
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		old: {
-			width: 200
-		},
-		new: {
-			width: 200
-		},
-		evs_icdo: {
-			width: 200
-		},
-		evs_term: {
-			width: 200
-		},
-		evs_ncit: {
-			width: 200
 		}
-	};
-
-	let data = [];
-
-	let ICDO3_content = fs.readFileSync("./gdc_values.js").toString();
-	let ICDO3 = JSON.parse(ICDO3_content);
-	let ICDO3_1 = ICDO3["clinical.diagnosis.morphology"];
-	let ICDO3_dict = {};
-	let ICDO3_dict_matched = [];
-	ICDO3_1.forEach(function (i) {
-		if (!(i.i_c in ICDO3_dict)) {
-			ICDO3_dict[i.i_c] = [];
-		}
-		ICDO3_dict[i.i_c].push(i);
 	});
-	let ICDO3_2 = ICDO3["clinical.diagnosis.site_of_resection_or_biopsy"];
-	let ICDO3_dict_c = {};
-	let ICDO3_dict_c_matched = [];
-	let nm_dict_c = {};
-	ICDO3_2.forEach(function (i) {
-		if (!(i.i_c in ICDO3_dict_c)) {
-			ICDO3_dict_c[i.i_c] = [];
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
+		if (err) {
+			return logger.error(err);
 		}
-		ICDO3_dict_c[i.i_c].push(i);
-		nm_dict_c[i.nm.toLowerCase()] = i;
 	});
-	let content_1 = fs.readFileSync("./conceptCode.js").toString();
-	let cc = JSON.parse(content_1);
-	let primary = cc["clinical.diagnosis.primary_diagnosis"];
-	let primary_diagnosis = {};
-	let primary_diagnosis_matched = [];
-	for (let p in primary) {
-		primary_diagnosis[p.toLowerCase()] = {};
-		primary_diagnosis[p.toLowerCase()].ncit = primary[p];
-		primary_diagnosis[p.toLowerCase()].term = p;
+}
+
+var getNCItInfo = function (req, res) {
+	let code = req.query.code;
+	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
+	pv = pv.replace(/}{/g, ",");
+	let ncit_pv = JSON.parse(pv);
+	if (ncit_pv[code]) {
+		res.json(ncit_pv[code]);
+	} else {
+		let url = config.NCIt_url[4] + code;
+		https.get(url, (rsp) => {
+			let html = '';
+			rsp.on('data', (dt) => {
+				html += dt;
+			});
+			rsp.on('end', function () {
+				if (html.trim() !== '') {
+					let data = JSON.parse(html);
+					res.json(data);
+				}
+			});
+		}).on('error', (e) => {
+			logger.debug(e);
+		});
 	}
-	let diagnosis = null;
-	let folderPath = path.join(__dirname, '../..', 'data');
-	fs.readdirSync(folderPath).forEach(file => {
-		if (file == "diagnosis.yaml") {
-			diagnosis = yaml.load(folderPath + '/' + file);
-		}
-	});
-	let content = [];
-	//morphology
-	let ds_1 = [];
-	let merges_1 = [];
-	let enum_1 = diagnosis.properties.morphology.enum;
-	let rows = 3;
-	enum_1.forEach(function (em) {
-		if (em in ICDO3_dict) {
-			ICDO3_dict_matched.push(em);
-			let start = rows;
-			let end = start + ICDO3_dict[em].length - 1;
-			ICDO3_dict[em].forEach(function (item) {
-				let tmp = {};
-				tmp.c = 'clinical';
-				tmp.n = 'diagnosis';
-				tmp.p = 'morphology';
-				tmp.old = "";
-				tmp.new = em;
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_1.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_1.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_1.push(mg);
-			rows += ICDO3_dict[em].length;
-		} else {
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'morphology';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = "no match";
-			tmp.evs_term = "";
-			tmp.evs_ncit = "";
-			ds_1.push(tmp);
-			rows += 1;
-		}
-
-	});
-
-	//show unmatched values
-	for (let id in ICDO3_dict) {
-		if (ICDO3_dict_matched.indexOf(id) == -1) {
-			let start = rows;
-			let end = start + ICDO3_dict[id].length - 1;
-			ICDO3_dict[id].forEach(function (item) {
-				let tmp = {};
-				tmp.c = 'clinical';
-				tmp.n = 'diagnosis';
-				tmp.p = 'morphology';
-				tmp.old = "";
-				tmp.new = "no match";
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_1.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_1.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_1.push(mg);
-			rows += ICDO3_dict[id].length;
-		}
-	}
-
-	let dict_1 = {};
-	dict_1.name = "morphology";
-	dict_1.heading = heading;
-	dict_1.merges = merges_1;
-	dict_1.specification = specification;
-	dict_1.data = ds_1;
-	content.push(dict_1);
-
-	data.push.apply(data, ds_1);
-
-	//primary_diagnosis
-	let ds_2 = [];
-	let merges_2 = [];
-	rows = 3;
-	let enum_2 = diagnosis.properties.primary_diagnosis.enum;
-	enum_2.forEach(function (em) {
-		let lc = em.toLowerCase();
-		if (lc in primary_diagnosis) {
-			primary_diagnosis_matched.push(lc);
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'primary_diagnosis';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = "";
-			tmp.evs_term = primary_diagnosis[lc].term;
-			tmp.evs_ncit = primary_diagnosis[lc].ncit;
-			ds_2.push(tmp);
-			rows++;
-		} else if (em in ICDO3_dict_c) {
-			let start = rows;
-			let end = start + ICDO3_dict_c[em].length - 1;
-			ICDO3_dict_c[em].forEach(function (item) {
-				let tmp = {};
-				tmp.c = 'clinical';
-				tmp.n = 'diagnosis';
-				tmp.p = 'primary_diagnosis';
-				tmp.old = "";
-				tmp.new = em;
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_2.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_2.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_2.push(mg);
-			rows += ICDO3_dict_c[em].length;
-		} else {
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'primary_diagnosis';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = "no match";
-			tmp.evs_term = "";
-			tmp.evs_ncit = "";
-			ds_2.push(tmp);
-			rows++;
-		}
-
-	});
-
-	//show unmatched primary_diagnosis values
-	for (let p in primary_diagnosis) {
-		if (primary_diagnosis_matched.indexOf(p) == -1) {
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'primary_diagnosis';
-			tmp.old = "";
-			tmp.new = "no match";
-			tmp.evs_icdo = "";
-			tmp.evs_term = primary_diagnosis[p].term;
-			tmp.evs_ncit = primary_diagnosis[p].ncit;
-			ds_2.push(tmp);
-		}
-	}
-
-	let dict_2 = {};
-	dict_2.name = "primary_diagnosis";
-	dict_2.heading = heading;
-	dict_2.merges = merges_2;
-	dict_2.specification = specification;
-	dict_2.data = ds_2;
-	content.push(dict_2);
-
-	data.push.apply(data, ds_2);
-
-	//site_of_resection_or_biopsy
-	let ds_3 = [];
-	let merges_3 = [];
-	let enum_3 = diagnosis.properties.site_of_resection_or_biopsy.enum;
-	rows = 3;
-	enum_3.forEach(function (em) {
-		let lc = em.toLowerCase();
-		if (lc in nm_dict_c) {
-			ICDO3_dict_c_matched.push(nm_dict_c[lc].i_c);
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'site_of_resection_or_biopsy';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = nm_dict_c[lc].i_c;
-			tmp.evs_term = nm_dict_c[lc].nm;
-			tmp.evs_ncit = nm_dict_c[lc].n_c;
-			ds_3.push(tmp);
-			rows++;
-		} else if (em in ICDO3_dict) {
-			let start = rows;
-			let end = start + ICDO3_dict[em].length - 1;
-			ICDO3_dict[em].forEach(function (item) {
-				let tmp = {};
-				tmp.old = "";
-				tmp.new = em;
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_3.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_3.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_3.push(mg);
-			rows += ICDO3_dict[em].length;
-		} else if (em in ICDO3_dict_c) {
-			ICDO3_dict_c_matched.push(em);
-			let start = rows;
-			let end = start + ICDO3_dict_c[em].length - 1;
-			ICDO3_dict_c[em].forEach(function (item) {
-				let tmp = {};
-				tmp.c = 'clinical';
-				tmp.n = 'diagnosis';
-				tmp.p = 'site_of_resection_or_biopsy';
-				tmp.old = "";
-				tmp.new = em;
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_3.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_3.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_3.push(mg);
-			rows += ICDO3_dict_c[em].length;
-		} else {
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'site_of_resection_or_biopsy';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = "no match";
-			tmp.evs_term = "";
-			tmp.evs_ncit = "";
-			ds_3.push(tmp);
-			rows += 1;
-		}
-
-	});
-
-	//show unmatched values
-	for (let idc in ICDO3_dict_c) {
-		if (ICDO3_dict_c_matched.indexOf(idc) == -1) {
-			let start = rows;
-			let end = start + ICDO3_dict_c[idc].length - 1;
-			ICDO3_dict_c[idc].forEach(function (item) {
-				let tmp = {};
-				tmp.c = 'clinical';
-				tmp.n = 'diagnosis';
-				tmp.p = 'site_of_resection_or_biopsy';
-				tmp.old = "";
-				tmp.new = "no match";
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_3.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_3.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_3.push(mg);
-			rows += ICDO3_dict_c[idc].length;
-		}
-	}
-
-	let dict_3 = {};
-	dict_3.name = "site_of_resection_or_biopsy";
-	dict_3.heading = heading;
-	dict_3.merges = merges_3;
-	dict_3.specification = specification;
-	dict_3.data = ds_3;
-	content.push(dict_3);
-
-	data.push.apply(data, ds_3);
-
-	//tissue_or_organ_of_origin
-	let ds_4 = [];
-	let merges_4 = [];
-	let enum_4 = diagnosis.properties.tissue_or_organ_of_origin.enum;
-	rows = 3;
-	enum_4.forEach(function (em) {
-		let lc = em.toLowerCase();
-		if (lc in nm_dict_c) {
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'tissue_or_organ_of_origin';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = nm_dict_c[lc].i_c;
-			tmp.evs_term = nm_dict_c[lc].nm;
-			tmp.evs_ncit = nm_dict_c[lc].n_c;
-			ds_4.push(tmp);
-			rows++;
-		} else if (em in ICDO3_dict) {
-			let start = rows;
-			let end = start + ICDO3_dict[em].length - 1;
-			ICDO3_dict[em].forEach(function (item) {
-				let tmp = {};
-				tmp.old = "";
-				tmp.new = em;
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_4.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_4.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_4.push(mg);
-			rows += ICDO3_dict[em].length;
-		} else if (em in ICDO3_dict_c) {
-			let start = rows;
-			let end = start + ICDO3_dict_c[em].length - 1;
-			ICDO3_dict_c[em].forEach(function (item) {
-				let tmp = {};
-				tmp.c = 'clinical';
-				tmp.n = 'diagnosis';
-				tmp.p = 'tissue_or_organ_of_origin';
-				tmp.old = "";
-				tmp.new = em;
-				tmp.evs_icdo = item.i_c;
-				tmp.evs_term = item.nm;
-				tmp.evs_ncit = item.n_c;
-				ds_4.push(tmp);
-			});
-			let mg = {
-				start: {
-					row: start,
-					column: 1
-				},
-				end: {
-					row: end,
-					column: 1
-				}
-			};
-			merges_4.push(mg);
-			mg = {
-				start: {
-					row: start,
-					column: 2
-				},
-				end: {
-					row: end,
-					column: 2
-				}
-			};
-			merges_4.push(mg);
-			rows += ICDO3_dict_c[em].length;
-		} else {
-			let tmp = {};
-			tmp.c = 'clinical';
-			tmp.n = 'diagnosis';
-			tmp.p = 'tissue_or_organ_of_origin';
-			tmp.old = "";
-			tmp.new = em;
-			tmp.evs_icdo = "no match";
-			tmp.evs_term = "";
-			tmp.evs_ncit = "";
-			ds_4.push(tmp);
-			rows += 1;
-		}
-
-	});
-
-	let dict_4 = {};
-	dict_4.name = "tissue_or_organ_of_origin";
-	dict_4.heading = heading;
-	dict_4.merges = merges_4;
-	dict_4.specification = specification;
-	dict_4.data = ds_4;
-	content.push(dict_4);
-
-	data.push.apply(data, ds_4);
-
-
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	)
-
-	//const report = excel.buildExport(content);
-
-	// You can then return this straight 
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
 };
 
 var parseExcel = function (req, res) {
 	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
-	let conceptCode = fs.readFileSync("./conceptCode.js").toString();
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let concept = JSON.parse(conceptCode);
-	let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
@@ -1705,11 +781,11 @@ var parseExcel = function (req, res) {
 					}
 				}
 			});
-			
+
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let gdcValues = fs.readFileSync("./gdc_values.js").toString();
+					let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 					let icdo = JSON.parse(gdcValues);
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (icdo[category_node_property]) {
@@ -1735,7 +811,7 @@ var parseExcel = function (req, res) {
 						icdo[category_node_property].push(temp_obj);
 					}
 					//write changes to file
-					fs.writeFileSync("./gdc_values.js", JSON.stringify(icdo), function (err) {
+					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), function (err) {
 						if (err) {
 							return logger.error(err);
 						}
@@ -1745,43 +821,60 @@ var parseExcel = function (req, res) {
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					let c_n_p = all_gdc_values[category_node_property];
 					delete all_gdc_values[category_node_property];
-					if(c_n_p){
+					if (c_n_p) {
 						all_gdc_values[category_node_property] = [];
-						c_n_p.forEach(function (prop_values){
-							if(dataParsed[dp].value === prop_values.nm && !prop_values.n_c){
+						c_n_p.forEach(function (prop_values) {
+							if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
 								prop_values.n_c = dataParsed[dp].ncit_code;
 							}
 							all_gdc_values[category_node_property].push(prop_values);
-						});					
-						
+						});
+
 					}
-					
+
 					var cc = {};
 					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
 					if (concept[category_node_property]) {
 						//If category.node.property already exists in the conceptCode.js file, then delete it.
-						delete concept[category_node_property]
-					}
-					var helper_cc = {};
-					helper_cc[category_node_property] = {}
-					var temp_cc = {};
-					for (let temp_dp in dataParsed) {
-						if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-							if (dataParsed[temp_dp].ncit_code) {
-								temp_cc[category_node_property] = {
-									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+						//delete concept[category_node_property]
+						var temp_cc = {};
+						for (let temp_dp in dataParsed) {
+							if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+								if (dataParsed[temp_dp].ncit_code) {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+									}
+								} else {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: ""
+									}
 								}
-							} else {
-								temp_cc[category_node_property] = {
-									[dataParsed[temp_dp].value]: ""
-								}
+								Object.assign(concept[category_node_property], temp_cc[category_node_property]);
 							}
-							Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
 						}
+					} else {
+						var helper_cc = {};
+						helper_cc[category_node_property] = {}
+						var temp_cc = {};
+						for (let temp_dp in dataParsed) {
+							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+
+								if (dataParsed[temp_dp].ncit_code) {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+									}
+								} else {
+									temp_cc[category_node_property] = {
+										[dataParsed[temp_dp].value]: ""
+									}
+								}
+								Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
+							}
+						}
+						cc = helper_cc;
 					}
-					cc = helper_cc;
 					Object.assign(concept, cc);
-					fs.writeFileSync("./conceptCode.js", JSON.stringify(concept), function (err) {
+					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
 						if (err) {
 							return logger.error(err);
 						}
@@ -1789,14 +882,15 @@ var parseExcel = function (req, res) {
 					});
 				}
 			}
-			
+
 		}
 	});
-	fs.writeFileSync("./gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
 		if (err) {
 			return logger.error(err);
 		}
 	});
+	removeDeprecated();
 	res.json({
 		"status": "success",
 		"message": "Done"
@@ -1813,254 +907,131 @@ function mappingExists(arr, obj) {
 	return false;
 }
 
-var export_difference = function (req, res) {
-	const styles = {
-		headerDark: {
-			fill: {
-				fgColor: {
-					rgb: '6969e1'
-				}
-			},
-			font: {
-				color: {
-					rgb: 'FFFFFF'
-				},
-				sz: 13,
-				bold: true
-			}
-		},
-		cellYellow: {
-			fill: {
-				fgColor: {
-					rgb: 'ffff99'
-				}
-			}
-		},
-		cellRed: {
-			fill: {
-				fgColor: {
-					rgb: 'ff9999'
+var Unmapped = function (req, res) {
+	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let concept = JSON.parse(conceptCode);
+	var folderPath = path.join(__dirname, '..', '..', 'data');
+
+	for (let keys in concept) {
+		let node = keys.split('.')[1];
+		let property = keys.split('.')[2];
+		if (fs.existsSync(folderPath + '/' + node + '.yaml')) {
+			let fileData = yaml.load(folderPath + '/' + node + '.yaml');
+			if (fileData.properties[property]) {
+				let local_property = fileData.properties[property];
+				if (local_property.deprecated_enum) {
+					let local_enum = local_property.enum;
+					let local_d_enum = local_property.deprecated_enum;
+					let final_enum = _.differenceWith(local_enum, local_d_enum, _.isEqual);
+					let local_values = [];
+					for (let file_values in concept[keys]) {
+						local_values.push(file_values);
+					}
+					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
+					value_not_found.forEach(function (new_val) {
+						let local_obj = concept[keys];
+						local_obj[new_val] = "";
+					});
+				} else {
+					let final_enum = local_property.enum;
+					let local_values = [];
+					for (let file_values in concept[keys]) {
+						local_values.push(file_values);
+					}
+					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
+					value_not_found.forEach(function (new_val) {
+						let local_obj = concept[keys];
+						local_obj[new_val] = "";
+					});
 				}
 			}
 		}
-	};
-	let specification = {
-		c: {
-			width: 200,
-			displayName: 'Category',
-			headerStyle: styles.headerDark
-		},
-		n: {
-			width: 200,
-			displayName: 'Node',
-			headerStyle: styles.headerDark
-		},
-		p: {
-			width: 200,
-			displayName: 'Property',
-			headerStyle: styles.headerDark,
-			cellStyle: function (value, row) {
-				if (deprecated_properties.indexOf((row.c + '/' + row.n + '/' + row.p).toString()) !== -1) {
-					return styles.cellRed;
-				} else {
-					return row.p
-				}
-			}
-		},
-		value_old: {
-			width: 200,
-			displayName: 'Old GDC Dcitonary Value',
-			headerStyle: styles.headerDark,
-			cellStyle: function (value, row) {
-				if (row.value_old.toString() === 'no match') {
-					return styles.cellYellow;
-				} else {
-					return row.value_old;
-				}
-			}
-		},
-		value_new: {
-			width: 200,
-			displayName: 'New GDC Dcitonary Value',
-			headerStyle: styles.headerDark,
-			cellStyle: function (value, row) {
-				if (row.value_new.toString() === 'no match') {
-					return styles.cellYellow;
-				} else {
-					for (let dv in deprecated_values) {
-						let tmp_row = {};
-						tmp_row.c = row.c;
-						tmp_row.n = row.n;
-						tmp_row.p = row.p;
-						tmp_row.v = row.value_new.toLowerCase();
-						if (JSON.stringify(deprecated_values[dv]) == JSON.stringify(tmp_row)) {
-							return styles.cellRed;
-						}
+	}
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let icdo = JSON.parse(gdcValues);
+	for (let keys in icdo) {
+		if (concept[keys]) {
+			let cc_values = concept[keys];
+			icdo[keys].forEach(function (value) {
+				//if the "value" in conceptCode.js is similar to "icdo3" code in gdc_values.js, remove that value from conceptCode.js
+				for (let val in cc_values) {
+					if (val === value.i_c) {
+						delete cc_values[val];
 					}
-					return row.value_new
 				}
-			}
+				if (cc_values[value.nm] || cc_values[value.nm] == "") {
+					if (cc_values[value.nm] == value.n_c || cc_values[value.nm] == "") {
+						delete cc_values[value.nm];
+					}
+					if (value.n_c == "" && cc_values[value.nm]) {
+						value.n_c = cc_values[value.nm];
+						delete cc_values[value.nm];
+					}
+				}
+			});
 		}
-	};
-	let merges = [];
-	let data = [];
-	let deprecated_properties = [];
-	let deprecated_values = [];
-	let folderPath = path.join(__dirname, '../..', 'data');
-	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
-	let content = [];
-	fs.readdirSync(folderPath).forEach(file => {
-		if (file.indexOf("_") !== 0) {
-			if (fs.existsSync(folderPath_old + '/' + file)) {
-				let tmp_new = yaml.load(folderPath + '/' + file);
-				let props_new = tmp_new.properties;
-				let props_old = {};
-				let property_keys_old;
-				let property_keys_new = Object.keys(props_new);
-				let tmp_old = yaml.load(folderPath_old + '/' + file);
-				props_old = tmp_old.properties;
-				property_keys_old = Object.keys(props_old);
 
-				if (tmp_new.deprecated) {
-					for (let d in tmp_new.deprecated) {
-						if (props_old[tmp_new.deprecated[d]].enum) {
-							props_old[tmp_new.deprecated[d]].enum.forEach(function (em) {
-								let temp_data = {};
-								temp_data.c = tmp_new.category;
-								temp_data.n = tmp_new.id;
-								temp_data.p = tmp_new.deprecated[d];
-								temp_data.value_old = em;
-								temp_data.value_new = "no match";
-								deprecated_properties.push(temp_data.c + '/' + temp_data.n + '/' + temp_data.p);
-								//data.push(temp_data);
-							})
-						}
-					}
-				}
-				if (tmp_new.properties) {
-					for (let property in tmp_new.properties) {
-						if (tmp_new.properties[property].deprecated_enum) {
-							let denums = tmp_new.properties[property].deprecated_enum;
-							denums.forEach(function (denum) {
-								let temp_data = {};
-								temp_data.c = tmp_new.category;
-								temp_data.n = tmp_new.id;
-								temp_data.p = property;
-								temp_data.v = denum.toLowerCase();
-								deprecated_values.push(temp_data);
-							});
-						}
-					}
-				}
-
-				for (let p in props_new) {
-					if (props_new[p].enum) {
-						if (props_old[p] && props_old[p].enum) {
-							props_new[p].enum.forEach(function (em) {
-								if (props_old[p].enum.indexOf(em) >= 0) {
-									let temp_data = {};
-									temp_data.c = tmp_new.category;
-									temp_data.n = tmp_new.id;
-									temp_data.p = p;
-									temp_data.value_old = em;
-									if (tmp_new.deprecated && tmp_new.deprecated.indexOf(p) >= 0) {
-										temp_data.value_new = "no match";
-									} else {
-										temp_data.value_new = em;
-									}
-
-									data.push(temp_data);
-								} else if (props_old[p].enum.indexOf(em) == -1) {
-									let temp_data = {};
-									temp_data.c = tmp_new.category;
-									temp_data.n = tmp_new.id;
-									temp_data.p = p;
-									temp_data.value_old = "no match";
-									temp_data.value_new = em;
-									data.push(temp_data);
-								}
-							});
-							// props_old[p].enum.forEach(function (em) {
-							// 	if (props_new[p].enum.indexOf(em) == -1) {
-							// 		let temp_data = {};
-							// 		temp_data.c = tmp_new.category;
-							// 		temp_data.n = tmp_new.id;
-							// 		temp_data.p = p;
-							// 		temp_data.value_old = em;
-							// 		temp_data.value_new = "no match";
-							// 		data.push(temp_data);
-							// 	}
-							// });
-						} else if (!props_old[p]) {
-							if (props_new[p].enum) {
-								props_new[p].enum.forEach(function (em) {
-									let temp_data = {};
-									temp_data.c = tmp_new.category;
-									temp_data.n = tmp_new.id;
-									temp_data.p = p;
-									temp_data.value_old = "no match";
-									temp_data.value_new = em;
-									data.push(temp_data);
-								});
-							}
-						}
-					}
-				}
-
-			} else {
-				let tmp_new = yaml.load(folderPath + '/' + file);
-				let temp_property = tmp_new.properties;
-				for (let property in temp_property) {
-					if (property.indexOf("$") !== 0) {
-						if (temp_property[property].enum) {
-							let all_enums = temp_property[property].enum;
-							all_enums.forEach(function (val) {
-								let temp_data = {};
-								temp_data.c = tmp_new.category;
-								temp_data.n = tmp_new.id;
-								temp_data.p = property;
-								temp_data.value_old = "no match";
-								temp_data.value_new = val;
-								data.push(temp_data);
-							})
-						}
-					}
-				}
-			}
+	}
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), function (err) {
+		if (err) {
+			return logger.error(err);
 		}
 	});
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	);
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
 
+	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
+	let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
+	let gdc_data = {};
+	fs.readdirSync(folderPath_gdcdata).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+	});
+	let tmp_conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let tmp_concept = JSON.parse(tmp_conceptCode);
+	for (let keys in tmp_concept) {
+		let category = keys.split(".")[0];
+		let node = keys.split(".")[1];
+		let property = keys.split(".")[2];
+		if (!gdc_data[node]) {
+			delete tmp_concept[keys];
+		}
+		if (gdc_data[node] && !gdc_data[node].properties[property]) {
+			delete tmp_concept[keys];
+		}
+		let tmp_obj = tmp_concept[keys];
+		for (let values in tmp_obj) {
+			if (gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum.indexOf(values) == -1) {
+				delete tmp_obj[values];
+			}
+		}
+	}
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(tmp_concept), function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+	res.send("Success");
 }
+
 module.exports = {
 	suggestion,
 	searchP,
+	getPV,
 	getDataFromCDE,
 	getCDEData,
 	getDataFromGDC,
 	getGDCData,
 	getGDCandCDEData,
 	searchICDO3Data,
-	preload,
-	export2Excel,
+	preloadSynonumsNcit,
+	preloadSynonumsCtcae,
 	getNCItInfo,
 	indexing,
-	export_common,
-	export_ICDO3,
-	export_difference,
 	preloadCadsrData,
 	parseExcel,
-	exportAllValues,
-	preloadDataTypeFromCaDSR
+	preloadDataTypeFromCaDSR,
+	Unmapped
 };
