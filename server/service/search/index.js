@@ -28,6 +28,7 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // router.get('/export_common', report.export_common);
 // router.get('/addTermType', report.addTermType);
 // router.get('/icdoMapping', report.icdoMapping);
+// router.get('/releaseNote', report.releaseNote);
 
 //property based api
 router.get('/all/data', controller.searchICDO3Data);
