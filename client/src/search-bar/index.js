@@ -1,6 +1,7 @@
 import api from '../api';
 import render from '../render';
 import tmpl from './view';
+import shared from '../shared';
 
 let displayBoxIndex = -1;
 let activeTab = 0;
@@ -45,6 +46,16 @@ const func = {
           render(keywordCase, option, items);
           //todo: close progress bar
           $('#gdc-loading-icon').fadeOut('fast');
+        }, function(status, errorThrown) {
+          $('#gdc-loading-icon').fadeOut('fast');
+          //show the notification alert error
+          let alertError = $('#alert-error');
+          alertError.text('Error ' + status + ': ' + errorThrown);
+          alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
+          let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+          alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+            alertError.css({'display': 'none'})
+          });
         });
     },
     gotoSearch(e){
@@ -77,15 +88,19 @@ const func = {
     },
     suggest(){
         let area = document.getElementById("suggestBox");
+        let clear = $('#searchclear');
 
         if($("#keywords").hasClass('search-bar__input--has-error')){
             $("#keywords").removeClass('search-bar__input--has-error');
         }
 
+        clear.show();
+
         if($(this).val().trim() === ''){
             area.style.display = "none";
             displayBoxIndex = -1;
             area.innerHTML = "";
+            clear.hide();
             return;
         }
 

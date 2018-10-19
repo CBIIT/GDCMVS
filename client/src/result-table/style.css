@@ -30,6 +30,10 @@
   padding-left: 85px;
 }
 
+.treeview__link .treeview__col:first-child {
+  padding-left: 85px;
+}
+
 .treeview__indenter {
   position: relative;
 }

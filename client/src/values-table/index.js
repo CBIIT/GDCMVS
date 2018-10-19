@@ -1,11 +1,16 @@
 import tmpl from './view';
 
 const func = {
-  render(items) {
+  render(items, keyword) {
     //data preprocessing
-
     let values = [];
     let len = 0;
+    //options render
+    let options = {};
+    // RegExp Keyword
+    keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
+    let reg_key = new RegExp(keyword, "ig");
+
     items.forEach(function (item) {
       let hl = item.highlight;
       if (hl["enum.n"] == undefined && hl["enum.n.have"] == undefined &&
@@ -60,21 +65,37 @@ const func = {
         hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
       let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
-      enum_n.forEach(function (n) {
+      enum_n.forEach(function (n, i) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_enum_n[tmp] = n;
+        if (keyword.indexOf(' ') === -1) {
+          dict_enum_n[tmp] = n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_enum_n[tmp] = n;
+        }
       });
       enum_s.forEach(function (s) {
         let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_enum_s[tmp] = s;
+        if (keyword.indexOf(' ') === -1) {
+          dict_enum_s[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_enum_s[tmp] = s;
+        }
       });
       cde_n.forEach(function (pn) {
         let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_cde_n[tmp] = pn;
+        if (keyword.indexOf(' ') === -1) {
+          dict_cde_n[tmp] = pn.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_cde_n[tmp] = pn;
+        }
       });
       cde_s.forEach(function (ps) {
         let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        dict_cde_s[tmp] = ps;
+        if (keyword.indexOf(' ') === -1) {
+          dict_cde_s[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_cde_s[tmp] = ps;
+        }
       });
       enum_c.forEach(function (c) {
         let tmp = c.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -188,21 +209,22 @@ const func = {
               v.n = dict_enum_n[em.n];
               v.ref = row.ref;
               v.n_c = em.n_c;
-              //v.s = em.s;
               v.s = tmp_s;
             }
-
           }
 
           //check if it contains icd-0-3 codes.
           if (em.i_c !== undefined) {
             if (arr_enum_c.indexOf(em.i_c.c) >= 0) {
-              v.i_c = "<b>" + em.i_c.c + "</b>";
+              v.gdc_d = em.gdc_d;
+              if (em.term_type) {
+                v.term_type = em.term_type;
+              }
+              v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
               if (v.n == undefined) {
                 v.n = em.n;
                 v.ref = row.ref;
                 v.n_c = em.n_c;
-                //v.s = em.s;
                 v.s = tmp_s;
               }
             } else {
@@ -214,22 +236,27 @@ const func = {
                 }
               });
               if (has) {
-                v.i_c = "<b>" + em.i_c.c + "</b>";
+                v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
+                v.gdc_d = em.gdc_d;
+                if (em.term_type) {
+                  v.term_type = em.term_type;
+                }
                 if (v.n == undefined) {
                   v.n = em.n;
                   v.ref = row.ref;
                   v.n_c = em.n_c;
-                  //v.s = em.s;
                   v.s = tmp_s;
                 }
               } else {
                 v.i_c = em.i_c.c;
+                v.gdc_d = em.gdc_d;
+                if (em.term_type) {
+                  v.term_type = em.term_type;
+                }
               }
             }
 
           }
-
-
 
           let lc = em.n.toLowerCase();
           if (lc in matched_pv) {
@@ -237,7 +264,6 @@ const func = {
               v.n = em.n;
               v.ref = row.ref;
               v.n_c = em.n_c;
-              //v.s = em.s;
               v.s = tmp_s;
             }
 
@@ -274,85 +300,170 @@ const func = {
           }
           row.vs.push(v);
         }
-        len += row.vs.length;
 
         //reformat the icd-o-3 code data
         if (row.vs) {
-          let temp_i_c = [];
+          let temp_i_c = {};
           let new_vs = [];
           row.vs.forEach(function (item) {
-            if(item.i_c === undefined){
+            if (item.i_c === undefined) {
               return;
             }
-            temp_i_c.push(item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, ""));
-          });
-          var results = [];
-          temp_i_c.forEach(function(d){
-            if(results.indexOf(d) == -1){
-              results.push(d);
+            let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
+            let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+            let tt = item.term_type !== undefined ? item.term_type : "";
+            let term_type = "";
+            if(tt !== ""){
+              term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+            }
+            if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
+              if(item_n_clr !== item_i_c){
+                if(tt === 'PT'){
+                  temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
+                }else{
+                  temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                }
+                temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              }
+              if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
+                temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
+                temp_i_c[item_i_c].checker_n_c.push(item.n_c);
+              }
+            } else {
+              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              if(item_n_clr !== item_i_c){
+                if(tt === 'PT'){
+                  temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
+                }else{
+                  temp_i_c[item_i_c].n.push(item.n+" "+term_type);
+                }
+                temp_i_c[item_i_c].n_clr.push(item_n_clr);
+              }
             }
           });
-
-          if (results) {
-            results.forEach(function (item) {
-
-              let tmp_data = {
-                i_c: {},
-                n: [],
-                ref: {},
-                n_t: [],
-                temp_n_c: []
-              };
-
-              row.vs.forEach(function (value) {
-                if (value.i_c && value.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "") == item) {
-                  let temp_nt = {
-                    n_c: {},
-                    s: []
-                  };
-                  tmp_data.i_c = value.i_c;
-                  tmp_data.cde_s = value.cde_s;
-                  tmp_data.ref =  value.ref;
-                  tmp_data.n.push(value.n);
-                  //tmp_data.ref.push(value.ref);
-                  if (value.n_c && tmp_data.temp_n_c.indexOf(value.n_c) == -1) {
-                    tmp_data.temp_n_c.push(value.n_c);
-                    temp_nt.n_c = value.n_c;
-                    value.s.forEach(function(syn){
-                      temp_nt.s.push(syn);
-                    });
-
-                    tmp_data.n_t.push(temp_nt);
+          for (let index_i_c in temp_i_c) {
+            source.enum.forEach(function (em) {
+              if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
+                let tt = em.term_type !== undefined ? em.term_type : "";
+                let term_type = "";
+                if(tt !== ""){
+                  term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+                }
+                if(em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")){
+                  if(tt === 'PT'){
+                    temp_i_c[index_i_c].n.unshift(em.n + " " + term_type);
+                  }else{
+                    temp_i_c[index_i_c].n.push(em.n + " " + term_type);
                   }
                 }
-              });
-              new_vs.push(tmp_data);
+                if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
+                  //remove depulicates in local synonyms
+                  let tmp_s = [];
+                  let t_s = [];
+                  if (em.s) {
+                    let cache = {};
+                    em.s.forEach(function (s) {
+                      let lc = s.trim().toLowerCase();
+                      if (!(lc in cache)) {
+                        cache[lc] = [];
+                      }
+                      cache[lc].push(s);
+                    });
+                    for (let idx in cache) {
+                      //find the term with the first character capitalized
+                      let word = findWord(cache[idx]);
+                      t_s.push(word);
+                    }
+                    t_s.forEach(function (s) {
+                      if (s in dict_enum_s) {
+                        exist = true;
+                        tmp_s.push(dict_enum_s[s])
+                      } else {
+                        tmp_s.push(s);
+                      }
+                    });
+                  }
+                  temp_i_c[index_i_c].checker_n_c.push(em.n_c);
+                  temp_i_c[index_i_c].n_syn.push({n_c: em.n_c, s: tmp_s });
+                }
+              }
             });
           }
-          if(new_vs.length !== 0){
-            row.vs = new_vs;
-          }
+          let check_n = [];
+          row.vs.forEach(function (item) {
+            //remove if it's not gdc value
+            if (item.gdc_d !== undefined && !item.gdc_d) {
+              return;
+            }
+            let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g,"");
+            if (item_n in temp_i_c) {
+              item.term_i_c = temp_i_c[item_n];
+              // check_n.push(item_n);
+            }
+            if (item.i_c !== undefined) {
+              let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
+              if (check_n.indexOf(item_i_c) !== -1) {
+                return;
+              }else{
+                check_n.push(item_n);
+              }
+              if (item_i_c in temp_i_c) {
+                item.term_i_c = temp_i_c[item_i_c];
+              }
+            }
+            if (item.temp_i_c && item.temp_i_c.checker_n_c) {
+              delete item.term_i_c.checker_n_c;
+            }
+            if (item.term_i_c && item.term_i_c.n_clr) {
+              delete item.term_i_c.n_clr
+            }
+            new_vs.push(item)
+          });
+
+          //add the reformated to vs values
+          row.vs = new_vs;
         }
+        len += row.vs.length;
+      }else{
+        // if it doesn't have any enums and matches with cde_ss
+        if(!_.isEmpty(matched_pv)){
+          for (let idx in matched_pv) {
+            let v = {};
+            v.n = "no match";
+            v.ref = row.ref;
+            v.n_c = "";
+            v.s = [];
+            v.cde_s = matched_pv[idx].ss;
+            if (v.cde_s.length) {
+              v.cde_pv = matched_pv[idx].pv;
+              v.cde_pvm = matched_pv[idx].pvm;
+            }
+            row.vs.push(v);
+          }
+          len += row.vs.length;
+        }
+
       }
-
-      values.push(row);
-
+      if (row.vs.length !== 0) {
+        values.push(row);
+      }
     });
     let html = "";
-    if (values.length == 0) {
-      let keyword = $("#keywords").val();
+    let searched_keyword = $("#keywords").val();
+    if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
       html =
-        '<div class="indicator">Sorry, no results found for kerword: <span class="indicator__term">' +
-        keyword + '</span></div>';
+        '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
+        searched_keyword + '</span></div>';
     } else {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 310;
-      h = (h < 430) ? 430 : h;
+      options.height = (h < 430) ? 430 : h;
+      options.keyword = searched_keyword;
       html = $.templates({
         markup: tmpl,
         allowCode: true
       }).render({
-        mh: h,
+        options: options,
         values: values
       });
     }
@@ -363,5 +474,4 @@ const func = {
 
   }
 };
-
 export default func;

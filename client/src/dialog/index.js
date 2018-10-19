@@ -7,10 +7,9 @@ import cdeData from './cde-data';
 import ncitDetails from './ncit-details';
 
 const func = {
-  getGDCData(prop, item) {
-    gdcData(prop, item);
+  getGDCData(prop, tgt, keyword) {
+    gdcData(prop, tgt, keyword);
   },
-
   getGDCTerms(uid, tgts) {
     gdcTerms(uid, tgts);
   },
@@ -22,11 +21,16 @@ const func = {
         let windowEl = $(window);
         let icdo = false;
         let icdo_items = [];
+        let item_checker = {};
         items.forEach(function(item){
-          if(item.i_c !== undefined){
+          if (item.i_c !== undefined) {
             icdo = true;
-            icdo_items.push(item);
           }
+          if(item.gdc_d === false){
+            return;
+          }
+          if(item_checker[item.n] === undefined) icdo_items.push(item);
+          item_checker[item.n] = item;
         });
 
         if(icdo){
@@ -76,6 +80,15 @@ const func = {
             containment: '#docs-container'
         });
 
+    }, function(status, errorThrown) {
+        //show the notification alert error
+        let alertError = $('#alert-error');
+        alertError.text('Error ' + status + ': ' + errorThrown);
+        alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
+        let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+          alertError.css({'display': 'none'})
+        });
     });
   },
 
@@ -157,6 +170,15 @@ const func = {
         }).parent().draggable({
             containment: '#docs-container'
         });
+    }, function(status, errorThrown) {
+      //show the notification alert error
+      let alertError = $('#alert-error');
+      alertError.text('Error ' + status + ': ' + errorThrown);
+      alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
+      let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+      alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
+        alertError.css({'display': 'none'})
+      });
     });
   },
   getNCITDetails(uid) {

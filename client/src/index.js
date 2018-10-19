@@ -15,15 +15,23 @@ $(document).on('click',func.removeBox);
 
 var heightSlider = $('.navbar .container').height();
 $('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
+$('.parent-container').attr('style', 'min-height: calc(100vh - '+ (heightSlider + 10) +'px)');
 
 $(window).resize(function() {
   heightSlider = $('.navbar .container').height();
   $('#docs-container').attr('style', 'margin-top: '+ (heightSlider - 54) +'px !important');
+  $('.parent-container').attr('style', 'min-height: calc(100vh - '+ (heightSlider + 10) +'px)');
 });
 
-function getGDCData(prop, target){
+$('#searchclear').click( function(event){
+  event.preventDefault();
+  $(this).hide();
+  $('#keywords').val('').focus();
+});
+
+function getGDCData(prop, target, keyword){
 	let uid = prop.replace(/@/g, '/');
-	dialog.getGDCData(uid, target);
+	dialog.getGDCData(uid, target, keyword);
 }
 
 window.getGDCData = getGDCData;
@@ -315,7 +323,7 @@ $(function() {
         $("#keywords").val(keyword);
 
         if(option.match != 'partial'){
-          $("#i_syn").prop('checked', true);
+          $("#i_ematch").prop('checked', true);
         }
         if(option.desc != false){
           $("#i_desc").prop('checked', true);
@@ -323,6 +331,8 @@ $(function() {
         if(option.syn != false){
           $("#i_syn").prop('checked', true);
         }
+
+        $('#searchclear').show();
 
         render(keyword, option, items);
         //todo: close progress bar
