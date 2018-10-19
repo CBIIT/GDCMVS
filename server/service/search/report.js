@@ -941,28 +941,28 @@ var exportMapping = function (req, res) {
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
 
-	let i_c_data = {};
-	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
-		if(data.nm !== data.i_c){
-			if(i_c_data[data.i_c] === undefined){
-				i_c_data[data.i_c] ={
-					nm:"",
-					n_c: ""
-				}
-				i_c_data[data.i_c].n_c = data.n_c;
-				i_c_data[data.i_c].nm = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
-			}else{
-				i_c_data[data.i_c].n_c +=" | "+ data.n_c;
-				i_c_data[data.i_c].nm += ncit_pv[data.n_c] ? " | " +ncit_pv[data.n_c].preferredName : "";
-			}
-		}
-	});
+	// let i_c_data = {};
+	// all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
+	// 	if(data.nm !== data.i_c){
+	// 		if(i_c_data[data.i_c] === undefined){
+	// 			i_c_data[data.i_c] ={
+	// 				nm:"",
+	// 				n_c: ""
+	// 			}
+	// 			i_c_data[data.i_c].n_c = data.n_c;
+	// 			i_c_data[data.i_c].nm = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+	// 		}else{
+	// 			i_c_data[data.i_c].n_c +=" | "+ data.n_c;
+	// 			i_c_data[data.i_c].nm += ncit_pv[data.n_c] ? " | " +ncit_pv[data.n_c].preferredName : "";
+	// 		}
+	// 	}
+	// });
 	// console.log(i_c_data);
 
 	let merges = [];
 	let data = [];
 	let heading = [
-		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
+		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID','ICDO3 Code','Term Type']
 	];
 	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
 		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
@@ -994,6 +994,12 @@ var exportMapping = function (req, res) {
 			width: 200
 		},
 		cde_id: {
+			width: 200
+		},
+		i_c:{
+			width: 200
+		},
+		t_t:{
 			width: 200
 		}
 	};
@@ -1028,6 +1034,8 @@ var exportMapping = function (req, res) {
 						tmp_data.cde_c = "";
 						tmp_data.ncit_v = "";
 						tmp_data.ncit_c = "";
+						tmp_data.i_c = "";
+						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
 							cdeData[cde_id].forEach(function (value) {
 								if (value.pv === em) {
@@ -1042,8 +1050,10 @@ var exportMapping = function (req, res) {
 						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
 							all_gdc_values[category + "." + node + "." + property].forEach( function(data) {
 								if(em === data.nm){
-									tmp_data.ncit_c = data.n_c;
-									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									// tmp_data.ncit_c = data.n_c;
+									// tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									tmp_data.i_c = data.i_c;
+									tmp_data.t_t = data.term_type;
 								}
 							});
 						}
@@ -1066,6 +1076,8 @@ var exportMapping = function (req, res) {
 						tmp_data.cde_c = "";
 						tmp_data.ncit_v = "";
 						tmp_data.ncit_c = "";
+						tmp_data.i_c = "";
+						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
 							cdeData[cde_id].forEach(function (value) {
 								if (value.pv === em) {
@@ -1080,8 +1092,10 @@ var exportMapping = function (req, res) {
 						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
 							all_gdc_values[category + "." + node + "." + property].forEach( function(data) {
 								if(em === data.nm){
-									tmp_data.ncit_c = data.n_c;
-									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									// tmp_data.ncit_c = data.n_c;
+									// tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									tmp_data.i_c = data.i_c;
+									tmp_data.t_t = data.term_type;
 								}
 							});
 						}
@@ -2095,7 +2109,106 @@ let icdoMapping = function(req, res){
 	res.send("Success");
 }
 
+var releaseNote = function(req, res){
+	let merges = [];
+	let data = [];
+	let heading = [
+		['Category | Node | Property', 'Total values','Total Values Mapped to ICDO','Total Values Mapped to EVS']
+	];
+	let specification = {
+	
+		p: {
+			width: 200
+		},
+		t:{
+			width: 200
+		},
+		ti:{
+			width: 200
+		},
+		te:{
+			width: 200
+		}
+	};
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
+	let folderPath = path.join(__dirname, '../..', 'data');
+	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let cc = JSON.parse(content_1);
+
+	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
+
+	let new_data = {};
+	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
+		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	];
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+		}
+	});
+	new_data = preProcess(searchable_nodes, new_data);
+
+	for(let key in cc){
+		if(tmp_array.indexOf(key) === -1){
+			let tmp_data = {};
+			tmp_data.p = key;
+			tmp_data.t = Object.keys(cc[key]).length;
+			tmp_data.ti = 0;
+			tmp_data.te = 0;
+			for(let value in cc[key]){
+				if(cc[key][value]){
+					tmp_data.te++;
+				}
+			}
+			data.push(tmp_data);
+		}
+	}
+	for(let node in new_data){
+		let category = new_data[node].category;
+		let n = new_data[node].id;
+		if(new_data[node].properties){
+			let p = new_data[node].properties;
+			for(let val in p){
+				if(p === '$ref') return;
+				if(cc[category+"."+n+"."+val] === undefined && tmp_array.indexOf(val) == -1 && p[val].enum){
+					let tmp_data = {};
+					tmp_data.p = category+"."+n+"."+val;
+					tmp_data.t = 0;
+					tmp_data.ti = 0;
+					tmp_data.te = 0;
+					if(!p[val].new_enum){
+						tmp_data.t = p[val].enum.length;
+					}else{
+						tmp_data.t = p[val].new_enum.length;
+					}
+					data.push(tmp_data);
+				}
+			}
+
+		}
+	}
+
+	console.log(data);
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				name: 'Report', // <- Specify sheet name (optional) 
+				heading: heading, // <- Raw heading array (optional) 
+				merges: merges, // <- Merge cell ranges 
+				specification: specification, // <- Report specification 
+				data: data // <-- Report data 
+			}
+		]
+	);
+
+	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
+	// res.send("Success");
+}
 module.exports = {
+	releaseNote,
 	export_ICDO3,
 	export2Excel,
 	exportAllValues,
