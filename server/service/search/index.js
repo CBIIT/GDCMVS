@@ -2,22 +2,32 @@
 
 var express = require('express');
 var controller = require('./search.controller');
+var report = require('./report');
 var router = express.Router();
 
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
-router.get('/preload', controller.preload);
+router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
+router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
 router.get('/preloadCadsrData', controller.preloadCadsrData);
 router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
-//router.get('/parseExcel', controller.parseExcel);
+router.get('/getPV', controller.getPV);
+router.get('/parseExcel', controller.parseExcel);
+router.get('/Unmapped', controller.Unmapped);
 //router.get('/external/caDSR', controller.getDataFromCDE);
 //router.get('/local', controller.getDataFromGDC);
-//router.get('/export_ICDO3', controller.export_ICDO3);
-//router.get('/export_all', controller.export2Excel);
-//router.get('/exportAllValues', controller.exportAllValues);
-//router.get('/export', controller.export_difference);
 router.get('/ncit/detail', controller.getNCItInfo);
 
+//Generate Reports
+// router.get('/export_ICDO3', report.export_ICDO3);
+// router.get('/export_all', report.export2Excel);
+// router.get('/exportAllValues', report.exportAllValues);
+// router.get('/exportMapping', report.exportMapping);
+// router.get('/export', report.export_difference);
+// router.get('/exportDifference', report.exportDifference);
+// router.get('/export_common', report.export_common);
+// router.get('/addTermType', report.addTermType);
+// router.get('/icdoMapping', report.icdoMapping);
 
 //property based api
 router.get('/all/data', controller.searchICDO3Data);
