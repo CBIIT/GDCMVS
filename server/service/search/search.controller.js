@@ -555,6 +555,18 @@ var preloadDataTypeFromCaDSR = function (req, res) {
 var preloadSynonumsNcit = function (req, res) {
 	elastic.loadSynonyms(function (result) {
 		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	});
+};
+
+var loadSynonyms_continue = function (req, res) {
+	elastic.loadSynonyms_continue(function (result) {
+		if (result === "Success") {
+			copyToSynonymsJS();			
 			res.end('Success!!');
 		} else {
 			res.write(result);
@@ -565,12 +577,36 @@ var preloadSynonumsNcit = function (req, res) {
 var preloadSynonumsCtcae = function (req, res) {
 	elastic.loadSynonymsCtcae(function (result) {
 		if (result === "Success") {
+			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
 			res.write(result);
 		}
 	})
 };
+
+var loadCtcaeSynonyms_continue = function (req, res) {
+	elastic.loadCtcaeSynonyms_continue(function (result) {
+		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	})
+};
+
+function copyToSynonymsJS(){
+	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
+	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
+	fs.writeFileSync("./server/data_files/synonyms.js", content_1+content_2, function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+
+		logger.debug("#########synonyms for " + ids[idx] + ": " + syn.toString());
+	});
+}
 
 var getPV = function (req, res) {
 	let query = {
@@ -1027,7 +1063,9 @@ module.exports = {
 	getGDCandCDEData,
 	searchICDO3Data,
 	preloadSynonumsNcit,
+	loadSynonyms_continue,
 	preloadSynonumsCtcae,
+	loadCtcaeSynonyms_continue,
 	getNCItInfo,
 	indexing,
 	preloadCadsrData,
