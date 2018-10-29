@@ -17,7 +17,7 @@ let tmpl = '<div class="results">' +
         '</div>'+
       '</li>'+
       '<li role="presentation" class="tab-nav__li{{if trs_active}} active{{else}}{{/if}}">'+
-        '<div class="tab-nav__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-delay=\'{"show":"1000"}\' data-trigger="hover" title="For a search term, this tab displays relevant matches in the context of the GDC Dictionary. The Dictionary defines the property names, the sets of accepted values for those properties, and contains readable definitions, links, and other information to aid users in understanding the vocabular.">'+
+        '<div class="tab-nav__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-delay=\'{"show":"1000"}\' data-trigger="hover" title="For a search term, this tab displays relevant matches in the context of the GDC Dictionary. The Dictionary defines the property names, the sets of accepted values for those properties, and contains readable definitions, links, and other information to aid users in understanding the vocabulary.">'+
           '<a id="tab-dictionary" href="#dictionary" class="tab-nav__btn" aria-controls="dictionary" role="tab" data-toggle="tab" aria-expanded="true">Dictionary</a>'+
           '<span class="tab-nav__notification">{{:trs_len}}</span>'+
         '</div>'+
