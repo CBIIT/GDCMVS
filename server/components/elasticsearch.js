@@ -627,9 +627,14 @@ function preloadDataFromCaDSR(next) {
 		}
 	}
 	logger.debug(ids);
-	caDSR.loadData(ids, function (data) {
-		return next(data);
-	});
+	if(ids.length > 0){
+		caDSR.loadData(ids, function (data) {
+			return next(data);
+		});
+	}else{
+		return next('CDE data Refreshed!!');
+	}
+	
 	// next(1);
 }
 
@@ -646,9 +651,14 @@ function preloadDataTypeFromCaDSR(next) {
 			ids.push(term);
 		}
 	}
-	caDSR.loadDataType(ids, function(data){
-		return next(data);
-	});
+	if(ids.length > 0){
+		caDSR.loadDataType(ids, function(data){
+			return next(data);
+		});
+	}
+	else{
+		return next('CDE data Refreshed!!');
+	}
 }
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
