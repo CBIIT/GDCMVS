@@ -217,15 +217,21 @@ var loadSynonyms = function (next) {
 		}
 	});
 	//get data
-	fs.truncate('./server/data_files/synonyms.js', 0, function () {
-		console.log('synonyms.js truncated')
-	});
-	fs.truncate('./server/data_files/synonyms_ncit.js', 0, function () {
-		console.log('synonyms_ncit.js truncated')
-	});
-	synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
-		return next(data);
-	});
+	if(ncit.length > 0){
+		fs.truncate('./server/data_files/synonyms.js', 0, function () {
+			console.log('synonyms.js truncated')
+		});
+		fs.truncate('./server/data_files/synonyms_ncit.js', 0, function () {
+			console.log('synonyms_ncit.js truncated')
+		});
+		synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
+			return next(data);
+		});
+	}else{
+		logger.debug('Already up to date');
+		return next('Success');
+	}
+
 };
 
 var loadSynonymsCtcae = function (next) {
@@ -339,10 +345,14 @@ var loadNcitSynonyms_continue = function (next) {
 	});
 	logger.debug(ncit);
 	logger.debug("length of NCIt codes: " + ncit.length);
-
-	synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
-		return next(data);
-	});
+	if(ncit.length > 0){
+		synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
+			return next(data);
+		});
+	}else{
+		logger.debug('Already up to date');
+		return next('Success');
+	}
 };
 
 var loadCtcaeSynonyms_continue = function (next) {
