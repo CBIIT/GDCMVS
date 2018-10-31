@@ -600,7 +600,7 @@ var loadCtcaeSynonyms_continue = function (req, res) {
 function copyToSynonymsJS(){
 	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
 	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
-	fs.writeFileSync("./server/data_files/synonyms.js", content_1+content_2, function (err) {
+	fs.writeFileSync("./server/data_files/synonyms.js", content_2+content_1, function (err) {
 		if (err) {
 			return logger.error(err);
 		}

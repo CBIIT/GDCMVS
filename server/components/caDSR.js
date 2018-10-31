@@ -218,9 +218,6 @@ var loadSynonyms = function (next) {
 	});
 	//get data
 	if(ncit.length > 0){
-		fs.truncate('./server/data_files/synonyms.js', 0, function () {
-			console.log('synonyms.js truncated')
-		});
 		fs.truncate('./server/data_files/synonyms_ncit.js', 0, function () {
 			console.log('synonyms_ncit.js truncated')
 		});
@@ -296,9 +293,6 @@ var loadSynonymsCtcae = function (next) {
 	});
 
 	if (ctcae.length > 0) {
-		fs.truncate('./server/data_files/synonyms.js', 0, function () {
-			console.log('synonyms.js truncated')
-		});
 		fs.truncate('./server/data_files/synonyms_ctcae.js', 0, function () {
 			console.log('synonyms_ctcae.js truncated')
 		});
