@@ -604,8 +604,6 @@ function copyToSynonymsJS(){
 		if (err) {
 			return logger.error(err);
 		}
-
-		logger.debug("#########synonyms for " + ids[idx] + ": " + syn.toString());
 	});
 }
 
