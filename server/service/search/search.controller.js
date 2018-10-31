@@ -10,6 +10,7 @@ var path = require('path');
 var yaml = require('yamljs');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
+var git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
@@ -1052,6 +1053,21 @@ var Unmapped = function (req, res) {
 	res.send("Success");
 }
 
+var gitClone = function (req, res){
+	let url = 'https://github.com/NCI-GDC/gdcdictionary.git';
+	let directory = 'tmp_data';
+	let clone = git.Clone.clone;
+	let branch = 'develop';
+	var cloneOptions = new git.CloneOptions(); 
+
+	cloneOptions.checkoutBranch = branch;
+	clone(url, directory, cloneOptions)
+        .then(function(repository){
+            
+        });
+	res.send('Success');
+}
+
 module.exports = {
 	suggestion,
 	searchP,
@@ -1071,5 +1087,6 @@ module.exports = {
 	preloadCadsrData,
 	parseExcel,
 	preloadDataTypeFromCaDSR,
-	Unmapped
+	Unmapped,
+	gitClone
 };
