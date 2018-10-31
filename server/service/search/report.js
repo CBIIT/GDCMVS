@@ -2207,6 +2207,120 @@ var releaseNote = function(req, res){
 	res.send(report);
 	// res.send("Success");
 }
+
+var exportMorphology = function (req, res){
+	let merges = [];
+	let arr = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'GDC Values','ICDO3 String','ICDO3 Code','NCIt PV','NCIt Code','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
+	];
+	
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		v: {
+			width: 200
+		},
+		i_c_s:{
+			width: 200
+		},
+		i_c:{
+			width: 200
+		},
+		ncit_v: {
+			width: 200
+		},
+		ncit_c: {
+			width: 200
+		},
+		t_t:{
+			width: 200
+		},
+		cde_v: {
+			width: 200
+		},
+		cde_c: {
+			width: 200
+		},
+		cde_id: {
+			width: 200
+		}
+	};
+
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
+
+	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeData = JSON.parse(content_1);
+
+	let content_2 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let cc = JSON.parse(content_2);
+
+	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
+	pv = pv.replace(/}{/g, ",");
+	let ncit_pv = JSON.parse(pv);
+
+	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
+		if(data.nm !== data.i_c){
+			let tmp_data = {};
+			tmp_data.c = 'Clinical';
+			tmp_data.n = 'Diagnosis';
+			tmp_data.p = 'Morphology';
+			tmp_data.v = data.i_c;
+			tmp_data.ncit_v = ncit_pv[data.n_c] && ncit_pv[data.n_c].preferredName ? ncit_pv[data.n_c].preferredName: '';
+			tmp_data.ncit_c = data.n_c;
+			tmp_data.cde_v = '';
+			tmp_data.cde_c = '';
+			tmp_data.cde_id = '3226275';
+			tmp_data.i_c = data.i_c;
+			tmp_data.i_c_s = data.nm;
+			tmp_data.t_t = data.term_type;
+			arr.push(tmp_data);
+		}
+	});
+
+	for(let val in cc['clinical.diagnosis.morphology']){
+		let tmp_data = {};
+			tmp_data.c = 'Clinical';
+			tmp_data.n = 'Diagnosis';
+			tmp_data.p = 'Morphology';
+			tmp_data.v = val;
+			tmp_data.ncit_v = cc["clinical.diagnosis.morphology"][val] && ncit_pv[cc["clinical.diagnosis.morphology"][val]] && ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName ? ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName: '';
+			tmp_data.ncit_c = cc["clinical.diagnosis.morphology"][val];
+			tmp_data.cde_v = '';
+			tmp_data.cde_c = '';
+			tmp_data.cde_id = '3226275';
+			tmp_data.i_c = '';
+			tmp_data.i_c_s = '';
+			tmp_data.t_t = '';
+			arr.push(tmp_data);
+	}
+	
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				name: 'Report', // <- Specify sheet name (optional) 
+				heading: heading, // <- Raw heading array (optional) 
+				merges: merges, // <- Merge cell ranges 
+				specification: specification, // <- Report specification 
+				data: arr // <-- Report data 
+			}
+		]
+	);
+
+	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
+	// res.send('Success');
+}
+
 module.exports = {
 	releaseNote,
 	export_ICDO3,
@@ -2218,5 +2332,6 @@ module.exports = {
 	exportMapping,
 	preProcess,
 	addTermType,
-	icdoMapping
+	icdoMapping,
+	exportMorphology
 }
