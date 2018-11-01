@@ -108,6 +108,25 @@ var searchP = function (req, res) {
 		query.bool = {};
 		query.bool.should = [];
 		if (option.match !== "exact") {
+			// let m = {};
+			// m.multi_match = {};
+			// m.multi_match.query = keyword;
+			// m.multi_match.analyzer = "my_standard";
+			// m.multi_match.fields = ["name.have"];
+			// m.multi_match.fuzziness = "AUTO";
+			// m.multi_match.prefix_length = "2";
+			// // m.multi_match.type = "phrase_prefix";
+			// if (option.desc) {
+			// 	m.multi_match.fields.push("desc");
+			// }
+			// if(option.syn){
+			// 	m.multi_match.fields.push("enum.s.have");
+			// 	m.multi_match.fields.push("cde_pv.n.have");
+			// 	m.multi_match.fields.push("cde_pv.ss.s.have");
+			// }
+			// m.multi_match.fields.push("enum.n.have");
+			// m.multi_match.fields.push("enum.i_c.have");
+			// query.bool.should.push(m);
 			let m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["name.have"] = keyword;
@@ -179,6 +198,7 @@ var searchP = function (req, res) {
 			m.multi_match.query = keyword;
 			m.multi_match.analyzer = "keyword";
 			m.multi_match.fields = ["name"];
+			// m.multi_match.fuzziness = "2";
 			if (option.desc) {
 				m.multi_match.fields.push("desc");
 			}
