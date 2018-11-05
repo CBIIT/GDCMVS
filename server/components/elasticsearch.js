@@ -434,7 +434,7 @@ function bulkIndex(next) {
 				logger.debug(folderPath + '/' + file);
 				for (let keys in fileJson.properties) {
 					if (fileJson.properties[keys].deprecated_enum) {
-						fileJson.properties[keys].enum = removeDeprecatedEnums(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum);
+						fileJson.properties[keys].enum = _.differenceWith(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
 					}
 					if (fileJson.deprecated && deprecated_properties.indexOf(fileJson.category + "." + fileJson.id + "." + keys) !== -1) {
 						delete fileJson.properties[keys];
@@ -477,7 +477,9 @@ function bulkIndex(next) {
 				p.enum.forEach(function (em) {
 					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
 						em.gdc_d = true;
-					} else {
+					} /*else if(em.i_c && gdc_data[node].properties[property].enum.indexOf(em.i_c.c) !== -1 && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1){
+						em.gdc_d = true;
+					}*/else {
 						em.gdc_d = false;
 					}
 				});
@@ -529,19 +531,6 @@ function bulkIndex(next) {
 		});
 	});
 
-}
-
-let removeDeprecatedEnums = function (arr1, arr2) {
-	let arr3 = []
-	arr1.forEach(function (tmp_e) {
-		if (tmp_e.charAt(0).match(/[C]/) && tmp_e.charAt(1).match(/[0-9]/)) {
-			arr3.push(tmp_e.replace('C', 'c'));
-		} else {
-			arr3.push(tmp_e);
-		}
-	});
-
-	return _.differenceWith(arr3, arr2, _.isEqual);
 }
 
 exports.bulkIndex = bulkIndex;
@@ -638,9 +627,14 @@ function preloadDataFromCaDSR(next) {
 		}
 	}
 	logger.debug(ids);
-	caDSR.loadData(ids, function (data) {
-		return next(data);
-	});
+	if(ids.length > 0){
+		caDSR.loadData(ids, function (data) {
+			return next(data);
+		});
+	}else{
+		return next('CDE data Refreshed!!');
+	}
+	
 	// next(1);
 }
 
@@ -657,8 +651,14 @@ function preloadDataTypeFromCaDSR(next) {
 			ids.push(term);
 		}
 	}
-	caDSR.loadDataType(ids);
-	next(1);
+	if(ids.length > 0){
+		caDSR.loadDataType(ids, function(data){
+			return next(data);
+		});
+	}
+	else{
+		return next('CDE data Refreshed!!');
+	}
 }
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
@@ -671,6 +671,14 @@ function loadSynonyms(next) {
 
 exports.loadSynonyms = loadSynonyms;
 
+function loadSynonyms_continue(next) {
+	caDSR.loadNcitSynonyms_continue(function (data) {
+		return next(data);
+	});
+}
+
+exports.loadSynonyms_continue = loadSynonyms_continue;
+
 function loadSynonymsCtcae(next) {
 	caDSR.loadSynonymsCtcae(function (data) {
 		return next(data);
@@ -679,9 +687,10 @@ function loadSynonymsCtcae(next) {
 
 exports.loadSynonymsCtcae = loadSynonymsCtcae;
 
-function loadSynonyms_continue(next) {
-	caDSR.loadSynonyms_continue();
-	next(1);
+function loadCtcaeSynonyms_continue(next) {
+	caDSR.loadCtcaeSynonyms_continue(function (data) {
+		return next(data);
+	});
 }
 
-exports.loadSynonyms_continue = loadSynonyms_continue;
+exports.loadCtcaeSynonyms_continue = loadCtcaeSynonyms_continue;
