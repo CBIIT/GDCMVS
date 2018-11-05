@@ -18,20 +18,23 @@ const func = {
       if ($('#compare_dialog').length) {
         $('#compare_dialog').remove();
       }
+
       let windowEl = $(window);
       let icdo = false;
       let icdo_items = [];
-      items.forEach(function (item) {
+      let item_checker = {};
+      items.forEach(function(item){
         if (item.i_c !== undefined) {
           icdo = true;
         }
-        if (item.gdc_d === false) {
+        if(item.gdc_d === false){
           return;
         }
-        icdo_items.push(item);
+        if(item_checker[item.n] === undefined) icdo_items.push(item);
+        item_checker[item.n] = item;
       });
 
-      if (icdo) {
+      if(icdo){
         items = icdo_items;
       }
 
