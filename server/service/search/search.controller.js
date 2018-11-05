@@ -10,6 +10,7 @@ var path = require('path');
 var yaml = require('yamljs');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
+var git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
@@ -38,15 +39,14 @@ var suggestion = function (req, res) {
 };
 
 var searchICDO3Data = function (req, res) {
-	var icdo3_code = req.query.icdo3;
-	let data = [];
+	var icdo3_code = req.query.icdo3.trim();
 	let query = {};
 
 	if (icdo3_code.trim() !== '') {
-		query.match_phrase = {};
-		query.match_phrase["enum.i_c.have"] = {};
-		query.match_phrase["enum.i_c.have"].query = icdo3_code;
-		query.match_phrase["enum.i_c.have"].analyzer = "case_insensitive";
+		query.match_phrase_prefix = {};
+		query.match_phrase_prefix["enum.i_c.have"] = {};
+		query.match_phrase_prefix["enum.i_c.have"].query = icdo3_code;
+		query.match_phrase_prefix["enum.i_c.have"].analyzer = "case_insensitive";
 		//query.analyzer = "keyword";
 		let highlight;
 
@@ -78,14 +78,17 @@ var searchICDO3Data = function (req, res) {
 							return x.toString().toUpperCase()
 						})
 
-						if ((value).indexOf(icdo3_code.toUpperCase()) > -1) {
+						if (value.indexOf(icdo3_code.toString().toUpperCase()) > -1) {
 							ICDO3Data.enums.push(enums[e]);
 						}
 					}
 				}
-				mainData.push(ICDO3Data);
+				if(ICDO3Data.enums.length > 0){
+					mainData.push(ICDO3Data);
+				}
 			}
-			res.json(mainData);
+			if(mainData.length > 0) res.json(mainData);
+			else res.send("No data found!");
 		});
 	} else {
 		res.send('No data found!');
@@ -105,6 +108,25 @@ var searchP = function (req, res) {
 		query.bool = {};
 		query.bool.should = [];
 		if (option.match !== "exact") {
+			// let m = {};
+			// m.multi_match = {};
+			// m.multi_match.query = keyword;
+			// m.multi_match.analyzer = "my_standard";
+			// m.multi_match.fields = ["name.have"];
+			// m.multi_match.fuzziness = "AUTO";
+			// m.multi_match.prefix_length = "2";
+			// // m.multi_match.type = "phrase_prefix";
+			// if (option.desc) {
+			// 	m.multi_match.fields.push("desc");
+			// }
+			// if(option.syn){
+			// 	m.multi_match.fields.push("enum.s.have");
+			// 	m.multi_match.fields.push("cde_pv.n.have");
+			// 	m.multi_match.fields.push("cde_pv.ss.s.have");
+			// }
+			// m.multi_match.fields.push("enum.n.have");
+			// m.multi_match.fields.push("enum.i_c.have");
+			// query.bool.should.push(m);
 			let m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["name.have"] = keyword;
@@ -176,6 +198,7 @@ var searchP = function (req, res) {
 			m.multi_match.query = keyword;
 			m.multi_match.analyzer = "keyword";
 			m.multi_match.fields = ["name"];
+			// m.multi_match.fuzziness = "2";
 			if (option.desc) {
 				m.multi_match.fields.push("desc");
 			}
@@ -542,16 +565,10 @@ var preloadCadsrData = function (req, res) {
 
 var preloadDataTypeFromCaDSR = function (req, res) {
 	elastic.preloadDataTypeFromCaDSR(function (result) {
-		if (result === 1) {
-			res.json({
-				"status": "success",
-				"message": "preparing data..."
-			});
+		if (result === "CDE data Refreshed!!") {
+			res.end('Success!!');
 		} else {
-			res.json({
-				"status": "failed",
-				"message": "failed to loading data from caDSR."
-			});
+			res.write(result);
 		}
 	});
 }
@@ -559,6 +576,18 @@ var preloadDataTypeFromCaDSR = function (req, res) {
 var preloadSynonumsNcit = function (req, res) {
 	elastic.loadSynonyms(function (result) {
 		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	});
+};
+
+var loadSynonyms_continue = function (req, res) {
+	elastic.loadSynonyms_continue(function (result) {
+		if (result === "Success") {
+			copyToSynonymsJS();			
 			res.end('Success!!');
 		} else {
 			res.write(result);
@@ -569,12 +598,34 @@ var preloadSynonumsNcit = function (req, res) {
 var preloadSynonumsCtcae = function (req, res) {
 	elastic.loadSynonymsCtcae(function (result) {
 		if (result === "Success") {
+			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
 			res.write(result);
 		}
 	})
 };
+
+var loadCtcaeSynonyms_continue = function (req, res) {
+	elastic.loadCtcaeSynonyms_continue(function (result) {
+		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	})
+};
+
+function copyToSynonymsJS(){
+	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
+	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
+	fs.writeFileSync("./server/data_files/synonyms.js", content_2+content_1, function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+}
 
 var getPV = function (req, res) {
 	let query = {
@@ -691,13 +742,7 @@ function removeDeprecated() {
 		let cnp_key = d_e.split(".#")[1];
 		if (concept[cnp]) {
 			for (let key in concept[cnp]) {
-				if (key.charAt(0).match(/[C]/) && key.charAt(1).match(/[0-9]/)) {
-					key = key.replace('C', 'c');
-				}
 				if (key === cnp_key) {
-					if (cnp_key.charAt(0).match(/[c]/) && cnp_key.charAt(1).match(/[0-9]/)) {
-						cnp_key = cnp_key.replace('c', 'C');
-					}
 					let tmp_value = concept[cnp];
 					delete tmp_value[cnp_key];
 				}
@@ -932,15 +977,7 @@ var Unmapped = function (req, res) {
 				if (local_property.deprecated_enum) {
 					let local_enum = local_property.enum;
 					let local_d_enum = local_property.deprecated_enum;
-					let final_d_enum = [];
-					local_d_enum.forEach(function (em) {
-						if (em.charAt(0).match(/[c]/) && em.charAt(1).match(/[0-9]/)) {
-							final_d_enum.push(em.replace('c', 'C'));
-						} else {
-							final_d_enum.push(em);
-						}
-					})
-					let final_enum = _.differenceWith(local_enum, final_d_enum, _.isEqual);
+					let final_enum = _.differenceWith(local_enum, local_d_enum, _.isEqual);
 					let local_values = [];
 					for (let file_values in concept[keys]) {
 						local_values.push(file_values);
@@ -1034,6 +1071,21 @@ var Unmapped = function (req, res) {
 	res.send("Success");
 }
 
+var gitClone = function (req, res){
+	let url = 'https://github.com/NCI-GDC/gdcdictionary.git';
+	let directory = 'tmp_data';
+	let clone = git.Clone.clone;
+	let branch = 'develop';
+	var cloneOptions = new git.CloneOptions(); 
+
+	cloneOptions.checkoutBranch = branch;
+	clone(url, directory, cloneOptions)
+        .then(function(repository){
+            
+        });
+	res.send('Success');
+}
+
 module.exports = {
 	suggestion,
 	searchP,
@@ -1045,11 +1097,14 @@ module.exports = {
 	getGDCandCDEData,
 	searchICDO3Data,
 	preloadSynonumsNcit,
+	loadSynonyms_continue,
 	preloadSynonumsCtcae,
+	loadCtcaeSynonyms_continue,
 	getNCItInfo,
 	indexing,
 	preloadCadsrData,
 	parseExcel,
 	preloadDataTypeFromCaDSR,
-	Unmapped
+	Unmapped,
+	gitClone
 };
