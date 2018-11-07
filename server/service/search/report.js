@@ -941,29 +941,38 @@ var exportMapping = function (req, res) {
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
 
-	// let i_c_data = {};
-	// all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
-	// 	if(data.nm !== data.i_c){
-	// 		if(i_c_data[data.i_c] === undefined){
-	// 			i_c_data[data.i_c] ={
-	// 				nm:"",
-	// 				n_c: ""
-	// 			}
-	// 			i_c_data[data.i_c].n_c = data.n_c;
-	// 			i_c_data[data.i_c].nm = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
-	// 		}else{
-	// 			i_c_data[data.i_c].n_c +=" | "+ data.n_c;
-	// 			if(ncit_pv[data.n_c]){
-	// 				i_c_data[data.i_c].nm += " | " +ncit_pv[data.n_c].preferredName;
-	// 			}
-	// 		}
-	// 	}
-	// });
+	let i_c_data = {};
+	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
+		if(data.nm !== data.i_c){
+			if(i_c_data[data.i_c] === undefined){
+				i_c_data[data.i_c] = {
+					ncit_pv: [],
+					n_c: [],
+					nm: []
+				}
+				if(data.n_c) i_c_data[data.i_c].n_c.push(data.n_c);
+				if(data.nm) i_c_data[data.i_c].nm.push(data.nm);
+				if(ncit_pv[data.n_c]){
+					i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
+				}
+			}else{
+				if(data.n_c && i_c_data[data.i_c].n_c.indexOf(data.n_c) === -1){
+					i_c_data[data.i_c].n_c.push(data.n_c);
+					if(ncit_pv[data.n_c]){
+						i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
+					}
+				}
+				if(data.nm && i_c_data[data.i_c].nm.indexOf(data.nm) === -1){
+					i_c_data[data.i_c].nm.push(data.nm);
+				}
+			}
+		}
+	});
 
 	let merges = [];
 	let data = [];
 	let heading = [
-		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID','ICDO3 Code','Term Type']
+		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID','ICDO3 Code', 'ICDO3 Strings','Term Type']
 	];
 	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
 		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
@@ -998,6 +1007,9 @@ var exportMapping = function (req, res) {
 			width: 200
 		},
 		i_c:{
+			width: 200
+		},
+		i_c_s:{
 			width: 200
 		},
 		t_t:{
@@ -1036,6 +1048,7 @@ var exportMapping = function (req, res) {
 						tmp_data.ncit_v = "";
 						tmp_data.ncit_c = "";
 						tmp_data.i_c = "";
+						tmp_data.i_c_s = "";
 						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
 							cdeData[cde_id].forEach(function (value) {
@@ -1054,6 +1067,7 @@ var exportMapping = function (req, res) {
 									tmp_data.ncit_c = data.n_c;
 									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
 									tmp_data.i_c = data.i_c;
+									tmp_data.i_c_s = data.nm;
 									tmp_data.t_t = data.term_type;
 								}
 							});
@@ -1078,6 +1092,7 @@ var exportMapping = function (req, res) {
 						tmp_data.ncit_v = "";
 						tmp_data.ncit_c = "";
 						tmp_data.i_c = "";
+						tmp_data.i_c_s = "";
 						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
 							cdeData[cde_id].forEach(function (value) {
@@ -1096,9 +1111,34 @@ var exportMapping = function (req, res) {
 									tmp_data.ncit_c = data.n_c;
 									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
 									tmp_data.i_c = data.i_c;
+									tmp_data.i_c_s = data.nm;
 									tmp_data.t_t = data.term_type;
 								}
 							});
+						}else if(property === 'morphology' && i_c_data[em]){
+							tmp_data.i_c = em;
+							i_c_data[em].n_c.forEach(function (tmp_result, index){
+								if(index === 0){
+									tmp_data.ncit_c += tmp_result;
+								}else{
+									tmp_data.ncit_c += ' | ' + tmp_result;
+								} 
+							});
+							i_c_data[em].ncit_pv.forEach(function (tmp_result, index){
+								if(index === 0){
+									tmp_data.ncit_v += tmp_result;
+								}else{
+									tmp_data.ncit_v += ' | ' + tmp_result;
+								} 
+							});
+							i_c_data[em].nm.forEach(function (tmp_result, index){
+								if(index === 0){
+									tmp_data.i_c_s += tmp_result;
+								}else{
+									tmp_data.i_c_s += ' | ' + tmp_result;
+								} 
+							});
+
 						}
 						data.push(tmp_data);
 					})
@@ -1119,7 +1159,7 @@ var exportMapping = function (req, res) {
 	);
 	res.attachment('Report-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
-
+	// res.send('Success');
 };
 var export_difference = function (req, res) {
 	const styles = {
