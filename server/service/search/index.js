@@ -3,6 +3,7 @@
 var express = require('express');
 var controller = require('./search.controller');
 var report = require('./report');
+var sheet = require('./googleSheets')
 var router = express.Router();
 
 router.get('/buildIndex', controller.indexing);
@@ -41,5 +42,7 @@ router.get('/all/p', controller.searchP);
 router.get('/p/local/vs', controller.getGDCData);
 router.get('/p/cde/vs', controller.getCDEData);
 router.get('/p/both/vs', controller.getGDCandCDEData);
+
+router.get('/manageSheet', sheet.manageSheets);
 
 module.exports = router;
