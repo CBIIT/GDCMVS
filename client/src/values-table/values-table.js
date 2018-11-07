@@ -85,7 +85,7 @@ export const vsRender = (items, keyword) => {
     let dict_cde_s = {};
     let arr_enum_c = [];
     let arr_enum_c_have = [];
-    let gdc_d_cont = 0;
+    //let gdc_d_cont = 0;
     //each row in the values tab will be put into values
     let row = {};
     row.category = source.category;
@@ -451,7 +451,8 @@ export const vsRender = (items, keyword) => {
         row.vs.forEach(function (item) {
           //remove if it's not gdc value
           if (item.gdc_d !== undefined && !item.gdc_d) {
-            gdc_d_cont++
+            //gdc_d_cont++
+            return
           }
           let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
           if (item_n in temp_i_c) {
@@ -480,7 +481,8 @@ export const vsRender = (items, keyword) => {
         //add the reformated to vs values
         row.vs = new_vs;
       }
-      len += row.vs.length - gdc_d_cont;
+      //len += row.vs.length - gdc_d_cont;
+      len += row.vs.length;
 
     } else {
       // if it doesn't have any enums and matches with cde_ss
@@ -507,16 +509,16 @@ export const vsRender = (items, keyword) => {
     }
   });
   let html = "";
+  let searched_keyword = $("#keywords").val();
   if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
-    let keyword = $("#keywords").val();
     html =
       '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
-      keyword + '</span></div>';
+      searched_keyword + '</span></div>';
   } else {
     let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 310;
     options.height = (h < 430) ? 430 : h;
-    options.keyword = keyword;
+    options.keyword = searched_keyword;
     html = $.templates({
       markup: tmpl,
       allowCode: true
