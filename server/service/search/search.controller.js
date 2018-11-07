@@ -196,9 +196,8 @@ var searchP = function (req, res) {
 			let m = {};
 			m.multi_match = {};
 			m.multi_match.query = keyword;
-			m.multi_match.analyzer = "keyword";
+			m.multi_match.analyzer = "case_insensitive";
 			m.multi_match.fields = ["name"];
-			// m.multi_match.fuzziness = "2";
 			if (option.desc) {
 				m.multi_match.fields.push("desc");
 			}
@@ -259,7 +258,7 @@ var indexing = function (req, res) {
 					"case_insensitive": {
 						"tokenizer": "keyword",
 						"filter": [
-							"lowercase"
+							"lowercase", "whitespace_remove"
 						]
 					},
 					"my_standard": {
@@ -272,6 +271,13 @@ var indexing = function (req, res) {
 					"my_filter": {
 						"type": "mapping",
 						"mappings": ["_=>-"]
+					}
+				},
+				"filter": {
+					"whitespace_remove": {
+					  "type": "pattern_replace",
+					  "pattern": "[_-]",
+					  "replacement": " "
 					}
 				}
 			}
