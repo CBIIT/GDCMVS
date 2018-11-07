@@ -85,7 +85,7 @@ export const vsRender = (items, keyword) => {
     let dict_cde_s = {};
     let arr_enum_c = [];
     let arr_enum_c_have = [];
-    //let gdc_d_cont = 0;
+    let gdc_d_cont = 0;
     //each row in the values tab will be put into values
     let row = {};
     row.category = source.category;
@@ -451,8 +451,7 @@ export const vsRender = (items, keyword) => {
         row.vs.forEach(function (item) {
           //remove if it's not gdc value
           if (item.gdc_d !== undefined && !item.gdc_d) {
-            //gdc_d_cont++
-            return
+            gdc_d_cont++
           }
           let item_n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
           if (item_n in temp_i_c) {
@@ -481,8 +480,7 @@ export const vsRender = (items, keyword) => {
         //add the reformated to vs values
         row.vs = new_vs;
       }
-      //len += row.vs.length - gdc_d_cont;
-      len += row.vs.length;
+      len += row.vs.length - gdc_d_cont;
 
     } else {
       // if it doesn't have any enums and matches with cde_ss
