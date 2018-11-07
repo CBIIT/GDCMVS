@@ -53,8 +53,8 @@ export default (items, keyword) => {
   });
   let html = "";
   if (props.length == 0) {
-    let keyword = $("#keywords").val();
-    html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
+    let searched_keyword = $("#keywords").val();
+    html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + searched_keyword + '</span></div>';
   }
   else {
     let offset = $('#root').offset().top;
