@@ -16,15 +16,16 @@ const func = {
       if (hl["enum.n"] == undefined && hl["enum.n.have"] == undefined &&
         hl["enum.s"] == undefined && hl["enum.s.have"] == undefined &&
         hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined &&
-        hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] ==
-        undefined &&
-        hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined
+        hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined &&
+        hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined &&
+        hl["enum.n_c"] == undefined
       ) {
         return;
       }
       let source = item._source;
       let dict_enum_n = {};
       let dict_enum_s = {};
+      let dict_enum_n_c = {};
       let dict_cde_n = {};
       let dict_cde_s = {};
       let arr_enum_c = [];
@@ -49,20 +50,16 @@ const func = {
       row.ref = source.name + "@" + source.node + "@" + source.category;
       row.cdeId = source.cde !== undefined ? source.cde.id : "";
       row.cdeUrl = source.cde !== undefined ? source.cde.url : "";
-      row.cdeLen = source.cde_pv == undefined || source.cde_pv.length ==
-        0 ? false : true;
+      row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
       //value informations in the subtable
       row.vs = [];
       row.tgts_enum_n = ""; //added
       row.tgts_cde_n = "";
-      let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
-        "enum.n"] || hl["enum.n.have"] : [];
-      let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl[
-        'enum.s'] || hl["enum.s.have"] : [];
-      let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl[
-        "cde_pv.n"] || hl["cde_pv.n.have"] : [];
-      let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ?
-        hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+      let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+      let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+      let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
+      let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
+      let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
       let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
       enum_n.forEach(function (n, i) {
@@ -79,6 +76,14 @@ const func = {
           dict_enum_s[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         } else {
           dict_enum_s[tmp] = s;
+        }
+      });
+      enum_n_c.forEach(function (s) {
+        let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        if (keyword.indexOf(' ') === -1) {
+          dict_enum_n_c[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_enum_n_c[tmp] = s;
         }
       });
       cde_n.forEach(function (pn) {
@@ -142,6 +147,11 @@ const func = {
                   tmp_s_h.push(s);
                 }
               });
+              // check if ther searched NCIt code matches with CDE NCIt code
+              if(ss.c in dict_enum_n_c){
+                ss.c = dict_enum_n_c[ss.c];
+                exist = true;
+              }
               tmp_ss.push({
                 c: ss.c,
                 s: tmp_s_h
@@ -211,6 +221,13 @@ const func = {
               v.n_c = em.n_c;
               v.s = tmp_s;
             }
+            // If the searched term matches with NCIt Code
+            if(em.n_c in dict_enum_n_c){
+              v.n = em.n;
+              v.ref = row.ref;
+              v.n_c = dict_enum_n_c[em.n_c];
+              v.s = tmp_s;
+            }
           }
 
           //check if it contains icd-0-3 codes.
@@ -255,7 +272,6 @@ const func = {
                 }
               }
             }
-
           }
 
           let lc = em.n.toLowerCase();

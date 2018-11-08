@@ -153,6 +153,10 @@ var searchP = function (req, res) {
 			}
 			m = {};
 			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.n_c"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["enum.n.have"] = keyword;
 			query.bool.should.push(m);
 			m = {};
@@ -172,6 +176,9 @@ var searchP = function (req, res) {
 						"number_of_fragments": 0
 					},
 					"enum.i_c.have": {
+						"number_of_fragments": 0
+					},
+					"enum.n_c": {
 						"number_of_fragments": 0
 					}
 				}
@@ -320,6 +327,10 @@ var indexing = function (req, res) {
 								"type": "text"
 							}
 						},
+						"analyzer": "case_insensitive"
+					},
+					"enum.n_c":{
+						"type": "text",
 						"analyzer": "case_insensitive"
 					},
 					"cde_pv.n": {
