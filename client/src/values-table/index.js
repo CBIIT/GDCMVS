@@ -1,7 +1,7 @@
 import tmpl from './view';
 
 const func = {
-  render(items, keyword) {
+  render(items, keyword, search_option) {
     //data preprocessing
     let values = [];
     let len = 0;
@@ -148,7 +148,7 @@ const func = {
                 }
               });
               // check if ther searched NCIt code matches with CDE NCIt code
-              if(ss.c in dict_enum_n_c){
+              if(ss.c in dict_enum_n_c && search_option.syn){
                 ss.c = dict_enum_n_c[ss.c];
                 exist = true;
               }
