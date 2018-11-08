@@ -29,10 +29,9 @@ const func = {
     items.forEach(function (item) {
       let hl = item.highlight;
       let source = item._source;
-      let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl[
-        'enum.s'] || hl["enum.s.have"] : [];
-      let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
-        "enum.n"] || hl["enum.n.have"] : [];
+      let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+      let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+      let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
       let enum_gdc_n = [];
       enum_n.forEach(function (n) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -42,23 +41,20 @@ const func = {
           }
         });
       });
-      let prop = ("name" in hl) || ("name.have" in hl) ?
-        hl["name"] || hl["name.have"] : [];
+      let prop = ("name" in hl) || ("name.have" in hl) ? hl["name"] || hl["name.have"] : [];
       let desc = ("desc" in hl) ? hl["desc"] : [];
-      let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ?
-        hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
+      let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ? hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
       let enum_s_icdo3 = [];
       if (enum_s.length === 0 && enum_gdc_n.length === 0) {
         enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
       }
-      let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl[
-        "cde_pv.n"] || hl["cde_pv.n.have"] : [];
-      let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ?
-        hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+      let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
+      let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let arr_enum_s = [];
       let arr_enum_i_c = [];
       let arr_enum_s_icdo3 = [];
       let arr_enum_n = [];
+      let arr_enum_n_c = [];
       let arr_cde_n = [];
       let arr_cde_s = [];
       let matched_pv = [];
@@ -85,6 +81,10 @@ const func = {
       enum_gdc_n.forEach(function (n) {
         let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_enum_n.push(tmp);
+      });
+      enum_n_c.forEach(function (n) {
+        let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        arr_enum_n_c.push(tmp);
       });
       enum_i_c.forEach(function (i_c) {
         let tmp = i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -189,7 +189,8 @@ const func = {
         if (enum_gdc_n.length == 0 &&
           enum_i_c.length == 0 &&
           matched_pv.length == 0 &&
-          arr_enum_s.length == 0) {
+          arr_enum_s.length == 0 &&
+          arr_enum_n_c == 0) {
           //if no values show in the values tab
           p.node = "branch";
           if (p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) !== -1) {
@@ -244,9 +245,11 @@ const func = {
             if (idx !== -1) {
               count_s--;
               e.exist = true;
-            } else {
-
+            }
+            else {
               if (arr_enum_n.indexOf(v.n) !== -1) {
+                e.exist = true;
+              }else if(arr_enum_n_c.indexOf(v.n_c) !== -1){ // check if the searched term is NCIt code
                 e.exist = true;
               }
 
@@ -335,7 +338,6 @@ const func = {
           trs.push(p);
         }
       }
-
       //save and calculate the count of matched element in this property
       p.len = count_v + count_s;
       c.len += p.len + count_p;
