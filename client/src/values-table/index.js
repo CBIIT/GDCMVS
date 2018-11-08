@@ -18,7 +18,7 @@ const func = {
         hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined &&
         hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined &&
         hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined &&
-        hl["enum.n_c"] == undefined
+        hl["enum.n_c"] == undefined && hl["cde_pv.ss.c"] == undefined
       ) {
         return;
       }
@@ -28,6 +28,7 @@ const func = {
       let dict_enum_n_c = {};
       let dict_cde_n = {};
       let dict_cde_s = {};
+      let dict_cde_n_c = {};
       let arr_enum_c = [];
       let arr_enum_c_have = [];
       //each row in the values tab will be put into values
@@ -60,6 +61,7 @@ const func = {
       let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
       let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
       let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+      let cde_n_c = ("cde_pv.ss.c" in hl) ? hl["cde_pv.ss.c"] : [];
       let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
       let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
       enum_n.forEach(function (n, i) {
@@ -100,6 +102,14 @@ const func = {
           dict_cde_s[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         } else {
           dict_cde_s[tmp] = ps;
+        }
+      });
+      cde_n_c.forEach(function (ps) {
+        let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        if (keyword.indexOf(' ') === -1) {
+          dict_cde_n_c[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_cde_n_c[tmp] = ps;
         }
       });
       enum_c.forEach(function (c) {
@@ -147,9 +157,9 @@ const func = {
                   tmp_s_h.push(s);
                 }
               });
-              // check if ther searched NCIt code matches with CDE NCIt code
-              if(ss.c in dict_enum_n_c && search_option.syn){
-                ss.c = dict_enum_n_c[ss.c];
+              // check if the searched NCIt code matches with CDE NCIt code
+              if(ss.c in dict_cde_n_c && search_option.syn){
+                ss.c = dict_cde_n_c[ss.c];
                 exist = true;
               }
               tmp_ss.push({
@@ -212,7 +222,7 @@ const func = {
               v.n = em.n;
             }
             v.ref = row.ref;
-            v.n_c = em.n_c;
+            v.n_c =  em.n_c;
             v.s = tmp_s;
           } else {
             if (em.n in dict_enum_n) {

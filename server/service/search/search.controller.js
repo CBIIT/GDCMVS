@@ -150,6 +150,10 @@ var searchP = function (req, res) {
 				m.match_phrase_prefix = {};
 				m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
 				query.bool.should.push(m);
+				m = {};
+				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["cde_pv.ss.c"] = keyword;
+				query.bool.should.push(m);
 			}
 			m = {};
 			m.match_phrase_prefix = {};
@@ -198,6 +202,9 @@ var searchP = function (req, res) {
 				highlight.fields["cde_pv.ss.s.have"] = {
 					"number_of_fragments": 0
 				};
+				highlight.fields["cde_pv.ss.c"] = {
+					"number_of_fragments": 0
+				};
 			}
 		} else {
 			let m = {};
@@ -212,6 +219,7 @@ var searchP = function (req, res) {
 				m.multi_match.fields.push("enum.s");
 				m.multi_match.fields.push("cde_pv.n");
 				m.multi_match.fields.push("cde_pv.ss.s");
+				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
@@ -236,6 +244,7 @@ var searchP = function (req, res) {
 				highlight.fields["enum.s"] = {};
 				highlight.fields["cde_pv.n"] = {};
 				highlight.fields["cde_pv.ss.s"] = {};
+				highlight.fields["cde_pv.ss.c"] = {};
 			}
 		}
 		elastic.query(config.index_p, query, highlight, function (result) {
@@ -351,6 +360,10 @@ var indexing = function (req, res) {
 								"type": "text"
 							}
 						},
+						"analyzer": "case_insensitive"
+					},
+					"cde_pv.ss.c": {
+						"type": "text",
 						"analyzer": "case_insensitive"
 					},
 					"enum.i_c.c": {
