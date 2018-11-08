@@ -1,7 +1,7 @@
 import tmpl from './view';
 
 const func = {
-  render(items, keyword) {
+  render(items, keyword, search_option) {
     //data preprocessing
     //current category
     let c_c = "";
