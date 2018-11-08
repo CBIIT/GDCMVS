@@ -214,6 +214,7 @@ var searchP = function (req, res) {
 				m.multi_match.fields.push("cde_pv.ss.s");
 			}
 			m.multi_match.fields.push("enum.n");
+			m.multi_match.fields.push("enum.n_c");
 			m.multi_match.fields.push("enum.i_c.c");
 			query.bool.should.push(m);
 			highlight = {
@@ -222,7 +223,8 @@ var searchP = function (req, res) {
 				"fields": {
 					"name": {},
 					"enum.n": {},
-					"enum.i_c.c": {}
+					"enum.i_c.c": {},
+					"enum.n_c": {}
 				}
 			};
 			if (option.desc) {

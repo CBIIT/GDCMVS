@@ -12,11 +12,11 @@ export default function render(keyword, option, items) {
     let data2 = JSON.parse(JSON.stringify(items));
     let data3 = JSON.parse(JSON.stringify(items));
     //render each tab
-    let trsHtml = trs.render(data1, keyword);
+    let trsHtml = trs.render(data1, keyword, option);
     trsHtml.active = false;
-    let psHtml = ps.render(data2, keyword);
+    let psHtml = ps.render(data2, keyword, option);
     psHtml.active = false;
-    let vsHtml = vs.render(data3, keyword);
+    let vsHtml = vs.render(data3, keyword, option);
     vsHtml.active = false;
     if (vsHtml.len === 0 && psHtml.len === 0) {
       trsHtml.len = 0;
