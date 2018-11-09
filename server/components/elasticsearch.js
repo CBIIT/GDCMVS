@@ -477,9 +477,8 @@ function bulkIndex(next) {
 				p.enum.forEach(function (em) {
 					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
 						em.gdc_d = true;
-					} /*else if(em.i_c && gdc_data[node].properties[property].enum.indexOf(em.i_c.c) !== -1 && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1){
-						em.gdc_d = true;
-					}*/else {
+					} 
+					else {
 						em.gdc_d = false;
 					}
 				});
@@ -487,6 +486,9 @@ function bulkIndex(next) {
 		}
 	});
 	allProperties.forEach(function (ap) {
+		if(ap.cde && ap.desc){ // ADD CDE ID to all property description.
+			ap.desc = ap.desc + " (CDE ID - " +ap.cde.id+")"
+		}
 		let doc = extend(ap, {});
 		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
 		propertyBody.push({
