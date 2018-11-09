@@ -115,7 +115,7 @@ const func = {
       if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
         source.cde_pv.forEach(function (pv) {
           let exist = false;
-          if(arr_cde_id.indexOf(source.cde.id) !== -1 && search_option.syn){ // If the searched term is CDE ID
+          if(source.cde && arr_cde_id.indexOf(source.cde.id) !== -1 && search_option.syn){ // If the searched term is CDE ID
             exist = true;
           }
           if (pv.ss !== undefined && pv.ss.length > 0) {
@@ -256,7 +256,7 @@ const func = {
             let e = {};
             e.id = count + "_" + v.n;
             e.exist = false;
-            if(arr_cde_id.indexOf(source.cde.id) !== -1){ //If the searched term is CDE ID
+            if(source.cde && arr_cde_id.indexOf(source.cde.id) !== -1){ //If the searched term is CDE ID
               e.exist = true;
             }
 
