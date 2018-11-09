@@ -13,9 +13,15 @@ const func = {
     items.forEach(function (item) {
       let hl = item.highlight;
       let source = item._source;
-      if (("name" in hl) || ("name.have" in hl) || ("desc" in hl)) {
+      if (("name" in hl) || ("name.have" in hl) || ("desc" in hl) || ("cde.id" in hl)) {
         let prop = {};
         prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : [source.name];
+        let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
+        let dict_cde_id = {};
+        cde_id.forEach(function (pn) {
+          let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
+          dict_cde_id[tmp] = pn;
+        });
         prop.nm_link = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "");
         if (keyword.indexOf(' ') === -1) {
           prop.nm[0] = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
@@ -40,6 +46,9 @@ const func = {
         }
         prop.ref = source.name + "@" + source.node + "@" + source.category;
         prop.cdeId = source.cde !== undefined ? source.cde.id : "";
+        if(prop.cdeId in dict_cde_id){
+          prop.cdeId = dict_cde_id[prop.cdeId];
+        }
         prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
         prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
         prop.type = Array.isArray(source.type) ? source.type[0] : source.type;
