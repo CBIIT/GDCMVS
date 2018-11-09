@@ -359,6 +359,9 @@ const func = {
       }
       //save and calculate the count of matched element in this property
       p.len = count_v + count_s;
+      if(search_option.desc === false && source.cde && arr_cde_id.indexOf(source.cde.id) !== -1){ //If the searched term is CDE ID, increment property count by 1.
+        count_p++;
+      }
       c.len += p.len + count_p;
       n.len += p.len + count_p;
       result.len += p.len + count_p;
