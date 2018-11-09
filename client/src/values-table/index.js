@@ -18,7 +18,7 @@ const func = {
         hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined &&
         hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined &&
         hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined &&
-        hl["enum.n_c"] == undefined && hl["cde_pv.ss.c"] == undefined
+        hl["enum.n_c"] == undefined && hl["cde_pv.ss.c"] == undefined && hl["cde.id"] == undefined
       ) {
         return;
       }
@@ -28,6 +28,7 @@ const func = {
       let dict_enum_n_c = {};
       let dict_cde_n = {};
       let dict_cde_s = {};
+      let dict_cde_id = {};
       let dict_cde_n_c = {};
       let arr_enum_c = [];
       let arr_enum_c_have = [];
@@ -59,6 +60,7 @@ const func = {
       let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
       let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
       let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
+      let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
       let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
       let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let cde_n_c = ("cde_pv.ss.c" in hl) ? hl["cde_pv.ss.c"] : [];
@@ -86,6 +88,14 @@ const func = {
           dict_enum_n_c[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         } else {
           dict_enum_n_c[tmp] = s;
+        }
+      });
+      cde_id.forEach(function (pn) {
+        let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        if (keyword.indexOf(' ') === -1) {
+          dict_cde_id[tmp] = pn.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+        } else {
+          dict_cde_id[tmp] = pn;
         }
       });
       cde_n.forEach(function (pn) {
@@ -130,6 +140,9 @@ const func = {
       if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
         source.cde_pv.forEach(function (pv) {
           let exist = false;
+          if(source.cde.id in dict_cde_id && search_option.syn){ // check if the searched term is CDE ID
+            exist = true;
+          }
           let tmp_ss = [];
           if (pv.ss !== undefined && pv.ss.length > 0) {
             pv.ss.forEach(function (ss) {
@@ -186,6 +199,9 @@ const func = {
         source.enum.forEach(function (em) {
           //check if there are any matches in local synonyms
           let exist = false;
+          if(source.cde.id in dict_cde_id){ // Check if the searched term is CDE ID
+            exist = true;
+          }
           let tmp_s = [];
           let t_s = [];
           if (em.s) {

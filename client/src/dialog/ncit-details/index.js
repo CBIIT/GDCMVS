@@ -3,6 +3,7 @@ import api from '../../api';
 import shared from '../../shared';
 
 export default function ncitDetails(uid){
+  uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
   api.evsRestApi(uid, function(id, item) {
 
     if($('#ncit_details').length){

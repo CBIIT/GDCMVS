@@ -48,6 +48,7 @@ const func = {
       if (enum_s.length === 0 && enum_gdc_n.length === 0) {
         enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
       }
+      let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
       let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
       let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
       let cde_n_c = ("cde_pv.ss.c" in hl) ? hl["cde_pv.ss.c"] : [];
@@ -56,6 +57,7 @@ const func = {
       let arr_enum_s_icdo3 = [];
       let arr_enum_n = [];
       let arr_enum_n_c = [];
+      let arr_cde_id = [];
       let arr_cde_n = [];
       let arr_cde_s = [];
       let arr_cde_n_c = [];
@@ -94,6 +96,10 @@ const func = {
           arr_enum_i_c.push(tmp);
         }
       });
+      cde_id.forEach(function (pn) {
+        let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        arr_cde_id.push(tmp);
+      });
       cde_n.forEach(function (pn) {
         let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_cde_n.push(tmp);
@@ -109,6 +115,9 @@ const func = {
       if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
         source.cde_pv.forEach(function (pv) {
           let exist = false;
+          if(arr_cde_id.indexOf(source.cde.id) !== -1 && search_option.syn){ // If the searched term is CDE ID
+            exist = true;
+          }
           if (pv.ss !== undefined && pv.ss.length > 0) {
             pv.ss.forEach(function (ss) {
               ss.s.forEach(function (s) {
@@ -197,7 +206,7 @@ const func = {
           enum_i_c.length == 0 &&
           matched_pv.length == 0 &&
           arr_enum_s.length == 0 &&
-          arr_enum_n_c == 0) {
+          arr_enum_n_c == 0 && arr_cde_id.length == 0) {
           //if no values show in the values tab
           p.node = "branch";
           if (p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) !== -1) {
@@ -247,6 +256,9 @@ const func = {
             let e = {};
             e.id = count + "_" + v.n;
             e.exist = false;
+            if(arr_cde_id.indexOf(source.cde.id) !== -1){ //If the searched term is CDE ID
+              e.exist = true;
+            }
 
             let idx = matched_pv.indexOf(v.n.toLowerCase());
             if (idx !== -1) {
