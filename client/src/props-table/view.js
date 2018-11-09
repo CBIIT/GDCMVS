@@ -37,7 +37,7 @@ let tmpl = '<div class="container table__container"><div class="table__thead row
   +'{{if cdeId == ""}}'
   +''
   +'{{else}}'
-  +'<a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>'
+  +'<a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE ID - {{:cdeId}}</a>'
     +'{{if local && cdeLen}}'
     +', <a class="table-td-link" href="javascript:getCDEData(\'{{:cdeId}}\',null);">Values</a>, <a class="table-td-link" href="javascript:compareGDC(\'{{:ref}}\',\'{{:cdeId}}\');"> Compare with GDC</a>'
     +'{{else cdeLen}}'
