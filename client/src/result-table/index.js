@@ -50,6 +50,7 @@ const func = {
       }
       let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
       let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+      let cde_n_c = ("cde_pv.ss.c" in hl) ? hl["cde_pv.ss.c"] : [];
       let arr_enum_s = [];
       let arr_enum_i_c = [];
       let arr_enum_s_icdo3 = [];
@@ -57,6 +58,7 @@ const func = {
       let arr_enum_n_c = [];
       let arr_cde_n = [];
       let arr_cde_s = [];
+      let arr_cde_n_c = [];
       let matched_pv = [];
       let gdc_desc = {};
 
@@ -100,6 +102,10 @@ const func = {
         let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
         arr_cde_s.push(tmp);
       });
+      cde_n_c.forEach(function (ps) {
+        let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        arr_cde_n_c.push(tmp);
+      });
       if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
         source.cde_pv.forEach(function (pv) {
           let exist = false;
@@ -110,6 +116,9 @@ const func = {
                   exist = true;
                 }
               })
+              if(arr_cde_n_c.indexOf(ss.c) !== -1){
+                exist = true;
+              }
             });
           }
           exist = exist || (arr_cde_n.indexOf(pv.n) >= 0);
@@ -167,12 +176,10 @@ const func = {
       p.l_id = source.name;
       p.parent_l_id = n.l_id;
       //may have highlighted terms in p.title and p.desc
-      p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl[
-        "name.have"]) : [source.name];
+      p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : [source.name];
       p.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
       if (p.title[0] !== undefined && keyword.indexOf(' ') === -1) {
         p.title[0] = p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
-
       }
       if(p.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl){
         p.desc[0] = p.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
