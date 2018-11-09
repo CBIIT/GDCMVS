@@ -161,6 +161,10 @@ var searchP = function (req, res) {
 			query.bool.should.push(m);
 			m = {};
 			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["cde.id"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["enum.n.have"] = keyword;
 			query.bool.should.push(m);
 			m = {};
@@ -183,6 +187,9 @@ var searchP = function (req, res) {
 						"number_of_fragments": 0
 					},
 					"enum.n_c": {
+						"number_of_fragments": 0
+					},
+					"cde.id": {
 						"number_of_fragments": 0
 					}
 				}
@@ -223,6 +230,7 @@ var searchP = function (req, res) {
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("cde.id");
 			m.multi_match.fields.push("enum.i_c.c");
 			query.bool.should.push(m);
 			highlight = {
@@ -232,7 +240,8 @@ var searchP = function (req, res) {
 					"name": {},
 					"enum.n": {},
 					"enum.i_c.c": {},
-					"enum.n_c": {}
+					"enum.n_c": {},
+					"cde.id": {}
 				}
 			};
 			if (option.desc) {
@@ -341,6 +350,10 @@ var indexing = function (req, res) {
 						"analyzer": "case_insensitive"
 					},
 					"enum.n_c":{
+						"type": "text",
+						"analyzer": "case_insensitive"
+					},
+					"cde.id":{
 						"type": "text",
 						"analyzer": "case_insensitive"
 					},
