@@ -140,7 +140,7 @@ const func = {
       if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
         source.cde_pv.forEach(function (pv) {
           let exist = false;
-          if(source.cde.id in dict_cde_id && search_option.syn){ // check if the searched term is CDE ID
+          if(source.cde && source.cde.id in dict_cde_id && search_option.syn){ // check if the searched term is CDE ID
             exist = true;
           }
           let tmp_ss = [];
@@ -199,7 +199,7 @@ const func = {
         source.enum.forEach(function (em) {
           //check if there are any matches in local synonyms
           let exist = false;
-          if(source.cde.id in dict_cde_id){ // Check if the searched term is CDE ID
+          if(source.cde && source.cde.id in dict_cde_id){ // Check if the searched term is CDE ID
             exist = true;
           }
           let tmp_s = [];
