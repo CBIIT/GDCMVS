@@ -400,7 +400,9 @@ var indexing = function (req, res) {
 				"properties": {
 					"id": {
 						"type": "completion",
-						"max_input_length": 100
+						"max_input_length": 100,
+						"analyzer" : "standard",
+						"search_analyzer" : "standard"
 					}
 				}
 			}
