@@ -213,7 +213,20 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				allTerm[em] = t;
 			}
 		});
-
+		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined){
+			let em = entry.term.termDef.cde_id.toString().trim().toLowerCase();
+			if(em in allTerm) {
+				//if exist, then check if have the same type
+				let t = allTerm[em];
+				if (t.indexOf("c") == -1) {
+					t.push("c");
+				}
+			} else {
+				let t = [];
+				t.push("c");
+				allTerm[em] = t;
+			}
+		}
 		//generate property index
 		p.name = entry.name;
 		p.node = fileJson.id;
