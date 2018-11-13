@@ -23,10 +23,22 @@ $(window).resize(function() {
   $('.parent-container').attr('style', 'min-height: calc(100vh - '+ (heightSlider + 10) +'px)');
 });
 
+$('#search-bar-options').on('show.bs.dropdown', function(event){
+  $("#suggestBox").hide();
+});
+
 $('#searchclear').click( function(event){
   event.preventDefault();
-  $(this).hide();
+  $('#search-bar-options').hide();
   $('#keywords').val('').focus();
+});
+
+$('.search-bar__boolean').click( function(event){
+  event.preventDefault();
+  let boolean_value = $(this).data('boolean');
+  $('#keywords').val( function(index, value){
+    return value + ' '+ boolean_value +' ';
+  }).focus();
 });
 
 function getGDCData(prop, target, keyword){
@@ -333,7 +345,7 @@ $(function() {
           $("#i_syn").prop('checked', true);
         }
 
-        $('#searchclear').show();
+        $('#search-bar-options').show();
 
         render(keyword, option, items);
         //todo: close progress bar
