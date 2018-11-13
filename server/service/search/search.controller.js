@@ -10,7 +10,7 @@ var path = require('path');
 var yaml = require('yamljs');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
-var git = require('nodegit');
+// var git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
@@ -97,7 +97,7 @@ var searchICDO3Data = function (req, res) {
 
 
 var searchP = function (req, res) {
-	let keyword = req.query.keyword.trim();
+	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");;
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
