@@ -489,6 +489,7 @@ function bulkIndex(next) {
 		for(let key in gdc_values){
 			gdc_values[key].forEach(values => {
 				let icdo3_code = values.i_c;
+				let ncit_code = values.n_c;
 				if(icdo3_code !== ""){
 					let em = icdo3_code.toString().trim().toLowerCase();
 					if(em in allTerm) {
@@ -500,6 +501,20 @@ function bulkIndex(next) {
 					} else {
 						let t = [];
 						t.push("i");
+						allTerm[em] = t;
+					}
+				}
+				if(ncit_code !== ""){
+					let em = ncit_code.toString().trim().toLowerCase();
+					if(em in allTerm) {
+						//if exist, then check if have the same type
+						let t = allTerm[em];
+						if (t.indexOf("n") == -1) {
+							t.push("n");
+						}
+					} else {
+						let t = [];
+						t.push("n");
 						allTerm[em] = t;
 					}
 				}
