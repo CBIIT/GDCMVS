@@ -3,6 +3,7 @@ import api from '../../api';
 import shared from '../../shared';
 
 export default function getGDCTerms(uid, tgts) {
+  uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
   api.getGDCDataById(uid, function (id, items) {
     if ($('#gdc_terms_data').length) {
       $('#gdc_terms_data').remove();
