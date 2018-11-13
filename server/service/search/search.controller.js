@@ -10,7 +10,7 @@ var path = require('path');
 var yaml = require('yamljs');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
-var git = require('nodegit');
+// var git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
