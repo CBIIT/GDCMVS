@@ -213,9 +213,10 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				allTerm[em] = t;
 			}
 		});
-		if(entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined){
+		// build typre ahed index for CDE ID
+		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
 			let em = entry.term.termDef.cde_id.toString().trim().toLowerCase();
-			if(em in allTerm) {
+			if (em in allTerm) {
 				//if exist, then check if have the same type
 				let t = allTerm[em];
 				if (t.indexOf("c") == -1) {
@@ -266,7 +267,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				p.enum = [];
 				entry.syns.forEach(function (item) {
 					let tmp = {};
-					if(item.term_type){
+					if (item.term_type) {
 						tmp.term_type = item.term_type;
 					}
 					tmp.n = item.pv;
@@ -461,6 +462,28 @@ function bulkIndex(next) {
 	});
 	//build suggestion index
 	let suggestionBody = [];
+	// typeahed suggestions for NCIt Codes.
+	if (ccode) {
+		for (let key in ccode) {
+			for (let ncit_value in ccode[key]) {
+				let ncit_code = ccode[key][ncit_value];
+				if(ncit_code !== ""){
+					let em = ncit_code.toString().trim().toLowerCase();
+					if(em in allTerm) {
+						//if exist, then check if have the same type
+						let t = allTerm[em];
+						if (t.indexOf("n") == -1) {
+							t.push("n");
+						}
+					} else {
+						let t = [];
+						t.push("n");
+						allTerm[em] = t;
+					}
+				}
+			}
+		}
+	}
 	for (var term in allTerm) {
 		let doc = {};
 		doc.id = term.toString();
@@ -490,8 +513,7 @@ function bulkIndex(next) {
 				p.enum.forEach(function (em) {
 					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
 						em.gdc_d = true;
-					} 
-					else {
+					} else {
 						em.gdc_d = false;
 					}
 				});
@@ -499,8 +521,8 @@ function bulkIndex(next) {
 		}
 	});
 	allProperties.forEach(function (ap) {
-		if(ap.cde && ap.desc){ // ADD CDE ID to all property description.
-			ap.desc = ap.desc + " (CDE ID - " +ap.cde.id+")"
+		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
+			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
 		}
 		let doc = extend(ap, {});
 		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
@@ -642,14 +664,14 @@ function preloadDataFromCaDSR(next) {
 		}
 	}
 	logger.debug(ids);
-	if(ids.length > 0){
+	if (ids.length > 0) {
 		caDSR.loadData(ids, function (data) {
 			return next(data);
 		});
-	}else{
+	} else {
 		return next('CDE data Refreshed!!');
 	}
-	
+
 	// next(1);
 }
 
@@ -666,12 +688,11 @@ function preloadDataTypeFromCaDSR(next) {
 			ids.push(term);
 		}
 	}
-	if(ids.length > 0){
-		caDSR.loadDataType(ids, function(data){
+	if (ids.length > 0) {
+		caDSR.loadDataType(ids, function (data) {
 			return next(data);
 		});
-	}
-	else{
+	} else {
 		return next('CDE data Refreshed!!');
 	}
 }
