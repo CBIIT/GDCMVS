@@ -13,22 +13,29 @@
   box-shadow:0 3px 8px 0 #e3e3e3;
 }
 
-.search-bar__clear {
+.search-bar__options {
+  padding: 0.85em 0;
   position: absolute;
   right: 160px;
   top: 0;
   bottom: 0;
-  height: 25px;
-  margin: auto;
-  font-size: 20px;
-  cursor: pointer;
-  color: #aaaaaa !important;
   z-index: 100;
 }
 
-.search-bar__clear:hover,
-.search-bar__clear:focus{
+.search-bar__option {
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  color: #aaaaaa !important;
+  height: 25px;
+  width: 21px;
+  padding: 0 0.1em;
+}
+
+.search-bar__option:hover,
+.search-bar__option:focus{
   color: #555555 !important;
+  outline: none;
 }
 
 .search-bar__btn {
@@ -49,6 +56,26 @@
 }
 .search-bar__input--has-error {
   border: 2px solid #c74060;
+}
+
+.search-bar__dropdown {
+  right: -15px;
+  left: auto;
+  min-width: 85px;
+  text-align: center;
+}
+
+.search-bar__dropdown > li > a {
+  line-height: 1.2em;
+  font-size: 0.9em;
+  color: #3a3a3a;
+}
+
+.search-bar__dropdown > li > a:hover,
+.search-bar__dropdown  > li > a:focus {
+  background-color: #f0f0f0;
+  color: #3a3a3a;
+  outline: none;
 }
 
 .suggest {
