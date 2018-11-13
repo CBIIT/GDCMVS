@@ -3,6 +3,7 @@ import api from '../../api';
 import shared from '../../shared';
 
 export default function cdeData(uid, tgts){
+  uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
   api.getCDEDataById(uid, function(id, items) {
     //data precessing
     let tmp = [];

@@ -238,6 +238,7 @@ window.getCDEData = getCDEData;
 
 function compareGDC(prop, cdeId){
     let uid = prop.replace(/@/g, '/');
+    cdeId = cdeId.replace(/<b>/g, "").replace(/<\/b>/g, "");
     dialog.compareGDC(uid, cdeId);
 };
 
