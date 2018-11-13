@@ -484,6 +484,29 @@ function bulkIndex(next) {
 			}
 		}
 	}
+	// typeahead for ICDO3 codes
+	if(gdc_values){
+		for(let key in gdc_values){
+			gdc_values[key].forEach(values => {
+				let icdo3_code = values.i_c;
+				if(icdo3_code !== ""){
+					let em = icdo3_code.toString().trim().toLowerCase();
+					if(em in allTerm) {
+						//if exist, then check if have the same type
+						let t = allTerm[em];
+						if (t.indexOf("i") == -1) {
+							t.push("i");
+						}
+					} else {
+						let t = [];
+						t.push("i");
+						allTerm[em] = t;
+					}
+				}
+			});
+		}
+
+	}
 	for (var term in allTerm) {
 		let doc = {};
 		doc.id = term.toString();

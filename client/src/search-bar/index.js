@@ -63,8 +63,8 @@ const func = {
             e.preventDefault();
         }
         if(e.keyCode == 13 && $("#suggestBox .selected").length !== 0){
-            let t = $("#suggestBox .selected").text();
-            $("#keywords").val(t.substr(0,t.length-1));
+            let t = $("#suggestBox .selected").children('.suggest__name').text();
+            $("#keywords").val(t);
             $("#search").trigger("click");
         }
         else if (e.keyCode == 13) {
