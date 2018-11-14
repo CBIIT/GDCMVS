@@ -83,6 +83,7 @@ const func = {
             if (displayBoxIndex < 0)
                  displayBoxIndex = oBoxCollection.length - 1;
             let cssClass = "selected";
+            $("#keywords").val(oBoxCollection.eq(displayBoxIndex).children('.suggest__name').text());
             oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
         }
     },
