@@ -102,160 +102,9 @@ var searchP = function (req, res) {
 		res.json([]);
 	} else {
 		let option = JSON.parse(req.query.option);
-		let words = [];
-		let query = {};
-		let highlight;
-		query.bool = {};
-		query.bool.should = [];
-		if (option.match !== "exact") {
-			// let m = {};
-			// m.multi_match = {};
-			// m.multi_match.query = keyword;
-			// m.multi_match.analyzer = "my_standard";
-			// m.multi_match.fields = ["name.have"];
-			// m.multi_match.fuzziness = "AUTO";
-			// m.multi_match.prefix_length = "2";
-			// // m.multi_match.type = "phrase_prefix";
-			// if (option.desc) {
-			// 	m.multi_match.fields.push("desc");
-			// }
-			// if(option.syn){
-			// 	m.multi_match.fields.push("enum.s.have");
-			// 	m.multi_match.fields.push("cde_pv.n.have");
-			// 	m.multi_match.fields.push("cde_pv.ss.s.have");
-			// }
-			// m.multi_match.fields.push("enum.n.have");
-			// m.multi_match.fields.push("enum.i_c.have");
-			// query.bool.should.push(m);
-			let m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["name.have"] = keyword;
-			query.bool.should.push(m);
-			if (option.desc) {
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["desc"] = keyword;
-				query.bool.should.push(m);
-			}
-			if (option.syn) {
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["enum.s.have"] = keyword;
-				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
-				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
-				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.ss.c"] = keyword;
-				query.bool.should.push(m);
-			}
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.n_c"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["cde.id"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.n.have"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.i_c.have"] = {};
-			m.match_phrase_prefix["enum.i_c.have"].query = keyword;
-			m.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
-			query.bool.should.push(m);
-			highlight = {
-				"pre_tags": ["<b>"],
-				"post_tags": ["</b>"],
-				"fields": {
-					"name.have": {
-						"number_of_fragments": 0
-					},
-					"enum.n.have": {
-						"number_of_fragments": 0
-					},
-					"enum.i_c.have": {
-						"number_of_fragments": 0
-					},
-					"enum.n_c": {
-						"number_of_fragments": 0
-					},
-					"cde.id": {
-						"number_of_fragments": 0
-					}
-				}
-			};
-			if (option.desc) {
-				highlight.fields["desc"] = {
-					"number_of_fragments": 0
-				};
-			}
-			if (option.syn) {
-				highlight.fields["enum.s.have"] = {
-					"number_of_fragments": 0
-				};
-				highlight.fields["cde_pv.n.have"] = {
-					"number_of_fragments": 0
-				};
-				highlight.fields["cde_pv.ss.s.have"] = {
-					"number_of_fragments": 0
-				};
-				highlight.fields["cde_pv.ss.c"] = {
-					"number_of_fragments": 0
-				};
-			}
-		} else {
-			let m = {};
-			m.multi_match = {};
-			m.multi_match.query = keyword;
-			m.multi_match.analyzer = "case_insensitive";
-			m.multi_match.fields = ["name"];
-			if (option.desc) {
-				m.multi_match.fields.push("desc");
-			}
-			if (option.syn) {
-				m.multi_match.fields.push("enum.s");
-				m.multi_match.fields.push("cde_pv.n");
-				m.multi_match.fields.push("cde_pv.ss.s");
-				m.multi_match.fields.push("cde_pv.ss.c");
-			}
-			m.multi_match.fields.push("enum.n");
-			m.multi_match.fields.push("enum.n_c");
-			m.multi_match.fields.push("cde.id");
-			m.multi_match.fields.push("enum.i_c.c");
-			query.bool.should.push(m);
-			highlight = {
-				"pre_tags": ["<b>"],
-				"post_tags": ["</b>"],
-				"fields": {
-					"name": {},
-					"enum.n": {},
-					"enum.i_c.c": {},
-					"enum.n_c": {},
-					"cde.id": {}
-				}
-			};
-			if (option.desc) {
-				highlight.fields["desc"] = {
-					"number_of_fragments": 0
-				};
-			}
-			if (option.syn) {
-				highlight.fields["enum.s"] = {};
-				highlight.fields["cde_pv.n"] = {};
-				highlight.fields["cde_pv.ss.s"] = {};
-				highlight.fields["cde_pv.ss.c"] = {};
-			}
-		}
+		
+		let query = generateQuery(keyword, option);
+		let highlight = generateHighlight(option);
 		elastic.query(config.index_p, query, highlight, function (result) {
 			if (result.hits === undefined) {
 				return handleError.error(res, result);
@@ -272,6 +121,170 @@ var searchP = function (req, res) {
 		});
 	}
 };
+
+function generateQuery(keyword, option){
+	let query = {};
+	query.bool = {};
+	query.bool.should = [];
+	if (option.match !== "exact") {
+		// let m = {};
+		// m.multi_match = {};
+		// m.multi_match.query = keyword;
+		// m.multi_match.analyzer = "my_standard";
+		// m.multi_match.fields = ["name.have"];
+		// m.multi_match.fuzziness = "AUTO";
+		// m.multi_match.prefix_length = "2";
+		// // m.multi_match.type = "phrase_prefix";
+		// if (option.desc) {
+		// 	m.multi_match.fields.push("desc");
+		// }
+		// if(option.syn){
+		// 	m.multi_match.fields.push("enum.s.have");
+		// 	m.multi_match.fields.push("cde_pv.n.have");
+		// 	m.multi_match.fields.push("cde_pv.ss.s.have");
+		// }
+		// m.multi_match.fields.push("enum.n.have");
+		// m.multi_match.fields.push("enum.i_c.have");
+		// query.bool.should.push(m);
+		let m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["name.have"] = keyword;
+		query.bool.should.push(m);
+		if (option.desc) {
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["desc"] = keyword;
+			query.bool.should.push(m);
+		}
+		if (option.syn) {
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.s.have"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["cde_pv.n.have"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["cde_pv.ss.c"] = keyword;
+			query.bool.should.push(m);
+		}
+		m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["enum.n_c"] = keyword;
+		query.bool.should.push(m);
+		m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["cde.id"] = keyword;
+		query.bool.should.push(m);
+		m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["enum.n.have"] = keyword;
+		query.bool.should.push(m);
+		m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["enum.i_c.have"] = {};
+		m.match_phrase_prefix["enum.i_c.have"].query = keyword;
+		m.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
+		query.bool.should.push(m);
+	} else {
+		let m = {};
+		m.multi_match = {};
+		m.multi_match.query = keyword;
+		m.multi_match.analyzer = "case_insensitive";
+		m.multi_match.fields = ["name"];
+		if (option.desc) {
+			m.multi_match.fields.push("desc");
+		}
+		if (option.syn) {
+			m.multi_match.fields.push("enum.s");
+			m.multi_match.fields.push("cde_pv.n");
+			m.multi_match.fields.push("cde_pv.ss.s");
+			m.multi_match.fields.push("cde_pv.ss.c");
+		}
+		m.multi_match.fields.push("enum.n");
+		m.multi_match.fields.push("enum.n_c");
+		m.multi_match.fields.push("cde.id");
+		m.multi_match.fields.push("enum.i_c.c");
+		query.bool.should.push(m);
+	}
+	return query;
+}
+
+function generateHighlight(option){
+	let highlight;
+	if (option.match !== "exact") {
+		highlight = {
+			"pre_tags": ["<b>"],
+			"post_tags": ["</b>"],
+			"fields": {
+				"name.have": {
+					"number_of_fragments": 0
+				},
+				"enum.n.have": {
+					"number_of_fragments": 0
+				},
+				"enum.i_c.have": {
+					"number_of_fragments": 0
+				},
+				"enum.n_c": {
+					"number_of_fragments": 0
+				},
+				"cde.id": {
+					"number_of_fragments": 0
+				}
+			}
+		};
+		if (option.desc) {
+			highlight.fields["desc"] = {
+				"number_of_fragments": 0
+			};
+		}
+		if (option.syn) {
+			highlight.fields["enum.s.have"] = {
+				"number_of_fragments": 0
+			};
+			highlight.fields["cde_pv.n.have"] = {
+				"number_of_fragments": 0
+			};
+			highlight.fields["cde_pv.ss.s.have"] = {
+				"number_of_fragments": 0
+			};
+			highlight.fields["cde_pv.ss.c"] = {
+				"number_of_fragments": 0
+			};
+		}
+	} else {
+		highlight = {
+			"pre_tags": ["<b>"],
+			"post_tags": ["</b>"],
+			"fields": {
+				"name": {},
+				"enum.n": {},
+				"enum.i_c.c": {},
+				"enum.n_c": {},
+				"cde.id": {}
+			}
+		};
+		if (option.desc) {
+			highlight.fields["desc"] = {
+				"number_of_fragments": 0
+			};
+		}
+		if (option.syn) {
+			highlight.fields["enum.s"] = {};
+			highlight.fields["cde_pv.n"] = {};
+			highlight.fields["cde_pv.ss.s"] = {};
+			highlight.fields["cde_pv.ss.c"] = {};
+		}
+	}
+	return highlight;
+}
 
 var indexing = function (req, res) {
 	let configs = [];
