@@ -36,7 +36,8 @@ const func = {
         if(icdo){
           items = icdo_items;
         }
-
+        // Sort the list alphabetical order.
+        items.sort((a,b) => (a.n > b.n) ? 1 : ((b.n > a.n) ? -1 : 0)); 
         let html = $.templates(tmpl.toCompare).render({items: items});
 
         let tp = (window.innerHeight * 0.2 < shared.headerOffset() )? 20 : window.innerHeight * 0.2;
@@ -120,7 +121,7 @@ const func = {
         items.from.forEach(function(f){
             fromV.push(f.n);
         });
-        let table = generateCompareGDCResult(fromV, toV, opt);
+        let table = generateCompareGDCResult(fromV.sort(), toV.sort(), opt);
         let html = '<div id="cpGDC_result_option">'
                     +'<div id="cpGDC_result_table" class="table__container">'+table+'</div>'
                     +'</div>';
@@ -153,14 +154,14 @@ const func = {
                         let options = {};
                         options.sensitive = $("#compareGDC_filter").prop('checked');
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
-                        let table_new = generateCompareGDCResult(fromV, toV, options);
+                        let table_new = generateCompareGDCResult(fromV.sort(), toV.sort(), options);
                         $('#cpGDC_result_table').html(table_new);
                     });
                     $('#compareGDC_unmatched').bind('click', function(){
                         let options = {};
                         options.sensitive = $("#compareGDC_filter").prop('checked');
                         options.unmatched = $("#compareGDC_unmatched").prop('checked');
-                        let table_new = generateCompareGDCResult(fromV, toV, options);
+                        let table_new = generateCompareGDCResult(fromV.sort(), toV.sort(), options);
                         $('#cpGDC_result_table').html(table_new);
                     });
                 },
