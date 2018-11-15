@@ -1,18 +1,17 @@
 <div class="container table__container">
   <div class="table__thead row">
-    <div class="col-xs-2">
+    <div class="col-xs-3">
       <div class="table__th">Category / Node / Property</div>
     </div>
-    <div class="col-xs-10">
+    <div class="col-xs-9">
       <div class="table__thead row">
-        <div class="table__th col-xs-4">Matched GDC Values
+        <div class="table__th col-xs-6">Matched GDC Values
           <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
             title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property.">
             <i class="fa fa-info-circle"></i>
           </a>
         </div>
-        <div class="table__th col-xs-4">Matched NCIt Values</div>
-        <div class="table__th col-xs-4">CDE Permissible Values
+        <div class="table__th col-xs-6">CDE Permissible Values
           <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
             title="For GDC dictionary properties that have a corresponding caDSR clinical data element (CDE), these values are part of that CDE\s value domain in the caDSR. They may not currently be available in the GDC dictionary.">
             <i class="fa fa-info-circle"></i>
@@ -25,7 +24,7 @@
     <div class="col-xs-12">
       {{for values}}
       <div class="table__row row table__row--striped table__row--flex">
-        <div class="table__td col-xs-2">{{:category}}
+        <div class="table__td col-xs-3">{{:category}}
           <ul class="table__ul">
             <li class="table__li table__td--word-break">{{:node}}
               <ul class="table__ul">
@@ -55,14 +54,14 @@
             {{/if}}
           </div>
         </div>
-        <div class="table__values col-xs-10">
+        <div class="table__values col-xs-9">
           {{for vs}}
             {{if #getIndex() == 5}}
             <div class="table__row--toggle">
             {{/if}}
             <div class="row table__row--flex">
 
-              <div class="table__td table__gdc-values col-xs-4">
+              <div class="table__td table__gdc-values col-xs-6">
                 {{if n == "no match" || gdc_d == false}}
                 <div class="row">
                   <div class="col-xs-8">no match</div>
@@ -115,54 +114,7 @@
                 {{/if}}
               </div>
 
-              <div class="table__td table__gdc-values col-xs-4">
-                {{if gdc_d == false}}
-                <div class="row">
-                  <div class="col-xs-10">
-                    <a href="javascript:getGDCData('{{:ref}}','{{:n}}','{{:~root.options.keyword}}');">{{:n}}</a>
-                  </div>
-                  <div class="col-xs-2 table__center">
-                    {{if s.length || term_i_c !== undefined}}
-                    <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
-                      <i class="fa fa-plus"></i>
-                    </a>
-                    {{/if}}
-                  </div>
-                </div>
-                <div class="data-content" style="display: none;">
-                  {{if term_i_c !== undefined }}
-                  <div class="row table__td">
-                    <div class="col-xs-4">{{:term_i_c.i_c}}<br>(ICD-O-3)</div>
-                    <div class="col-xs-8">{{for term_i_c.n}}{{:}}</br>{{/for}}</div>
-                  </div>
-                  {{if term_i_c.n_syn.length}}
-                    {{for term_i_c.n_syn}}
-                    <div class="row table__td">
-                      <div class="col-xs-4">
-                        {{* if((/^C[1-9]/g).test(data.n_c)) { }}
-                        <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
-                        {{* } }}
-                      </div>
-                      <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
-                    </div>
-                    {{/for}}
-                  {{/if}}
-                  {{else s.length}}
-                  <div class="row table__td">
-                    <div class="col-xs-4">
-                      {{* if((/^C[1-9]/g).test(data.n_c)) { }}
-                      <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
-                      {{* } }}
-                    </div>
-                    <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
-                  </div>
-                  {{/if}}
-                </div>
-                {{/if}}
-              </div>
-
-
-              <div class="table__td table__cde-values col-xs-4">
+              <div class="table__td table__cde-values col-xs-6">
                 {{if cde_s.length }}
                 <div class="row">
                   <div class="col-xs-10">{{:cde_pv}}</div>

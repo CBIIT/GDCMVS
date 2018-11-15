@@ -104,7 +104,7 @@ export const dtRender = (items, keyword) => {
         }
       });
     });
-    let prop = ("name.have" in hl) ? hl["name.have"] : [];
+    let prop = ("name" in hl) || ("name.have" in hl) ? hl["name"] || hl["name.have"] : [];
     let desc = ("desc" in hl) ? hl["desc"] : [];
     let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ?
       hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
