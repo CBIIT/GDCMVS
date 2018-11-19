@@ -21,10 +21,7 @@ var suggestion = function (req, res) {
 			"prefix": term,
 			"completion": {
 				"field": "id",
-				"size": 10,
-				"fuzzy": {
-					"fuzziness": "AUTO"
-				}
+				"size": 10
 			}
 		}
 	};
