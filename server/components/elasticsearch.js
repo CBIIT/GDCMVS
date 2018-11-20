@@ -559,9 +559,9 @@ function bulkIndex(next) {
 		}
 	});
 	allProperties.forEach(function (ap) {
-		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
-			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
-		}
+		// if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
+		// 	ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
+		// }
 		let doc = extend(ap, {});
 		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
 		propertyBody.push({
