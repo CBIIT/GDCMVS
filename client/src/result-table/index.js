@@ -28,6 +28,7 @@ const func = {
 
     items.forEach(function (item) {
       let hl = item.highlight;
+      if(_.isEmpty(hl)) return;
       let source = item._source;
       let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
       let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
