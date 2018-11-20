@@ -36,7 +36,7 @@ const func = {
         displayBoxIndex = -1;
         //todo:show progress bar
         $('#gdc-loading-icon').fadeIn(100);
-        api.searchAll(keyword, option, function(keyword, option, items) {
+        api.searchAll(keywordCase, option, function(keyword, option, items) {
 
           //Save the data in localStorage
           localStorage.setItem('keyword', keywordCase);
