@@ -41,7 +41,10 @@ export default function render(keyword, option, items) {
     api.suggestMisSpelled(keyword, function(results){
       if (results.length !== 0) {
         html = '<div class="indicator"><p>Did you mean: ';
-        results.forEach(function(result) {
+        results.forEach(function(result, index) {
+          if (index !== 0) {
+            html += ', '
+          }
           html += '<a href="#" class="indicator__suggest">' + result.id + '</a>';
         });
         html += '</p><div class="indicator__card"><p class="indicator__card-p">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><p class="indicator__card-p">Suggestion:</p>'

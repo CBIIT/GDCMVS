@@ -305,10 +305,6 @@ a:hover, a:focus {
   margin: 0.8em 0;
 }
 
-.indicator__suggest {
-  padding-right: 0.6em;
-}
-
 .tooltip.bottom:after{
   position: absolute;
   top: 2px;
