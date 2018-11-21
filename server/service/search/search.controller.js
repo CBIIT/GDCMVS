@@ -38,6 +38,33 @@ var suggestion = function (req, res) {
 	})
 };
 
+var suggestionMisSpelled = function (req, res) {
+	let term = req.query.keyword;
+	let suggest = {
+		"term_suggest": {
+			"prefix": term,
+			"completion": {
+				"field": "id",
+				"size": 3,
+				"fuzzy": {
+					"fuzziness": "AUTO"
+				}
+			}
+		}
+	};
+	elastic.suggest(config.suggestionName, suggest, function (result) {
+		if (result.suggest === undefined) {
+			return handleError.error(res, result);
+		}
+		let dt = result.suggest.term_suggest;
+		let data = [];
+		dt[0].options.forEach(function (opt) {
+			data.push(opt._source);
+		});
+		res.json(data);
+	})
+};
+
 var searchICDO3Data = function (req, res) {
 	var icdo3_code = req.query.icdo3.trim();
 	let query = {};
@@ -1277,6 +1304,7 @@ var gitClone = function (req, res) {
 
 module.exports = {
 	suggestion,
+	suggestionMisSpelled,
 	searchP,
 	getPV,
 	getDataFromCDE,
