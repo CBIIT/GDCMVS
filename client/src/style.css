@@ -280,17 +280,31 @@ a:hover, a:focus {
   min-width: 550px;
   text-align: center;
   margin: 10em auto;
-  padding: 2em 0;
+  padding: 1em 0;
   background-color: #fff;
   color: #535A60;
   font-size: 1.2em;
 }
+
 .indicator--has-error{
   color: #c74060;
 }
+
 .indicator__term{
   color: #2a72a4;
 }
+
+.indicator__card{
+  margin: 2em auto;
+  max-width: 410px;
+  text-align: left;
+  font-style: italic;
+}
+
+.indicator__card-p {
+  margin: 0.8em 0;
+}
+
 .tooltip.bottom:after{
   position: absolute;
   top: 2px;
