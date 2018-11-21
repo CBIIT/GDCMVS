@@ -9,6 +9,14 @@ const api = {
   	}
     });
   },
+  suggestMisSpelled(value, callback) {
+    $.getJSON({
+  	url: baseUrl + "/suggestMisSpelled?keyword=" + value,
+  	success: function(data) {
+  	  callback(data);
+  	}
+    });
+  },
   searchAll(keyword, option, callback, error) {
     $.getJSON(baseUrl + '/all/p', {keyword:keyword, option: JSON.stringify(option)}, function(result) {
         callback(keyword, option, result);

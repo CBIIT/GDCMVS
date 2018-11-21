@@ -2,6 +2,7 @@ import trs from './result-table/';
 import ps from './props-table/';
 import vs from './values-table/';
 import tabs from './tabs/'
+import api from './api'
 import shared from './shared'
 
 export default function render(keyword, option, items) {
@@ -36,10 +37,29 @@ export default function render(keyword, option, items) {
   } else if (option.error == true) {
     html = '<div class="indicator indicator--has-error"><p>Please, enter a valid keyword!</p></div>';
   } else {
-    html = '<div class="indicator"><p>Did you mean: <a href="">blood</a>, <a href="">blood cancer</a>, <a href="">blood stomach</a></p>';
-    html += '<div class="indicator__card"><p class="indicator__card-p">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><p class="indicator__card-p">Suggestion:</p>'
-    html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
-    html += '</div></div>'
+
+    api.suggestMisSpelled(keyword, function(results){
+      if (results.length !== 0) {
+        html = '<div class="indicator"><p>Did you mean: ';
+        results.forEach(function(result) {
+          html += '<a href="#" class="indicator__suggest">' + result.id + '</a>';
+        });
+        html += '</p><div class="indicator__card"><p class="indicator__card-p">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><p class="indicator__card-p">Suggestion:</p>'
+        html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
+        html += '</div></div>'
+      } else {
+        html = '<div class="indicator"><p>Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p></div>';
+      }
+
+      $("#root").html(html);
+
+      $('.indicator__suggest').click(function (event) {
+        event.preventDefault();
+        $("#keywords").val(this.innerText);
+        $("#search").trigger("click");
+      });
+
+    });
   }
 
   $("#root").html(html);
