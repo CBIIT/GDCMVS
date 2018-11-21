@@ -22,7 +22,7 @@ export default function render(keyword, option, items) {
       trsHtml.len = 0;
     }
     if (trsHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
-      html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
+      html = '<div class="indicator"><p>Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p></div>';
     } else {
       if (option.activeTab == 0) {
         vsHtml.active = true;
@@ -34,9 +34,12 @@ export default function render(keyword, option, items) {
       html = tabs(trsHtml, psHtml, vsHtml, keyword);
     }
   } else if (option.error == true) {
-    html = '<div class="indicator indicator--has-error">Please, enter a valid keyword!</div>';
+    html = '<div class="indicator indicator--has-error"><p>Please, enter a valid keyword!</p></div>';
   } else {
-    html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
+    html = '<div class="indicator"><p>Did you mean: <a href="">blood</a>, <a href="">blood cancer</a>, <a href="">blood stomach</a></p>';
+    html += '<div class="indicator__card"><p class="indicator__card-p">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><p class="indicator__card-p">Suggestion:</p>'
+    html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
+    html += '</div></div>'
   }
 
   $("#root").html(html);
