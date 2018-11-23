@@ -51,7 +51,9 @@ export default function render(keyword, option, items) {
         html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
         html += '</div></div>'
       } else {
-        html = '<div class="indicator"><p>Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p></div>';
+        html += '<div class="indicator"></p><p>Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><div class="indicator__card"><p class="indicator__card-p">Suggestion:</p>'
+        html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
+        html += '</div></div>'
       }
 
       $("#root").html(html);

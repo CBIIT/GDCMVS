@@ -426,7 +426,7 @@ const func = {
                     });
                   }
                   temp_i_c[index_i_c].checker_n_c.push(em.n_c);
-                  temp_i_c[index_i_c].n_syn.push({n_c: em.n_c, s: tmp_s });
+                  if(em.n_c !== "") temp_i_c[index_i_c].n_syn.push({n_c: em.n_c, s: tmp_s });
                 }
               }
             });
