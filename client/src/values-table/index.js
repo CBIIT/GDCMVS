@@ -372,7 +372,8 @@ const func = {
                 temp_i_c[item_i_c].checker_n_c.push(item.n_c);
               }
             } else {
-              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [], checker_n_c: [item.n_c] };
+              if(item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
               if(item_n_clr !== item_i_c){
                 if(tt === 'PT'){
                   temp_i_c[item_i_c].n.unshift(item.n+" "+term_type);
