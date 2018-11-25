@@ -368,7 +368,7 @@ const func = {
                 temp_i_c[item_i_c].n_clr.push(item_n_clr);
               }
               if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
-                temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
+                if(item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
                 temp_i_c[item_i_c].checker_n_c.push(item.n_c);
               }
             } else {
