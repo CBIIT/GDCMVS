@@ -367,12 +367,12 @@ const func = {
                 }
                 temp_i_c[item_i_c].n_clr.push(item_n_clr);
               }
-              if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
+              if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1) {
                 if(item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
-                temp_i_c[item_i_c].checker_n_c.push(item.n_c);
+                temp_i_c[item_i_c].checker_n_c.push(item.n_c.replace(/<b>/g, "").replace(/<\/b>/g, ""));
               }
             } else {
-              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [], checker_n_c: [item.n_c] };
+              temp_i_c[item_i_c] = { i_c: item.i_c,n: [], n_clr: [], n_syn: [], checker_n_c: [item.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")] };
               if(item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
               if(item_n_clr !== item_i_c){
                 if(tt === 'PT'){
@@ -399,7 +399,7 @@ const func = {
                     temp_i_c[index_i_c].n.push(em.n + " " + term_type);
                   }
                 }
-                if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
+                if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1) {
                   //remove depulicates in local synonyms
                   let tmp_s = [];
                   let t_s = [];
@@ -426,7 +426,7 @@ const func = {
                       }
                     });
                   }
-                  temp_i_c[index_i_c].checker_n_c.push(em.n_c);
+                  temp_i_c[index_i_c].checker_n_c.push(em.n_c.replace(/<b>/g, "").replace(/<\/b>/g, ""));
                   if(em.n_c !== "") temp_i_c[index_i_c].n_syn.push({n_c: em.n_c, s: tmp_s });
                 }
               }
