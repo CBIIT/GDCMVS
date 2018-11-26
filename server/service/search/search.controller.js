@@ -157,6 +157,7 @@ var searchP = function (req, res) {
 };
 
 function generateQuery(keyword, option, isBoolSearch) {
+	if(keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g,"\\/").replace(/\//g,"\\/");
 	let query = {};
 	if (isBoolSearch === true && option.match !== "exact") {
 		query.query_string = {};
@@ -272,6 +273,7 @@ function generateQuery(keyword, option, isBoolSearch) {
 }
 
 function generateHighlight(keyword, option, isBoolSearch) {
+	if(keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g,"\\/").replace(/\//g,"\\/");
 	let highlight;
 	if (isBoolSearch === true && option.match !== "exact") {
 		highlight = {
@@ -438,6 +440,42 @@ function removeExtraHighlighting(keyword, data) {
 		});
 		return data;
 	} else {
+		if (keyword.indexOf(" OR ") !== -1) {
+			let check_arr = keyword.split(" OR ");
+			var result = false;
+			for (var i = 0; i < check_arr.length; i++) {
+				if (check_arr[i].match(/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/) || check_arr[i].match(/[8]{1}[0-9]{3}/)) {
+					result = true;
+					break;
+				}
+			}
+			if(result){
+				data.forEach(function (value) {
+					if (value.highlight === undefined) return;
+					let new_value = {};
+					for (let key in value.highlight) {
+						let local_value = value.highlight[key];
+						local_value.forEach(function (val) {
+							check_arr.forEach(function (checker){
+								if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(checker.toString().trim().toLowerCase()) !== -1) {
+									if (new_value[key] === undefined) {
+										new_value[key] = [];
+										if(new_value[key].indexOf(val) == -1) new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									} else {
+										if(new_value[key].indexOf(val) == -1) new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}
+								}
+							})
+						});
+					}
+					if (!_.isEmpty(new_value)) {
+						value.highlight = new_value;
+					} else {
+						value.highlight = {};
+					}
+				});
+			}
+		}
 		return data;
 	}
 }
