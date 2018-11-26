@@ -442,10 +442,10 @@ function removeExtraHighlighting(keyword, data) {
 	} else {
 		if (keyword.indexOf(" OR ") !== -1) {
 			let check_arr = keyword.split(" OR ");
-			var result = false;
+			var result = true;
 			for (var i = 0; i < check_arr.length; i++) {
-				if (check_arr[i].match(/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/) || check_arr[i].match(/[8]{1}[0-9]{3}/)) {
-					result = true;
+				if (!check_arr[i].match(/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/) || !check_arr[i].match(/[8]{1}[0-9]{3}/)) {
+					result = false;
 					break;
 				}
 			}
