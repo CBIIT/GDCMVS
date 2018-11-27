@@ -15,12 +15,14 @@ const func = {
         let option = {};
 
         //multi boolean options
-        booleanArray.forEach(function(e,i) {
-          if(i === 0) return;
-          if(booleanArray[0] !== e) {
-            booleanKeyword = true;
-          }
-        });
+        if (booleanArray !== null){
+          booleanArray.forEach(function(e,i) {
+            if (i === 0) return;
+            if (booleanArray[0] !== e) {
+              booleanKeyword = true;
+            }
+          });
+        }
 
         if(keywordCase == "" || booleanKeyword){
             option.error = true;
