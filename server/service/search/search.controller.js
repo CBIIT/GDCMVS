@@ -126,10 +126,12 @@ var searchICDO3Data = function (req, res) {
 var searchP = function (req, res) {
 	let isBoolSearch = false;
 	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
+	let original_keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
 		if (keyword.indexOf('AND') !== -1 || keyword.indexOf('OR') !== -1 || keyword.indexOf('NOT') !== -1) {
+			if(keyword.indexOf('NOT') !== -1) keyword = keyword.replace(new RegExp('NOT','g'), 'OR');
 			isBoolSearch = true;
 		}
 		let option = JSON.parse(req.query.option);
@@ -148,7 +150,7 @@ var searchP = function (req, res) {
 				delete entry._id;
 			});
 			if (isBoolSearch === true && data.length !== 0) {
-				res.json(removeExtraHighlighting(keyword, data));
+				res.json(removeExtraHighlighting(original_keyword, data));
 			} else {
 				res.json(data);
 			}
@@ -157,7 +159,7 @@ var searchP = function (req, res) {
 };
 
 function generateQuery(keyword, option, isBoolSearch) {
-	if(keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g,"\\/").replace(/\//g,"\\/");
+	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/").replace(/\//g, "\\/");
 	let query = {};
 	if (isBoolSearch === true && option.match !== "exact") {
 		query.query_string = {};
@@ -273,7 +275,7 @@ function generateQuery(keyword, option, isBoolSearch) {
 }
 
 function generateHighlight(keyword, option, isBoolSearch) {
-	if(keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g,"\\/").replace(/\//g,"\\/");
+	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/").replace(/\//g, "\\/");
 	let highlight;
 	if (isBoolSearch === true && option.match !== "exact") {
 		highlight = {
@@ -409,9 +411,9 @@ function generateHighlight(keyword, option, isBoolSearch) {
 
 
 
-function removeExtraHighlighting(keyword, data) {
-	if (keyword.indexOf(" AND ") !== -1) {
-		let check_arr = keyword.split(" AND ");
+function removeExtraHighlighting(original_keyword, data) {
+	if (original_keyword.indexOf(" AND ") !== -1) {
+		let check_arr = original_keyword.split(" AND ");
 		data.forEach(function (value) {
 			if (value.highlight === undefined) return;
 			let new_value = {};
@@ -419,7 +421,7 @@ function removeExtraHighlighting(keyword, data) {
 				let local_value = value.highlight[key];
 				local_value.forEach(function (val) {
 					function isSimilar(element) {
-						if (val.toString().trim().toLowerCase().indexOf(element.toString().trim().toLowerCase()) == -1) return false;
+						if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(element.toString().trim().toLowerCase()) == -1) return false;
 						return true;
 					}
 					if (check_arr.every(isSimilar)) {
@@ -439,43 +441,128 @@ function removeExtraHighlighting(keyword, data) {
 			}
 		});
 		return data;
-	} else {
-		if (keyword.indexOf(" OR ") !== -1) {
-			let check_arr = keyword.split(" OR ");
-			var result = true;
-			for (var i = 0; i < check_arr.length; i++) {
-				if (!check_arr[i].match(/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/) || !check_arr[i].match(/[8]{1}[0-9]{3}/)) {
-					result = false;
-					break;
-				}
-			}
-			if(result){
-				data.forEach(function (value) {
-					if (value.highlight === undefined) return;
-					let new_value = {};
-					for (let key in value.highlight) {
-						let local_value = value.highlight[key];
-						local_value.forEach(function (val) {
-							check_arr.forEach(function (checker){
-								if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(checker.toString().trim().toLowerCase()) !== -1) {
-									if (new_value[key] === undefined) {
-										new_value[key] = [];
-										if(new_value[key].indexOf(val) == -1) new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-									} else {
-										if(new_value[key].indexOf(val) == -1) new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+	} 
+	else if (original_keyword.indexOf(" OR ") !== -1) {
+		let check_arr = original_keyword.split(" OR ");
+		data.forEach(function (value) {
+			if (value.highlight === undefined) return;
+			let new_value = {};
+			for (let key in value.highlight) {
+				let local_value = value.highlight[key];
+				local_value.forEach(function (val) {
+					check_arr.forEach(function (checker) {
+						if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(checker.toString().trim().toLowerCase()) !== -1) {
+							if (new_value[key] === undefined) {
+								new_value[key] = [];
+								if (new_value[key].indexOf(val) == -1) {
+									if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
+										new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}else{
+										new_value[key].push(val);
 									}
 								}
-							})
-						});
-					}
-					if (!_.isEmpty(new_value)) {
-						value.highlight = new_value;
-					} else {
-						value.highlight = {};
-					}
+							} else {
+								if (new_value[key].indexOf(val) == -1) {
+									if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
+										new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}else{
+										new_value[key].push(val);
+									}
+								}
+							}
+						}
+					})
 				});
 			}
-		}
+			if (!_.isEmpty(new_value)) {
+				value.highlight = new_value;
+			} else {
+				value.highlight = {};
+			}
+		});
+		return data;
+	}
+	else if(original_keyword.indexOf(" NOT ") !== -1){
+		let check_arr = original_keyword.split(" NOT ");
+		// Add All highlights that matches with 1st word in the query
+		data.forEach(function (value) {
+			if (value.highlight === undefined) return;
+			let new_value = {};
+			for (let key in value.highlight) {
+				let local_value = value.highlight[key];
+				local_value.forEach(function (val) {
+					check_arr.forEach(function (checker, index) {
+						if (index === 0 && val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(checker.toString().trim().toLowerCase()) !== -1) {
+							if (new_value[key] === undefined) {
+								new_value[key] = [];
+								if (new_value[key].indexOf(val) == -1) {
+									if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
+										new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}else{
+										new_value[key].push(val);
+									}
+								}
+							} else {
+								if (new_value[key].indexOf(val) == -1) {
+									if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
+										new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}else{
+										new_value[key].push(val);
+									}
+								}
+							}
+						}
+					})
+				});
+			}
+			if (!_.isEmpty(new_value)) {
+				value.highlight = new_value;
+			} else {
+				value.highlight = {};
+			}
+		});
+		// Remove all remaining highlights that matches with NOT keyword.
+		check_arr.splice(0,1);
+		data.forEach(function (value) {
+			if (value.highlight === undefined) return;
+			let new_value = {};
+			for (let key in value.highlight) {
+				let local_value = value.highlight[key];
+				local_value.forEach(function (val) {
+					check_arr.forEach(function (checker, index) {
+						function isSimilar(element) {
+							if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(element.toString().trim().toLowerCase()) == -1) return true;
+							return false;
+						}
+						if (check_arr.every(isSimilar)) {
+							if (new_value[key] === undefined) {
+								new_value[key] = [];
+								if (new_value[key].indexOf(val) == -1) {
+									if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
+										new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}else{
+										new_value[key].push(val);
+									}
+								}
+							} else {
+								if (new_value[key].indexOf(val) == -1) {
+									if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
+										new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
+									}else{
+										new_value[key].push(val);
+									}
+								}
+							}
+						}
+					})
+				});
+			}
+			if (!_.isEmpty(new_value)) {
+				value.highlight = new_value;
+			} else {
+				value.highlight = {};
+			}
+		});
 		return data;
 	}
 }
