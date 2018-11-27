@@ -10,9 +10,21 @@ const func = {
     search(){
         let keywordCase = $("#keywords").val().trim();
         let keyword = keywordCase.toLowerCase();
+        let booleanKeyword = (/^(NOT|AND|OR)|(NOT|AND|OR)$/g).test(keywordCase);
+        let booleanArray = keywordCase.match(/(NOT|AND|OR)/g);
         let option = {};
 
-        if(keywordCase == ""){
+        //multi boolean options
+        if (booleanArray !== null){
+          booleanArray.forEach(function(e,i) {
+            if (i === 0) return;
+            if (booleanArray[0] !== e) {
+              booleanKeyword = true;
+            }
+          });
+        }
+
+        if(keywordCase == "" || booleanKeyword){
             option.error = true;
             $('#keywords').addClass('search-bar__input--has-error');
             render(keywordCase, option, []);
@@ -86,9 +98,9 @@ const func = {
             let cssClass = "selected";
             let suggest_value = oBoxCollection.eq(displayBoxIndex).children('.suggest__name').text();
             let entered_value = $('#keywords').val();
-            
+
             $('#keywords').val(getFinalSuggestion(suggest_value, entered_value));
-            
+
             oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
         }
     },
@@ -109,12 +121,12 @@ const func = {
             searchoptions.hide();
             return;
         }
-        
+
         let keyword = $(this).val();
         if(keyword.indexOf(' OR') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' OR') + 4);
         if(keyword.indexOf(' AND') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
         if(keyword.indexOf(' NOT') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
-        
+
         api.suggest(keyword, function(result){
             if(result.length === 0){
                 area.style.display = "none";
@@ -144,7 +156,7 @@ const func = {
 }
 
 function getFinalSuggestion(suggest_value, entered_value){
-    let final_keyword = suggest_value;        
+    let final_keyword = suggest_value;
     if(entered_value.indexOf(' OR') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('OR')) + 'OR ' + suggest_value;
     if(entered_value.indexOf(' AND') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('AND')) + 'AND ' + suggest_value;
     if(entered_value.indexOf(' NOT') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('NOT')) + 'NOT ' + suggest_value;
