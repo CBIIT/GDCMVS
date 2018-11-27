@@ -144,7 +144,7 @@ const func = {
 }
 
 function getFinalSuggestion(suggest_value, entered_value){
-    let final_keyword;        
+    let final_keyword = suggest_value;        
     if(entered_value.indexOf(' OR') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('OR')) + 'OR ' + suggest_value;
     if(entered_value.indexOf(' AND') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('AND')) + 'AND ' + suggest_value;
     if(entered_value.indexOf(' NOT') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('NOT')) + 'NOT ' + suggest_value;
