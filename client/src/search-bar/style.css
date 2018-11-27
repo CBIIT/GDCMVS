@@ -82,7 +82,7 @@
   position: relative;
 }
 .suggest__listbox {
-  width: calc(100% - 10.8em);
+  width: calc(100% - 11.5em);
   display:none;
   border-radius: 5px;
   padding-top: 0.5em;
@@ -97,24 +97,19 @@
 .suggest__object {
   line-height: 1.8em;
   font-size: 1em;
-  width: 100%;
-  float: left;
-  text-align: left;
+  display: flex;
+  justify-content: space-between;
 }
 .suggest__object:hover {
   background-color: #f0f0f0;
   cursor: pointer;
 }
 .suggest__name {
-  float: left;
-  width: 93%;
-  margin-left: 0.9em;
+  margin: 0 0.9em;
 }
 .suggest__type {
-  float: right;
   font-weight: bold;
   margin-right: 0.9em;
-  margin-bottom: 0;
 }
 .suggest__listbox .selected {
   background-color: #f0f0f0;
