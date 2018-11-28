@@ -127,12 +127,27 @@ const func = {
         if(keyword.indexOf(' AND') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
         if(keyword.indexOf(' NOT') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
 
+        let keywordHold = $(this).val();
+        if((/.+(NOT|AND|OR)/g).test(keywordHold)){
+          $('#suggestWidth').text(keywordHold.match(/.+(NOT|AND|OR)/g)[0]);
+        }else {
+          $('#suggestWidth').text('');
+        }
+
         api.suggest(keyword, function(result){
             if(result.length === 0){
                 area.style.display = "none";
                 displayBoxIndex = -1;
                 area.innerHTML = "";
                 return;
+            }
+
+            let suggestWidth = $('#suggestWidth').width();
+            if(suggestWidth != 0){
+              area.style.left = suggestWidth + 'px';
+              area.style.width = 'auto';
+            }else{
+              area.removeAttribute('style');
             }
 
             area.style.display = "block";
