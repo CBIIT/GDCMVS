@@ -114,7 +114,13 @@
 .suggest__listbox .selected {
   background-color: #f0f0f0;
 }
-
+.suggest__width {
+  width: auto;
+  visibility: hidden;
+  position: fixed;
+  overflow:auto;
+  font-size: 1.2em;
+}
 .search-options {
   width: 60%;
   min-width: 690px;
