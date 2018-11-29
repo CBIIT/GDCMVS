@@ -84,8 +84,7 @@ const func = {
         }
         if(e.keyCode == 13 && $("#suggestBox .selected").length !== 0){
             let t = $("#suggestBox .selected").children('.suggest__name').text();
-            let entered_value = $('#keywords').val();
-            $('#keywords').val(getFinalSuggestion(t, entered_value));
+            $('#keywords').val(PrevWord(this));
             $("#search").trigger("click");
         }
         else if (e.keyCode == 13) {
@@ -105,7 +104,7 @@ const func = {
                  displayBoxIndex = oBoxCollection.length - 1;
             let cssClass = "selected";
             let suggest_value = oBoxCollection.eq(displayBoxIndex).children('.suggest__name').text();
-            let entered_value = $('#keywords').val();
+            let entered_value = PrevWord(this);
 
             $('#keywords').val(getFinalSuggestion(suggest_value, entered_value));
 
@@ -130,15 +129,15 @@ const func = {
             return;
         }
 
-        let keyword = $(this).val();
+        let keyword = PrevWord(this);
         if(keyword.indexOf(' OR') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' OR') + 4);
         if(keyword.indexOf(' AND') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
         if(keyword.indexOf(' NOT') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
 
-        let keywordHold = $(this).val();
-        if((/.+(NOT|AND|OR)/g).test(keywordHold)){
-          $('#suggestWidth').text(keywordHold.match(/.+(NOT|AND|OR)/g)[0]);
-        }else {
+        let partialKeyword = PrevWord(this);
+        if ((/.+(NOT|AND|OR)/g).test(partialKeyword)) {
+          $('#suggestWidth').text(partialKeyword.match(/.+(NOT|AND|OR)/g)[0]);
+        } else {
           $('#suggestWidth').text('');
         }
 
@@ -164,7 +163,7 @@ const func = {
             area.innerHTML = html;
             area.onclick = function(e){
                 let t = $(e.target).text();
-                let entered_value = $('#keywords').val();
+                let entered_value = PrevWord(document.getElementById('keywords'));
                 $("#keywords").val(getFinalSuggestion(t, entered_value));
                 $("#keywords").focus();
             };
@@ -184,6 +183,34 @@ function getFinalSuggestion(suggest_value, entered_value){
     if(entered_value.indexOf(' AND') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('AND')) + 'AND ' + suggest_value;
     if(entered_value.indexOf(' NOT') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('NOT')) + 'NOT ' + suggest_value;
     return final_keyword;
+}
+
+function ReturnWord(text, caretPos) {
+    var index = text.indexOf(caretPos);
+    var preText = text.substring(0, caretPos);
+    return preText;
+}
+
+function PrevWord(text) {
+    var caretPos = GetCaretPosition(text)
+    var word = ReturnWord(text.value, caretPos);
+    if (word != null) {
+        return word;
+    }
+}
+
+function GetCaretPosition(ctrl) {
+    var CaretPos = 0;   // IE Support
+    if (document.selection) {
+        ctrl.focus();
+        var Sel = document.selection.createRange();
+        Sel.moveStart('character', -ctrl.value.length);
+        CaretPos = Sel.text.length;
+    }
+    // Firefox support
+    else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+        CaretPos = ctrl.selectionStart;
+    return (CaretPos);
 }
 
 export default func;
