@@ -14,6 +14,14 @@ const func = {
         let booleanArray = keywordCase.match(/(NOT|AND|OR)/g);
         let option = {};
 
+        //multi boolean error
+        let keywordArray = keywordCase.split(' ');
+        keywordArray.forEach(function(e,i){
+          if(keywordArray[i-1] === e){
+            booleanKeyword = true;
+          }
+        });
+
         //multi boolean options
         if (booleanArray !== null){
           booleanArray.forEach(function(e,i) {
