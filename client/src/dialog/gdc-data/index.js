@@ -16,7 +16,7 @@ export default function gdcData(prop, tgt, keyword) {
     // RegExp Keyword
     // Don't replace with anything, if keyword is null
     keyword = keyword === null ? '@#$%^' : keyword.trim().replace(/[\ ,:_-]+/g, " ");
-    let reg_key = new RegExp(keyword, "ig");
+    let reg_key = new RegExp(keyword.replace(/( NOT | AND | OR )/g, "|"), "ig");
 
     items.forEach(function (item) {
       let tt = item.term_type !== undefined ? item.term_type : "";
