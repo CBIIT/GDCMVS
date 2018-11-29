@@ -159,7 +159,7 @@ var searchP = function (req, res) {
 };
 
 function generateQuery(keyword, option, isBoolSearch) {
-	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/").replace(/\//g, "\\/");
+	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 	let query = {};
 	if (isBoolSearch === true && option.match !== "exact") {
 		query.query_string = {};
@@ -275,7 +275,7 @@ function generateQuery(keyword, option, isBoolSearch) {
 }
 
 function generateHighlight(keyword, option, isBoolSearch) {
-	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/").replace(/\//g, "\\/");
+	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 	let highlight;
 	if (isBoolSearch === true && option.match !== "exact") {
 		highlight = {
