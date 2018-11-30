@@ -162,7 +162,8 @@ const func = {
             displayBoxIndex = -1;
             area.innerHTML = html;
             area.onclick = function(e){
-                let t = $(e.target).text();
+                let $target = $(e.target)
+                let t = $target.hasClass('suggest__object') ? $target.children('.suggest__name').text() : $target.parent().children('.suggest__name').text();
                 let entered_value = PrevWord(document.getElementById('keywords'));
                 $("#keywords").val(getFinalSuggestion(t, entered_value));
                 $("#keywords").focus();
