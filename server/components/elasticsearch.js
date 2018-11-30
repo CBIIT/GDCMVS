@@ -199,21 +199,21 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				}
 			});
 		}
-		enums.forEach(function (enm) {
-			let em = enm.toString().trim().toLowerCase();
-			if (em in allTerm) {
-				//if exist, then check if have the same type
-				let t = allTerm[em];
-				if (t.indexOf("v") == -1) {
-					t.push("v");
-				}
-			} else {
-				let t = [];
-				t.push("v");
-				allTerm[em] = t;
-			}
-		});
-		// build typre ahed index for CDE ID
+		// enums.forEach(function (enm) {
+		// 	let em = enm.toString().trim().toLowerCase();
+		// 	if (em in allTerm) {
+		// 		//if exist, then check if have the same type
+		// 		let t = allTerm[em];
+		// 		if (t.indexOf("v") == -1) {
+		// 			t.push("v");
+		// 		}
+		// 	} else {
+		// 		let t = [];
+		// 		t.push("v");
+		// 		allTerm[em] = t;
+		// 	}
+		// });
+		// build type ahead index for CDE ID
 		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
 			let em = entry.term.termDef.cde_id.toString().trim().toLowerCase();
 			if (em in allTerm) {
@@ -460,16 +460,65 @@ function bulkIndex(next) {
 		}
 
 	});
+	let gdc_data = {};
+	let folderPath_gdcdata = path.join(__dirname, '..', 'data');
+	fs.readdirSync(folderPath_gdcdata).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+	});
+	gdc_data = report.preProcess(searchable_nodes, gdc_data);
 	//build suggestion index
 	let suggestionBody = [];
-	// typeahed suggestions for NCIt Codes.
+
+	// Type ahead suggestions for GDC Values
+	for (let node in gdc_data) {
+		if (gdc_data[node].properties !== undefined) {
+			for (let propperty in gdc_data[node].properties) {
+				let prop_data = gdc_data[node].properties[propperty];
+				if (prop_data.enum) {
+					if (prop_data.new_enum) {
+						prop_data.new_enum.forEach(function (enm) {
+							let em = enm.toString().trim().toLowerCase();
+							if (em in allTerm) {
+								//if exist, then check if have the same type
+								let t = allTerm[em];
+								if (t.indexOf("v") == -1) {
+									t.push("v");
+								}
+							} else {
+								let t = [];
+								t.push("v");
+								allTerm[em] = t;
+							}
+						});
+					} else {
+						prop_data.enum.forEach(function (enm) {
+							let em = enm.toString().trim().toLowerCase();
+							if (em in allTerm) {
+								//if exist, then check if have the same type
+								let t = allTerm[em];
+								if (t.indexOf("v") == -1) {
+									t.push("v");
+								}
+							} else {
+								let t = [];
+								t.push("v");
+								allTerm[em] = t;
+							}
+						});
+					}
+				}
+			}
+		}
+	}
+
+	// type ahead suggestions for NCIt Codes.
 	if (ccode) {
 		for (let key in ccode) {
 			for (let ncit_value in ccode[key]) {
 				let ncit_code = ccode[key][ncit_value];
-				if(ncit_code !== ""){
+				if (ncit_code !== "") {
 					let em = ncit_code.toString().trim().toLowerCase();
-					if(em in allTerm) {
+					if (em in allTerm) {
 						//if exist, then check if have the same type
 						let t = allTerm[em];
 						if (t.indexOf("n") == -1) {
@@ -484,15 +533,15 @@ function bulkIndex(next) {
 			}
 		}
 	}
-	// typeahead for ICDO3 codes
-	if(gdc_values){
-		for(let key in gdc_values){
+	// type ahead for ICDO3 codes
+	if (gdc_values) {
+		for (let key in gdc_values) {
 			gdc_values[key].forEach(values => {
 				let icdo3_code = values.i_c;
 				let ncit_code = values.n_c;
-				if(icdo3_code !== ""){
+				if (icdo3_code !== "") {
 					let em = icdo3_code.toString().trim().toLowerCase();
-					if(em in allTerm) {
+					if (em in allTerm) {
 						//if exist, then check if have the same type
 						let t = allTerm[em];
 						if (t.indexOf("i") == -1) {
@@ -504,9 +553,9 @@ function bulkIndex(next) {
 						allTerm[em] = t;
 					}
 				}
-				if(ncit_code !== ""){
+				if (ncit_code !== "") {
 					let em = ncit_code.toString().trim().toLowerCase();
-					if(em in allTerm) {
+					if (em in allTerm) {
 						//if exist, then check if have the same type
 						let t = allTerm[em];
 						if (t.indexOf("n") == -1) {
@@ -537,12 +586,7 @@ function bulkIndex(next) {
 	}
 	//build property index
 	let propertyBody = [];
-	let gdc_data = {};
-	let folderPath_gdcdata = path.join(__dirname, '..', 'data');
-	fs.readdirSync(folderPath_gdcdata).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
-	});
-	gdc_data = report.preProcess(searchable_nodes, gdc_data);
+
 	allProperties.forEach(function (p) {
 		let node = p.node;
 		let property = p.name;
