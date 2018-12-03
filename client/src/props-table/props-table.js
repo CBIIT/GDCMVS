@@ -1,6 +1,6 @@
 import tmpl from './props-table.html';
 
-export default (items, keyword,search_option) => {
+export default (items, keyword, search_option) => {
     //data preprocessing
     let props = [];
     //options render
