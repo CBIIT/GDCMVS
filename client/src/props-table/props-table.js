@@ -1,7 +1,6 @@
-import tmpl from './view';
+import tmpl from './props-table.html';
 
-const func = {
-  render(items, keyword, search_option) {
+export default (items, keyword,search_option) => {
     //data preprocessing
     let props = [];
     //options render
@@ -63,8 +62,8 @@ const func = {
     });
     let html = "";
     if (props.length == 0) {
-      let keyword = $("#keywords").val();
-      html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
+      let searched_keyword = $("#keywords").val();
+      html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + searched_keyword + '</span></div>';
     }
     else {
       let offset = $('#root').offset().top;
@@ -81,8 +80,4 @@ const func = {
     result.len = props.length;
     result.html = html;
     return result;
-
   }
-};
-
-export default func;
