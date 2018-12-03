@@ -32,7 +32,6 @@ a:hover, a:focus {
   color: inherit;
 }
 
-
 /* Checkbox */
 .checkbox__label {
   margin-left: 20px;
@@ -95,7 +94,6 @@ a:hover, a:focus {
 }
 
 /* Table */
-
 .table__container {
   font-size: 1.3rem;
   padding-left: 15px;
@@ -316,15 +314,19 @@ a:hover, a:focus {
   content: '';
   margin-left: -5px;
 }
+
 .tooltip.bottom .tooltip-arrow {
   border-bottom-color: #cccccc;
 }
+
 .tooltip-inner {
   color: #3a3a3a;
   background-color: #ffffff;
   border: 1px solid #cccccc;
 }
+
 .alert__error {
+  visibility: hidden;
   position: fixed;
   top: 10em;
   left: 50%;
@@ -337,11 +339,54 @@ a:hover, a:focus {
   background-color: #fff6f9 !important;
   z-index: 999;
   border-radius: initial;
+}
+
+.alert__suggest {
+  visibility: hidden;
+  position: fixed;
+  top: 10em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #166aa2;
+  font-weight: bold;
+  padding: 1rem 1rem;
+  border: 1px solid #166aa2 !important;
+  border-left: solid 5px #166aa2 !important;
+  background-color: #daf2fb !important;
+  z-index: 999;
+  border-radius: initial;
+}
+
+.alert__show {
+  visibility: visible;
+  animation-name: fadeInDownUp;
   animation-duration: 4s;
 }
 
+@keyframes fadeInDownUp {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0);
+  }
+}
+
 @import url(./dialog/style.css);
-@import url(./result-table/style.css);
-@import url(./search-bar/style.css);
-@import url(./tabs/style.css);
-@import url(./values-table/style.css);
+@import url(./dict-table/dict-table.css);
+@import url(./search-bar/search-bar.css);
+@import url(./tabs/tabs.css);
+@import url(./values-table/values-table.css);
