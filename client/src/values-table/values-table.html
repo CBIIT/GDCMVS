@@ -92,9 +92,7 @@
                     {{for term_i_c.n_syn}}
                     <div class="row table__td">
                       <div class="col-xs-4">
-                        {{* if((/^C[1-9]/g).test(data.n_c)) { }}
                         <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
-                        {{* } }}
                       </div>
                       <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
                     </div>
@@ -103,9 +101,7 @@
                   {{else s.length}}
                   <div class="row table__td">
                     <div class="col-xs-4">
-                      {{* if((/^C[1-9]/g).test(data.n_c)) { }}
                       <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
-                      {{* } }}
                     </div>
                     <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
                   </div>
