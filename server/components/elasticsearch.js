@@ -180,12 +180,12 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (entry.name in allTerm) {
 			//if exist, then check if have the same type
 			let t = allTerm[entry.name];
-			if (t.indexOf("p") == -1) {
-				t.push("p");
+			if (t.indexOf("property") == -1) {
+				t.push("property");
 			}
 		} else {
 			let t = [];
-			t.push("p");
+			t.push("property");
 			allTerm[entry.name] = t;
 		}
 
@@ -219,12 +219,12 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			if (em in allTerm) {
 				//if exist, then check if have the same type
 				let t = allTerm[em];
-				if (t.indexOf("c") == -1) {
-					t.push("c");
+				if (t.indexOf("cde id") == -1) {
+					t.push("cde id");
 				}
 			} else {
 				let t = [];
-				t.push("c");
+				t.push("cde id");
 				allTerm[em] = t;
 			}
 		}
@@ -481,12 +481,12 @@ function bulkIndex(next) {
 							if (em in allTerm) {
 								//if exist, then check if have the same type
 								let t = allTerm[em];
-								if (t.indexOf("v") == -1) {
-									t.push("v");
+								if (t.indexOf("value") == -1) {
+									t.push("value");
 								}
 							} else {
 								let t = [];
-								t.push("v");
+								t.push("value");
 								allTerm[em] = t;
 							}
 						});
@@ -496,12 +496,12 @@ function bulkIndex(next) {
 							if (em in allTerm) {
 								//if exist, then check if have the same type
 								let t = allTerm[em];
-								if (t.indexOf("v") == -1) {
-									t.push("v");
+								if (t.indexOf("value") == -1) {
+									t.push("value");
 								}
 							} else {
 								let t = [];
-								t.push("v");
+								t.push("value");
 								allTerm[em] = t;
 							}
 						});
@@ -521,12 +521,12 @@ function bulkIndex(next) {
 					if (em in allTerm) {
 						//if exist, then check if have the same type
 						let t = allTerm[em];
-						if (t.indexOf("n") == -1) {
-							t.push("n");
+						if (t.indexOf("ncit code") == -1) {
+							t.push("ncit code");
 						}
 					} else {
 						let t = [];
-						t.push("n");
+						t.push("ncit code");
 						allTerm[em] = t;
 					}
 				}
@@ -544,12 +544,12 @@ function bulkIndex(next) {
 					if (em in allTerm) {
 						//if exist, then check if have the same type
 						let t = allTerm[em];
-						if (t.indexOf("i") == -1) {
-							t.push("i");
+						if (t.indexOf("icdo3 code") == -1) {
+							t.push("icdo3 code");
 						}
 					} else {
 						let t = [];
-						t.push("i");
+						t.push("icdo3 code");
 						allTerm[em] = t;
 					}
 				}
@@ -558,12 +558,12 @@ function bulkIndex(next) {
 					if (em in allTerm) {
 						//if exist, then check if have the same type
 						let t = allTerm[em];
-						if (t.indexOf("n") == -1) {
-							t.push("n");
+						if (t.indexOf("ncit code") == -1) {
+							t.push("ncit code");
 						}
 					} else {
 						let t = [];
-						t.push("n");
+						t.push("ncit code");
 						allTerm[em] = t;
 					}
 				}
@@ -603,9 +603,9 @@ function bulkIndex(next) {
 		}
 	});
 	allProperties.forEach(function (ap) {
-		// if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
-		// 	ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
-		// }
+		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
+			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
+		}
 		let doc = extend(ap, {});
 		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
 		propertyBody.push({
