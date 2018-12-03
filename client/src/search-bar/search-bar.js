@@ -159,21 +159,19 @@ export const selectSuggestion = (event, $suggestBox) => {
   }
 }
 
-export const suggest = (event, $keywords, $searchClear, $suggestBox) => {
+export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOptionsBox) => {
   let $this = $(event.currentTarget);
 
   if ($keywords.hasClass('search-bar__input--has-error')) {
     $keywords.removeClass('search-bar__input--has-error');
   }
 
-  let $searchoptions = $('#search-bar-options');
-
-  $searchoptions.show();
+  $searchOptionsBox.show();
 
   if ($this.val().trim() === '') {
     $suggestBox.hide().html('');
     displayBoxIndex = -1;
-    $searchoptions.hide();
+    $searchOptionsBox.hide();
     return;
   }
 
@@ -224,10 +222,16 @@ export const removeBox = (event, $suggestBox) => {
   }
 }
 
-export const clearSearch = (event, $keywords) => {
+export const clearSearch = (event, $keywords, $searchOptionsBox) => {
   event.preventDefault();
-  $(event.currentTarget).hide();
+  $searchOptionsBox.hide();
   $keywords.val('').focus();
+}
+
+export const booleanOptions = (event, $keywords) => {
+  event.preventDefault();
+  let boolean_value = $(event.currentTarget).data('boolean');
+  $keywords.val((index, value) =>  `${value} ${boolean_value} `).focus();
 }
 
 export const removeExternalLinkIcons = () => {
@@ -238,7 +242,7 @@ export const removeExternalLinkIcons = () => {
   });
 }
 
-export const renderLocalStorach = ($keywords, $root, $searchClear, $gdcLoadingIcon) => {
+export const renderLocalStorach = ($keywords, $root, $searchOptionsBox, $gdcLoadingIcon) => {
 
   if (localStorage.hasOwnProperty('keyword') &&
     localStorage.hasOwnProperty('option') &&
@@ -266,7 +270,7 @@ export const renderLocalStorach = ($keywords, $root, $searchClear, $gdcLoadingIc
           $('#i_syn').prop('checked', true);
         }
 
-        $searchClear.show();
+        $searchOptionsBox.show();
 
         render($root, keyword, option, items);
         //close progress bar

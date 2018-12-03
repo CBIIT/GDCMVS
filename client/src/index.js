@@ -24,26 +24,15 @@ window.onload = () => {
     const $parentContainer = $('.parent-container');
     const $gdcLoadingIcon = $('#gdc-loading-icon');
 
+    const $searchOptionsBox = $('#search-bar-options');
+    const $searchBooleanOptions = $('.search-bar__boolean');
+
     search.removeExternalLinkIcons();
 
-    search.renderLocalStorach($keywords, $root, $searchClear, $gdcLoadingIcon);
+    search.renderLocalStorach($keywords, $root, $searchOptionsBox, $gdcLoadingIcon);
 
-    $('#search-bar-options').on('show.bs.dropdown', function(event){
-      $("#suggestBox").hide();
-    });
-
-    $('#searchclear').click( function(event){
-      event.preventDefault();
-      $('#search-bar-options').hide();
-      $('#keywords').val('').focus();
-    });
-
-    $('.search-bar__boolean').click( function(event){
-      event.preventDefault();
-      let boolean_value = $(this).data('boolean');
-      $('#keywords').val( function(index, value){
-        return value + ' '+ boolean_value +' ';
-      }).focus();
+    $searchOptionsBox.on('show.bs.dropdown', (event) => {
+      $suggestBox.hide();
     });
 
     $search.click(() => {
@@ -59,7 +48,7 @@ window.onload = () => {
     });
 
     $keywords.bind('input', (event) => {
-      search.suggest(event, $keywords, $searchClear, $suggestBox);
+      search.suggest(event, $keywords, $searchClear, $suggestBox, $searchOptionsBox);
     });
 
     $document.click((event) => {
@@ -67,7 +56,11 @@ window.onload = () => {
     });
 
     $searchClear.click((event) => {
-      search.clearSearch(event, $keywords);
+      search.clearSearch(event, $keywords, $searchOptionsBox);
+    });
+
+    $searchBooleanOptions.click((event) => {
+      search.booleanOptions(event, $keywords);
     });
 
     setHeight($docsContainer, $parentContainer);
