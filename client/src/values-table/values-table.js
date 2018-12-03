@@ -57,7 +57,7 @@ const showMoreToggleHandle = (event) => {
   }
 }
 
-export const vsRender = (items, keyword) => {
+export const vsRender = (items, keyword, search_option) => {
   //data preprocessing
   let values = [];
   let len = 0;

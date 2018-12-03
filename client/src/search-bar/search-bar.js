@@ -209,11 +209,10 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox) => {
     $suggestBox.show().html(html);
 
     $suggestBox.click((event) => {
-      let target = $(event.target).text();
-      $keywords.val(target).focus();
+      let $target = $(event.target)
+      let t = $target.hasClass('suggest__object') ? $target.children('.suggest__name').text() : $target.parent().children('.suggest__name').text();
       let entered_value = PrevWord(document.getElementById('keywords'));
-      $("#keywords").val(getFinalSuggestion(t, entered_value));
-      $("#keywords").focus();
+      $keywords.val(getFinalSuggestion(t, entered_value)).focus();
     });
   });
 }
