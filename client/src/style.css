@@ -308,12 +308,9 @@ a:hover, a:focus {
   text-align: left;
 }
 
-.indicator__mean {
-  font-size: 1.1em;
-}
-
 .indicator__mean-span {
   color: #c74060;
+  font-size: 1.1em;
 }
 
 .indicator__suggestion {
