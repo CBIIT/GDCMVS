@@ -274,32 +274,53 @@ a:hover, a:focus {
 }
 
 .indicator {
+  position: relative;
+  padding-bottom: 36%;
+}
+
+.indicator__content {
   width: 60%;
   min-width: 550px;
   text-align: center;
-  margin: 10em auto;
+  margin: auto;
   padding: 1em 0;
   background-color: #fff;
   color: #535A60;
   font-size: 1.2em;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
 }
 
-.indicator--has-error{
+.indicator--has-error {
   color: #c74060;
 }
 
-.indicator__term{
+.indicator__term {
   color: #2a72a4;
 }
 
-.indicator__card{
+.indicator__card {
   margin: 2em auto;
-  max-width: 410px;
+  max-width: 450px;
   text-align: left;
+}
+
+.indicator__mean {
+  font-size: 1.1em;
+}
+
+.indicator__mean-span {
+  color: #c74060;
+}
+
+.indicator__suggestion {
   font-style: italic;
 }
 
-.indicator__card-p {
+.indicator__suggestion-p {
   margin: 0.8em 0;
 }
 

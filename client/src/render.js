@@ -23,7 +23,21 @@ export default function render($root, keyword, option, items) {
       dtHtml.len = 0;
     }
     if (dtHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
-      html = '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></div>';
+      html = `<div class="indicator">
+        <div class="indicator__content">
+          <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
+          <div class="indicator__card">
+            <div class="indicator__suggestion">
+              <p class="indicator__suggestion-p">Suggestion:</p>
+              <ul>
+                <li>Make sure all words are spelled correctly.</li>
+                <li>Try different keywords.</li>
+                <li>Try more general keywords.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>`
     } else {
       if (option.activeTab == 0) {
         vsHtml.active = true;
@@ -35,25 +49,53 @@ export default function render($root, keyword, option, items) {
       html = tabsRender(dtHtml, psHtml, vsHtml, keyword);
     }
   } else if (option.error == true) {
-    html = '<div class="indicator indicator--has-error"><p>Please, enter a valid keyword!</p></div>';
+    html = `<div class="indicator">
+      <div class="indicator__content indicator--has-error">
+        <p>Please, enter a valid keyword!</p>
+      </div>
+    </div>`;
   } else {
 
-    apiSuggestMisSpelled(keyword, function(results){
+    apiSuggestMisSpelled(keyword, (results) => {
       if (results.length !== 0) {
-        html = '<div class="indicator"><p>Did you mean: ';
-        results.forEach(function(result, index) {
-          if (index !== 0) {
-            html += ', '
-          }
-          html += '<a href="#" class="indicator__suggest">' + result.id + '</a>';
-        });
-        html += '</p><p>Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><div class="indicator__card"><p class="indicator__card-p">Suggestion:</p>'
-        html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
-        html += '</div></div>'
+        html = `<div class="indicator">
+          <div class="indicator__content">
+            <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
+
+            <div class="indicator__card">
+              <p class="indicator__mean">
+              <span class="indicator__mean-span">Did you mean:</span><br>
+              ${results.map((result, index) => `
+                ${index !== 0 ? `,` : '' }
+                <a href="#" class="indicator__suggest-term">${result.id}</a>
+              `.trim()).join('')}<p>
+              <div class="indicator__suggestion">
+                <p class="indicator__suggestion-p">Suggestion:</p>
+                <ul>
+                  <li>Make sure all words are spelled correctly.</li>
+                  <li>Try different keywords.</li>
+                  <li>Try more general keywords.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>`
       } else {
-        html += '<div class="indicator"></p><p>Sorry, no results found for keyword: <span class="indicator__term">' + keyword + '</span></p><div class="indicator__card"><p class="indicator__card-p">Suggestion:</p>'
-        html += '<ul><li>Make sure all words are spelled correctly.</li><li>Try different keywords.</li><li>Try more general keywords.</li></ul>'
-        html += '</div></div>'
+        html = `<div class="indicator">
+          <div class="indicator__content">
+            <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
+            <div class="indicator__card">
+              <div class="indicator__suggestion">
+                <p class="indicator__suggestion-p">Suggestion:</p>
+                <ul>
+                  <li>Make sure all words are spelled correctly.</li>
+                  <li>Try different keywords.</li>
+                  <li>Try more general keywords.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>`
       }
 
       $("#root").html(html);
