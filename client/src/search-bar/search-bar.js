@@ -30,9 +30,9 @@ const getOption = (activeTab) => {
 
 const getFinalSuggestion = (suggest_value, entered_value) => {
   let final_keyword = suggest_value;
-  if(entered_value.indexOf(' OR') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('OR')) + 'OR ' + suggest_value;
-  if(entered_value.indexOf(' AND') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('AND')) + 'AND ' + suggest_value;
-  if(entered_value.indexOf(' NOT') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('NOT')) + 'NOT ' + suggest_value;
+  if (entered_value.indexOf(' OR') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('OR')) + 'OR ' + suggest_value;
+  if (entered_value.indexOf(' AND') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('AND')) + 'AND ' + suggest_value;
+  if (entered_value.indexOf(' NOT') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('NOT')) + 'NOT ' + suggest_value;
   return final_keyword;
 }
 
@@ -46,21 +46,21 @@ const PrevWord = (text) => {
   var caretPos = GetCaretPosition(text)
   var word = ReturnWord(text.value, caretPos);
   if (word != null) {
-      return word;
+    return word;
   }
 }
 
 const GetCaretPosition = (ctrl) => {
   var CaretPos = 0;   // IE Support
   if (document.selection) {
-      ctrl.focus();
-      var Sel = document.selection.createRange();
-      Sel.moveStart('character', -ctrl.value.length);
-      CaretPos = Sel.text.length;
+    ctrl.focus();
+    var Sel = document.selection.createRange();
+    Sel.moveStart('character', -ctrl.value.length);
+    CaretPos = Sel.text.length;
   }
   // Firefox support
   else if (ctrl.selectionStart || ctrl.selectionStart == '0')
-      CaretPos = ctrl.selectionStart;
+    CaretPos = ctrl.selectionStart;
   return (CaretPos);
 }
 
@@ -76,15 +76,15 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
 
   //multi boolean error
   let keywordArray = keywordCase.split(' ');
-  keywordArray.forEach(function(e,i){
-    if(keywordArray[i-1] === e){
+  keywordArray.forEach(function (e, i) {
+    if (keywordArray[i - 1] === e) {
       booleanKeyword = true;
     }
   });
 
   //multi boolean options
-  if (booleanArray !== null){
-    booleanArray.forEach(function(e,i) {
+  if (booleanArray !== null) {
+    booleanArray.forEach(function (e, i) {
       if (i === 0) return;
       if (booleanArray[0] !== e) {
         booleanKeyword = true;
@@ -176,9 +176,9 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
   }
 
   let keyword = PrevWord(event.currentTarget);
-  if(keyword.indexOf(' OR') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' OR') + 4);
-  if(keyword.indexOf(' AND') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
-  if(keyword.indexOf(' NOT') !== -1 ) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
+  if (keyword.indexOf(' OR') !== -1) keyword = keyword.substring(keyword.lastIndexOf(' OR') + 4);
+  if (keyword.indexOf(' AND') !== -1) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
+  if (keyword.indexOf(' NOT') !== -1) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
 
   let partialKeyword = PrevWord(event.currentTarget);
   if ((/.+(NOT|AND|OR)/g).test(partialKeyword)) {
@@ -195,10 +195,10 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
     }
 
     let suggestWidth = $('#suggestWidth').width();
-    if(suggestWidth != 0){
-      $suggestBox.css({left: suggestWidth + 'px', width: 'auto'});
-    }else{
-      $suggestBox.css({left: '', width: ''});
+    if (suggestWidth != 0) {
+      $suggestBox.css({ left: suggestWidth + 'px', width: 'auto' });
+    } else {
+      $suggestBox.css({ left: '', width: '' });
     }
 
     let html = $.templates(tmpl).render({ results: results });;
@@ -231,7 +231,7 @@ export const clearSearch = (event, $keywords, $searchOptionsBox) => {
 export const booleanOptions = (event, $keywords) => {
   event.preventDefault();
   let boolean_value = $(event.currentTarget).data('boolean');
-  $keywords.val((index, value) =>  `${value} ${boolean_value} `).focus();
+  $keywords.val((index, value) => `${value} ${boolean_value} `).focus();
 }
 
 export const removeExternalLinkIcons = () => {
