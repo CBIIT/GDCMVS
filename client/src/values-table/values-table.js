@@ -551,8 +551,8 @@ export const vsRender = (items, keyword, search_option) => {
   let searched_keyword = $("#keywords").val();
   if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
     html =
-      '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
-      searched_keyword + '</span></div>';
+      '<div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' +
+      searched_keyword + '</span></div></div>';
   } else {
     let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 310;
