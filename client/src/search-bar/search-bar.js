@@ -75,7 +75,7 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let booleanArray = keywordCase.match(/(NOT|AND|OR)/g);
 
   //multi boolean error
-  let keywordArray = keywordCase.split(' ');
+  let keywordArray = keywordCase.replace(/\s\s+/g, ' ').split(' ');
   keywordArray.forEach(function (e, i) {
     if (keywordArray[i - 1] === e) {
       booleanKeyword = true;
