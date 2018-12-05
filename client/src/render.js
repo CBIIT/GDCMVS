@@ -100,7 +100,7 @@ export default function render($root, keyword, option, items) {
 
       $("#root").html(html);
 
-      $('.indicator__suggest').click(function (event) {
+      $('.indicator__suggest-term').click(function (event) {
         event.preventDefault();
         $("#keywords").val(this.innerText);
         $("#search").trigger("click");
