@@ -62,9 +62,10 @@
         {{if cdeId == ""}} {{else}}
         <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE ID - {{:cdeId}}</a>
           {{if local && cdeLen}}
-          , <a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}',null);">Values</a>, <a class="table-td-link" href="javascript:compareGDC('{{:ref}}','{{:cdeId}}');"> Compare with GDC</a>
+          <br><a class="table-td-link" href="javascript:compareGDC('{{:ref}}','{{:cdeId}}');"> Compare with GDC</a>
+          <br><a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}',null);">Values</a>
           {{else cdeLen}}
-          , <a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}',null);">Values</a>
+          <br><a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}',null);">Values</a>
           {{else}} {{/if}}
         {{/if}}
         </div>
