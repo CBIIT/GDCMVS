@@ -98,7 +98,7 @@ export default function render($root, keyword, option, items) {
         </div>`
       }
 
-      $("#root").html(html);
+      $root.html(html);
 
       $('.indicator__suggest-term').click(function (event) {
         event.preventDefault();
