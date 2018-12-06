@@ -591,6 +591,8 @@ export const vsEvents = ($root) => {
   });
 
   $root.tooltip({
-    selector: '[data-toggle="tooltip"]'
+    selector: '[data-toggle="tooltip"]',
+    delay: {'show': 100, 'hide': 50},
+    trigger: 'hover'
   });
 }
