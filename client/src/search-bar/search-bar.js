@@ -24,8 +24,32 @@ const getOption = (activeTab) => {
   option.syn = $('#i_syn').prop('checked');
   option.match = $('#i_ematch').prop('checked') ? 'exact' : 'partial';
   option.activeTab = option.desc ? 1 : activeTab;
-
   return option;
+}
+
+const getBooleanKeyword = (keywordCase) => {
+  let booleanKeyword = (/^(NOT|AND|OR)|(NOT|AND|OR)$/g).test(keywordCase);
+  let booleanArray = keywordCase.match(/(NOT|AND|OR)/g);
+
+  //multi boolean error
+  let keywordArray = keywordCase.replace(/\s\s+/g, ' ').split(' ');
+  keywordArray.forEach(function (e, i) {
+    if (keywordArray[i - 1] === e) {
+      booleanKeyword = true;
+    }
+  });
+
+  //multi boolean options
+  if (booleanArray !== null) {
+    booleanArray.forEach(function (e, i) {
+      if (i === 0) return;
+      if (booleanArray[0] !== e) {
+        booleanKeyword = true;
+      }
+    });
+  }
+
+  return booleanKeyword
 }
 
 const getFinalSuggestion = (suggest_value, entered_value) => {
@@ -70,27 +94,7 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keyword = keywordCase.toLowerCase();
   let activeTab = getActiveTap();
   let option = getOption(activeTab);
-
-  let booleanKeyword = (/^(NOT|AND|OR)|(NOT|AND|OR)$/g).test(keywordCase);
-  let booleanArray = keywordCase.match(/(NOT|AND|OR)/g);
-
-  //multi boolean error
-  let keywordArray = keywordCase.replace(/\s\s+/g, ' ').split(' ');
-  keywordArray.forEach(function (e, i) {
-    if (keywordArray[i - 1] === e) {
-      booleanKeyword = true;
-    }
-  });
-
-  //multi boolean options
-  if (booleanArray !== null) {
-    booleanArray.forEach(function (e, i) {
-      if (i === 0) return;
-      if (booleanArray[0] !== e) {
-        booleanKeyword = true;
-      }
-    });
-  }
+  let booleanKeyword = getBooleanKeyword(keywordCase)
 
   if (keywordCase == '' || booleanKeyword) {
     option.error = true;
