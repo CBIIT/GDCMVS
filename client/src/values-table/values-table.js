@@ -589,10 +589,4 @@ export const vsEvents = ($root) => {
   $root.on('click', '.show-more-less', (event) => {
     showMoreToggleHandle(event);
   });
-
-  $root.tooltip({
-    selector: '[data-toggle="tooltip"]',
-    delay: {'show': 100, 'hide': 50},
-    trigger: 'hover'
-  });
 }
