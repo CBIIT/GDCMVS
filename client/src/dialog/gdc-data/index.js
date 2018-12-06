@@ -52,7 +52,7 @@ export default function gdcData(prop, tgt, keyword) {
       if (item.gdc_d === true) {
         if(tmp_obj[item.n] !== undefined && !new_item_checker[item.n]){
           let tmp_data = {};
-          tmp_data.n = tgt !== null && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt : item.n;
+          tmp_data.n = tgt !== null && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
           tmp_data.i_c = tmp_obj[item.n];
           tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
           tmp_data.n_c = item.n_c;
@@ -65,7 +65,7 @@ export default function gdcData(prop, tgt, keyword) {
             tmp_data.i_c = tmp_obj[item.i_c.c];
             tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
           }
-          tmp_data.n = tgt !== null && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt : item.n;
+          tmp_data.n = tgt !== null && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           new_items.push(tmp_data);
