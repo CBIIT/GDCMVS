@@ -10,7 +10,7 @@ const excel = require('node-excel-export');
 var _ = require('lodash');
 var xlsx = require('node-xlsx');
 
-var export_ICDO3 = function (req, res) {
+const export_ICDO3 = (req, res) => {
 	let heading = [
 		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'ICD-O-3 Code', 'Term', 'NCIt Code']
 	];
@@ -49,7 +49,7 @@ var export_ICDO3 = function (req, res) {
 	let ICDO3_1 = ICDO3["clinical.diagnosis.morphology"];
 	let ICDO3_dict = {};
 	let ICDO3_dict_matched = [];
-	ICDO3_1.forEach(function (i) {
+	ICDO3_1.forEach(i => {
 		if (!(i.i_c in ICDO3_dict)) {
 			ICDO3_dict[i.i_c] = [];
 		}
@@ -59,7 +59,7 @@ var export_ICDO3 = function (req, res) {
 	let ICDO3_dict_c = {};
 	let ICDO3_dict_c_matched = [];
 	let nm_dict_c = {};
-	ICDO3_2.forEach(function (i) {
+	ICDO3_2.forEach(i => {
 		if (!(i.i_c in ICDO3_dict_c)) {
 			ICDO3_dict_c[i.i_c] = [];
 		}
@@ -89,12 +89,12 @@ var export_ICDO3 = function (req, res) {
 	let merges_1 = [];
 	let enum_1 = diagnosis.properties.morphology.enum;
 	let rows = 3;
-	enum_1.forEach(function (em) {
+	enum_1.forEach(em => {
 		if (em in ICDO3_dict) {
 			ICDO3_dict_matched.push(em);
 			let start = rows;
 			let end = start + ICDO3_dict[em].length - 1;
-			ICDO3_dict[em].forEach(function (item) {
+			ICDO3_dict[em].forEach(item => {
 				let tmp = {};
 				tmp.c = 'clinical';
 				tmp.n = 'diagnosis';
@@ -150,7 +150,7 @@ var export_ICDO3 = function (req, res) {
 		if (ICDO3_dict_matched.indexOf(id) == -1) {
 			let start = rows;
 			let end = start + ICDO3_dict[id].length - 1;
-			ICDO3_dict[id].forEach(function (item) {
+			ICDO3_dict[id].forEach(item => {
 				let tmp = {};
 				tmp.c = 'clinical';
 				tmp.n = 'diagnosis';
@@ -203,7 +203,7 @@ var export_ICDO3 = function (req, res) {
 	let merges_2 = [];
 	rows = 3;
 	let enum_2 = diagnosis.properties.primary_diagnosis.enum;
-	enum_2.forEach(function (em) {
+	enum_2.forEach(em => {
 		let lc = em.toLowerCase();
 		if (lc in primary_diagnosis) {
 			primary_diagnosis_matched.push(lc);
@@ -221,7 +221,7 @@ var export_ICDO3 = function (req, res) {
 		} else if (em in ICDO3_dict_c) {
 			let start = rows;
 			let end = start + ICDO3_dict_c[em].length - 1;
-			ICDO3_dict_c[em].forEach(function (item) {
+			ICDO3_dict_c[em].forEach(item => {
 				let tmp = {};
 				tmp.c = 'clinical';
 				tmp.n = 'diagnosis';
@@ -269,7 +269,6 @@ var export_ICDO3 = function (req, res) {
 			ds_2.push(tmp);
 			rows++;
 		}
-
 	});
 
 	//show unmatched primary_diagnosis values
@@ -303,7 +302,7 @@ var export_ICDO3 = function (req, res) {
 	let merges_3 = [];
 	let enum_3 = diagnosis.properties.site_of_resection_or_biopsy.enum;
 	rows = 3;
-	enum_3.forEach(function (em) {
+	enum_3.forEach(em => {
 		let lc = em.toLowerCase();
 		if (lc in nm_dict_c) {
 			ICDO3_dict_c_matched.push(nm_dict_c[lc].i_c);
@@ -321,7 +320,7 @@ var export_ICDO3 = function (req, res) {
 		} else if (em in ICDO3_dict) {
 			let start = rows;
 			let end = start + ICDO3_dict[em].length - 1;
-			ICDO3_dict[em].forEach(function (item) {
+			ICDO3_dict[em].forEach(item => {
 				let tmp = {};
 				tmp.old = "";
 				tmp.new = em;
@@ -357,7 +356,7 @@ var export_ICDO3 = function (req, res) {
 			ICDO3_dict_c_matched.push(em);
 			let start = rows;
 			let end = start + ICDO3_dict_c[em].length - 1;
-			ICDO3_dict_c[em].forEach(function (item) {
+			ICDO3_dict_c[em].forEach(item => {
 				let tmp = {};
 				tmp.c = 'clinical';
 				tmp.n = 'diagnosis';
@@ -413,7 +412,7 @@ var export_ICDO3 = function (req, res) {
 		if (ICDO3_dict_c_matched.indexOf(idc) == -1) {
 			let start = rows;
 			let end = start + ICDO3_dict_c[idc].length - 1;
-			ICDO3_dict_c[idc].forEach(function (item) {
+			ICDO3_dict_c[idc].forEach(item => {
 				let tmp = {};
 				tmp.c = 'clinical';
 				tmp.n = 'diagnosis';
@@ -466,7 +465,7 @@ var export_ICDO3 = function (req, res) {
 	let merges_4 = [];
 	let enum_4 = diagnosis.properties.tissue_or_organ_of_origin.enum;
 	rows = 3;
-	enum_4.forEach(function (em) {
+	enum_4.forEach(em => {
 		let lc = em.toLowerCase();
 		if (lc in nm_dict_c) {
 			let tmp = {};
@@ -483,7 +482,7 @@ var export_ICDO3 = function (req, res) {
 		} else if (em in ICDO3_dict) {
 			let start = rows;
 			let end = start + ICDO3_dict[em].length - 1;
-			ICDO3_dict[em].forEach(function (item) {
+			ICDO3_dict[em].forEach(item => {
 				let tmp = {};
 				tmp.old = "";
 				tmp.new = em;
@@ -518,7 +517,7 @@ var export_ICDO3 = function (req, res) {
 		} else if (em in ICDO3_dict_c) {
 			let start = rows;
 			let end = start + ICDO3_dict_c[em].length - 1;
-			ICDO3_dict_c[em].forEach(function (item) {
+			ICDO3_dict_c[em].forEach(item => {
 				let tmp = {};
 				tmp.c = 'clinical';
 				tmp.n = 'diagnosis';
@@ -592,13 +591,14 @@ var export_ICDO3 = function (req, res) {
 		]
 	)
 
-	//const report = excel.buildExport(content);
+	// const report = excel.buildExport(content);
 
 	// You can then return this straight 
 	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
 };
-var export2Excel = function (req, res) {
+
+const export2Excel = (req, res) => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
 	var folderPath = path.join(__dirname, '..', '..', 'data');
@@ -609,7 +609,7 @@ var export2Excel = function (req, res) {
 			let node = fileJson.id;
 
 			if (fileJson.deprecated) {
-				fileJson.deprecated.forEach(function (d_p) {
+				fileJson.deprecated.forEach(d_p => {
 					let tmp_d_p = category + "." + node + "." + d_p;
 					deprecated_properties.push(tmp_d_p);
 				})
@@ -617,7 +617,7 @@ var export2Excel = function (req, res) {
 
 			for (let keys in fileJson.properties) {
 				if (fileJson.properties[keys].deprecated_enum) {
-					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+					fileJson.properties[keys].deprecated_enum.forEach(d_e => {
 						let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
 						deprecated_enum.push(tmp_d_e);
 					});
@@ -635,21 +635,21 @@ var export2Excel = function (req, res) {
 		"match_all": {}
 	};
 
-	elastic.query(config.index_p, query, null, function (result) {
+	elastic.query(config.index_p, query, null, result => {
 		if (result.hits === undefined) {
 			return handleError.error(res, result);
 		}
 		let data = result.hits.hits;
 		let ds = [];
-		data.forEach(function (entry) {
+		data.forEach(entry => {
 			let vs = entry._source.enum;
 			if (vs) {
 				let cde = entry._source.cde;
 				let cde_pv = entry._source.cde_pv;
 				if (cde && cde_pv) {
 					let common_values = [];
-					vs.forEach(function (v) {
-						cde_pv.forEach(function (cpv) {
+					vs.forEach(v => {
+						cde_pv.forEach(cpv => {
 							if (v.n.trim().toLowerCase() == cpv.n.trim().toLowerCase()) {
 								let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
 								let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
@@ -681,7 +681,7 @@ var export2Excel = function (req, res) {
 										}
 									} else {
 										if (file_cde[cde.id]) {
-											file_cde[cde.id].forEach(function (cde_pvs) {
+											file_cde[cde.id].forEach(cde_pvs => {
 												if (cde_pvs.pv === tmp.gdc_v) {
 													all_cpvc = all_cpvc + cde_pvs.pvc;
 												}
@@ -696,7 +696,7 @@ var export2Excel = function (req, res) {
 						});
 					});
 
-					vs.forEach(function (v) {
+					vs.forEach(v => {
 						let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
 						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
 						if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
@@ -720,7 +720,7 @@ var export2Excel = function (req, res) {
 							}
 						}
 					});
-					cde_pv.forEach(function (cpv) {
+					cde_pv.forEach(cpv => {
 						let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
 						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + cpv.n;
 						if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
@@ -746,7 +746,7 @@ var export2Excel = function (req, res) {
 									}
 								} else {
 									if (file_cde[cde.id]) {
-										file_cde[cde.id].forEach(function (cde_pvs) {
+										file_cde[cde.id].forEach(cde_pvs => {
 											if (cde_pvs.pv === tmp.gdc_v1) {
 												all_cpvc = all_cpvc + cde_pvs.pvc;
 											}
@@ -760,7 +760,7 @@ var export2Excel = function (req, res) {
 						}
 					});
 				} else {
-					vs.forEach(function (v) {
+					vs.forEach(v => {
 						let c_n_p = entry._source.category + "." + entry._source.node + "." + entry._source.name;
 						let c_vs = entry._source.category + "." + entry._source.node + "." + entry._source.name + "." + v.n;
 						if (deprecated_properties.indexOf(c_n_p) == -1 && deprecated_enum.indexOf(c_vs) == -1) {
@@ -798,7 +798,6 @@ var export2Excel = function (req, res) {
 				cnpv.push(c_n_p_v);
 				new_ds.push(ds[temp_data]);
 			}
-
 		}
 		let heading = [
 			['Category', 'Node', 'Property', 'GDC Values', 'NCIt PV', 'NCIt Code', 'CDE PV Meaning', 'CDE PV Meaning concept codes', 'CDE ID']
@@ -848,7 +847,8 @@ var export2Excel = function (req, res) {
 		res.send(report);
 	});
 };
-var exportAllValues = function (req, res) {
+
+const exportAllValues = (req, res) => {
 	let merges = [];
 	let data = [];
 	let heading = [
@@ -888,7 +888,7 @@ var exportAllValues = function (req, res) {
 			for (let property in properties) {
 				if (properties[property].enum && !properties[property].deprecated_enum) {
 					let enums = properties[property].enum;
-					enums.forEach(function (em) {
+					enums.forEach(em => {
 						let tmp_data = {};
 						tmp_data.c = category;
 						tmp_data.n = node;
@@ -898,7 +898,7 @@ var exportAllValues = function (req, res) {
 					})
 				} else if (properties[property].deprecated_enum && properties[property].new_enum) {
 					let enums = properties[property].new_enum;
-					enums.forEach(function (em) {
+					enums.forEach(em => {
 						let tmp_data = {};
 						tmp_data.c = category;
 						tmp_data.n = node;
@@ -926,7 +926,8 @@ var exportAllValues = function (req, res) {
 	res.send(report);
 
 };
-var exportMapping = function (req, res) {
+
+const exportMapping = (req, res) => {
 	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 
@@ -942,7 +943,7 @@ var exportMapping = function (req, res) {
 	let ncit_pv = JSON.parse(pv);
 
 	let i_c_data = {};
-	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
+	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
 		if(data.nm !== data.i_c){
 			if(i_c_data[data.i_c] === undefined){
 				i_c_data[data.i_c] = {
@@ -1036,7 +1037,7 @@ var exportMapping = function (req, res) {
 						cde_id = properties[property].relation.termDef.cde_id;
 					}
 					let enums = properties[property].enum;
-					enums.forEach(function (em) {
+					enums.forEach(em => {
 						let tmp_data = {};
 						tmp_data.c = category;
 						tmp_data.n = node;
@@ -1051,7 +1052,7 @@ var exportMapping = function (req, res) {
 						tmp_data.i_c_s = "";
 						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
-							cdeData[cde_id].forEach(function (value) {
+							cdeData[cde_id].forEach(value => {
 								if (value.pv === em) {
 									tmp_data.cde_v = value.pvm;
 									tmp_data.cde_c = value.pvc;
@@ -1062,7 +1063,7 @@ var exportMapping = function (req, res) {
 							tmp_data.ncit_c = cc[category + "." + node + "." + property][em];
 							tmp_data.ncit_v = ncit_pv[cc[category + "." + node + "." + property][em]] ? ncit_pv[cc[category + "." + node + "." + property][em]].preferredName : "";
 						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
-							all_gdc_values[category + "." + node + "." + property].forEach( function(data) {
+							all_gdc_values[category + "." + node + "." + property].forEach(data => {
 								if(em === data.nm){
 									tmp_data.ncit_c = data.n_c;
 									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
@@ -1080,7 +1081,7 @@ var exportMapping = function (req, res) {
 						cde_id = properties[property].relation.termDef.cde_id;
 					}
 					let enums = properties[property].new_enum;
-					enums.forEach(function (em) {
+					enums.forEach(em => {
 						let tmp_data = {};
 						tmp_data.c = category;
 						tmp_data.n = node;
@@ -1095,7 +1096,7 @@ var exportMapping = function (req, res) {
 						tmp_data.i_c_s = "";
 						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
-							cdeData[cde_id].forEach(function (value) {
+							cdeData[cde_id].forEach(value => {
 								if (value.pv === em) {
 									tmp_data.cde_v = value.pvm;
 									tmp_data.cde_c = value.pvc;
@@ -1106,7 +1107,7 @@ var exportMapping = function (req, res) {
 							tmp_data.ncit_c = cc[category + "." + node + "." + property][em];
 							tmp_data.ncit_v = ncit_pv[cc[category + "." + node + "." + property][em]] ? ncit_pv[cc[category + "." + node + "." + property][em]].preferredName : "";
 						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
-							all_gdc_values[category + "." + node + "." + property].forEach( function(data) {
+							all_gdc_values[category + "." + node + "." + property].forEach(data => {
 								if(em === data.nm){
 									tmp_data.ncit_c = data.n_c;
 									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
@@ -1117,28 +1118,27 @@ var exportMapping = function (req, res) {
 							});
 						}else if(property === 'morphology' && i_c_data[em]){
 							tmp_data.i_c = em;
-							i_c_data[em].n_c.forEach(function (tmp_result, index){
+							i_c_data[em].n_c.forEach((tmp_result, index) => { 
 								if(index === 0){
 									tmp_data.ncit_c += tmp_result;
 								}else{
 									tmp_data.ncit_c += ' | ' + tmp_result;
 								} 
 							});
-							i_c_data[em].ncit_pv.forEach(function (tmp_result, index){
+							i_c_data[em].ncit_pv.forEach((tmp_result, index) => {
 								if(index === 0){
 									tmp_data.ncit_v += tmp_result;
 								}else{
 									tmp_data.ncit_v += ' | ' + tmp_result;
 								} 
 							});
-							i_c_data[em].nm.forEach(function (tmp_result, index){
+							i_c_data[em].nm.forEach((tmp_result, index) => {
 								if(index === 0){
 									tmp_data.i_c_s += tmp_result;
 								}else{
 									tmp_data.i_c_s += ' | ' + tmp_result;
 								} 
 							});
-
 						}
 						data.push(tmp_data);
 					})
@@ -1161,7 +1161,8 @@ var exportMapping = function (req, res) {
 	res.send(report);
 	// res.send('Success');
 };
-var export_difference = function (req, res) {
+
+const export_difference = (req, res) => {
 	const styles = {
 		headerDark: {
 			fill: {
@@ -1207,7 +1208,7 @@ var export_difference = function (req, res) {
 			width: 200,
 			displayName: 'Property',
 			headerStyle: styles.headerDark,
-			cellStyle: function (value, row) {
+			cellStyle: (value, row) => {
 				if (deprecated_properties.indexOf((row.c + '/' + row.n + '/' + row.p).toString()) !== -1) {
 					return styles.cellRed;
 				} else {
@@ -1219,7 +1220,7 @@ var export_difference = function (req, res) {
 			width: 200,
 			displayName: 'Old GDC Dcitonary Value',
 			headerStyle: styles.headerDark,
-			cellStyle: function (value, row) {
+			cellStyle: (value, row) => {
 				if (row.value_old.toString() === 'no match') {
 					return styles.cellYellow;
 				} else {
@@ -1231,7 +1232,7 @@ var export_difference = function (req, res) {
 			width: 200,
 			displayName: 'New GDC Dcitonary Value',
 			headerStyle: styles.headerDark,
-			cellStyle: function (value, row) {
+			cellStyle: (value, row) => {
 				if (row.value_new.toString() === 'no match') {
 					return styles.cellYellow;
 				} else {
@@ -1272,7 +1273,7 @@ var export_difference = function (req, res) {
 				if (tmp_new.deprecated) {
 					for (let d in tmp_new.deprecated) {
 						if (props_old[tmp_new.deprecated[d]].enum) {
-							props_old[tmp_new.deprecated[d]].enum.forEach(function (em) {
+							props_old[tmp_new.deprecated[d]].enum.forEach(em => {
 								let temp_data = {};
 								temp_data.c = tmp_new.category;
 								temp_data.n = tmp_new.id;
@@ -1289,7 +1290,7 @@ var export_difference = function (req, res) {
 					for (let property in tmp_new.properties) {
 						if (tmp_new.properties[property].deprecated_enum) {
 							let denums = tmp_new.properties[property].deprecated_enum;
-							denums.forEach(function (denum) {
+							denums.forEach(denum => {
 								let temp_data = {};
 								temp_data.c = tmp_new.category;
 								temp_data.n = tmp_new.id;
@@ -1304,7 +1305,7 @@ var export_difference = function (req, res) {
 				for (let p in props_new) {
 					if (props_new[p].enum) {
 						if (props_old[p] && props_old[p].enum) {
-							props_new[p].enum.forEach(function (em) {
+							props_new[p].enum.forEach(em => {
 								if (props_old[p].enum.indexOf(em) >= 0) {
 									let temp_data = {};
 									temp_data.c = tmp_new.category;
@@ -1328,7 +1329,7 @@ var export_difference = function (req, res) {
 									data.push(temp_data);
 								}
 							});
-							// props_old[p].enum.forEach(function (em) {
+							// props_old[p].enum.forEach(em => {
 							// 	if (props_new[p].enum.indexOf(em) == -1) {
 							// 		let temp_data = {};
 							// 		temp_data.c = tmp_new.category;
@@ -1341,7 +1342,7 @@ var export_difference = function (req, res) {
 							// });
 						} else if (!props_old[p]) {
 							if (props_new[p].enum) {
-								props_new[p].enum.forEach(function (em) {
+								props_new[p].enum.forEach(em => {
 									let temp_data = {};
 									temp_data.c = tmp_new.category;
 									temp_data.n = tmp_new.id;
@@ -1362,7 +1363,7 @@ var export_difference = function (req, res) {
 					if (property.indexOf("$") !== 0) {
 						if (temp_property[property].enum) {
 							let all_enums = temp_property[property].enum;
-							all_enums.forEach(function (val) {
+							all_enums.forEach(val => {
 								let temp_data = {};
 								temp_data.c = tmp_new.category;
 								temp_data.n = tmp_new.id;
@@ -1389,10 +1390,9 @@ var export_difference = function (req, res) {
 	);
 	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
-
 };
 
-function preProcess(searchable_nodes, data) {
+const preProcess = (searchable_nodes, data) => {
 	let folderPath = path.join(__dirname, '../..', 'data');
 	// Remove deprecated properties and nodes
 	for (let key in data) {
@@ -1463,7 +1463,7 @@ function preProcess(searchable_nodes, data) {
 	return data;
 }
 
-var exportDifference = function (req, res) {
+const exportDifference = (req, res) => {
 	let merges = [];
 	let data = [];
 	let folderPath = path.join(__dirname, '../..', 'data');
@@ -1500,7 +1500,7 @@ var exportDifference = function (req, res) {
 				if (new_p_array[key_p].enum && !new_p_array[key_p].deprecated_enum) {
 					//if it doesn't have deprecated values
 					let enums = new_p_array[key_p].enum;
-					enums.forEach(function (em) {
+					enums.forEach(em => {
 						let temp_data = {};
 						temp_data.c = category;
 						temp_data.n = node;
@@ -1512,7 +1512,7 @@ var exportDifference = function (req, res) {
 				} else if (new_p_array[key_p].deprecated_enum && new_p_array[key_p].new_enum) {
 					// if it has deprecated values
 					let enums = new_p_array[key_p].new_enum;
-					enums.forEach(function (em) {
+					enums.forEach(em => {
 						let temp_data = {};
 						temp_data.c = category;
 						temp_data.n = node;
@@ -1540,7 +1540,7 @@ var exportDifference = function (req, res) {
 					if (new_p_array[property].enum && !new_p_array[property].deprecated_enum) {
 						//if it doesn't have deprecated values
 						let enums = new_p_array[property].enum;
-						enums.forEach(function (em) {
+						enums.forEach(em => {
 							let temp_data = {};
 							temp_data.c = category;
 							temp_data.n = node;
@@ -1552,7 +1552,7 @@ var exportDifference = function (req, res) {
 					} else if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
 						// if it has deprecated values
 						let enums = new_p_array[property].new_enum;
-						enums.forEach(function (em) {
+						enums.forEach(em => {
 							let temp_data = {};
 							temp_data.c = category;
 							temp_data.n = node;
@@ -1574,7 +1574,7 @@ var exportDifference = function (req, res) {
 						}
 						let new_enums_array = new_p_array[property].enum;
 						// Loop through new values and check if they exists in old values
-						new_enums_array.forEach(function (em) {
+						new_enums_array.forEach(em => {
 							let temp_data = {};
 							temp_data.c = category;
 							temp_data.n = node;
@@ -1598,7 +1598,7 @@ var exportDifference = function (req, res) {
 							new_enums_array = new_p_array[property].enum;
 						}
 						let old_enums_array = old_p_array[property].enum;
-						old_enums_array.forEach(function (em) {
+						old_enums_array.forEach(em => {
 							if (new_enums_array.indexOf(em) === -1) {
 								let temp_data = {};
 								temp_data.c = category;
@@ -1619,7 +1619,7 @@ var exportDifference = function (req, res) {
 							new_enums_array = new_p_array[property].enum;
 						}
 						let old_enums_array = old_p_array[property].new_enum;
-						old_enums_array.forEach(function (em) {
+						old_enums_array.forEach(em => {
 							if (new_enums_array.indexOf(em) === -1) {
 								let temp_data = {};
 								temp_data.c = category;
@@ -1640,7 +1640,7 @@ var exportDifference = function (req, res) {
 							old_enums_array = old_p_array[property].enum;
 						}
 						let new_enums_array = new_p_array[property].new_enum;
-						new_enums_array.forEach(function (em) {
+						new_enums_array.forEach(em => {
 							let temp_data = {};
 							temp_data.c = category;
 							temp_data.n = node;
@@ -1668,7 +1668,7 @@ var exportDifference = function (req, res) {
 					if (old_p_array[key_p].enum && !old_p_array[key_p].deprecated_enum) {
 						//if it doesn't have deprecated values
 						let enums = old_p_array[key_p].enum;
-						enums.forEach(function (em) {
+						enums.forEach(em => {
 							let temp_data = {};
 							temp_data.c = category;
 							temp_data.n = node;
@@ -1680,7 +1680,7 @@ var exportDifference = function (req, res) {
 					} else if (old_p_array[key_p].deprecated_enum && old_p_array[key_p].new_enum) {
 						// if it has deprecated values
 						let enums = old_p_array[key_p].new_enum;
-						enums.forEach(function (em) {
+						enums.forEach(em => {
 							let temp_data = {};
 							temp_data.c = category;
 							temp_data.n = node;
@@ -1693,8 +1693,6 @@ var exportDifference = function (req, res) {
 				}
 			}
 		}
-
-
 	}
 	let heading = [
 		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value']
@@ -1736,7 +1734,7 @@ var exportDifference = function (req, res) {
 	//res.send('Success!!!');
 }
 
-var export_common = function (req, res) {
+const export_common = (req, res) => {
 	let heading = [
 		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'Term', 'NCIt Code']
 	];
@@ -1798,7 +1796,7 @@ var export_common = function (req, res) {
 						let ds = [];
 						let cache_0 = [];
 						let cache_1 = [];
-						props[p].enum.forEach(function (em) {
+						props[p].enum.forEach(em => {
 							let lc = em.toLowerCase();
 							if ((lc in tmp_cc) && props_old[p].enum.indexOf(em) >= 0) {
 								cache_0.push(lc);
@@ -1847,7 +1845,7 @@ var export_common = function (req, res) {
 							}
 						});
 						let cache_2 = [];
-						props_old[p].enum.forEach(function (em) {
+						props_old[p].enum.forEach(em => {
 							if (cache_1.indexOf(em) == -1) {
 
 								let lc = em.toString().toLowerCase();
@@ -1901,7 +1899,7 @@ var export_common = function (req, res) {
 						//situation:110
 						let ds = [];
 						let cache = [];
-						props[p].enum.forEach(function (em) {
+						props[p].enum.forEach(em => {
 							let lc = em.toLowerCase();
 							if (lc in tmp_cc) {
 								cache.push(lc);
@@ -1954,7 +1952,7 @@ var export_common = function (req, res) {
 						//situation:101
 						let ds = [];
 						let cache = [];
-						props_old[p].enum.forEach(function (em) {
+						props_old[p].enum.forEach(em => {
 							let lc = em.toLowerCase();
 							if (lc in tmp_cc) {
 								cache.push(lc);
@@ -2054,15 +2052,15 @@ var export_common = function (req, res) {
 	res.send(report);
 };
 
-let addTermType = function(req, res){
+const addTermType = (req, res) => {
 	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
 	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
 	let data = {};
-	obj.forEach(function (sheet, index) {
+	obj.forEach((sheet, index) => {
 		if(index === 0) return;
 		var worksheet = sheet.data;
-		worksheet.forEach(function (dt, index){
+		worksheet.forEach((dt, index) => {
 			let tmp_data = {};
 			if (index === 0 ) return;
 			tmp_data.code = dt[0];
@@ -2089,7 +2087,7 @@ let addTermType = function(req, res){
 			}
 		});
 	}
-	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
 		if (err) {
 			return logger.error(err);
 		}
@@ -2097,7 +2095,7 @@ let addTermType = function(req, res){
 	res.send("Success");
 }
 
-let icdoMapping = function(req, res){
+const icdoMapping = (req, res) => {
 	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\Mappings\\new_gdc_domiains-map.2018.10.03.xlsx');
 	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
 	let all_gdc_values = JSON.parse(gdcValues);
@@ -2108,10 +2106,10 @@ let icdoMapping = function(req, res){
 	all_gdc_values["clinical.follow_up.progression_or_recurrence_anatomic_site"] = [];
 	all_gdc_values["clinical.diagnosis.primary_diagnosis"] = [];
 	
-	obj.forEach(function (sheet, index) {
+	obj.forEach((sheet, index) => {
 		if(index !== 0) return;
 		var worksheet = sheet.data;
-		worksheet.forEach(function(value, i) {
+		worksheet.forEach((value, i) => {
 			if (i === 0) return;
 			let n_c_1 = value[2] !== undefined ? value[2] : "";
 			let n_c_2 = value[5] !== undefined ? value[5] : "";
@@ -2119,17 +2117,17 @@ let icdoMapping = function(req, res){
 			all_gdc_values["clinical.follow_up.progression_or_recurrence_anatomic_site"].push({nm:value[3] ,i_c:value[4], n_c:n_c_2});
 		});
 	});
-	obj.forEach(function (sheet, index) {
+	obj.forEach((sheet, index) => {
 		if(index !== 1) return;
 		var worksheet = sheet.data;
-		worksheet.forEach(function(value, i) {
+		worksheet.forEach((value, i) => {
 			if (i === 0) return;
 			let n_c_1 = value[2] !== undefined ? value[2] : "";
 			all_gdc_values["clinical.diagnosis.primary_diagnosis"].push({nm:value[0] ,i_c:value[1], n_c:n_c_1});
 		});
 	});
-	array.forEach(function(cnp) {
-		all_gdc_values[cnp].forEach(function(value){
+	array.forEach(cnp => {
+		all_gdc_values[cnp].forEach(value => {
 			let em = value.nm;
 			let n_c = value.n_c;
 			if(cc[cnp] && cc[cnp][em] !== undefined){
@@ -2137,12 +2135,12 @@ let icdoMapping = function(req, res){
 			}
 		});
 	});
-	// fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(cc), function (err) {
+	// fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(cc), err => {
 	// 	if (err) {
 	// 		return logger.error(err);
 	// 	}
 	// });
-	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
 		if (err) {
 			return logger.error(err);
 		}
@@ -2150,7 +2148,7 @@ let icdoMapping = function(req, res){
 	res.send("Success");
 }
 
-var releaseNote = function(req, res){
+const releaseNote = (req, res) => {
 	let merges = [];
 	let data = [];
 	let heading = [
@@ -2248,7 +2246,7 @@ var releaseNote = function(req, res){
 	// res.send("Success");
 }
 
-var exportMorphology = function (req, res){
+const exportMorphology = (req, res) => {
 	let merges = [];
 	let arr = [];
 	let heading = [
@@ -2308,7 +2306,7 @@ var exportMorphology = function (req, res){
 	pv = pv.replace(/}{/g, ",");
 	let ncit_pv = JSON.parse(pv);
 
-	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
+	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
 		if(data.nm !== data.i_c){
 			let tmp_data = {};
 			tmp_data.c = 'Clinical';
