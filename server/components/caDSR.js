@@ -71,10 +71,7 @@ const loadData = (ids, next) => {
 								let str = {};
 								str[uid] = data;
 								fs.appendFileSync("./server/data_files/cdeData.js", JSON.stringify(str), err => {
-									if (err) {
-										return logger.error(err);
-									}
-
+									if (err) return logger.error(err);
 									logger.debug(" " + data.length + " PVs for caDSR :" + uid);
 								});
 								count++;
@@ -127,10 +124,7 @@ const loadDataType = (ids, next)  => {
 								str[uid] = dataType;
 								logger.debug("save to file:" + uid);
 								fs.appendFile("./server/data_files/cdeDataType.js", JSON.stringify(str), err => {
-									if (err) {
-										return logger.error(err);
-									}
-
+									if (err) return logger.error(err);
 									logger.debug(" dataType for caDSR (" + uid + ") :" + dataType);
 								});
 								count++;
@@ -413,10 +407,7 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 					let str = {};
 					str[ncitids[idx]] = syn;
 					fs.appendFile("./server/data_files/synonyms_ncit.js", JSON.stringify(str), err => {
-						if (err) {
-							return logger.error(err);
-						}
-
+						if (err) return logger.error(err);
 						logger.debug("#########synonyms for " + ncitids[idx] + ": " + syn.toString());
 					});
 				} else {
@@ -480,9 +471,7 @@ const synchronziedLoadSynonmysfromCTCAE = (ids, idx, next) => {
 					let str = {};
 					str[ids[idx]] = syn;
 					fs.appendFile("./server/data_files/synonyms_ctcae.js", JSON.stringify(str), err => {
-						if (err) {
-							return logger.error(err);
-						}
+						if (err) return logger.error(err);
 
 						logger.debug("#########synonyms for " + ids[idx] + ": " + syn.toString());
 					});
