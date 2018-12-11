@@ -703,11 +703,11 @@ const indexing = (req, res) => {
 	configs.push(config_suggestion);
 	elastic.createIndexes(configs, result => {
 		if (result.acknowledged === undefined) {
-			return res.status(500).send(result);
+			return handleError.error(res, result);
 		}
 		elastic.bulkIndex(data => {
 			if (data.property_indexed === undefined) {
-				return res.status(500).send(data);
+				return handleError.error(res, data);
 			}
 			return res.status(200).json(data);
 		});
