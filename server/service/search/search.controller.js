@@ -960,9 +960,7 @@ const copyToSynonymsJS = () => {
 	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
 	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
 	fs.writeFileSync("./server/data_files/synonyms.js", content_2 + content_1, function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 }
 
@@ -1022,9 +1020,7 @@ const getPVFunc = (ncitids, idx, next) => {
 					tmp[ncitids[idx]].synonyms = d.synonyms;
 
 					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), err => {
-						if (err) {
-							return logger.error(err);
-						}
+						if (err) return logger.error(err);
 					});
 				}
 			}
@@ -1088,9 +1084,7 @@ const removeDeprecated = () => {
 		}
 	});
 	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 }
 
@@ -1205,9 +1199,7 @@ const parseExcel = (req, res) => {
 					}
 					//write changes to file
 					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
-						if (err) {
-							return logger.error(err);
-						}
+						if (err) return logger.error(err);
 					});
 
 				} else {
@@ -1268,9 +1260,7 @@ const parseExcel = (req, res) => {
 					}
 					Object.assign(concept, cc);
 					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
-						if (err) {
-							return logger.error(err);
-						}
+						if (err) return logger.error(err);
 						logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
 					});
 				}
@@ -1279,9 +1269,7 @@ const parseExcel = (req, res) => {
 		}
 	});
 	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 	removeDeprecated();
 	res.json({
@@ -1365,14 +1353,10 @@ const Unmapped = (req, res) => {
 		}
 	}
 	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 
 	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
@@ -1401,9 +1385,7 @@ const Unmapped = (req, res) => {
 		}
 	}
 	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(tmp_concept), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 	res.send("Success");
 }

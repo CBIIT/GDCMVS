@@ -28,13 +28,7 @@ function listMajors(auth) {
 function authorize(TOKEN_PATH, SCOPES, callback) {
     fs.readFile(TOKEN_PATH, (err, privatekey) => {
         if (err) return console.log(err);
-        
-        let jwtClient = new google.auth.JWT(
-            JSON.parse(privatekey).client_email,
-            null, 
-            JSON.parse(privatekey).private_key, 
-            SCOPES
-        );
+        let jwtClient = new google.auth.JWT(JSON.parse(privatekey).client_email, null, JSON.parse(privatekey).private_key, SCOPES);
         jwtClient.authorize(function(err, token){
             if(err) return console.log(err);
         });
@@ -47,8 +41,7 @@ function authorizeOAuth2(credentials, TOKEN_PATH, SCOPES, callback){
         client_id,
         redirect_uris
     } = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
@@ -59,10 +52,7 @@ function authorizeOAuth2(credentials, TOKEN_PATH, SCOPES, callback){
 }
 
 function getNewToken(oAuth2Client, TOKEN_PATH, SCOPES, callback) {
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
+    const authUrl = oAuth2Client.generateAuthUrl({access_type: 'offline', scope: SCOPES});
     logger.debug('Authorize this app by visiting this url:', authUrl);
     const rl = readline.createInterface({
         input: process.stdin,

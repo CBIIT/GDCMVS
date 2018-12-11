@@ -2077,9 +2077,7 @@ const addTermType = (req, res) => {
 		});
 	}
 	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 	res.send("Success");
 }
@@ -2125,14 +2123,10 @@ const icdoMapping = (req, res) => {
 		});
 	});
 	// fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(cc), err => {
-	// 	if (err) {
-	// 		return logger.error(err);
-	// 	}
+	// 	if (err) return logger.error(err);
 	// });
 	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
-		if (err) {
-			return logger.error(err);
-		}
+		if (err) return logger.error(err);
 	});
 	res.send("Success");
 }
