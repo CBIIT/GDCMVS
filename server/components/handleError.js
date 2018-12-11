@@ -1,3 +1,3 @@
 exports.error = function(res, err){
-	return res.send(500, err);
+	return res.status(500).send(err);
 };
