@@ -11,7 +11,7 @@ var morgan = require('morgan');
 var fs = require('fs');
 var rfs = require('rotating-file-stream');
 
-module.exports = function(app){
+module.exports = app =>{
 
 	let env = config.env;
 

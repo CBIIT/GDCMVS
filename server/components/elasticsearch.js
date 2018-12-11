@@ -20,13 +20,14 @@ var cdeDataType = '';
 var report = require('../service/search/report');
 var gdc_values = {};
 var allProperties = [];
+const searchable_nodes = require('../config').searchable_nodes;
 
 var esClient = new elasticsearch.Client({
 	host: config_dev.elasticsearch.host,
 	log: config_dev.elasticsearch.log
 });
 
-function parseRef(ref, termsJson, defJson) {
+const parseRef = (ref, termsJson, defJson) => {
 	let idx = ref.indexOf('/');
 	let name = ref.substr(idx + 1);
 	if (ref.indexOf('_terms.yaml') === 0) {
@@ -40,7 +41,7 @@ function parseRef(ref, termsJson, defJson) {
 	}
 }
 
-function parseRefYaml(ref, termsJson, defJson) {
+const parseRefYaml = (ref, termsJson, defJson) => {
 	let data = {};
 	//return {"$ref":ref};
 	var folderPath = path.join(__dirname, '..', 'data');
@@ -63,7 +64,7 @@ function parseRefYaml(ref, termsJson, defJson) {
 	}
 }
 
-function helper(fileJson, termsJson, defJson, conceptCode, syns) {
+const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 	let doc = {};
 	let propsRaw = fileJson.properties;
 	//correct properties format
@@ -106,7 +107,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 
 							//generate cde_pv for properties index
 							p.cde_pv = [];
-							entry.syns.forEach(function (sn) {
+							entry.syns.forEach(sn => {
 								let tmp = {};
 								tmp.n = sn.pv;
 								tmp.m = sn.pvm;
@@ -118,7 +119,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 									v.s = sn.syn;
 									tmp.ss.push(v);
 								} else if (sn.ss !== undefined) {
-									sn.ss.forEach(function (s) {
+									sn.ss.forEach(s => {
 										let v = {};
 										v.c = s.code;
 										v.s = s.syn;
@@ -137,7 +138,6 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			} else {
 				entry = extend(entry, entryRaw);
 			}
-
 		}
 		let prop_full_name = fileJson.category + "." + fileJson.id + "." + prop;
 		//add conceptcode
@@ -161,7 +161,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (prop_full_name in gdc_values) {
 			let enums = [];
 			let obj = gdc_values[prop_full_name];
-			obj.forEach(function (v) {
+			obj.forEach(v => {
 				let tmp = {};
 				tmp.pv = v.nm;
 				tmp.code = v.i_c;
@@ -193,13 +193,13 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (entry.enum !== undefined) {
 			enums = entry.enum;
 		} else if (entry.oneOf !== undefined && Array.isArray(entry.oneOf)) {
-			entry.oneOf.forEach(function (em) {
+			entry.oneOf.forEach(em => {
 				if (em.enum !== undefined) {
 					enums = enums.concat(em.enum);
 				}
 			});
 		}
-		// enums.forEach(function (enm) {
+		// enums.forEach(enm => {
 		// 	let em = enm.toString().trim().toLowerCase();
 		// 	if (em in allTerm) {
 		// 		//if exist, then check if have the same type
@@ -255,7 +255,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			//simple enumeration
 			if (entry.enum !== undefined && entry.enum.length > 0) {
 				p.enum = [];
-				entry.enum.forEach(function (item) {
+				entry.enum.forEach(item => {
 					let tmp = {};
 					tmp.n = item;
 					p.enum.push(tmp);
@@ -265,7 +265,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			//has gdc synonyms
 			if ((prop_full_name in conceptCode) || (prop_full_name in gdc_values)) {
 				p.enum = [];
-				entry.syns.forEach(function (item) {
+				entry.syns.forEach(item => {
 					let tmp = {};
 					if (item.term_type) {
 						tmp.term_type = item.term_type;
@@ -334,7 +334,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			} else {
 				if (entry.enum !== undefined && entry.enum.length > 0) {
 					p.enum = [];
-					entry.enum.forEach(function (item) {
+					entry.enum.forEach(item => {
 						let tmp = {};
 						tmp.n = item;
 						p.enum.push(tmp);
@@ -355,7 +355,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 	return doc;
 }
 
-function extendDef(termsJson, defJson) {
+const extendDef = (termsJson, defJson) => {
 	for (var d in defJson) {
 		let df = defJson[d];
 		if (df.term !== undefined) {
@@ -366,7 +366,7 @@ function extendDef(termsJson, defJson) {
 	}
 }
 
-function bulkIndex(next) {
+const bulkIndex = next => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
 	var folderPath = path.join(__dirname, '..', 'data');
@@ -377,7 +377,7 @@ function bulkIndex(next) {
 			let node = fileJson.id;
 
 			if (fileJson.deprecated) {
-				fileJson.deprecated.forEach(function (d_p) {
+				fileJson.deprecated.forEach(d_p => {
 					let tmp_d_p = category + "." + node + "." + d_p;
 					deprecated_properties.push(tmp_d_p.trim().toLowerCase());
 				})
@@ -385,7 +385,7 @@ function bulkIndex(next) {
 
 			for (let keys in fileJson.properties) {
 				if (fileJson.properties[keys].deprecated_enum) {
-					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+					fileJson.properties[keys].deprecated_enum.forEach(d_e => {
 						let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
 						deprecated_enum.push(tmp_d_e.trim().toLowerCase());
 					});
@@ -393,10 +393,6 @@ function bulkIndex(next) {
 			}
 		}
 	});
-	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
-	];
 	//load synonyms data file to memory
 	let cc = fs.readFileSync("./server/data_files/conceptCode.js").toString();
 	let ccode = JSON.parse(cc);
@@ -414,14 +410,14 @@ function bulkIndex(next) {
 	cdeDataType = JSON.parse(content_3);
 	for (var c in cdeData) {
 		let pvs = cdeData[c];
-		pvs.forEach(function (pv) {
+		pvs.forEach(pv => {
 			if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
 				pv.syn = syns[pv.pvc];
 			}
 			if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
 				let cs = pv.pvc.split(":");
 				let synonyms = [];
-				cs.forEach(function (s) {
+				cs.forEach(s => {
 					if (!(s in syns)) {
 						return;
 					}
@@ -476,7 +472,7 @@ function bulkIndex(next) {
 				let prop_data = gdc_data[node].properties[propperty];
 				if (prop_data.enum) {
 					if (prop_data.new_enum) {
-						prop_data.new_enum.forEach(function (enm) {
+						prop_data.new_enum.forEach(enm => {
 							let em = enm.toString().trim().toLowerCase();
 							if (em in allTerm) {
 								//if exist, then check if have the same type
@@ -491,7 +487,7 @@ function bulkIndex(next) {
 							}
 						});
 					} else {
-						prop_data.enum.forEach(function (enm) {
+						prop_data.enum.forEach(enm => {
 							let em = enm.toString().trim().toLowerCase();
 							if (em in allTerm) {
 								//if exist, then check if have the same type
@@ -587,12 +583,12 @@ function bulkIndex(next) {
 	//build property index
 	let propertyBody = [];
 
-	allProperties.forEach(function (p) {
+	allProperties.forEach(p => {
 		let node = p.node;
 		let property = p.name;
 		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
 			if (p.enum) {
-				p.enum.forEach(function (em) {
+				p.enum.forEach(em => {
 					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
 						em.gdc_d = true;
 					} else {
@@ -602,7 +598,7 @@ function bulkIndex(next) {
 			}
 		}
 	});
-	allProperties.forEach(function (ap) {
+	allProperties.forEach(ap => {
 		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
 			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
 		}
@@ -617,9 +613,7 @@ function bulkIndex(next) {
 		});
 		propertyBody.push(doc);
 	});
-	esClient.bulk({
-		body: propertyBody
-	}, function (err_p, data_p) {
+	esClient.bulk({body: propertyBody}, (err_p, data_p) => {
 		if (err_p) {
 			return next(err_p);
 		}
@@ -629,9 +623,7 @@ function bulkIndex(next) {
 				logger.error(++errorCount_p, item.index.error);
 			}
 		});
-		esClient.bulk({
-			body: suggestionBody
-		}, function (err_s, data_s) {
+		esClient.bulk({body: suggestionBody}, (err_s, data_s) => {
 			if (err_s) {
 				return next(err_s);
 			}
@@ -649,12 +641,10 @@ function bulkIndex(next) {
 			});
 		});
 	});
-
 }
-
 exports.bulkIndex = bulkIndex;
 
-function query(index, dsl, highlight, next) {
+const query = (index, dsl, highlight, next) => {
 	var body = {
 		size: 1000,
 		from: 0
@@ -668,10 +658,7 @@ function query(index, dsl, highlight, next) {
 	}, {
 		"node": "asc"
 	}];
-	esClient.search({
-		index: index,
-		body: body
-	}, function (err, data) {
+	esClient.search({index: index, body: body}, (err, data) => {
 		if (err) {
 			logger.error(err);
 			next(err);
@@ -684,14 +671,10 @@ function query(index, dsl, highlight, next) {
 exports.query = query;
 
 
-function suggest(index, suggest, next) {
+const suggest = (index, suggest, next) => {
 	let body = {};
 	body.suggest = suggest;
-	esClient.search({
-		index: index,
-		"_source": true,
-		body: body
-	}, function (err, data) {
+	esClient.search({index: index, "_source": true, body: body}, (err, data) => {
 		if (err) {
 			logger.error(err);
 			next(err);
@@ -703,13 +686,13 @@ function suggest(index, suggest, next) {
 
 exports.suggest = suggest;
 
-function createIndexes(params, next) {
-	esClient.indices.create(params[0], function (err_2, result_2) {
+const createIndexes = (params, next) => {
+	esClient.indices.create(params[0], (err_2, result_2) => {
 		if (err_2) {
 			logger.error(err_2);
 			next(err_2);
 		} else {
-			esClient.indices.create(params[1], function (err_3, result_3) {
+			esClient.indices.create(params[1], (err_3, result_3) => {
 				if (err_3) {
 					logger.error(err_3);
 					next(err_3);
@@ -724,7 +707,7 @@ function createIndexes(params, next) {
 
 exports.createIndexes = createIndexes;
 
-function preloadDataFromCaDSR(next) {
+const preloadDataFromCaDSR = next => {
 	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
 	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
@@ -747,7 +730,7 @@ function preloadDataFromCaDSR(next) {
 	}
 	logger.debug(ids);
 	if (ids.length > 0) {
-		caDSR.loadData(ids, function (data) {
+		caDSR.loadData(ids, data => {
 			return next(data);
 		});
 	} else {
@@ -759,7 +742,7 @@ function preloadDataFromCaDSR(next) {
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
 
-function preloadDataTypeFromCaDSR(next) {
+const preloadDataTypeFromCaDSR = next => {
 	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
 	content_1 = content_1.replace(/}{/g, ",");
 	let cdeDataJson = JSON.parse(content_1);
@@ -771,7 +754,7 @@ function preloadDataTypeFromCaDSR(next) {
 		}
 	}
 	if (ids.length > 0) {
-		caDSR.loadDataType(ids, function (data) {
+		caDSR.loadDataType(ids, data => {
 			return next(data);
 		});
 	} else {
@@ -781,32 +764,32 @@ function preloadDataTypeFromCaDSR(next) {
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
-function loadSynonyms(next) {
-	caDSR.loadSynonyms(function (data) {
+const loadSynonyms = next => {
+	caDSR.loadSynonyms(data => {
 		return next(data);
 	});
 }
 
 exports.loadSynonyms = loadSynonyms;
 
-function loadSynonyms_continue(next) {
-	caDSR.loadNcitSynonyms_continue(function (data) {
+const loadSynonyms_continue = next => {
+	caDSR.loadNcitSynonyms_continue(data => {
 		return next(data);
 	});
 }
 
 exports.loadSynonyms_continue = loadSynonyms_continue;
 
-function loadSynonymsCtcae(next) {
-	caDSR.loadSynonymsCtcae(function (data) {
+const loadSynonymsCtcae = next => {
+	caDSR.loadSynonymsCtcae(data => {
 		return next(data);
 	});
 }
 
 exports.loadSynonymsCtcae = loadSynonymsCtcae;
 
-function loadCtcaeSynonyms_continue(next) {
-	caDSR.loadCtcaeSynonyms_continue(function (data) {
+const loadCtcaeSynonyms_continue = next => {
+	caDSR.loadCtcaeSynonyms_continue(data => {
 		return next(data);
 	});
 }

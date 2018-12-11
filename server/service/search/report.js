@@ -3,6 +3,7 @@
 var elastic = require('../../components/elasticsearch');
 var handleError = require('../../components/handleError');
 var config = require('../../config');
+const searchable_nodes = require('../../config').searchable_nodes;
 var fs = require('fs');
 var path = require('path');
 var yaml = require('yamljs');
@@ -854,10 +855,6 @@ const exportAllValues = (req, res) => {
 	let heading = [
 		['Category', 'Node', 'Property', 'Value']
 	];
-	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
-	];
 	let specification = {
 		c: {
 			width: 200
@@ -974,10 +971,6 @@ const exportMapping = (req, res) => {
 	let data = [];
 	let heading = [
 		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID','ICDO3 Code', 'ICDO3 Strings','Term Type']
-	];
-	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
 	];
 	let specification = {
 		c: {
@@ -1470,10 +1463,6 @@ const exportDifference = (req, res) => {
 	let folderPath_old = path.join(__dirname, '../..', 'data_old');
 	let old_data = {};
 	let new_data = {};
-	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
-	];
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
@@ -2178,10 +2167,6 @@ const releaseNote = (req, res) => {
 	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
 
 	let new_data = {};
-	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
-	];
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
