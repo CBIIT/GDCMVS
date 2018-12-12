@@ -10,6 +10,7 @@ const yaml = require('yamljs');
 const excel = require('node-excel-export');
 const _ = require('lodash');
 const xlsx = require('node-xlsx');
+const readFile = require('../readFiles');
 
 const export_ICDO3 = (req, res) => {
 	let heading = [
@@ -45,8 +46,7 @@ const export_ICDO3 = (req, res) => {
 
 	let data = [];
 
-	let ICDO3_content = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let ICDO3 = JSON.parse(ICDO3_content);
+	let ICDO3 = readFile.gdcValues();
 	let ICDO3_1 = ICDO3["clinical.diagnosis.morphology"];
 	let ICDO3_dict = {};
 	let ICDO3_dict_matched = [];
@@ -67,8 +67,7 @@ const export_ICDO3 = (req, res) => {
 		ICDO3_dict_c[i.i_c].push(i);
 		nm_dict_c[i.nm.toLowerCase()] = i;
 	});
-	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(content_1);
+	let cc = readFile.conceptCode();
 	let primary = cc["clinical.diagnosis.primary_diagnosis"];
 	let primary_diagnosis = {};
 	let primary_diagnosis_matched = [];
@@ -626,12 +625,9 @@ const export2Excel = (req, res) => {
 			}
 		}
 	});
-	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
-	pv = pv.replace(/}{/g, ",");
-	let ncit_pv = JSON.parse(pv);
-	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	cdeData = cdeData.replace(/}{/g, ",");
-	let file_cde = JSON.parse(cdeData);
+	
+	let ncit_pv = readFile.ncitDetails();
+	let file_cde = readFile.cdeData();
 	let query = {
 		"match_all": {}
 	};
@@ -925,19 +921,10 @@ const exportAllValues = (req, res) => {
 };
 
 const exportMapping = (req, res) => {
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
-
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	let cdeData = JSON.parse(content_1);
-
-	let content_2 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(content_2);
-
-	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
-	pv = pv.replace(/}{/g, ",");
-	let ncit_pv = JSON.parse(pv);
+	let all_gdc_values = readFile.gdcValues();
+	let cdeData = readFile.cdeData();
+	let cc = readFile.conceptCode();
+	let ncit_pv = readFile.ncitDetails();
 
 	let i_c_data = {};
 	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
@@ -1753,9 +1740,7 @@ const export_common = (req, res) => {
 
 	let merges = [];
 	let data = [];
-
-	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(content_1);
+	let cc = readFile.conceptCode();
 	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
@@ -2043,8 +2028,7 @@ const export_common = (req, res) => {
 
 const addTermType = (req, res) => {
 	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
+	let all_gdc_values = readFile.gdcValues();
 	let data = {};
 	obj.forEach((sheet, index) => {
 		if(index === 0) return;
@@ -2084,11 +2068,10 @@ const addTermType = (req, res) => {
 
 const icdoMapping = (req, res) => {
 	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\Mappings\\new_gdc_domiains-map.2018.10.03.xlsx');
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
+	
+	let all_gdc_values = readFile.gdcValues();
 	let array = ["clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
-	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(content_1);
+	let cc = readFile.conceptCode();
 	all_gdc_values["clinical.diagnosis.tissue_or_organ_of_origin"] = [];
 	all_gdc_values["clinical.follow_up.progression_or_recurrence_anatomic_site"] = [];
 	all_gdc_values["clinical.diagnosis.primary_diagnosis"] = [];
@@ -2152,12 +2135,10 @@ const releaseNote = (req, res) => {
 			width: 200
 		}
 	};
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
+	let all_gdc_values = readFile.gdcValues();
+	let cc = readFile.conceptCode();
 	let folderPath = path.join(__dirname, '../..', 'data');
-	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(content_1);
-
+	
 	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
 
 	let new_data = {};
@@ -2271,19 +2252,10 @@ const exportMorphology = (req, res) => {
 		}
 	};
 
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
-
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	let cdeData = JSON.parse(content_1);
-
-	let content_2 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(content_2);
-
-	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
-	pv = pv.replace(/}{/g, ",");
-	let ncit_pv = JSON.parse(pv);
+	let all_gdc_values = readFile.gdcValues();
+	let cdeData = readFile.cdeData();
+	let cc = readFile.conceptCode();
+	let ncit_pv = readFile.ncitDetails();
 
 	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
 		if(data.nm !== data.i_c){

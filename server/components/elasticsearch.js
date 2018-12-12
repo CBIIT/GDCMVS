@@ -16,6 +16,7 @@ const extend = require('util')._extend;
 const _ = require('lodash');
 const report = require('../service/search/report');
 const searchable_nodes = require('../config').searchable_nodes;
+const readFile = require('../service/readFiles');
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
@@ -393,21 +394,12 @@ const bulkIndex = next => {
 			}
 		}
 	});
-	//load synonyms data file to memory
-	let cc = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let ccode = JSON.parse(cc);
-	//load suggestedTerm data file to memory
-	let gv = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	gdc_values = JSON.parse(gv);
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	cdeData = JSON.parse(content_1);
-	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-	content_2 = content_2.replace(/}{/g, ",");
-	let syns = JSON.parse(content_2);
-	let content_3 = fs.readFileSync("./server/data_files/cdeDataType.js").toString();
-	content_3 = content_3.replace(/}{/g, ",");
-	cdeDataType = JSON.parse(content_3);
+	
+	let ccode = readFile.conceptCode();
+	gdc_values = readFile.gdcValues();
+	cdeData = readFile.cdeData();
+	let syns = readFile.synonyms();
+	cdeDataType = readFile.cdeDataType();
 	for (var c in cdeData) {
 		let pvs = cdeData[c];
 		pvs.forEach(pv => {
@@ -710,8 +702,7 @@ exports.createIndexes = createIndexes;
 const preloadDataFromCaDSR = next => {
 	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
+	content_1 = readFile.cdeData();
 	let cdeDataJson;
 	if (content_1) {
 		cdeDataJson = JSON.parse(content_1);
@@ -743,9 +734,7 @@ const preloadDataFromCaDSR = next => {
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
 
 const preloadDataTypeFromCaDSR = next => {
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	let cdeDataJson = JSON.parse(content_1);
+	let cdeDataJson = readFile.cdeData();
 	let ids = [];
 	for (var term in cdeDataJson) {
 		let detail = cdeDataJson[term];
