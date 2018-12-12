@@ -4,23 +4,23 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var elasticsearch = require('elasticsearch');
-var yaml = require('yamljs');
-var config = require('../config');
-var config_dev = require('../config/dev');
-var logger = require('./logger');
-var caDSR = require('./caDSR');
-var extend = require('util')._extend;
-var _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const elasticsearch = require('elasticsearch');
+const yaml = require('yamljs');
+const config = require('../config');
+const config_dev = require('../config/dev');
+const logger = require('./logger');
+const caDSR = require('./caDSR');
+const extend = require('util')._extend;
+const _ = require('lodash');
+const report = require('../service/search/report');
+const searchable_nodes = require('../config').searchable_nodes;
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
-var report = require('../service/search/report');
 var gdc_values = {};
 var allProperties = [];
-const searchable_nodes = require('../config').searchable_nodes;
 
 var esClient = new elasticsearch.Client({
 	host: config_dev.elasticsearch.host,
