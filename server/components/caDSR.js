@@ -9,6 +9,7 @@ const https = require('https');
 const http = require('http');
 const config = require('../config');
 const logger = require('./logger');
+const readFile = require('../service/readFiles');
 var datas = {};
 var syns = {};
 
@@ -152,15 +153,11 @@ const loadDataType = (ids, next)  => {
 const loadSynonyms = next => {
 	let ncitids = [];
 	//load cde ncit codes
-	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	cdeData = cdeData.replace(/}{/g, ",");
-	let cde = JSON.parse(cdeData);
+	let cde = readFile.cdeData();
 	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
+	let concept = readFile.conceptCode();
 	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
+	let icdo = readFile.gdcValues();
 	for (let c in cde) {
 		let arr = cde[c];
 		if (arr.length !== 0) {
@@ -225,15 +222,11 @@ const loadSynonyms = next => {
 const loadSynonymsCtcae = next => {
 	let ncitids = [];
 	//load cde ncit codes
-	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	cdeData = cdeData.replace(/}{/g, ",");
-	let cde = JSON.parse(cdeData);
+	let cde = readFile.cdeData();
 	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
+	let concept = readFile.conceptCode();
 	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
+	let icdo = readFile.gdcValues();
 	for (let c in cde) {
 		let arr = cde[c];
 		if (arr.length !== 0) {
@@ -298,12 +291,9 @@ const loadSynonymsCtcae = next => {
 
 const loadNcitSynonyms_continue = next => {
 	let ncitids = [];
-	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-	content_2 = content_2.replace(/}{/g, ",");
-	let synonyms = JSON.parse(content_2);
+	let synonyms = readFile.synonyms();
 	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(conceptCode);
+	let cc = readFile.conceptCode();
 	for (let c in cc) {
 		let vs = cc[c];
 		for (let v in vs) {
@@ -341,12 +331,9 @@ const loadNcitSynonyms_continue = next => {
 
 const loadCtcaeSynonyms_continue = next => {
 	let ncitids = [];
-	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-	content_2 = content_2.replace(/}{/g, ",");
-	let synonyms = JSON.parse(content_2);
+	let synonyms = readFile.synonyms();
 	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(conceptCode);
+	let cc = readFile.conceptCode();
 	for (let c in cc) {
 		let vs = cc[c];
 		for (let v in vs) {

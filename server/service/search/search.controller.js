@@ -10,6 +10,7 @@ const path = require('path');
 const yaml = require('yamljs');
 const xlsx = require('node-xlsx');
 const _ = require('lodash');
+const readFile = require('../readFiles');
 // const git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
@@ -717,12 +718,8 @@ const indexing = (req, res) => {
 const getDataFromCDE = (req, res) => {
 	if (cdeData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-		content_1 = content_1.replace(/}{/g, ",");
-		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-		content_2 = content_2.replace(/}{/g, ",");
-		cdeData = JSON.parse(content_1);
-		let syns = JSON.parse(content_2);
+		cdeData = readFile.cdeData();
+		let syns = readFile.synonyms();
 		for (var c in cdeData) {
 			let pvs = cdeData[c];
 			pvs.forEach(pv => {
@@ -783,13 +780,9 @@ const getCDEData = (req, res) => {
 const getDataFromGDC = (req, res) => {
 	if (gdcData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-		let content_3 = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-		content_2 = content_2.replace(/}{/g, ",");
-		let cc = JSON.parse(content_1);
-		let syns = JSON.parse(content_2);
-		let gv = JSON.parse(content_3);
+		let cc = readFile.conceptCode();
+		let syns = readFile.synonyms();
+		let gv = readFile.gdcValues();
 		gdcData = {};
 		//load data from gdc_values.js to memory
 		for (var c in gv) {
@@ -957,8 +950,8 @@ const loadCtcaeSynonyms_continue = (req, res) => {
 };
 
 const copyToSynonymsJS = () => {
-	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
-	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
+	let content_1 = readFile.synonymsCtcae();
+	let content_2 = readFile.synonymsNcit();
 	fs.writeFileSync("./server/data_files/synonyms.js", content_2 + content_1, function (err) {
 		if (err) return logger.error(err);
 	});
@@ -1064,8 +1057,7 @@ const removeDeprecated = () => {
 			}
 		}
 	});
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
+	let concept = readFile.conceptCode();
 	deprecated_properties.forEach(d_p => {
 		if (concept[d_p]) {
 			delete concept[d_p];
@@ -1090,9 +1082,7 @@ const removeDeprecated = () => {
 
 const getNCItInfo = (req, res) => {
 	let code = req.query.code;
-	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
-	pv = pv.replace(/}{/g, ",");
-	let ncit_pv = JSON.parse(pv);
+	let ncit_pv = readFile.ncitDetails();
 	if (ncit_pv[code]) {
 		res.json(ncit_pv[code]);
 	} else {
@@ -1116,10 +1106,8 @@ const getNCItInfo = (req, res) => {
 
 const parseExcel = (req, res) => {
 	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
+	let concept = readFile.conceptCode();
+	let all_gdc_values = readFile.gdcValues();
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
 			var dataParsed = [];
@@ -1172,8 +1160,7 @@ const parseExcel = (req, res) => {
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-					let icdo = JSON.parse(gdcValues);
+					let icdo = readFile.gdcValues();
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (icdo[category_node_property]) {
 						//If some of the mapping exists for this category.node.property
@@ -1289,8 +1276,7 @@ const mappingExists = (arr, obj) => {
 }
 
 const Unmapped = (req, res) => {
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
+	let concept = readFile.conceptCode();
 	var folderPath = path.join(__dirname, '..', '..', 'data');
 
 	for (let keys in concept) {
@@ -1328,8 +1314,7 @@ const Unmapped = (req, res) => {
 			}
 		}
 	}
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
+	let icdo = readFile.gdcValues();
 	for (let keys in icdo) {
 		if (concept[keys]) {
 			let cc_values = concept[keys];
@@ -1365,8 +1350,7 @@ const Unmapped = (req, res) => {
 	fs.readdirSync(folderPath_gdcdata).forEach(file => {
 		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
 	});
-	let tmp_conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let tmp_concept = JSON.parse(tmp_conceptCode);
+	let tmp_concept = readFile.conceptCode();
 	for (let keys in tmp_concept) {
 		let category = keys.split(".")[0];
 		let node = keys.split(".")[1];
