@@ -1,15 +1,15 @@
 'use strict';
 
-var elastic = require('../../components/elasticsearch');
-var handleError = require('../../components/handleError');
-var config = require('../../config');
+const elastic = require('../../components/elasticsearch');
+const handleError = require('../../components/handleError');
+const config = require('../../config');
 const searchable_nodes = require('../../config').searchable_nodes;
-var fs = require('fs');
-var path = require('path');
-var yaml = require('yamljs');
+const fs = require('fs');
+const path = require('path');
+const yaml = require('yamljs');
 const excel = require('node-excel-export');
-var _ = require('lodash');
-var xlsx = require('node-xlsx');
+const _ = require('lodash');
+const xlsx = require('node-xlsx');
 
 const export_ICDO3 = (req, res) => {
 	let heading = [

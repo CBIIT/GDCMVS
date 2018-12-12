@@ -1,10 +1,10 @@
 'use strict';
 
-var express = require('express');
-var controller = require('./search.controller');
-var report = require('./report');
-var sheet = require('./googleSheets')
-var router = express.Router();
+const express = require('express');
+const controller = require('./search.controller');
+const report = require('./report');
+const sheet = require('./googleSheets')
+const router = express.Router();
 
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);

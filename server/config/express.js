@@ -1,15 +1,15 @@
 'use strict';
 
-var express = require('express');
-var config = require('./index');
-var compression = require('compression');
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
-var cookieParser = require('cookie-parser');
-var path = require('path');
-var morgan = require('morgan');
-var fs = require('fs');
-var rfs = require('rotating-file-stream');
+const express = require('express');
+const config = require('./index');
+const compression = require('compression');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
+const path = require('path');
+const morgan = require('morgan');
+const fs = require('fs');
+const rfs = require('rotating-file-stream');
 
 module.exports = app =>{
 

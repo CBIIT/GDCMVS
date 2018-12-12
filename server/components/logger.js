@@ -4,8 +4,8 @@
 
 'use strict';
 
-var winston = require('winston');
-var config = require('../config');
+const winston = require('winston');
+const config = require('../config');
 winston.emitErrs = true;
 
 const tsFormat = () => (new Date()).toLocaleTimeString();

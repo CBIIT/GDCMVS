@@ -4,11 +4,11 @@
  */
 'use strict';
 
-var fs = require('fs');
-var https = require('https');
-var http = require('http');
-var config = require('../config');
-var logger = require('./logger');
+const fs = require('fs');
+const https = require('https');
+const http = require('http');
+const config = require('../config');
+const logger = require('./logger');
 var datas = {};
 var syns = {};
 

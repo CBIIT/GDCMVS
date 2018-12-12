@@ -1,9 +1,9 @@
 'use strict';
 
-var path = require('path');
-var _ = require('lodash');
+const path = require('path');
+const _ = require('lodash');
 
-var all = {
+const all = {
 	// Root path of server
     root: path.normalize(__dirname + '/../..'),
 
