@@ -1,16 +1,16 @@
 'use strict';
 
-var elastic = require('../../components/elasticsearch');
-var handleError = require('../../components/handleError');
-var logger = require('../../components/logger');
-var config = require('../../config');
-var https = require('https');
-var fs = require('fs');
-var path = require('path');
-var yaml = require('yamljs');
-var xlsx = require('node-xlsx');
-var _ = require('lodash');
-// var git = require('nodegit');
+const elastic = require('../../components/elasticsearch');
+const handleError = require('../../components/handleError');
+const logger = require('../../components/logger');
+const config = require('../../config');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
+const yaml = require('yamljs');
+const xlsx = require('node-xlsx');
+const _ = require('lodash');
+// const git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
