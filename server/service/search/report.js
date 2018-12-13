@@ -10,7 +10,7 @@ const yaml = require('yamljs');
 const excel = require('node-excel-export');
 const _ = require('lodash');
 const xlsx = require('node-xlsx');
-const readFile = require('../readFiles');
+const shared = require('./shared');
 
 const export_ICDO3 = (req, res) => {
 	let heading = [
@@ -46,7 +46,7 @@ const export_ICDO3 = (req, res) => {
 
 	let data = [];
 
-	let ICDO3 = readFile.gdcValues();
+	let ICDO3 = shared.readGDCValues();
 	let ICDO3_1 = ICDO3["clinical.diagnosis.morphology"];
 	let ICDO3_dict = {};
 	let ICDO3_dict_matched = [];
@@ -67,7 +67,7 @@ const export_ICDO3 = (req, res) => {
 		ICDO3_dict_c[i.i_c].push(i);
 		nm_dict_c[i.nm.toLowerCase()] = i;
 	});
-	let cc = readFile.conceptCode();
+	let cc = shared.readConceptCode();
 	let primary = cc["clinical.diagnosis.primary_diagnosis"];
 	let primary_diagnosis = {};
 	let primary_diagnosis_matched = [];
@@ -626,8 +626,8 @@ const export2Excel = (req, res) => {
 		}
 	});
 	
-	let ncit_pv = readFile.ncitDetails();
-	let file_cde = readFile.cdeData();
+	let ncit_pv = shared.readNCItDetails();
+	let file_cde = shared.readCDEData();
 	let query = {
 		"match_all": {}
 	};
@@ -921,10 +921,10 @@ const exportAllValues = (req, res) => {
 };
 
 const exportMapping = (req, res) => {
-	let all_gdc_values = readFile.gdcValues();
-	let cdeData = readFile.cdeData();
-	let cc = readFile.conceptCode();
-	let ncit_pv = readFile.ncitDetails();
+	let all_gdc_values = shared.readGDCValues();
+	let cdeData = shared.readCDEData();
+	let cc = shared.readConceptCode();
+	let ncit_pv = shared.readNCItDetails();
 
 	let i_c_data = {};
 	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
@@ -1740,7 +1740,7 @@ const export_common = (req, res) => {
 
 	let merges = [];
 	let data = [];
-	let cc = readFile.conceptCode();
+	let cc = shared.readConceptCode();
 	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
@@ -2028,7 +2028,7 @@ const export_common = (req, res) => {
 
 const addTermType = (req, res) => {
 	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\ICD-O-3.1-NCIt_Axis_Mappings.xls');
-	let all_gdc_values = readFile.gdcValues();
+	let all_gdc_values = shared.readGDCValues();
 	let data = {};
 	obj.forEach((sheet, index) => {
 		if(index === 0) return;
@@ -2069,9 +2069,9 @@ const addTermType = (req, res) => {
 const icdoMapping = (req, res) => {
 	var obj = xlsx.parse('C:\\Users\\patelbhp\\Desktop\\EVS_Mappings\\Mappings\\new_gdc_domiains-map.2018.10.03.xlsx');
 	
-	let all_gdc_values = readFile.gdcValues();
+	let all_gdc_values = shared.readGDCValues();
 	let array = ["clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
-	let cc = readFile.conceptCode();
+	let cc = shared.readConceptCode();
 	all_gdc_values["clinical.diagnosis.tissue_or_organ_of_origin"] = [];
 	all_gdc_values["clinical.follow_up.progression_or_recurrence_anatomic_site"] = [];
 	all_gdc_values["clinical.diagnosis.primary_diagnosis"] = [];
@@ -2135,8 +2135,8 @@ const releaseNote = (req, res) => {
 			width: 200
 		}
 	};
-	let all_gdc_values = readFile.gdcValues();
-	let cc = readFile.conceptCode();
+	let all_gdc_values = shared.readGDCValues();
+	let cc = shared.readConceptCode();
 	let folderPath = path.join(__dirname, '../..', 'data');
 	
 	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
@@ -2252,10 +2252,10 @@ const exportMorphology = (req, res) => {
 		}
 	};
 
-	let all_gdc_values = readFile.gdcValues();
-	let cdeData = readFile.cdeData();
-	let cc = readFile.conceptCode();
-	let ncit_pv = readFile.ncitDetails();
+	let all_gdc_values = shared.readGDCValues();
+	let cdeData = shared.readCDEData();
+	let cc = shared.readConceptCode();
+	let ncit_pv = shared.readNCItDetails();
 
 	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
 		if(data.nm !== data.i_c){
