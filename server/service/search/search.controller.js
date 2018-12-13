@@ -935,12 +935,19 @@ const loadSynonyms_continue = (req, res) => {
 };
 
 const preloadSynonumsCtcae = (req, res) => {
+	let arr = [];
 	elastic.loadSynonymsCtcae(result => {
 		if (result === "Success") {
 			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
-			res.write(result);
+			if (arr.length === 5) {
+				res.write(arr.toString());
+				arr = [];
+				arr.push(result);
+			}else{
+				arr.push(result);
+			}
 		}
 	})
 };
