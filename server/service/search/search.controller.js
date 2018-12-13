@@ -10,7 +10,7 @@ const path = require('path');
 const yaml = require('yamljs');
 const xlsx = require('node-xlsx');
 const _ = require('lodash');
-const readFile = require('../readFiles');
+const shared = require('./shared');
 // const git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
@@ -718,8 +718,8 @@ const indexing = (req, res) => {
 const getDataFromCDE = (req, res) => {
 	if (cdeData === '') {
 		//load data file to memory
-		cdeData = readFile.cdeData();
-		let syns = readFile.synonyms();
+		cdeData = shared.readCDEData();
+		let syns = shared.readSynonyms();
 		for (var c in cdeData) {
 			let pvs = cdeData[c];
 			pvs.forEach(pv => {
@@ -780,9 +780,9 @@ const getCDEData = (req, res) => {
 const getDataFromGDC = (req, res) => {
 	if (gdcData === '') {
 		//load data file to memory
-		let cc = readFile.conceptCode();
-		let syns = readFile.synonyms();
-		let gv = readFile.gdcValues();
+		let cc = shared.readConceptCode();
+		let syns = shared.readSynonyms();
+		let gv = shared.readGDCValues();
 		gdcData = {};
 		//load data from gdc_values.js to memory
 		for (var c in gv) {
@@ -964,8 +964,8 @@ const loadCtcaeSynonyms_continue = (req, res) => {
 };
 
 const copyToSynonymsJS = () => {
-	let content_1 = readFile.synonymsCtcae();
-	let content_2 = readFile.synonymsNcit();
+	let content_1 = shared.readSynonymsCtcae();
+	let content_2 = shared.readSynonymsNcit();
 	fs.writeFileSync("./server/data_files/synonyms.js", content_2 + content_1, function (err) {
 		if (err) return logger.error(err);
 	});
@@ -1071,7 +1071,7 @@ const removeDeprecated = () => {
 			}
 		}
 	});
-	let concept = readFile.conceptCode();
+	let concept = shared.readConceptCode();
 	deprecated_properties.forEach(d_p => {
 		if (concept[d_p]) {
 			delete concept[d_p];
@@ -1096,7 +1096,7 @@ const removeDeprecated = () => {
 
 const getNCItInfo = (req, res) => {
 	let code = req.query.code;
-	let ncit_pv = readFile.ncitDetails();
+	let ncit_pv = shared.readNCItDetails();
 	if (ncit_pv[code]) {
 		res.json(ncit_pv[code]);
 	} else {
@@ -1120,8 +1120,8 @@ const getNCItInfo = (req, res) => {
 
 const parseExcel = (req, res) => {
 	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
-	let concept = readFile.conceptCode();
-	let all_gdc_values = readFile.gdcValues();
+	let concept = shared.readConceptCode();
+	let all_gdc_values = shared.readGDCValues();
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
 			var dataParsed = [];
@@ -1174,7 +1174,7 @@ const parseExcel = (req, res) => {
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let icdo = readFile.gdcValues();
+					let icdo = shared.readGDCValues();
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (icdo[category_node_property]) {
 						//If some of the mapping exists for this category.node.property
@@ -1290,7 +1290,7 @@ const mappingExists = (arr, obj) => {
 }
 
 const Unmapped = (req, res) => {
-	let concept = readFile.conceptCode();
+	let concept = shared.readConceptCode();
 	var folderPath = path.join(__dirname, '..', '..', 'data');
 
 	for (let keys in concept) {
@@ -1328,7 +1328,7 @@ const Unmapped = (req, res) => {
 			}
 		}
 	}
-	let icdo = readFile.gdcValues();
+	let icdo = shared.readGDCValues();
 	for (let keys in icdo) {
 		if (concept[keys]) {
 			let cc_values = concept[keys];
@@ -1364,7 +1364,7 @@ const Unmapped = (req, res) => {
 	fs.readdirSync(folderPath_gdcdata).forEach(file => {
 		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
 	});
-	let tmp_concept = readFile.conceptCode();
+	let tmp_concept = shared.readConceptCode();
 	for (let keys in tmp_concept) {
 		let category = keys.split(".")[0];
 		let node = keys.split(".")[1];
