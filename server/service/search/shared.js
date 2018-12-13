@@ -3,59 +3,59 @@
 const fs = require('fs');
 const path = require('path');
 
-const dataFilesDir = path.join(__dirname, '..', 'data_files');
+const dataFilesDir = path.join(__dirname, '..', '..', 'data_files');
 
-const ncitDetails = () => {
+const readNCItDetails = () => {
     let content = fs.readFileSync(dataFilesDir + "/ncit_details.js").toString();
 	content = content.replace(/}{/g, ",");
 	return JSON.parse(content);
 }
 
-const gdcValues = () => {
+const readGDCValues = () => {
     let content = fs.readFileSync(dataFilesDir + "/gdc_values.js").toString();
 	return JSON.parse(content);
 }
 
-const conceptCode = () => {
+const readConceptCode = () => {
     let content = fs.readFileSync(dataFilesDir + "/conceptCode.js").toString();
 	return JSON.parse(content);
 }
 
-const cdeData = () => {
+const readCDEData = () => {
     let content = fs.readFileSync(dataFilesDir + "/cdeData.js").toString();
 	content = content.replace(/}{/g, ",");
 	return JSON.parse(content);
 }
 
-const cdeDataType = () => {
+const readCDEDataType = () => {
     let content = fs.readFileSync(dataFilesDir + "/cdeDataType.js").toString();
 	content = content.replace(/}{/g, ",");
 	return JSON.parse(content);
 }
 
-const synonyms = () => {
+const readSynonyms = () => {
     let content = fs.readFileSync(dataFilesDir + "/synonyms.js").toString();
 	content = content.replace(/}{/g, ",");
 	return JSON.parse(content);
 }
 
-const synonymsCtcae = () => {
+const readSynonymsCtcae = () => {
     let content = fs.readFileSync(dataFilesDir + "/synonyms_ctcae.js").toString();
     return content;
 }
 
-const synonymsNcit = () => {
+const readSynonymsNcit = () => {
     let content = fs.readFileSync(dataFilesDir +  "/synonyms_ncit.js").toString();
     return content;
 }
 
 module.exports = {
-    ncitDetails,
-    gdcValues,
-    conceptCode,
-    cdeData,
-    synonyms,
-    cdeDataType,
-    synonymsCtcae,
-    synonymsNcit
+    readNCItDetails,
+    readGDCValues,
+    readConceptCode,
+    readCDEData,
+    readSynonyms,
+    readCDEDataType,
+    readSynonymsCtcae,
+    readSynonymsNcit
 };

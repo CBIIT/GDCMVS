@@ -16,7 +16,7 @@ const extend = require('util')._extend;
 const _ = require('lodash');
 const report = require('../service/search/report');
 const searchable_nodes = require('../config').searchable_nodes;
-const readFile = require('../service/readFiles');
+const shared = require('../service/search/shared');
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
@@ -395,11 +395,11 @@ const bulkIndex = next => {
 		}
 	});
 	
-	let ccode = readFile.conceptCode();
-	gdc_values = readFile.gdcValues();
-	cdeData = readFile.cdeData();
-	let syns = readFile.synonyms();
-	cdeDataType = readFile.cdeDataType();
+	let ccode = shared.readConceptCode();
+	gdc_values = shared.readGDCValues();
+	cdeData = shared.readCDEData();
+	let syns = shared.readSynonyms();
+	cdeDataType = shared.readCDEDataType();
 	for (var c in cdeData) {
 		let pvs = cdeData[c];
 		pvs.forEach(pv => {
@@ -702,7 +702,7 @@ exports.createIndexes = createIndexes;
 const preloadDataFromCaDSR = next => {
 	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
-	content_1 = readFile.cdeData();
+	content_1 = shared.readCDEData();
 	let cdeDataJson;
 	if (content_1) {
 		cdeDataJson = JSON.parse(content_1);
@@ -734,7 +734,7 @@ const preloadDataFromCaDSR = next => {
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
 
 const preloadDataTypeFromCaDSR = next => {
-	let cdeDataJson = readFile.cdeData();
+	let cdeDataJson = shared.readCDEData();
 	let ids = [];
 	for (var term in cdeDataJson) {
 		let detail = cdeDataJson[term];

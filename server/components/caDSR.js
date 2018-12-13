@@ -9,7 +9,7 @@ const https = require('https');
 const http = require('http');
 const config = require('../config');
 const logger = require('./logger');
-const readFile = require('../service/readFiles');
+const shared = require('../service/search/shared');
 var datas = {};
 var syns = {};
 
@@ -153,11 +153,11 @@ const loadDataType = (ids, next)  => {
 const loadSynonyms = next => {
 	let ncitids = [];
 	//load cde ncit codes
-	let cde = readFile.cdeData();
+	let cde = shared.readCDEData();
 	//load concept codes
-	let concept = readFile.conceptCode();
+	let concept = shared.readConceptCode();
 	//load ICD-0 codes
-	let icdo = readFile.gdcValues();
+	let icdo = shared.readGDCValues();
 	for (let c in cde) {
 		let arr = cde[c];
 		if (arr.length !== 0) {
@@ -222,11 +222,11 @@ const loadSynonyms = next => {
 const loadSynonymsCtcae = next => {
 	let ncitids = [];
 	//load cde ncit codes
-	let cde = readFile.cdeData();
+	let cde = shared.readCDEData();
 	//load concept codes
-	let concept = readFile.conceptCode();
+	let concept = shared.readConceptCode();
 	//load ICD-0 codes
-	let icdo = readFile.gdcValues();
+	let icdo = shared.readGDCValues();
 	for (let c in cde) {
 		let arr = cde[c];
 		if (arr.length !== 0) {
@@ -291,9 +291,9 @@ const loadSynonymsCtcae = next => {
 
 const loadNcitSynonyms_continue = next => {
 	let ncitids = [];
-	let synonyms = readFile.synonyms();
+	let synonyms = shared.readSynonyms();
 	//load concept codes
-	let cc = readFile.conceptCode();
+	let cc = shared.readConceptCode();
 	for (let c in cc) {
 		let vs = cc[c];
 		for (let v in vs) {
@@ -331,9 +331,9 @@ const loadNcitSynonyms_continue = next => {
 
 const loadCtcaeSynonyms_continue = next => {
 	let ncitids = [];
-	let synonyms = readFile.synonyms();
+	let synonyms = shared.readSynonyms();
 	//load concept codes
-	let cc = readFile.conceptCode();
+	let cc = shared.readConceptCode();
 	for (let c in cc) {
 		let vs = cc[c];
 		for (let v in vs) {
