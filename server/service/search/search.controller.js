@@ -906,12 +906,19 @@ const preloadDataTypeFromCaDSR = (req, res) => {
 }
 
 const preloadSynonumsNcit = (req, res) => {
+	let arr = [];
 	elastic.loadSynonyms(result => {
 		if (result === "Success") {
 			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
-			res.write(result);
+			if (arr.length === 50) {
+				res.write(arr.toString());
+				arr = [];
+				arr.push(result);
+			}else{
+				arr.push(result);
+			}
 		}
 	});
 };
