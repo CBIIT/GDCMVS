@@ -1,8 +1,8 @@
-import tmpl from './view';
+import tmpl from './gdc-data.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset } from '../../shared';
+import { getHeaderOffset, htmlChildContent} from '../../shared';
 
-export default function gdcData(prop, tgt, keyword) {
+const gdcData = (prop, tgt, keyword) => {
   apiGetGDCDataById(prop, function (id, items) {
 
     if ($('#gdc_data').length) {
@@ -13,9 +13,11 @@ export default function gdcData(prop, tgt, keyword) {
     let new_items = [];
     let new_item_checker = {};
     let tmp_obj = {};
+    let header_template = htmlChildContent('HeaderTemplate', tmpl);
+    let body_template = htmlChildContent('BodyTemplate', tmpl);
     // RegExp Keyword
     // Don't replace with anything, if keyword is null
-    keyword = keyword === null ? '@#$%^' : keyword.trim().replace(/[\ ,:_-]+/g, " ");
+    keyword = keyword === null || keyword === undefined ? '@#$%^' : keyword.trim().replace(/[\ ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword.replace(/( NOT | AND | OR )/g, "|"), "ig");
 
     items.forEach(function (item) {
@@ -52,7 +54,7 @@ export default function gdcData(prop, tgt, keyword) {
       if (item.gdc_d === true) {
         if(tmp_obj[item.n] !== undefined && !new_item_checker[item.n]){
           let tmp_data = {};
-          tmp_data.n = tgt !== null && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
+          tmp_data.n = tgt !== null && tgt !== undefined && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
           tmp_data.i_c = tmp_obj[item.n];
           tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
           tmp_data.n_c = item.n_c;
@@ -65,7 +67,7 @@ export default function gdcData(prop, tgt, keyword) {
             tmp_data.i_c = tmp_obj[item.i_c.c];
             tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
           }
-          tmp_data.n = tgt !== null && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
+          tmp_data.n = tgt !== null && tgt !== undefined && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
           tmp_data.n_c = item.n_c;
           tmp_data.s = item.s;
           new_items.push(tmp_data);
@@ -76,17 +78,18 @@ export default function gdcData(prop, tgt, keyword) {
     items = new_items;
 
     let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
-    let header = $.templates(tmpl.header).render({
+
+    let header = $.templates(header_template).render({
       target: target,
       icdo: icdo,
       items_length: items.length
-    });
-    let html = $.templates(tmpl.body).render({
+    }).trim();
+    let html = $.templates(body_template).render({
       target: target,
       keyword: keyword,
       icdo: icdo,
       items: items
-    });
+    }).trim();
 
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 :
       window.innerHeight * 0.2;
@@ -96,7 +99,7 @@ export default function gdcData(prop, tgt, keyword) {
 
     let dialog_width = {
       width: 450,
-      minWidth: 350,
+      minWidth: 400,
       maxWidth: 700
     }
 
@@ -149,19 +152,21 @@ export default function gdcData(prop, tgt, keyword) {
       $('#show_all_gdc_data').bind('click', function () {
         let v = $(this).prop("checked");
         if (v) {
-          $('#gdc-data-list div[style="display: none;"]').each(function () {
-            $(this).css("display", "block");
+          $('#gdc-data-list .gdc-data__item--hide').each(function () {
+            $(this).removeClass('gdc-data__item--hide').addClass('gdc-data__item--show');
           });
-          var setScroll = $('#gdc_data_match').offset().top - $(
-            '#gdc_data').offset().top;
+          var setScroll = $('#gdc_data_match').offset().top - $('#gdc_data').offset().top;
           $('#gdc_data').scrollTop(setScroll - 120);
         } else {
-          $('#gdc-data-list div[style="display: block;"]').each(
-            function () {
-              $(this).css("display", "none");
+          $('#gdc-data-list .gdc-data__item--show').each(function () {
+            if(!$(this).is('#gdc_data_match')){
+              $(this).removeClass('gdc-data__item--show').addClass('gdc-data__item--hide');
+            }
             });
         }
       });
     }
   });
 }
+
+export default gdcData;

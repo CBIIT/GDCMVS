@@ -403,7 +403,7 @@ a:hover, a:focus {
   }
 }
 
-@import url(./dialog/style.css);
+@import url(./dialog/dialog.css);
 @import url(./dict-table/dict-table.css);
 @import url(./search-bar/search-bar.css);
 @import url(./tabs/tabs.css);

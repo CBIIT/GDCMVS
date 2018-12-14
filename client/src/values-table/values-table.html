@@ -36,20 +36,32 @@
             <i class="fa fa-caret-down"></i> detail</a>
           <div class="gdc-links" style="display: none;">
             {{if local}}
-            <a href="javascript:getGDCData('{{:ref}}', null, '{{:~root.options.keyword}}');">See All Values</a></br>
-            <a href="javascript:toCompare('{{:ref}}');"> Compare with User List</a></br>
+            <a class="getGDCData" href="#" data-ref="{{:ref}}">See All Values</a></br>
+            <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a></br>
             {{/if}}
             {{if syn}}
-            <a href="javascript:getGDCTerms('{{:ref}}', {{if tgts_enum_n === ''}}null{{else}}'{{:tgts_enum_n}}'{{/if}});">See All Terms</a></br>
+              {{if tgts_enum_n === ""}}
+                <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Terms</a></br>
+              {{else}}
+                <a class="getGDCTerms" href="#" data-ref="{{:ref}}" data-targets="{{:tgts_enum_n}}">See All Terms</a></br>
+              {{/if}}
             {{/if}}
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
-            <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>
+            <a href="{{:cdeUrl}}" target="_blank">CDE</a>
             {{if local && cdeLen}} ,
-            <a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}', '{{:tgts_cde_n}}');">Values</a>,
-            <a class="table-td-link" href="javascript:compareGDC('{{:ref}}', '{{:cdeId}}');"> Compare with GDC</a>
+              {{if tgts_cde_n !== ""}}
+                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>,
+              {{else}}
+                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>,
+              {{/if}}
+              <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}"> Compare with GDC</a>
             {{else cdeLen}} ,
-            <a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}', '{{:tgts_cde_n}}');">Values</a>
+              {{if tgts_cde_n !== ""}}
+                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>,
+              {{else}}
+                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>,
+              {{/if}}
             {{else}}{{/if}}
             {{/if}}
           </div>
@@ -72,7 +84,7 @@
                 {{else}}
                 <div class="row">
                   <div class="col-xs-10">
-                    <a href="javascript:getGDCData('{{:ref}}','{{:n}}','{{:~root.options.keyword}}');">{{:n}}</a>
+                    <a class="getGDCData" href="#" data-ref="{{:ref}}" data-tgt="{{:n}}" data-keyword="{{:~root.options.keyword}}">{{:n}}</a>
                   </div>
                   <div class="col-xs-2 table__center">
                     {{if s.length || term_i_c !== undefined}}
@@ -92,7 +104,7 @@
                     {{for term_i_c.n_syn}}
                     <div class="row table__td">
                       <div class="col-xs-4">
-                        <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
+                        <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
                       </div>
                       <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
                     </div>
@@ -101,7 +113,7 @@
                   {{else s.length}}
                   <div class="row table__td">
                     <div class="col-xs-4">
-                      <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
+                      <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
                     </div>
                     <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
                   </div>
@@ -128,7 +140,7 @@
                   <div class="row table__td">
                     <div class="col-xs-4">
                       {{* if(data.c.indexOf('E') === -1 && data.c.indexOf('C') !== -1) { }}
-                      <a class="table-td-link" href="javascript:getNCITDetails('{{:c}}');">{{:c}}</a> (NCIt) {{* } else { }} {{:c}} (CTCAE){{*
+                      <a class="getNCITDetails" href="#" data-uid="{{:c}}">{{:c}}</a> (NCIt) {{* } else { }} {{:c}} (CTCAE){{*
                       } }}
                     </div>
                     <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
