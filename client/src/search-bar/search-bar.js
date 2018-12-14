@@ -2,6 +2,7 @@ import { apiSuggest, apiSearchAll } from '../api';
 import render from '../render';
 import tmpl from './search-bar.html';
 import { getHeaderOffset } from '../shared';
+import { removePopUps } from '../dialog/dialog';
 
 let displayBoxIndex = -1;
 
@@ -88,7 +89,6 @@ const GetCaretPosition = (ctrl) => {
   return (CaretPos);
 }
 
-
 export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val().trim();
   let keyword = keywordCase.toLowerCase();
@@ -119,6 +119,9 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
     render($root, keywordCase, option, items);
     //close progress bar
     $gdcLoadingIcon.fadeOut('fast');
+
+    //remove pop-ups
+    removePopUps();
   });
 }
 

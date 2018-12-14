@@ -1,5 +1,5 @@
 import tmpl from './values-table.html';
-import { getHeaderOffset } from '../shared'
+import { getHeaderOffset, findWord } from '../shared'
 
 const tableToggleHandle = (event) => {
   event.preventDefault();
