@@ -1,6 +1,6 @@
 {{for results}}
   <div class="suggest__object">
     <span class="suggest__name">{{:id}}</span>
-    <span class="suggest__type">{{:type}}</span>
+    <span class="suggest__type">{{for type}}{{if #index !==0}}, {{/if}}{{:}}{{/for}}</span>
   </div>
 {{/for}}

@@ -56,3 +56,54 @@ export const dialogsOnResize = ($window) => {
     }
   });
 }
+
+export const htmlChildContent = (tag, tmpl) =>{
+  const re = new RegExp('<'+tag+'>([^]*)<\/'+tag+'>', 'g');
+  return re.exec(tmpl)[1];
+}
+
+export const findWord = (words) => {
+  let word = "";
+  if (words.length == 1) {
+    return words[0];
+  }
+  words.forEach(function (w) {
+    if (word !== "") {
+      return;
+    }
+    let idx_space = w.indexOf(" ");
+    let idx_comma = w.indexOf(",");
+    if (idx_space == -1 && idx_comma == -1) {
+      if (/^[A-Z][a-z0-9]{0,}$/.test(w)) {
+        word = w;
+      }
+    }
+    else if (idx_space !== -1 && idx_comma == -1) {
+      if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
+        word = w;
+      }
+    }
+    else if (idx_space == -1 && idx_comma !== -1) {
+      if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
+        word = w;
+      }
+    }
+    else {
+      if (idx_comma > idx_space) {
+        if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
+          word = w;
+        }
+      }
+      else {
+        if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
+          word = w;
+        }
+      }
+    }
+
+  });
+  if (word == "") {
+    word = words[0];
+  }
+  return word;
+};

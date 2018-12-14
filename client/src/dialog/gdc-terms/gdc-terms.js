@@ -1,8 +1,8 @@
-import tmpl from './view';
+import tmpl from './gdc-terms.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset } from '../../shared';
+import { getHeaderOffset, htmlChildContent, findWord } from '../../shared';
 
-export default function getGDCTerms(uid, tgts) {
+const GDCTerms = (uid, tgts) => {
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
 
   apiGetGDCDataById(uid, function (id, items) {
@@ -19,6 +19,8 @@ export default function getGDCTerms(uid, tgts) {
     if (tgts !== null && tgts !== undefined) {
       targets = tgts.split("#");
     }
+    let header_template = htmlChildContent('HeaderTemplate', tmpl);
+    let body_template = htmlChildContent('BodyTemplate', tmpl);
 
     //new synonyms list without duplicates
     items.forEach(function (it) {
@@ -43,13 +45,13 @@ export default function getGDCTerms(uid, tgts) {
     items.forEach(function (item) {
       let tt = item.term_type !== undefined ? item.term_type : "";
       let term_type = "";
-      if(tt !== ""){
-        term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
+      if (tt !== "") {
+        term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
       }
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
           if (tmp_obj[item.i_c.c].checker_n_c.indexOf(item.n_c) == -1) {
-            if(item.n_c !== "" && item.s !== undefined && item.s.length !== 0) {
+            if (item.n_c !== "" && item.s !== undefined && item.s.length !== 0) {
               tmp_obj[item.i_c.c].n_syn.push({
                 n_c: item.n_c,
                 s: item.s,
@@ -58,11 +60,11 @@ export default function getGDCTerms(uid, tgts) {
               tmp_obj[item.i_c.c].checker_n_c.push(item.n_c);
             }
           }
-          if(item.n !== item.i_c.c){
-            if(tt === 'PT'){
-              tmp_obj[item.i_c.c].n.unshift(item.n+" "+term_type);
-            }else{
-              tmp_obj[item.i_c.c].n.push(item.n+" "+term_type);
+          if (item.n !== item.i_c.c) {
+            if (tt === 'PT') {
+              tmp_obj[item.i_c.c].n.unshift(item.n + " " + term_type);
+            } else {
+              tmp_obj[item.i_c.c].n.push(item.n + " " + term_type);
             }
           }
         } else {
@@ -77,11 +79,11 @@ export default function getGDCTerms(uid, tgts) {
             }],
             checker_n_c: [item.n_c]
           };
-          if(item.n !== item.i_c.c){
-            if(tt === 'PT'){
-              tmp_obj[item.i_c.c].n.unshift(item.n+" "+term_type);
-            }else{
-              tmp_obj[item.i_c.c].n.push(item.n+" "+term_type);
+          if (item.n !== item.i_c.c) {
+            if (tt === 'PT') {
+              tmp_obj[item.i_c.c].n.unshift(item.n + " " + term_type);
+            } else {
+              tmp_obj[item.i_c.c].n.push(item.n + " " + term_type);
             }
           }
         }
@@ -103,7 +105,7 @@ export default function getGDCTerms(uid, tgts) {
             tmp_data.e = true;
           }
           new_item_checker[item.n] = tmp_data;
-        } else if(!new_item_checker[item.n]){
+        } else if (!new_item_checker[item.n]) {
           if (item.i_c !== undefined) {
             tmp_data.i_c = tmp_obj[item.i_c.c];
           }
@@ -119,19 +121,19 @@ export default function getGDCTerms(uid, tgts) {
         if (tmp_data.i_c !== undefined && tmp_data.i_c.checker_n_c) {
           delete tmp_data.i_c.checker_n_c;
         }
-        if(isEmpty(tmp_data) === false) new_items.push(tmp_data);
+        if (isEmpty(tmp_data) === false) new_items.push(tmp_data);
       }
     });
 
     items = new_items;
 
-    let header = $.templates(tmpl.header).render({
+    let header = $.templates(header_template).render({
       targets: targets,
       icdo: icdo,
       items_length: items.length
     })
     let html = $.templates({
-      markup: tmpl.body,
+      markup: body_template,
       allowCode: true
     }).render({
       targets: targets,
@@ -205,15 +207,17 @@ export default function getGDCTerms(uid, tgts) {
       $('#show_all_gdc_syn').bind('click', function () {
         let v = $(this).prop("checked");
         if (v) {
-          $('#gdc-syn-data-list div.table__row[style="display: none;"]')
+          $('#gdc-syn-data-list .gdc-term__item--hide')
             .each(function () {
-              $(this).css("display", "block");
+              $(this).removeClass('gdc-term__item--hide').addClass('gdc-term__item--show');
             });
         } else {
           $(
-            '#gdc-syn-data-list div.table__row[style="display: block;"]'
+            '#gdc-syn-data-list .gdc-term__item--show'
           ).each(function () {
-            $(this).css("display", "none");
+            if (!$(this).is('#gdc_term_item')) {
+              $(this).removeClass('gdc-term__item--show').addClass('gdc-term__item--hide');
+            }
           });
         }
       });
@@ -221,10 +225,12 @@ export default function getGDCTerms(uid, tgts) {
   });
 }
 function isEmpty(myObject) {
-  for(var key in myObject) {
-      if (myObject.hasOwnProperty(key)) {
-          return false;
-      }
+  for (var key in myObject) {
+    if (myObject.hasOwnProperty(key)) {
+      return false;
+    }
   }
   return true;
 }
+
+export default GDCTerms;

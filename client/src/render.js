@@ -57,46 +57,27 @@ export default function render($root, keyword, option, items) {
   } else {
 
     apiSuggestMisSpelled(keyword, (results) => {
-      if (results.length !== 0) {
-        html = `<div class="indicator">
-          <div class="indicator__content">
-            <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
-
-            <div class="indicator__card">
-              <p class="indicator__mean">
-              <span class="indicator__mean-span">Did you mean:</span><br>
-              ${results.map((result, index) => `
-                ${index !== 0 ? `,` : '' }
-                <a href="#" class="indicator__suggest-term">${result.id}</a>
-              `.trim()).join('')}<p>
-              <div class="indicator__suggestion">
-                <p class="indicator__suggestion-p">Suggestion:</p>
-                <ul>
-                  <li>Make sure all words are spelled correctly.</li>
-                  <li>Try different keywords.</li>
-                  <li>Try more general keywords.</li>
-                </ul>
-              </div>
+      html = `<div class="indicator">
+        <div class="indicator__content">
+          <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
+          <div class="indicator__card">
+          ${results.length !== 0 ? `<p class="indicator__mean">
+            <span class="indicator__mean-span">Did you mean:</span><br>
+            ${results.map((result, index) => `
+              ${index !== 0 ? `,` : '' }
+              <a href="#" class="indicator__suggest-term">${result.id}</a>
+            `.trim()).join('')}<p>` : '' }
+            <div class="indicator__suggestion">
+              <p class="indicator__suggestion-p">Suggestion:</p>
+              <ul>
+                <li>Make sure all words are spelled correctly.</li>
+                <li>Try different keywords.</li>
+                <li>Try more general keywords.</li>
+              </ul>
             </div>
           </div>
-        </div>`
-      } else {
-        html = `<div class="indicator">
-          <div class="indicator__content">
-            <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
-            <div class="indicator__card">
-              <div class="indicator__suggestion">
-                <p class="indicator__suggestion-p">Suggestion:</p>
-                <ul>
-                  <li>Make sure all words are spelled correctly.</li>
-                  <li>Try different keywords.</li>
-                  <li>Try more general keywords.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>`
-      }
+        </div>
+      </div>`
 
       $root.html(html);
 

@@ -187,3 +187,13 @@
 .gdc-data-list {
   outline: none;
 }
+
+.gdc-data__item--show,
+.gdc-term__item--show {
+  display: block;
+}
+
+.gdc-data__item--hide,
+.gdc-term__item--hide {
+  display: none;
+}
