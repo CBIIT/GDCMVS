@@ -1444,12 +1444,42 @@ const preProcess = (searchable_nodes, data) => {
 }
 
 const exportDifference = (req, res) => {
-	let merges = [];
+	let icdo3_prop = ["primary_diagnosis", "site_of_resection_or_biopsy", "tissue_or_organ_of_origin", "progression_or_recurrence_anatomic_site"];
 	let data = [];
 	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_old');
 	let old_data = {};
 	let new_data = {};
+	let gdc_values = shared.readGDCValues();
+	let cc = shared.readConceptCode();
+	let ncit_pv = shared.readNCItDetails();
+	let i_c_data = {};
+	gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
+		if(data.nm !== data.i_c){
+			if(i_c_data[data.i_c] === undefined){
+				i_c_data[data.i_c] = {
+					ncit_pv: [],
+					n_c: [],
+					nm: []
+				}
+				if(data.n_c) i_c_data[data.i_c].n_c.push(data.n_c);
+				if(data.nm) i_c_data[data.i_c].nm.push(data.nm);
+				if(ncit_pv[data.n_c]){
+					i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
+				}
+			}else{
+				if(data.n_c && i_c_data[data.i_c].n_c.indexOf(data.n_c) === -1){
+					i_c_data[data.i_c].n_c.push(data.n_c);
+					if(ncit_pv[data.n_c]){
+						i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
+					}
+				}
+				if(data.nm && i_c_data[data.i_c].nm.indexOf(data.nm) === -1){
+					i_c_data[data.i_c].nm.push(data.nm);
+				}
+			}
+		}
+	});
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
@@ -1483,6 +1513,10 @@ const exportDifference = (req, res) => {
 						temp_data.p = property;
 						temp_data.value_old = "no match";
 						temp_data.value_new = em;
+						temp_data.n_c = "";
+						temp_data.n_c_pv = "";
+						temp_data.i_c = "";
+						temp_data.i_c_pv = "";
 						data.push(temp_data);
 					});
 				} else if (new_p_array[key_p].deprecated_enum && new_p_array[key_p].new_enum) {
@@ -1495,6 +1529,10 @@ const exportDifference = (req, res) => {
 						temp_data.p = property;
 						temp_data.value_old = "no match";
 						temp_data.value_new = em;
+						temp_data.n_c = "";
+						temp_data.n_c_pv = "";
+						temp_data.i_c = "";
+						temp_data.i_c_pv = "";
 						data.push(temp_data);
 					});
 				}
@@ -1512,7 +1550,7 @@ const exportDifference = (req, res) => {
 
 				if (!old_p_array[property]) {
 					// If this property doesn't exists in old data
-					console.log("New property found!");
+					console.log("New property found! "+property);
 					if (new_p_array[property].enum && !new_p_array[property].deprecated_enum) {
 						//if it doesn't have deprecated values
 						let enums = new_p_array[property].enum;
@@ -1523,6 +1561,10 @@ const exportDifference = (req, res) => {
 							temp_data.p = property;
 							temp_data.value_old = "no match";
 							temp_data.value_new = em;
+							temp_data.n_c = "";
+							temp_data.n_c_pv = "";
+							temp_data.i_c = "";
+							temp_data.i_c_pv = "";
 							data.push(temp_data);
 						});
 					} else if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
@@ -1535,6 +1577,10 @@ const exportDifference = (req, res) => {
 							temp_data.p = property;
 							temp_data.value_old = "no match";
 							temp_data.value_new = em;
+							temp_data.n_c = "";
+							temp_data.n_c_pv = "";
+							temp_data.i_c = "";
+							temp_data.i_c_pv = "";
 							data.push(temp_data);
 						});
 					}
@@ -1561,6 +1607,49 @@ const exportDifference = (req, res) => {
 							} else {
 								temp_data.value_old = "no match";
 							}
+							temp_data.n_c = "";
+							temp_data.n_c_pv = "";
+							temp_data.i_c = "";
+							temp_data.i_c_pv = "";
+							let cnp = category+'.'+node+'.'+property;
+							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
+								temp_data.n_c = cc[cnp][temp_data.value_old];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+							}
+							if(icdo3_prop.indexOf(temp_data.p) !== -1){
+								gdc_values[cnp].forEach(val => {
+									if(val.nm === temp_data.value_old){
+										temp_data.n_c = val.n_c;
+										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
+										temp_data.i_c = val.i_c;
+										temp_data.i_c_pv = val.nm;
+									}
+								});
+							}
+							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
+								temp_data.i_c = temp_data.value_old;
+								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
+									if(index === 0){
+										temp_data.n_c += tmp_result;
+									}else{
+										temp_data.n_c += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.n_c_pv += tmp_result;
+									}else{
+										temp_data.n_c_pv += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.i_c_pv += tmp_result;
+									}else{
+										temp_data.i_c_pv += ' | ' + tmp_result;
+									} 
+								});
+							}
 							temp_data.value_new = em;
 							data.push(temp_data);
 						});
@@ -1581,7 +1670,50 @@ const exportDifference = (req, res) => {
 								temp_data.n = node;
 								temp_data.p = property;
 								temp_data.value_old = em;
-								temp_data.value_new = "no match";;
+								temp_data.value_new = "no match";
+								temp_data.n_c = "";
+								temp_data.n_c_pv = "";
+								temp_data.i_c = "";
+								temp_data.i_c_pv = "";
+								let cnp = category+'.'+node+'.'+property;
+								if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
+									temp_data.n_c = cc[cnp][temp_data.value_old];
+									temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+								}
+								if(icdo3_prop.indexOf(temp_data.p) !== -1){
+									gdc_values[cnp].forEach(val => {
+										if(val.nm === temp_data.value_old){
+											temp_data.n_c = val.n_c;
+											temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
+											temp_data.i_c = val.i_c;
+											temp_data.i_c_pv = val.nm;
+										}
+									});
+								}
+								if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
+									temp_data.i_c = temp_data.value_old;
+									i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
+										if(index === 0){
+											temp_data.n_c += tmp_result;
+										}else{
+											temp_data.n_c += ' | ' + tmp_result;
+										} 
+									});
+									i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
+										if(index === 0){
+											temp_data.n_c_pv += tmp_result;
+										}else{
+											temp_data.n_c_pv += ' | ' + tmp_result;
+										} 
+									});
+									i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
+										if(index === 0){
+											temp_data.i_c_pv += tmp_result;
+										}else{
+											temp_data.i_c_pv += ' | ' + tmp_result;
+										} 
+									});
+								}
 								data.push(temp_data);
 							}
 						});
@@ -1602,7 +1734,50 @@ const exportDifference = (req, res) => {
 								temp_data.n = node;
 								temp_data.p = property;
 								temp_data.value_old = em;
-								temp_data.value_new = "no match";;
+								temp_data.value_new = "no match";
+								temp_data.n_c = "";
+								temp_data.n_c_pv = "";
+								temp_data.i_c = "";
+								temp_data.i_c_pv = "";
+								let cnp = category+'.'+node+'.'+property;
+								if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
+									temp_data.n_c = cc[cnp][temp_data.value_old];
+									temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+								}
+								if(icdo3_prop.indexOf(temp_data.p) !== -1){
+									gdc_values[cnp].forEach(val => {
+										if(val.nm === temp_data.value_old){
+											temp_data.n_c = val.n_c;
+											temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
+											temp_data.i_c = val.i_c;
+											temp_data.i_c_pv = val.nm;
+										}
+									});
+								}
+								if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
+									temp_data.i_c = temp_data.value_old;
+									i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
+										if(index === 0){
+											temp_data.n_c += tmp_result;
+										}else{
+											temp_data.n_c += ' | ' + tmp_result;
+										} 
+									});
+									i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
+										if(index === 0){
+											temp_data.n_c_pv += tmp_result;
+										}else{
+											temp_data.n_c_pv += ' | ' + tmp_result;
+										} 
+									});
+									i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
+										if(index === 0){
+											temp_data.i_c_pv += tmp_result;
+										}else{
+											temp_data.i_c_pv += ' | ' + tmp_result;
+										} 
+									});
+								}
 								data.push(temp_data);
 							}
 						});
@@ -1628,6 +1803,49 @@ const exportDifference = (req, res) => {
 								temp_data.value_old = "no match";
 							}
 							temp_data.value_new = em;
+							temp_data.n_c = "";
+							temp_data.n_c_pv = "";
+							temp_data.i_c = "";
+							temp_data.i_c_pv = "";
+							let cnp = category+'.'+node+'.'+property;
+							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
+								temp_data.n_c = cc[cnp][temp_data.value_old];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+							}
+							if(icdo3_prop.indexOf(temp_data.p) !== -1){
+								gdc_values[cnp].forEach(val => {
+									if(val.nm === temp_data.value_old){
+										temp_data.n_c = val.n_c;
+										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
+										temp_data.i_c = val.i_c;
+										temp_data.i_c_pv = val.nm;
+									}
+								});
+							}
+							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
+								temp_data.i_c = temp_data.value_old;
+								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
+									if(index === 0){
+										temp_data.n_c += tmp_result;
+									}else{
+										temp_data.n_c += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.n_c_pv += tmp_result;
+									}else{
+										temp_data.n_c_pv += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.i_c_pv += tmp_result;
+									}else{
+										temp_data.i_c_pv += ' | ' + tmp_result;
+									} 
+								});
+							}
 							data.push(temp_data);
 						});
 					}
@@ -1651,6 +1869,49 @@ const exportDifference = (req, res) => {
 							temp_data.p = property;
 							temp_data.value_old = em;
 							temp_data.value_new = "no match";
+							temp_data.n_c = "";
+							temp_data.n_c_pv = "";
+							temp_data.i_c = "";
+							temp_data.i_c_pv = "";
+							let cnp = category+'.'+node+'.'+property;
+							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
+								temp_data.n_c = cc[cnp][temp_data.value_old];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+							}
+							if(icdo3_prop.indexOf(temp_data.p) !== -1){
+								gdc_values[cnp].forEach(val => {
+									if(val.nm === temp_data.value_old){
+										temp_data.n_c = val.n_c;
+										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
+										temp_data.i_c = val.i_c;
+										temp_data.i_c_pv = val.nm;
+									}
+								});
+							}
+							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
+								temp_data.i_c = temp_data.value_old;
+								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
+									if(index === 0){
+										temp_data.n_c += tmp_result;
+									}else{
+										temp_data.n_c += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.n_c_pv += tmp_result;
+									}else{
+										temp_data.n_c_pv += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.i_c_pv += tmp_result;
+									}else{
+										temp_data.i_c_pv += ' | ' + tmp_result;
+									} 
+								});
+							}
 							data.push(temp_data);
 						});
 					} else if (old_p_array[key_p].deprecated_enum && old_p_array[key_p].new_enum) {
@@ -1663,6 +1924,49 @@ const exportDifference = (req, res) => {
 							temp_data.p = property;
 							temp_data.value_old = em;
 							temp_data.value_new = "no match";
+							temp_data.n_c = "";
+							temp_data.n_c_pv = "";
+							temp_data.i_c = "";
+							temp_data.i_c_pv = "";
+							let cnp = category+'.'+node+'.'+property;
+							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
+								temp_data.n_c = cc[cnp][temp_data.value_old];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+							}
+							if(icdo3_prop.indexOf(temp_data.p) !== -1){
+								gdc_values[cnp].forEach(val => {
+									if(val.nm === temp_data.value_old){
+										temp_data.n_c = val.n_c;
+										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
+										temp_data.i_c = val.i_c;
+										temp_data.i_c_pv = val.nm;
+									}
+								});
+							}
+							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
+								temp_data.i_c = temp_data.value_old;
+								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
+									if(index === 0){
+										temp_data.n_c += tmp_result;
+									}else{
+										temp_data.n_c += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.n_c_pv += tmp_result;
+									}else{
+										temp_data.n_c_pv += ' | ' + tmp_result;
+									} 
+								});
+								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
+									if(index === 0){
+										temp_data.i_c_pv += tmp_result;
+									}else{
+										temp_data.i_c_pv += ' | ' + tmp_result;
+									} 
+								});
+							}
 							data.push(temp_data);
 						});
 					}
@@ -1671,7 +1975,7 @@ const exportDifference = (req, res) => {
 		}
 	}
 	let heading = [
-		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value']
+		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'NCIt Code', 'NCIt PV', 'ICDO3 code', 'ICDO3 String']
 	];
 	let specification = {
 		c: {
@@ -1693,6 +1997,18 @@ const exportDifference = (req, res) => {
 		value_new: {
 			width: 200,
 			displayName: 'New GDC Dcitonary Value'
+		},
+		n_c: {
+			width: 200
+		},
+		n_c_pv: {
+			width: 200
+		},
+		i_c: {
+			width: 200
+		},
+		i_c_pv: {
+			width: 200
 		}
 	};
 	const report = excel.buildExport(
