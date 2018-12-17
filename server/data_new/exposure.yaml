@@ -1,0 +1,166 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+id: "exposure"
+title: Exposure
+type: object
+namespace: https://gdc.cancer.gov
+category: clinical
+program: '*'
+project: '*'
+description: >
+  Clinically relevant patient information not immediately resulting from genetic predispositions.
+additionalProperties: false
+submittable: true
+downloadable: false
+previous_version_downloadable: false
+validators: null
+
+systemProperties:
+  - id
+  - project_id
+  - state
+  - created_datetime
+  - updated_datetime
+
+links:
+  - name: cases
+    backref: exposures
+    label: describes
+    target_type: case
+    multiplicity: many_to_one
+    required: true
+
+required:
+  - submitter_id
+
+preferred:
+  - pack_years_smoked
+  - years_smoked
+
+deprecated:
+  - bmi
+  - cigarettes_per_day
+  - height
+  - weight
+
+uniqueKeys:
+  #unclear if want submitter ID for clinical
+  - [id]
+  - [project_id, submitter_id]
+
+properties:
+  $ref: "_definitions.yaml#/ubiquitous_properties"
+
+
+  alcohol_days_per_week:
+    term:
+      $ref: "_terms.yaml#/alcohol_days_per_week"
+    type: number
+
+  alcohol_drinks_per_day:
+    term:
+      $ref: "_terms.yaml#/alcohol_drinks_per_day"
+    type: number
+
+  alcohol_history:
+    term:
+      $ref: "_terms.yaml#/alcohol_history"
+    enum:
+      - "Yes"
+      - "No"
+      - Unknown
+      - Not Reported
+      - "no"
+      - "yes"
+    deprecated_enum:
+      - "no"
+      - "yes"
+
+  alcohol_intensity:
+    term:
+      $ref: "_terms.yaml#/alcohol_intensity"
+    enum:
+      - Drinker
+      - Heavy Drinker
+      - Lifelong Non-Drinker
+      - Non-Drinker
+      - Occasional Drinker
+      - Unknown
+      - Not Reported
+
+  asbestos_exposure:
+    term:
+      $ref: "_terms.yaml#asbestos_exposure"
+    enum:
+      - "Yes"
+      - "No"
+      - Unknown
+      - Not Reported
+
+  bmi:
+    term:
+      $ref: "_terms.yaml#/bmi"
+    type: number
+
+  cigarettes_per_day:
+    term:
+      $ref: "_terms.yaml#/cigarettes_per_day"
+    type: number
+
+  height:
+    term:
+      $ref: "_terms.yaml#/height"
+    type: number
+
+  pack_years_smoked:
+    term:
+      $ref: "_terms.yaml#/pack_years_smoked"
+    type: number
+
+  radon_exposure:
+    term:
+      $ref: "_terms.yaml#/radon_exposure"
+    enum:
+      - "Yes"
+      - "No"
+      - Unknown
+      - Not Reported
+
+  tobacco_smoking_onset_year:
+    term:
+      $ref: "_terms.yaml#/tobacco_smoking_onset_year"
+    type: integer
+
+  tobacco_smoking_quit_year:
+    term:
+      $ref: "_terms.yaml#/tobacco_smoking_quit_year"
+    type: integer
+
+  tobacco_smoking_status:
+    term:
+      $ref: "_terms.yaml#/tobacco_smoking_status"
+    enum:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "7"
+      - Unknown
+      - Not Reported
+      - Not Allowed To Collect
+    deprecated_enum:
+      - Not Allowed To Collect
+
+  weight:
+    term:
+      $ref: "_terms.yaml#/weight"
+    type: number
+
+  years_smoked:
+    term:
+      $ref: "_terms.yaml#/years_smoked"
+    type: number
+
+  cases:
+    $ref: "_definitions.yaml#/to_one"
