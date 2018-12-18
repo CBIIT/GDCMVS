@@ -29,6 +29,14 @@ module.exports = {
                 fallback: 'style-loader',
                 use: ['css-loader']
             })
+          },
+          
+          // HTML
+          {
+            test: /\.html$/,
+            use: {
+              loader: 'html-loader'
+            }
           }
         ]
       },

@@ -945,24 +945,34 @@ var exportMapping = function (req, res) {
 	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
 		if(data.nm !== data.i_c){
 			if(i_c_data[data.i_c] === undefined){
-				i_c_data[data.i_c] ={
-					nm:"",
-					n_c: ""
+				i_c_data[data.i_c] = {
+					ncit_pv: [],
+					n_c: [],
+					nm: []
 				}
-				i_c_data[data.i_c].n_c = data.n_c;
-				i_c_data[data.i_c].nm = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+				if(data.n_c) i_c_data[data.i_c].n_c.push(data.n_c);
+				if(data.nm) i_c_data[data.i_c].nm.push(data.nm);
+				if(ncit_pv[data.n_c]){
+					i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
+				}
 			}else{
-				i_c_data[data.i_c].n_c +=" | "+ data.n_c;
-				i_c_data[data.i_c].nm += ncit_pv[data.n_c] ? " | " +ncit_pv[data.n_c].preferredName : "";
+				if(data.n_c && i_c_data[data.i_c].n_c.indexOf(data.n_c) === -1){
+					i_c_data[data.i_c].n_c.push(data.n_c);
+					if(ncit_pv[data.n_c]){
+						i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
+					}
+				}
+				if(data.nm && i_c_data[data.i_c].nm.indexOf(data.nm) === -1){
+					i_c_data[data.i_c].nm.push(data.nm);
+				}
 			}
 		}
 	});
-	// console.log(i_c_data);
 
 	let merges = [];
 	let data = [];
 	let heading = [
-		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
+		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID','ICDO3 Code', 'ICDO3 Strings','Term Type']
 	];
 	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
 		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
@@ -994,6 +1004,15 @@ var exportMapping = function (req, res) {
 			width: 200
 		},
 		cde_id: {
+			width: 200
+		},
+		i_c:{
+			width: 200
+		},
+		i_c_s:{
+			width: 200
+		},
+		t_t:{
 			width: 200
 		}
 	};
@@ -1028,6 +1047,9 @@ var exportMapping = function (req, res) {
 						tmp_data.cde_c = "";
 						tmp_data.ncit_v = "";
 						tmp_data.ncit_c = "";
+						tmp_data.i_c = "";
+						tmp_data.i_c_s = "";
+						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
 							cdeData[cde_id].forEach(function (value) {
 								if (value.pv === em) {
@@ -1044,6 +1066,9 @@ var exportMapping = function (req, res) {
 								if(em === data.nm){
 									tmp_data.ncit_c = data.n_c;
 									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									tmp_data.i_c = data.i_c;
+									tmp_data.i_c_s = data.nm;
+									tmp_data.t_t = data.term_type;
 								}
 							});
 						}
@@ -1066,6 +1091,9 @@ var exportMapping = function (req, res) {
 						tmp_data.cde_c = "";
 						tmp_data.ncit_v = "";
 						tmp_data.ncit_c = "";
+						tmp_data.i_c = "";
+						tmp_data.i_c_s = "";
+						tmp_data.t_t = "";
 						if (cde_id !== "" && cdeData[cde_id]) {
 							cdeData[cde_id].forEach(function (value) {
 								if (value.pv === em) {
@@ -1082,8 +1110,35 @@ var exportMapping = function (req, res) {
 								if(em === data.nm){
 									tmp_data.ncit_c = data.n_c;
 									tmp_data.ncit_v = ncit_pv[data.n_c] ? ncit_pv[data.n_c].preferredName : "";
+									tmp_data.i_c = data.i_c;
+									tmp_data.i_c_s = data.nm;
+									tmp_data.t_t = data.term_type;
 								}
 							});
+						}else if(property === 'morphology' && i_c_data[em]){
+							tmp_data.i_c = em;
+							i_c_data[em].n_c.forEach(function (tmp_result, index){
+								if(index === 0){
+									tmp_data.ncit_c += tmp_result;
+								}else{
+									tmp_data.ncit_c += ' | ' + tmp_result;
+								} 
+							});
+							i_c_data[em].ncit_pv.forEach(function (tmp_result, index){
+								if(index === 0){
+									tmp_data.ncit_v += tmp_result;
+								}else{
+									tmp_data.ncit_v += ' | ' + tmp_result;
+								} 
+							});
+							i_c_data[em].nm.forEach(function (tmp_result, index){
+								if(index === 0){
+									tmp_data.i_c_s += tmp_result;
+								}else{
+									tmp_data.i_c_s += ' | ' + tmp_result;
+								} 
+							});
+
 						}
 						data.push(tmp_data);
 					})
@@ -1104,7 +1159,7 @@ var exportMapping = function (req, res) {
 	);
 	res.attachment('Report-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
 	res.send(report);
-
+	// res.send('Success');
 };
 var export_difference = function (req, res) {
 	const styles = {
@@ -2095,7 +2150,219 @@ let icdoMapping = function(req, res){
 	res.send("Success");
 }
 
+var releaseNote = function(req, res){
+	let merges = [];
+	let data = [];
+	let heading = [
+		['Category | Node | Property', 'Total values','Total Values Mapped to ICDO','Total Values Mapped to EVS']
+	];
+	let specification = {
+	
+		p: {
+			width: 200
+		},
+		t:{
+			width: 200
+		},
+		ti:{
+			width: 200
+		},
+		te:{
+			width: 200
+		}
+	};
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
+	let folderPath = path.join(__dirname, '../..', 'data');
+	let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let cc = JSON.parse(content_1);
+
+	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
+
+	let new_data = {};
+	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
+		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	];
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+		}
+	});
+	new_data = preProcess(searchable_nodes, new_data);
+	for(let key in cc){
+		let n = key.split(".")[1];
+		if(tmp_array.indexOf(key) === -1 && searchable_nodes.indexOf(n) !== -1){
+			let tmp_data = {};
+			tmp_data.p = key;
+			tmp_data.t = Object.keys(cc[key]).length;
+			tmp_data.ti = 0;
+			tmp_data.te = 0;
+			for(let value in cc[key]){
+				if(cc[key][value]){
+					tmp_data.te++;
+				}
+			}
+			data.push(tmp_data);
+		}
+	}
+	for(let node in new_data){
+		let category = new_data[node].category;
+		let n = new_data[node].id;
+		if(new_data[node].properties){
+			let p = new_data[node].properties;
+			for(let val in p){
+				if(p === '$ref') return;
+				if(cc[category+"."+n+"."+val] === undefined && tmp_array.indexOf(val) == -1 && p[val].enum){
+					let tmp_data = {};
+					tmp_data.p = category+"."+n+"."+val;
+					tmp_data.t = 0;
+					tmp_data.ti = 0;
+					tmp_data.te = 0;
+					if(!p[val].new_enum){
+						tmp_data.t = p[val].enum.length;
+					}else{
+						tmp_data.t = p[val].new_enum.length;
+					}
+					data.push(tmp_data);
+				}
+			}
+
+		}
+	}
+	
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				name: 'Report', // <- Specify sheet name (optional) 
+				heading: heading, // <- Raw heading array (optional) 
+				merges: merges, // <- Merge cell ranges 
+				specification: specification, // <- Report specification 
+				data: data // <-- Report data 
+			}
+		]
+	);
+
+	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
+	// res.send("Success");
+}
+
+var exportMorphology = function (req, res){
+	let merges = [];
+	let arr = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'GDC Values','ICDO3 String','ICDO3 Code','NCIt PV','NCIt Code','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
+	];
+	
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		v: {
+			width: 200
+		},
+		i_c_s:{
+			width: 200
+		},
+		i_c:{
+			width: 200
+		},
+		ncit_v: {
+			width: 200
+		},
+		ncit_c: {
+			width: 200
+		},
+		t_t:{
+			width: 200
+		},
+		cde_v: {
+			width: 200
+		},
+		cde_c: {
+			width: 200
+		},
+		cde_id: {
+			width: 200
+		}
+	};
+
+	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
+	let all_gdc_values = JSON.parse(gdcValues);
+
+	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
+	content_1 = content_1.replace(/}{/g, ",");
+	let cdeData = JSON.parse(content_1);
+
+	let content_2 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
+	let cc = JSON.parse(content_2);
+
+	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
+	pv = pv.replace(/}{/g, ",");
+	let ncit_pv = JSON.parse(pv);
+
+	all_gdc_values["clinical.diagnosis.morphology"].forEach(function (data){
+		if(data.nm !== data.i_c){
+			let tmp_data = {};
+			tmp_data.c = 'Clinical';
+			tmp_data.n = 'Diagnosis';
+			tmp_data.p = 'Morphology';
+			tmp_data.v = data.i_c;
+			tmp_data.ncit_v = ncit_pv[data.n_c] && ncit_pv[data.n_c].preferredName ? ncit_pv[data.n_c].preferredName: '';
+			tmp_data.ncit_c = data.n_c;
+			tmp_data.cde_v = '';
+			tmp_data.cde_c = '';
+			tmp_data.cde_id = '3226275';
+			tmp_data.i_c = data.i_c;
+			tmp_data.i_c_s = data.nm;
+			tmp_data.t_t = data.term_type;
+			arr.push(tmp_data);
+		}
+	});
+
+	for(let val in cc['clinical.diagnosis.morphology']){
+		let tmp_data = {};
+			tmp_data.c = 'Clinical';
+			tmp_data.n = 'Diagnosis';
+			tmp_data.p = 'Morphology';
+			tmp_data.v = val;
+			tmp_data.ncit_v = cc["clinical.diagnosis.morphology"][val] && ncit_pv[cc["clinical.diagnosis.morphology"][val]] && ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName ? ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName: '';
+			tmp_data.ncit_c = cc["clinical.diagnosis.morphology"][val];
+			tmp_data.cde_v = '';
+			tmp_data.cde_c = '';
+			tmp_data.cde_id = '3226275';
+			tmp_data.i_c = '';
+			tmp_data.i_c_s = '';
+			tmp_data.t_t = '';
+			arr.push(tmp_data);
+	}
+	
+	const report = excel.buildExport(
+		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+			{
+				name: 'Report', // <- Specify sheet name (optional) 
+				heading: heading, // <- Raw heading array (optional) 
+				merges: merges, // <- Merge cell ranges 
+				specification: specification, // <- Report specification 
+				data: arr // <-- Report data 
+			}
+		]
+	);
+
+	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+	res.send(report);
+	// res.send('Success');
+}
+
 module.exports = {
+	releaseNote,
 	export_ICDO3,
 	export2Excel,
 	exportAllValues,
@@ -2105,5 +2372,6 @@ module.exports = {
 	exportMapping,
 	preProcess,
 	addTermType,
-	icdoMapping
+	icdoMapping,
+	exportMorphology
 }
