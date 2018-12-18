@@ -8,7 +8,9 @@ var router = express.Router();
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
 router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
+router.get('/loadNcitSynonymsContinue', controller.loadSynonyms_continue);
 router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
+router.get('/loadCtcaeSynonymsContinue', controller.loadCtcaeSynonyms_continue);
 router.get('/preloadCadsrData', controller.preloadCadsrData);
 router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
 router.get('/getPV', controller.getPV);
@@ -17,6 +19,8 @@ router.get('/Unmapped', controller.Unmapped);
 //router.get('/external/caDSR', controller.getDataFromCDE);
 //router.get('/local', controller.getDataFromGDC);
 router.get('/ncit/detail', controller.getNCItInfo);
+// router.get('/gitClone', controller.gitClone);
+
 
 //Generate Reports
 // router.get('/export_ICDO3', report.export_ICDO3);
@@ -25,9 +29,11 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // router.get('/exportMapping', report.exportMapping);
 // router.get('/export', report.export_difference);
 // router.get('/exportDifference', report.exportDifference);
+// router.get('/exportMorphology', report.exportMorphology);
 // router.get('/export_common', report.export_common);
 // router.get('/addTermType', report.addTermType);
 // router.get('/icdoMapping', report.icdoMapping);
+// router.get('/releaseNote', report.releaseNote);
 
 //property based api
 router.get('/all/data', controller.searchICDO3Data);
