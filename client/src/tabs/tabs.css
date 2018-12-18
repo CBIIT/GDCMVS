@@ -40,6 +40,7 @@
 .tab-nav__btn:hover{
   text-decoration: none;
 }
+
 .tab-nav__btn:focus {
   text-decoration: none;
   outline: none;

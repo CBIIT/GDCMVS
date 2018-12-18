@@ -266,39 +266,6 @@
         "Vagina": "C12407",
         "Vulva": "C12408"
     },
-    "administrative.project.state": {
-        "closed": "C49070",
-        "legacy": "",
-        "open": "C49069",
-        "processed": "C29862",
-        "processing": "C48177",
-        "review": "C42729",
-        "submitted": "C25695"
-    },
-    "clinical.clinical.ethnicity": {
-        "hispanic or latino": "C17459",
-        "not hispanic or latino": "C41222"
-    },
-    "clinical.clinical.gender": {
-        "female": "C16576",
-        "male": "C20197",
-        "unknown": "C17998",
-        "unspecified": "C38046"
-    },
-    "clinical.clinical.race": {
-        "american indian or alaska native": "C41259",
-        "asian": "C41260",
-        "black or african american": "C16352",
-        "native hawaiian or other pacific islander": "C41219",
-        "not reported": "C43234",
-        "other": "C17649",
-        "white": "C41261"
-    },
-    "clinical.clinical.vital_status": {
-        "alive": "C37987",
-        "dead": "C28554",
-        "lost to follow-up": "C48227"
-    },
     "clinical.demographic.cause_of_death": {
         "Cancer Related": "C8278",
         "End-stage Renal Disease": "C9439",
@@ -308,8 +275,8 @@
         "Spinal Muscular Atrophy": "C85075",
         "Toxicity": "C27990",
         "Unknown": "C17998",
-        "Cardiovascular Disorder, NOS": "",
-        "Renal Disorder, NOS": "",
+        "Cardiovascular Disorder, NOS": "C2931",
+        "Renal Disorder, NOS": "C3149",
         "Surgical Complications": ""
     },
     "clinical.demographic.ethnicity": {
@@ -415,7 +382,7 @@
         "Stage Tis": "C48738",
         "Stage X": "C95957",
         "Unknown": "C17998",
-        "Stage IIIC1": ""
+        "Stage IIIC1": "C95179"
     },
     "clinical.diagnosis.ajcc_clinical_t": {
         "Not Reported": "C43234",
@@ -679,9 +646,9 @@
         "Thoracentesis": "C15392",
         "Ultrasound Guided Biopsy": "C93022",
         "Unknown": "C17998",
-        "Imaging": "",
-        "Physical Exam": "",
-        "Pathologic Review": ""
+        "Imaging": "C17369",
+        "Physical Exam": "C20989",
+        "Pathologic Review": "C125006"
     },
     "clinical.diagnosis.site_of_resection_or_biopsy": {
         "Acoustic nerve": "C12996",
@@ -824,8 +791,8 @@
         "Alpha-1 Antitrypsin": "",
         "Biliary Disorder": "",
         "Cirrhosis, Unknown Etiology": "",
-        "Hepatitis A Infection": "",
-        "Herpes": ""
+        "Hepatitis A Infection": "C3096",
+        "Herpes": "C50583"
     },
     "clinical.follow_up.disease_response": {
         "AJ-Adjuvant Therapy": "C15675",
@@ -883,10 +850,10 @@
         "56": "C103003",
         "58": "C103004",
         "59": "C103005",
-        "63": "",
+        "63": "C156054",
         "66": "C103006",
         "68": "C103007",
-        "70": "",
+        "70": "C156055",
         "73": "C103008",
         "82": "C103009",
         "Not Reported": "C43234",
@@ -916,7 +883,7 @@
         "Mixed Response": "",
         "No Response": "C123600",
         "Persistent Disease": "C90169",
-        "No Measurable Disease": ""
+        "No Measurable Disease": "C40413"
     },
     "clinical.treatment.treatment_type": {
         "Chemoembolization": "C15752",
@@ -945,67 +912,43 @@
         "Radiation, Proton Beam": "C66897",
         "Stereotactic Radiosurgery": "C15358",
         "Radiation, 2D Conventional": "",
-        "Ablation, Cryo": "",
-        "Ablation, Ethanol Injection": "",
-        "Ablation, Microwave": "",
-        "Ablation, NOS": "",
-        "Ablation, Radiofrequency": "",
+        "Ablation, Cryo": "C15215",
+        "Ablation, Ethanol Injection": "C67444",
+        "Ablation, Microwave": "C116643",
+        "Ablation, NOS": "C20985",
+        "Ablation, Radiofrequency": "C15666",
         "Ablation, Radiosurgical": "",
         "Ancillary Treatment": "",
-        "Antiseizure Treatment": "",
+        "Antiseizure Treatment": "C64172",
         "Bisphosphonate Therapy": "",
         "Blinded Study, Treatment Unknown": "",
-        "Brachytherapy, NOS": "",
-        "Chemoprotectant": "",
-        "Isolated Limb Perfusion (ILP)": "",
-        "Organ Transplantation": "",
-        "Pharmaceutical Therapy, NOS": "",
-        "Pleurodesis": "",
+        "Brachytherapy, NOS": "C15195",
+        "Chemoprotectant": "C15533",
+        "Isolated Limb Perfusion (ILP)": "C15393",
+        "Organ Transplantation": "C15289",
+        "Pharmaceutical Therapy, NOS": "C15986",
+        "Pleurodesis": "C66899",
         "Radiation, Combination": "",
-        "Radiation, Cyberknife": "",
-        "Radiation, External Beam": "",
-        "Radiation, Implants": "",
-        "Radiation, Internal": "",
-        "Radiation, Radioisotope": "",
-        "Radiation, Stereotactic/Gamma Knife/SRS": "",
-        "Radiation, Systemic": "",
+        "Radiation, Cyberknife": "C95484",
+        "Radiation, External Beam": "C15751",
+        "Radiation, Implants": "C66891",
+        "Radiation, Internal": "C15195",
+        "Radiation, Radioisotope": "C15470",
+        "Radiation, Stereotactic/Gamma Knife/SRS": "C15382",
+        "Radiation, Systemic": "C92991",
         "Radioactive Iodine Therapy": "",
-        "Radiosensitizing Agent": "",
-        "Stem Cell Transplantation, Autologous": "",
+        "Radiosensitizing Agent": "C798",
+        "Stem Cell Transplantation, Autologous": "C16039",
         "Stem Cell Transplantation, Double Autologous": "",
-        "Stem Cell Transplantation, Allogeneic": "",
-        "Stem Cell Transplantation, Non-Myeloablative": "",
-        "Stem Cell Transplantation, Syngenic": "",
-        "Stem Cell Transplantation, Haploidentical": "",
-        "Stem Cell Transplantation, NOS": "",
-        "Steroid Therapy": ""
+        "Stem Cell Transplantation, Allogeneic": "C46089",
+        "Stem Cell Transplantation, Non-Myeloablative": "C62714",
+        "Stem Cell Transplantation, Syngenic": "C93196",
+        "Stem Cell Transplantation, Haploidentical": "C138187",
+        "Stem Cell Transplantation, NOS": "C15431",
+        "Steroid Therapy": "C15370"
     },
     "clinical.diagnosis.primary_diagnosis": {
-        "Acinar cell tumor": "C4197",
-        "Acute progressive histiocytosis X": "",
-        "Angioendotheliomatosis": "C4342",
-        "Angiotropic lymphoma": "C4342",
-        "Carcinoid tumor, NOS, of appendix": "",
-        "Carcinoid, NOS, of appendix": "",
-        "Eosinophilic granuloma": "C3016",
-        "Hand-Schuller-Christian disease": "C6920",
-        "Histiocytosis X, NOS": "C3107",
-        "Intracystic papillary tumor with high grade entraepithelial neoplasia": "",
-        "Langerhans cell granulomatosis": "C3107",
-        "Langerhans cell granulomatosis, unifocal": "C3016",
-        "Langerhans cell histiocytosis, disseminated": "",
-        "Langerhans cell histiocytosis, generalized": "",
-        "Langerhans cell histiocytosis, mono-ostotic": "C3016",
-        "Langerhans cell histiocytosis, multifocal": "C3107",
-        "Langerhans cell histiocytosis, poly-ostotic": "C3107",
-        "Langerhans cell histiocytosis, unifocal": "C3016",
-        "Letterer-Siwe disease": "C3160",
-        "Monoblastic leukemia, NOS": "C7171",
-        "Nonlipid reticuloendotheliosis": "",
         "Not Reported": "C43234",
-        "T-cell rich large B-cell lymphoma": "C9496",
-        "Therapy-related acute myeloid leukemia, alkylating agent related": "C27754",
-        "Therapy-related acute myeloid leukemia, NOS": "C8252",
         "Unknown": "C17998"
     },
     "biospecimen.sample.biospecimen_anatomic_site": {
@@ -2600,8 +2543,8 @@
         "WXS": "C101295",
         "Unknown": "C17998",
         "Not Reported": "C43234",
-        "Cytogenetics, NOS": "",
-        "ISH": ""
+        "Cytogenetics, NOS": "C18280",
+        "ISH": "C17562"
     },
     "clinical.molecular_test.molecular_consequence": {
         "3 Prime UTR Variant": "C63433",
@@ -2649,8 +2592,8 @@
         "Test Value Reported": "",
         "Unknown": "C17998",
         "Not Reported": "C43234",
-        "Abnormal, NOS": "",
-        "Normal": ""
+        "Abnormal, NOS": "C26683",
+        "Normal": "C14165"
     },
     "clinical.molecular_test.gene_symbol": {
         "A1CF": "C143031",
@@ -3359,7 +3302,7 @@
         "ZRSR2": "C101120",
         "Unknown": "C17998",
         "Not Reported": "C43234",
-        "Not Applicable": ""
+        "Not Applicable": "C48660"
     },
     "clinical.molecular_test.second_gene_symbol": {
         "A1CF": "C143031",
@@ -4152,8 +4095,8 @@
         "Translocation": "C3420",
         "Unknown": "C17998",
         "Not Reported": "C43234",
-        "Gain": "",
-        "Loss": ""
+        "Gain": "C37956",
+        "Loss": "C25559"
     },
     "clinical.molecular_test.ploidy": {
         "Aneuploid": "C2873",
@@ -4168,31 +4111,31 @@
     "clinical.molecular_test.antigen": {
         "CA19-9": "C327",
         "CEA": "C16384",
-        "BCL6": "",
-        "CCND1": "",
-        "CD10": "",
-        "CD117": "",
-        "CD138": "",
-        "CD14": "",
-        "CD15": "",
-        "CD19": "",
-        "CD20": "",
-        "CD22": "",
-        "CD23": "",
-        "CD25": "",
-        "CD3": "",
-        "CD30": "",
-        "CD33": "",
-        "CD34": "",
-        "CD45": "",
-        "CD5": "",
-        "CD56": "",
-        "CD7": "",
-        "CD79A": "",
-        "HLA-DR": "",
-        "Mesothelin": "",
-        "NSE": "",
-        "Squamous Cell Carcinoma Antigen (SCCA)": ""
+        "BCL6": "C26149",
+        "CCND1": "C17988",
+        "CD10": "C16836",
+        "CD117": "C17328",
+        "CD138": "C96914",
+        "CD14": "C17488",
+        "CD15": "C96898",
+        "CD19": "C38894",
+        "CD20": "C38896",
+        "CD22": "C17279",
+        "CD23": "C96902",
+        "CD25": "C17073",
+        "CD3": "C38897",
+        "CD30": "C38906",
+        "CD33": "C97246",
+        "CD34": "C17280",
+        "CD45": "C17282",
+        "CD5": "C73124",
+        "CD56": "C25276",
+        "CD7": "C38935",
+        "CD79A": "C97423",
+        "HLA-DR": "C16692",
+        "Mesothelin": "C20887",
+        "NSE": "C116205",
+        "Squamous Cell Carcinoma Antigen (SCCA)": "C120660"
     },
     "clinical.molecular_test.histone_family": {
         "H1": "C16683",
@@ -4774,10 +4717,10 @@
         "Ovary": "C12404",
         "Pelvis": "C12767",
         "Scalp": "C89807",
-        "Lymph Node, Axillary": "",
-        "Lymph Node, Inguinal": "",
+        "Lymph Node, Axillary": "C12904",
+        "Lymph Node, Inguinal": "C32801",
         "Lymph Node, NOS": "",
-        "Small Intestine": ""
+        "Small Intestine": "C12386"
     },
     "clinical.diagnosis.micropapillary_features": {
         "Not Reported": "C43234",
@@ -4852,8 +4795,8 @@
         "Macro": "C43566",
         "Micro": "C25252",
         "No Vascular Invasion": "",
-        "Extramural": "",
-        "Intramural": ""
+        "Extramural": "C44280",
+        "Intramural": "C25234"
     },
     "clinical.diagnosis.wilms_tumor_histologic_subtype": {
         "Not Reported": "C43234",
@@ -4930,7 +4873,7 @@
         "Distant": "",
         "Local": "C36162",
         "Regional": "",
-        "Biochemical": ""
+        "Biochemical": "C25434"
     },
     "clinical.follow_up.reflux_treatment": {
         "No": "C49487",
@@ -4967,7 +4910,7 @@
         "Unknown": "C17998",
         "Wagr Syndrome": "C3718",
         "Diet": "C15222",
-        "Alcohol Consumption": "",
+        "Alcohol Consumption": "C16273",
         "Allergy, Animal, NOS": "",
         "Allergy, Ant": "",
         "Allergy, Bee": "",
@@ -4983,43 +4926,43 @@
         "Allergy, Processed Foods": "",
         "Allergy, Seafood": "",
         "Allergy, Wasp": "",
-        "Barrett's Esophagus": "",
-        "Behcet's Disease": "",
-        "Cancer": "",
-        "Cirrhosis": "",
-        "Common variable immune deficiency (CVID)": "",
-        "Diabetes, NOS": "",
-        "Diabetes, Type I": "",
-        "Diverticulitis": "",
-        "Eczema": "",
-        "Epstein-Barr Virus": "",
-        "Gilbert's Syndrome": "",
-        "Hashimoto's Thyroiditis": "",
-        "Hay Fever": "",
-        "Headache": "",
-        "Hematologic Disorder, NOS": "",
-        "Hepatic Encephalopathy": "",
-        "Hepatitis B Infection": "",
-        "Hepatitis C Infection": "",
-        "Hepatitis, NOS": "",
-        "HIV": "",
-        "Human Papillomavirus Infection": "",
-        "Hypospadias": "",
-        "Lymphocytic Thyroiditis": "",
-        "Myasthenia Gravis": "",
-        "Oral Contraceptives": "",
-        "Pancreatitis": "",
-        "Rheumatoid Arthritis": "",
-        "Sarcoidosis": "",
-        "Seizure": "",
-        "Sensory Changes": "",
-        "Tattoo": "",
+        "Barrett's Esophagus": "C2891",
+        "Behcet's Disease": "C34416",
+        "Cancer": "C9305",
+        "Cirrhosis": "C2951",
+        "Common variable immune deficiency (CVID)": "C26725",
+        "Diabetes, NOS": "C2985",
+        "Diabetes, Type I": "C2986",
+        "Diverticulitis": "C26752",
+        "Eczema": "C3001",
+        "Epstein-Barr Virus": "C14204",
+        "Gilbert's Syndrome": "C84729",
+        "Hashimoto's Thyroiditis": "C27191",
+        "Hay Fever": "C92188",
+        "Headache": "C34661",
+        "Hematologic Disorder, NOS": "C26323",
+        "Hepatic Encephalopathy": "C79596",
+        "Hepatitis B Infection": "C3097",
+        "Hepatitis C Infection": "C3098",
+        "Hepatitis, NOS": "C3095",
+        "HIV": "C14219",
+        "Human Papillomavirus Infection": "C27851",
+        "Hypospadias": "C40341",
+        "Lymphocytic Thyroiditis": "C38766",
+        "Myasthenia Gravis": "C60989",
+        "Oral Contraceptives": "C389",
+        "Pancreatitis": "C3306",
+        "Rheumatoid Arthritis": "C2884",
+        "Sarcoidosis": "C34995",
+        "Seizure": "C2962",
+        "Sensory Changes": "C34549",
+        "Tattoo": "C113681",
         "Thyroid Nodular Hyperplasia": "",
-        "Tobacco, NOS": "",
-        "Tobacco, Smokeless": "",
-        "Tobacco, Smoking": "",
-        "Undescended Testis": "",
-        "Vision Changes": ""
+        "Tobacco, NOS": "C18059",
+        "Tobacco, Smokeless": "C137998",
+        "Tobacco, Smoking": "C154329",
+        "Undescended Testis": "C12326",
+        "Vision Changes": "C118760"
     },
     "clinical.follow_up.viral_hepatitis_serologies": {
         "HBV Core Antibody": "C62797",
@@ -5033,118 +4976,11 @@
         "HCV Genotype": "C117109",
         "Hepatitis C Virus RNA": "C113120"
     },
-    "data_file.aggregated_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
-    },
-    "data_file.aligned_reads.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Validation": "C16237",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "miRNA-Seq": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "Targeted Sequencing": ""
-    },
-    "data_file.aligned_reads_metric.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Total RNA-Seq": "C124261",
-        "Validation": "C16237",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "miRNA-Seq": ""
-    },
-    "data_file.annotated_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
-    },
     "data_file.biospecimen_supplement.data_category": {
         "Biospecimen": "C70699"
     },
-    "data_file.copy_number_estimate.data_category": {
-        "Copy Number Variation": "C40207"
-    },
-    "data_file.copy_number_estimate.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "Genotyping Array": ""
-    },
-    "data_file.copy_number_estimate.platform": {
-        "Illumina": "C146817",
-        "Affymetrix SNP 6.0": "",
-        "Ion Torrent": ""
-    },
-    "data_file.copy_number_segment.data_category": {
-        "Copy Number Variation": "C40207"
-    },
-    "data_file.copy_number_segment.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "Genotyping Array": ""
-    },
-    "data_file.copy_number_segment.platform": {
-        "Illumina": "C146817",
-        "Affymetrix SNP 6.0": ""
-    },
-    "data_file.filtered_copy_number_segment.data_category": {
-        "Copy Number Variation": "C40207"
-    },
-    "data_file.gene_expression.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Total RNA-Seq": "C124261"
-    },
-    "data_file.masked_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
-    },
     "data_file.pathology_report.data_type": {
         "Pathology Report": "C28277"
-    },
-    "data_file.simple_germline_variation.experimental_strategy": {
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": "",
-        "Targeted Sequencing": ""
-    },
-    "data_file.simple_somatic_mutation.experimental_strategy": {
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295",
-        "Low Pass WGS": "",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": ""
     },
     "data_file.slide_image.data_category": {
         "Biospecimen": "C70699"
@@ -5153,12 +4989,6 @@
         "Cell Culture": "C16396",
         "Diagnostic Slide": "",
         "Tissue Slide": ""
-    },
-    "data_file.structural_variation.experimental_strategy": {
-        "RNA-Seq": "C124261",
-        "Targeted Sequencing": "C130177",
-        "WGS": "C101294",
-        "WXS": "C101295"
     },
     "data_file.submitted_aligned_reads.experimental_strategy": {
         "Bisulfite-Seq": "C106054",
@@ -5178,13 +5008,13 @@
     "data_file.submitted_genomic_profile.experimental_strategy": {
         "Targeted Sequencing": "C130177",
         "WGS": "C101294",
-        "ATAC-Seq": "",
-        "Bisulfite-Seq": "",
-        "ChIP-Seq": "",
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
         "Low Pass WGS": "",
-        "miRNA-Seq": "",
-        "RNA-Seq": "",
-        "WXS": ""
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "WXS": "C101295"
     },
     "data_file.submitted_tangent_copy_number.data_category": {
         "Copy Number Variation": "C40207"
@@ -5200,15 +5030,6 @@
         "Low Pass WGS": "",
         "miRNA-Seq": ""
     },
-    "case.project.state": {
-        "closed": "C49070",
-        "legacy": "",
-        "open": "C49069",
-        "processed": "C29862",
-        "processing": "C48177",
-        "review": "C42729",
-        "submitted": "C25695"
-    },
     "clinical.demographic.premature_at_birth": {
         "No": "C49487",
         "Unknown": "C17998",
@@ -5220,5 +5041,86 @@
         "Not Reported": "C43234",
         "Unknown": "C17998",
         "Yes": "C49488"
+    },
+    "clinical.molecular_test.biospecimen_type": {
+        "Blood": "C12434",
+        "Bone Marrow": "C12431",
+        "Buccal Mucosa": "C12505",
+        "Buffy Coat": "C84507",
+        "Cerebrospinal Fluid": "C12692",
+        "Connective Tissue": "C12374",
+        "Embryonic Fluid": "C13398",
+        "Embryonic Tissue": "C12950",
+        "Feces": "C13234",
+        "Granulocyte": "C12530",
+        "Muscle Tissue": "C12435",
+        "Nerve Tissue": "C13052",
+        "Not Reported": "C43234",
+        "Peritoneal Fluid": "C77612",
+        "Plasma": "C13356",
+        "Pleural Fluid": "C77613",
+        "Saliva": "C13275",
+        "Serum": "C13325",
+        "Skin": "C12470",
+        "Soft Tissue": "C12471",
+        "Tissue, NOS": "C12801",
+        "Unknown": "C17998",
+        "Urine": "C13283"
+    },
+    "clinical.molecular_test.laboratory_test": {
+        "Absolute Neutrophil": "C63321",
+        "Albumin": "C64431",
+        "Alpha Fetoprotein": "C74732",
+        "Basophil": "C64470",
+        "Beta 2 Microglobulin": "C81980",
+        "Blood Urea Nitrogen": "C1753",
+        "Calcium": "C64488",
+        "Cellularity": "C111153",
+        "C-Reactive Protein": "C60651",
+        "Creatinine": "C64547",
+        "Eosinophil": "C12532",
+        "Glucose": "C105585",
+        "Hematocrit": "C64796",
+        "Hemoglobin": "C64848",
+        "Human Chorionic Gonadotropin": "C2275",
+        "Immunoglobulin A": "C81969",
+        "Immunoglobulin G": "C81971",
+        "Immunoglobulin M": "C81972",
+        "Lactate Dehydrogenase": "C64855",
+        "Leukocytes": "C51948",
+        "Luteinizing Hormone": "C74790",
+        "Lymphoblasts": "C102278",
+        "Lymphocytes": "C51949",
+        "M Protein": "C17788",
+        "Metamyelocytes": "C74615",
+        "Myeloblasts": "C74632",
+        "Myelocytes": "C74662",
+        "Neutrophil Bands": "C64830",
+        "Not Reported": "C43234",
+        "Platelets": "C51951",
+        "Prolymphocytes": "C74620",
+        "Promonocytes": "C74621",
+        "Promyelocytes": "C74622",
+        "Segmented Neutrophil": "C36719",
+        "Serum Free Immunoglobulin Light Chain, Kappa": "C98730",
+        "Serum Free Immunoglobulin Light Chain, Lambda": "C98732",
+        "Serum Free Immunoglobulin Light Chain, NOS": "C147376",
+        "Testosterone": "C74793",
+        "Total Bilirubin": "C38037",
+        "Total Protein": "C61033",
+        "Unknown": "C17998"
+    },
+    "clinical.treatment.initial_disease_status": {
+        "Initial Diagnosis": "",
+        "Not Reported": "C43234",
+        "Progressive Disease": "C35571",
+        "Recurrent Disease": "C38155",
+        "Residual Disease": "C4809",
+        "Unknown": "C17998"
+    },
+    "data_file.submitted_unaligned_reads.read_pair_number": {
+        "R1": "",
+        "R2": "",
+        "Not Applicable": "C48660"
     }
 }

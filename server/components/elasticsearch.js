@@ -627,9 +627,14 @@ function preloadDataFromCaDSR(next) {
 		}
 	}
 	logger.debug(ids);
-	caDSR.loadData(ids, function (data) {
-		return next(data);
-	});
+	if(ids.length > 0){
+		caDSR.loadData(ids, function (data) {
+			return next(data);
+		});
+	}else{
+		return next('CDE data Refreshed!!');
+	}
+	
 	// next(1);
 }
 
@@ -646,9 +651,14 @@ function preloadDataTypeFromCaDSR(next) {
 			ids.push(term);
 		}
 	}
-	caDSR.loadDataType(ids, function(data){
-		return next(data);
-	});
+	if(ids.length > 0){
+		caDSR.loadDataType(ids, function(data){
+			return next(data);
+		});
+	}
+	else{
+		return next('CDE data Refreshed!!');
+	}
 }
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
@@ -661,6 +671,14 @@ function loadSynonyms(next) {
 
 exports.loadSynonyms = loadSynonyms;
 
+function loadSynonyms_continue(next) {
+	caDSR.loadNcitSynonyms_continue(function (data) {
+		return next(data);
+	});
+}
+
+exports.loadSynonyms_continue = loadSynonyms_continue;
+
 function loadSynonymsCtcae(next) {
 	caDSR.loadSynonymsCtcae(function (data) {
 		return next(data);
@@ -669,9 +687,10 @@ function loadSynonymsCtcae(next) {
 
 exports.loadSynonymsCtcae = loadSynonymsCtcae;
 
-function loadSynonyms_continue(next) {
-	caDSR.loadSynonyms_continue();
-	next(1);
+function loadCtcaeSynonyms_continue(next) {
+	caDSR.loadCtcaeSynonyms_continue(function (data) {
+		return next(data);
+	});
 }
 
-exports.loadSynonyms_continue = loadSynonyms_continue;
+exports.loadCtcaeSynonyms_continue = loadCtcaeSynonyms_continue;

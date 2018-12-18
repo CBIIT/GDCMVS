@@ -10,6 +10,7 @@ var path = require('path');
 var yaml = require('yamljs');
 var xlsx = require('node-xlsx');
 var _ = require('lodash');
+// var git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
@@ -107,6 +108,25 @@ var searchP = function (req, res) {
 		query.bool = {};
 		query.bool.should = [];
 		if (option.match !== "exact") {
+			// let m = {};
+			// m.multi_match = {};
+			// m.multi_match.query = keyword;
+			// m.multi_match.analyzer = "my_standard";
+			// m.multi_match.fields = ["name.have"];
+			// m.multi_match.fuzziness = "AUTO";
+			// m.multi_match.prefix_length = "2";
+			// // m.multi_match.type = "phrase_prefix";
+			// if (option.desc) {
+			// 	m.multi_match.fields.push("desc");
+			// }
+			// if(option.syn){
+			// 	m.multi_match.fields.push("enum.s.have");
+			// 	m.multi_match.fields.push("cde_pv.n.have");
+			// 	m.multi_match.fields.push("cde_pv.ss.s.have");
+			// }
+			// m.multi_match.fields.push("enum.n.have");
+			// m.multi_match.fields.push("enum.i_c.have");
+			// query.bool.should.push(m);
 			let m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["name.have"] = keyword;
@@ -178,6 +198,7 @@ var searchP = function (req, res) {
 			m.multi_match.query = keyword;
 			m.multi_match.analyzer = "keyword";
 			m.multi_match.fields = ["name"];
+			// m.multi_match.fuzziness = "2";
 			if (option.desc) {
 				m.multi_match.fields.push("desc");
 			}
@@ -555,6 +576,18 @@ var preloadDataTypeFromCaDSR = function (req, res) {
 var preloadSynonumsNcit = function (req, res) {
 	elastic.loadSynonyms(function (result) {
 		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	});
+};
+
+var loadSynonyms_continue = function (req, res) {
+	elastic.loadSynonyms_continue(function (result) {
+		if (result === "Success") {
+			copyToSynonymsJS();			
 			res.end('Success!!');
 		} else {
 			res.write(result);
@@ -565,12 +598,34 @@ var preloadSynonumsNcit = function (req, res) {
 var preloadSynonumsCtcae = function (req, res) {
 	elastic.loadSynonymsCtcae(function (result) {
 		if (result === "Success") {
+			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
 			res.write(result);
 		}
 	})
 };
+
+var loadCtcaeSynonyms_continue = function (req, res) {
+	elastic.loadCtcaeSynonyms_continue(function (result) {
+		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	})
+};
+
+function copyToSynonymsJS(){
+	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
+	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
+	fs.writeFileSync("./server/data_files/synonyms.js", content_2+content_1, function (err) {
+		if (err) {
+			return logger.error(err);
+		}
+	});
+}
 
 var getPV = function (req, res) {
 	let query = {
@@ -1016,6 +1071,21 @@ var Unmapped = function (req, res) {
 	res.send("Success");
 }
 
+var gitClone = function (req, res){
+	let url = 'https://github.com/NCI-GDC/gdcdictionary.git';
+	let directory = 'tmp_data';
+	let clone = git.Clone.clone;
+	let branch = 'develop';
+	var cloneOptions = new git.CloneOptions(); 
+
+	cloneOptions.checkoutBranch = branch;
+	clone(url, directory, cloneOptions)
+        .then(function(repository){
+            
+        });
+	res.send('Success');
+}
+
 module.exports = {
 	suggestion,
 	searchP,
@@ -1027,11 +1097,14 @@ module.exports = {
 	getGDCandCDEData,
 	searchICDO3Data,
 	preloadSynonumsNcit,
+	loadSynonyms_continue,
 	preloadSynonumsCtcae,
+	loadCtcaeSynonyms_continue,
 	getNCItInfo,
 	indexing,
 	preloadCadsrData,
 	parseExcel,
 	preloadDataTypeFromCaDSR,
-	Unmapped
+	Unmapped,
+	gitClone
 };
