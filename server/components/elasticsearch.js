@@ -743,6 +743,9 @@ const preloadDataTypeFromCaDSR = next => {
 		}
 	}
 	if (ids.length > 0) {
+		fs.truncate('./server/data_files/cdeDataType.js', 0, () => {
+			console.log('cdeDataType.js truncated')
+		});
 		caDSR.loadDataType(ids, data => {
 			return next(data);
 		});
