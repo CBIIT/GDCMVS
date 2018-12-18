@@ -1,6 +1,6 @@
 {
   "name": "gdcmvs",
-  "version": "v1.1.0",
+  "version": "v1.1.1",
   "description": "GDC Metadata Validation Services",
   "main": "app.js",
   "scripts": {
@@ -25,7 +25,7 @@
     "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.6.1",
-    "elasticsearch": "^15.1.1",
+    "elasticsearch": "^15.2.0",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
     "lodash": "^4.17.11",
@@ -46,12 +46,13 @@
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "filemanager-webpack-plugin": "^1.0.29",
+    "html-loader": "^0.5.5",
     "mocha": "^5.2.0",
     "node-excel-export": "^1.4.4",
     "node-xlsx": "^0.12.1",
     "selenium-webdriver": "^3.5.0",
     "style-loader": "^0.21.0",
-    "webpack": "^4.20.2",
+    "webpack": "^4.24.0",
     "webpack-cli": "^3.1.2"
   }
 }

@@ -1,9 +1,9 @@
 import tmpl from './view';
-import api from '../../api';
-import shared from '../../shared';
+import { apiGetGDCDataById } from '../../api';
+import { getHeaderOffset } from '../../shared';
 
 export default function gdcData(prop, tgt, keyword) {
-  api.getGDCDataById(prop, function (id, items) {
+  apiGetGDCDataById(prop, function (id, items) {
 
     if ($('#gdc_data').length) {
       $('#gdc_data').remove();
@@ -12,7 +12,7 @@ export default function gdcData(prop, tgt, keyword) {
     let icdo = false;
     let new_items = [];
     let new_item_checker = {};
-    let tmp_obj ={};
+    let tmp_obj = {};
     // RegExp Keyword
     // Don't replace with anything, if keyword is null
     keyword = keyword === null ? '@#$%^' : keyword.trim().replace(/[\ ,:_-]+/g, " ");
@@ -75,7 +75,7 @@ export default function gdcData(prop, tgt, keyword) {
     });
     items = new_items;
 
-    let target = tgt === null  || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+    let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
     let header = $.templates(tmpl.header).render({
       target: target,
       icdo: icdo,
@@ -88,7 +88,7 @@ export default function gdcData(prop, tgt, keyword) {
       items: items
     });
 
-    let tp = (window.innerHeight * 0.2 < shared.headerOffset()) ? 20 :
+    let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 :
       window.innerHeight * 0.2;
 
     //display result in a table
@@ -100,7 +100,7 @@ export default function gdcData(prop, tgt, keyword) {
       maxWidth: 700
     }
 
-    if(icdo){
+    if (icdo) {
       dialog_width.width = 700;
       dialog_width.minWidth = 600;
       dialog_width.maxWidth = 900;
@@ -130,8 +130,8 @@ export default function gdcData(prop, tgt, keyword) {
         }
 
         var target = $(this).parent();
-        if ((target.offset().top - windowEl.scrollTop()) < shared.headerOffset()) {
-          target.css('top', (windowEl.scrollTop() + shared.headerOffset() + 20) + 'px');
+        if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
+          target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
         }
 
         $('#close_gdc_data').bind('click', function () {
@@ -163,15 +163,5 @@ export default function gdcData(prop, tgt, keyword) {
         }
       });
     }
-
-  }, function(status, errorThrown) {
-      //show the notification alert error
-      let alertError = $('#alert-error');
-      alertError.text('Error ' + status + ': ' + errorThrown);
-      alertError.removeClass('animated fadeInDownUp').css({'display': 'none'});
-      let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-      alertError.css({'display': 'block', 'top': (shared.headerOffset() + 20 ) + 'px'}).addClass('animated fadeInDownUp').one(animationEnd, function() {
-        alertError.css({'display': 'none'})
-      });
   });
 }
