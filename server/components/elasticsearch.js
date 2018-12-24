@@ -350,9 +350,10 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		} else {
 			let type = typeof (entry.type);
 			let isArray = Array.isArray(entry.type);
-			p.type = type !== "undefined" && type !== "object" ? entry.type : "";
-			p.type = type === "object" && !isArray ? entry.type.type : "" ;
-			p.type = type === "object" && isArray ? entry.type : "" ;
+			p.type = "";
+			if(type === "string") p.type = entry.type;
+			if(type === "object" && !isArray) p.type = entry.type.type;
+			if(type === "object" && isArray) p.type = entry.type;
 		}
 		allProperties.push(p);
 	}
