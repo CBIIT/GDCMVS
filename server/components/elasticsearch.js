@@ -348,8 +348,11 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		if (entry.enum !== undefined && entry.enum.length > 0) {
 			p.type = "enum";
 		} else {
-			let type = typeof entry.type;
+			let type = typeof (entry.type);
+			let isArray = Array.isArray(entry.type);
 			p.type = type !== "undefined" && type !== "object" ? entry.type : "";
+			p.type = type === "object" && !isArray ? entry.type.type : "" ;
+			p.type = type === "object" && isArray ? entry.type : "" ;
 		}
 		allProperties.push(p);
 	}
