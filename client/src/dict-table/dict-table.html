@@ -109,8 +109,7 @@
                         <div class="treeview__row row">
                           <div class="treeview__col col-xs-4">
                             {{if l_type == "cde"}} No values in GDC, reference values in
-                            <a href="javascript:getCDEData('{{:l_id}}');"
-                              class="table-td-link">caDSR</a>
+                            <a class="getCDEData table-td-link" href="#" data-cdeid="{{:l_id}}">caDSR</a>
                             {{else}} No values in GDC, concept referenced in
                             <a target="_blank" href="{{:url}}" class="table-td-link">NCIt</a>
                             {{/if}}
