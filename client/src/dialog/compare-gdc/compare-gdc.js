@@ -64,7 +64,7 @@ const generateCompareGDCResult = (fromV, toV, option) => {
 const compareGDC = (prop, uid) => {
   let ids = {};
   ids.local = prop;
-  ids.cde = uid;
+  ids.cde = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
   apiGetGDCandCDEDataById(ids, function (ids, items) {
     if ($('#compareGDC_dialog').length) {
       $('#compareGDC_dialog').remove();
