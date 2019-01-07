@@ -706,11 +706,8 @@ exports.createIndexes = createIndexes;
 const preloadDataFromCaDSR = next => {
 	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
-	content_1 = shared.readCDEData();
+	let content_1 = shared.readCDEData();
 	let cdeDataJson;
-	if (content_1) {
-		cdeDataJson = JSON.parse(content_1);
-	}
 
 	let ids = [];
 	for (var term in termsJson) {
