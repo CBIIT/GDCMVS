@@ -706,8 +706,7 @@ exports.createIndexes = createIndexes;
 const preloadDataFromCaDSR = next => {
 	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
-	let content_1 = shared.readCDEData();
-	let cdeDataJson;
+	let cdeDataJson = shared.readCDEData();
 
 	let ids = [];
 	for (var term in termsJson) {
@@ -728,8 +727,6 @@ const preloadDataFromCaDSR = next => {
 	} else {
 		return next('CDE data Refreshed!!');
 	}
-
-	// next(1);
 }
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
