@@ -125,15 +125,21 @@ const searchICDO3Data = (req, res) => {
 
 
 const searchP = (req, res) => {
-	let isBoolSearch = false;
+	let isBoolSearch = {
+		value: false,
+		type: "" 
+	};
 	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
 	let original_keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
 		if (keyword.indexOf('AND') !== -1 || keyword.indexOf('OR') !== -1 || keyword.indexOf('NOT') !== -1) {
+			if(keyword.indexOf(' AND ') !== -1) isBoolSearch.type = "AND";
+			if(keyword.indexOf(' OR ') !== -1) isBoolSearch.type = "OR";
+			if(keyword.indexOf(' NOT ') !== -1) isBoolSearch.type = "NOT";
 			if (keyword.indexOf('NOT') !== -1) keyword = keyword.replace(new RegExp('NOT', 'g'), 'OR');
-			isBoolSearch = true;
+			isBoolSearch.value = true;
 		}
 		let option = JSON.parse(req.query.option);
 		let query = generateQuery(keyword, option, isBoolSearch);
@@ -150,7 +156,7 @@ const searchP = (req, res) => {
 				delete entry._type;
 				delete entry._id;
 			});
-			if (isBoolSearch === true && data.length !== 0) {
+			if (isBoolSearch.value === true && data.length !== 0) {
 				res.json(removeExtraHighlighting(original_keyword, data));
 			} else {
 				res.json(data);
@@ -162,7 +168,7 @@ const searchP = (req, res) => {
 const generateQuery = (keyword, option, isBoolSearch) => {
 	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 	let query = {};
-	if (isBoolSearch === true && option.match !== "exact") {
+	if (isBoolSearch.value === true && option.match !== "exact") {
 		query.query_string = {};
 		query.query_string.fields = [];
 		query.query_string.fields.push("name.have");
@@ -181,29 +187,113 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 		query.query_string.fields.push("enum.n.have");
 		query.query_string.fields.push("enum.i_c.have");
 		query.query_string.query = keyword;
-	} else {
+	}
+	else if(isBoolSearch.value === true && option.match === "exact"){
+		if(isBoolSearch.type === "AND") {
+			keyword = keyword.replace(new RegExp(' AND ', 'g'), ' ');
+			query.bool = {};
+			query.bool.should = [];
+			let m = {};
+			m.multi_match = {};
+			m.multi_match.query = keyword;
+			m.multi_match.analyzer = "case_insensitive";
+			m.multi_match.fields = ["name"];
+			if (option.desc) {
+				m.multi_match.fields.push("desc");
+			}
+			if (option.syn) {
+				m.multi_match.fields.push("enum.s");
+				m.multi_match.fields.push("cde_pv.n");
+				m.multi_match.fields.push("cde_pv.ss.s");
+				m.multi_match.fields.push("cde_pv.ss.c");
+			}
+			m.multi_match.fields.push("enum.n");
+			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("cde.id");
+			m.multi_match.fields.push("enum.i_c.c");
+			query.bool.should.push(m);
+		}
+		if(isBoolSearch.type === "OR"){
+			query.bool = {};
+			query.bool.should = [];
+			let temp_keyword = keyword.split(' OR ');
+			temp_keyword.forEach(value => {
+				let m = {};
+				m.multi_match = {};
+				m.multi_match.query = value;
+				m.multi_match.analyzer = "case_insensitive";
+				m.multi_match.fields = ["name"];
+				if (option.desc) {
+					m.multi_match.fields.push("desc");
+				}
+				if (option.syn) {
+					m.multi_match.fields.push("enum.s");
+					m.multi_match.fields.push("cde_pv.n");
+					m.multi_match.fields.push("cde_pv.ss.s");
+					m.multi_match.fields.push("cde_pv.ss.c");
+				}
+				m.multi_match.fields.push("enum.n");
+				m.multi_match.fields.push("enum.n_c");
+				m.multi_match.fields.push("cde.id");
+				m.multi_match.fields.push("enum.i_c.c");
+				query.bool.should.push(m);
+			});
+		}
+		if(isBoolSearch.type === "NOT"){
+			query.bool = {};
+			query.bool.should = [];
+			query.bool.must_not = [];
+			let temp_keyword = keyword.split(' OR ');
+			temp_keyword.forEach((value, index) => {
+				if(index === 0){
+					let m = {};
+					m.multi_match = {};
+					m.multi_match.query = value;
+					m.multi_match.analyzer = "case_insensitive";
+					m.multi_match.fields = ["name"];
+					if (option.desc) {
+						m.multi_match.fields.push("desc");
+					}
+					if (option.syn) {
+						m.multi_match.fields.push("enum.s");
+						m.multi_match.fields.push("cde_pv.n");
+						m.multi_match.fields.push("cde_pv.ss.s");
+						m.multi_match.fields.push("cde_pv.ss.c");
+					}
+					m.multi_match.fields.push("enum.n");
+					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("cde.id");
+					m.multi_match.fields.push("enum.i_c.c");
+					query.bool.should.push(m);
+				}
+				else{
+					let m = {};
+					m.multi_match = {};
+					m.multi_match.query = value;
+					m.multi_match.analyzer = "case_insensitive";
+					m.multi_match.fields = ["name"];
+					if (option.desc) {
+						m.multi_match.fields.push("desc");
+					}
+					if (option.syn) {
+						m.multi_match.fields.push("enum.s");
+						m.multi_match.fields.push("cde_pv.n");
+						m.multi_match.fields.push("cde_pv.ss.s");
+						m.multi_match.fields.push("cde_pv.ss.c");
+					}
+					m.multi_match.fields.push("enum.n");
+					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("cde.id");
+					m.multi_match.fields.push("enum.i_c.c");
+					query.bool.must_not.push(m);
+				}
+			});
+		}
+	} 
+	else {
 		query.bool = {};
 		query.bool.should = [];
 		if (option.match !== "exact") {
-			// let m = {};
-			// m.multi_match = {};
-			// m.multi_match.query = keyword;
-			// m.multi_match.analyzer = "my_standard";
-			// m.multi_match.fields = ["name.have"];
-			// m.multi_match.fuzziness = "AUTO";
-			// m.multi_match.prefix_length = "2";
-			// // m.multi_match.type = "phrase_prefix";
-			// if (option.desc) {
-			// 	m.multi_match.fields.push("desc");
-			// }
-			// if(option.syn){
-			// 	m.multi_match.fields.push("enum.s.have");
-			// 	m.multi_match.fields.push("cde_pv.n.have");
-			// 	m.multi_match.fields.push("cde_pv.ss.s.have");
-			// }
-			// m.multi_match.fields.push("enum.n.have");
-			// m.multi_match.fields.push("enum.i_c.have");
-			// query.bool.should.push(m);
 			let m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["name.have"] = keyword;
@@ -278,7 +368,7 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 const generateHighlight = (keyword, option, isBoolSearch) => {
 	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 	let highlight;
-	if (isBoolSearch === true && option.match !== "exact") {
+	if (isBoolSearch.value === true && option.match !== "exact") {
 		highlight = {
 			"pre_tags": ["<b>"],
 			"post_tags": ["</b>"],
@@ -340,7 +430,33 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				"number_of_fragments": 0
 			};
 		}
-	} else {
+	}
+	else if(isBoolSearch.value === true && option.match === "exact"){
+		highlight = {
+			"pre_tags": ["<b>"],
+			"post_tags": ["</b>"],
+			"fields": {
+				"name": {},
+				"enum.n": {},
+				"enum.i_c.c": {},
+				"enum.n_c": {},
+				"cde.id": {}
+			}
+		};
+		if (option.desc) {
+			highlight.fields["desc"] = {
+				"number_of_fragments": 0
+			};
+		}
+		if (option.syn) {
+			highlight.fields["enum.s"] = {};
+			highlight.fields["cde_pv.n"] = {};
+			highlight.fields["cde_pv.ss.s"] = {};
+			highlight.fields["cde_pv.ss.c"] = {};
+		}
+
+	} 
+	else {
 		if (option.match !== "exact") {
 			highlight = {
 				"pre_tags": ["<b>"],
