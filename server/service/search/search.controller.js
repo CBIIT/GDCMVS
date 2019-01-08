@@ -162,7 +162,7 @@ const searchP = (req, res) => {
 };
 
 const generateQuery = (keyword, option, isBoolSearch) => {
-	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
+	if (keyword.indexOf("/") !== -1 && option.match !== "exact") keyword = keyword.replace(/\//g, "\\/");
 	let query = {};
 	if (isBoolSearch.value === true && option.match !== "exact") {
 		query.query_string = {};
@@ -362,7 +362,7 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 }
 
 const generateHighlight = (keyword, option, isBoolSearch) => {
-	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
+	if (keyword.indexOf("/") !== -1 && option.match !== "exact") keyword = keyword.replace(/\//g, "\\/");
 	let highlight;
 	if (isBoolSearch.value === true && option.match !== "exact") {
 		highlight = {
