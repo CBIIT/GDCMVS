@@ -40,7 +40,7 @@ const suggestion = (req, res) => {
 };
 
 const suggestionMisSpelled = (req, res) => {
-	let term = req.query.keyword;
+	let term = req.query.keyword.replace(/[ _-]+/g, " ");
 	let suggest = {
 		"term_suggest": {
 			"prefix": term,
@@ -651,7 +651,8 @@ const indexing = (req, res) => {
 						"type": "completion",
 						"max_input_length": 100,
 						"analyzer": "standard",
-						"search_analyzer": "standard"
+						"search_analyzer": "standard",
+						"preserve_separators": false
 					}
 				}
 			}
