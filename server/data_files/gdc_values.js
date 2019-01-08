@@ -1,5 +1,4 @@
 {"clinical.diagnosis.morphology":[
-{"nm":"Neoplasms, NOS","i_c":"800","n_c":"C3262","term_type":"HT"},
 {"nm":"Neoplasm, benign","i_c":"8000/0","n_c":"C3677","term_type":"PT"},
 {"nm":"Tumor, benign","i_c":"8000/0","n_c":"C3677","term_type":"SY"},
 {"nm":"Unclassified tumor, benign","i_c":"8000/0","n_c":"C3677","term_type":"SY"},
@@ -2520,7 +2519,6 @@
 {"nm":"Myelodysplastic syndrome, unclassifiable","i_c":"9989/3","n_c":"C8648","term_type":"SY"},
 {"nm":"Refractory neutropenia","i_c":"9991/3","n_c":"C82593","term_type":"PT"},
 {"nm":"Refractory thrombocytopenia","i_c":"9992/3","n_c":"C82594","term_type":"PT"},
-{"nm":"800","i_c":"800","n_c":"C3262"},
 {"nm":"8000/0","i_c":"8000/0","n_c":"C3677"},
 {"nm":"8000/1","i_c":"8000/1","n_c":"C65157"},
 {"nm":"8000/1","i_c":"8000/1","n_c":"C3262"},
