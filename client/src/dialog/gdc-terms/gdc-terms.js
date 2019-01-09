@@ -126,7 +126,8 @@ const GDCTerms = (uid, tgts) => {
     });
 
     items = new_items;
-
+    // Sort the list alphabetical order.
+    items.sort((a, b) => (a.n > b.n) ? 1 : ((b.n > a.n) ? -1 : 0));
     let header = $.templates(header_template).render({
       targets: targets,
       icdo: icdo,
