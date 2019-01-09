@@ -10,6 +10,11 @@ const GDCTerms = (uid, tgts) => {
       $('#gdc_terms_data').remove();
     }
 
+    //open loading animation
+    if (items.length > 1000 ) {
+      $('#gdc-loading-icon').show()
+    }
+
     let targets = [];
     let icdo = false;
     let windowEl = $(window);
@@ -160,69 +165,74 @@ const GDCTerms = (uid, tgts) => {
       dialog_width.maxWidth = 1000;
     }
 
-
-    $("#gdc_terms_data").dialog({
-      modal: false,
-      position: {
-        my: "center top+" + tp,
-        at: "center top",
-        of: $('#docs-container')
-      },
-      width: dialog_width.width,
-      height: 'auto',
-      minWidth: dialog_width.minWidth,
-      maxWidth: dialog_width.maxWidth,
-      minHeight: 300,
-      maxHeight: 600,
-      open: function () {
-        //add new custom header
-        $(this).prev('.ui-dialog-titlebar').css('padding-top',
-          '7.5em').html(header);
-        var target = $(this).parent();
-        if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
-          target.css('top', (windowEl.scrollTop() + getHeaderOffset() +
-            20) + 'px');
-        }
-        $('#close_gdc_terms_data').bind('click', function () {
-          $("#gdc_terms_data").dialog('close');
-        });
-        $('#gdc-data-invariant').bind('click', function () {
-          $("#gdc-syn-data-list").find('div[name="syn_area"]').each(
-            function () {
-              let rp = $(this).html();
-              let invariant = $(this).parent().children(
-                'div[name="syn_invariant"]');
-              $(this).html(invariant[0].innerHTML);
-              invariant[0].innerHTML = rp;
-            });
-        });
-      },
-      close: function () {
-        $(this).remove();
-      }
-    }).parent().draggable({
-      containment: '#docs-container'
-    });
-
-    if ($('#show_all_gdc_syn') !== undefined) {
-      $('#show_all_gdc_syn').bind('click', function () {
-        let v = $(this).prop("checked");
-        if (v) {
-          $('#gdc-syn-data-list .gdc-term__item--hide')
-            .each(function () {
-              $(this).removeClass('gdc-term__item--hide').addClass('gdc-term__item--show');
-            });
-        } else {
-          $(
-            '#gdc-syn-data-list .gdc-term__item--show'
-          ).each(function () {
-            if (!$(this).is('#gdc_term_item')) {
-              $(this).removeClass('gdc-term__item--show').addClass('gdc-term__item--hide');
-            }
+    setTimeout(() => {
+      $("#gdc_terms_data").dialog({
+        modal: false,
+        position: {
+          my: "center top+" + tp,
+          at: "center top",
+          of: $('#docs-container')
+        },
+        width: dialog_width.width,
+        height: 'auto',
+        minWidth: dialog_width.minWidth,
+        maxWidth: dialog_width.maxWidth,
+        minHeight: 300,
+        maxHeight: 600,
+        open: function () {
+          //add new custom header
+          $(this).prev('.ui-dialog-titlebar').css('padding-top',
+            '7.5em').html(header);
+          var target = $(this).parent();
+          if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
+            target.css('top', (windowEl.scrollTop() + getHeaderOffset() +
+              20) + 'px');
+          }
+          $('#close_gdc_terms_data').bind('click', function () {
+            $("#gdc_terms_data").dialog('close');
           });
+          $('#gdc-data-invariant').bind('click', function () {
+            $("#gdc-syn-data-list").find('div[name="syn_area"]').each(
+              function () {
+                let rp = $(this).html();
+                let invariant = $(this).parent().children(
+                  'div[name="syn_invariant"]');
+                $(this).html(invariant[0].innerHTML);
+                invariant[0].innerHTML = rp;
+              });
+          });
+          //remove loading animation
+          if (items.length > 1000 ) {
+            $('#gdc-loading-icon').hide()
+          }
+        },
+        close: function () {
+          $(this).remove();
         }
+      }).parent().draggable({
+        containment: '#docs-container'
       });
-    }
+
+      if ($('#show_all_gdc_syn') !== undefined) {
+        $('#show_all_gdc_syn').bind('click', function () {
+          let v = $(this).prop("checked");
+          if (v) {
+            $('#gdc-syn-data-list .gdc-term__item--hide')
+              .each(function () {
+                $(this).removeClass('gdc-term__item--hide').addClass('gdc-term__item--show');
+              });
+          } else {
+            $(
+              '#gdc-syn-data-list .gdc-term__item--show'
+            ).each(function () {
+              if (!$(this).is('#gdc_term_item')) {
+                $(this).removeClass('gdc-term__item--show').addClass('gdc-term__item--hide');
+              }
+            });
+          }
+        });
+      }
+    }, 100);
   });
 }
 function isEmpty(myObject) {

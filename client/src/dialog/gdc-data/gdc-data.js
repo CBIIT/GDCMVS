@@ -4,10 +4,15 @@ import { getHeaderOffset, htmlChildContent} from '../../shared';
 
 const gdcData = (prop, tgt, keyword) => {
   apiGetGDCDataById(prop, function (id, items) {
-
     if ($('#gdc_data').length) {
       $('#gdc_data').remove();
     }
+
+    //open loading animation
+    if (items.length > 1000 ) {
+      $('#gdc-loading-icon').show()
+    }
+
     let windowEl = $(window);
     let icdo = false;
     let new_items = [];
@@ -110,63 +115,69 @@ const gdcData = (prop, tgt, keyword) => {
       dialog_width.maxWidth = 900;
     }
 
-    $('#gdc_data').dialog({
-      modal: false,
-      position: {
-        my: 'center top+' + tp,
-        at: 'center top',
-        of: $('#docs-container')
-      },
-      width: dialog_width.width,
-      minWidth: dialog_width.minWidth,
-      maxWidth: dialog_width.maxWidth,
-      height: 550,
-      minHeight: 350,
-      maxHeight: 650,
-      open: function () {
-        //add new custom header
-        if (icdo) {
-          $(this).prev('.ui-dialog-titlebar').css('padding-top',
-            '7.5em').html(header);
-        } else {
-          $(this).prev('.ui-dialog-titlebar').css('padding-top',
-            '3.8em').html(header);
-        }
+    setTimeout(() => {
+      $('#gdc_data').dialog({
+        modal: false,
+        position: {
+          my: 'center top+' + tp,
+          at: 'center top',
+          of: $('#docs-container')
+        },
+        width: dialog_width.width,
+        minWidth: dialog_width.minWidth,
+        maxWidth: dialog_width.maxWidth,
+        height: 550,
+        minHeight: 350,
+        maxHeight: 650,
+        open: function () {
+          //add new custom header
+          if (icdo) {
+            $(this).prev('.ui-dialog-titlebar').css('padding-top',
+              '7.5em').html(header);
+          } else {
+            $(this).prev('.ui-dialog-titlebar').css('padding-top',
+              '3.8em').html(header);
+          }
 
-        var target = $(this).parent();
-        if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
-          target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
-        }
+          var target = $(this).parent();
+          if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
+            target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
+          }
 
-        $('#close_gdc_data').bind('click', function () {
-          $("#gdc_data").dialog('close');
-        });
-      },
-      close: function () {
-        $(this).remove();
-      }
-    }).parent().draggable({
-      containment: '#docs-container'
-    });
-
-    if ($('#show_all_gdc_data') !== undefined) {
-      $('#show_all_gdc_data').bind('click', function () {
-        let v = $(this).prop("checked");
-        if (v) {
-          $('#gdc-data-list .gdc-data__item--hide').each(function () {
-            $(this).removeClass('gdc-data__item--hide').addClass('gdc-data__item--show');
+          $('#close_gdc_data').bind('click', function () {
+            $("#gdc_data").dialog('close');
           });
-          var setScroll = $('#gdc_data_match').offset().top - $('#gdc_data').offset().top;
-          $('#gdc_data').scrollTop(setScroll - 120);
-        } else {
-          $('#gdc-data-list .gdc-data__item--show').each(function () {
-            if(!$(this).is('#gdc_data_match')){
-              $(this).removeClass('gdc-data__item--show').addClass('gdc-data__item--hide');
-            }
-            });
+
+          if (items.length > 1000 ) {
+            $('#gdc-loading-icon').hide()
+          }
+        },
+        close: function () {
+          $(this).remove();
         }
+      }).parent().draggable({
+        containment: '#docs-container'
       });
-    }
+
+      if ($('#show_all_gdc_data') !== undefined) {
+        $('#show_all_gdc_data').bind('click', function () {
+          let v = $(this).prop("checked");
+          if (v) {
+            $('#gdc-data-list .gdc-data__item--hide').each(function () {
+              $(this).removeClass('gdc-data__item--hide').addClass('gdc-data__item--show');
+            });
+            var setScroll = $('#gdc_data_match').offset().top - $('#gdc_data').offset().top;
+            $('#gdc_data').scrollTop(setScroll - 120);
+          } else {
+            $('#gdc-data-list .gdc-data__item--show').each(function () {
+              if(!$(this).is('#gdc_data_match')){
+                $(this).removeClass('gdc-data__item--show').addClass('gdc-data__item--hide');
+              }
+              });
+          }
+        });
+      }
+    }, 100);
   });
 }
 
