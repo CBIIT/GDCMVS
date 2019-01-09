@@ -30,7 +30,7 @@ const toCompare = (uid) => {
     }
 
     // Sort the list alphabetical order.
-    items.sort((a, b) => (a.n > b.n) ? 1 : ((b.n > a.n) ? -1 : 0));
+    items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     let html = $.templates(tmpl).render({ items: items });
 
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 : window.innerHeight * 0.2;
