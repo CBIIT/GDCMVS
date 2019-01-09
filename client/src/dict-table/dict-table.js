@@ -336,8 +336,7 @@ export const dtRender = (items, keyword, search_option) => {
 
             if (v.i_c !== undefined && e.exist !== true) {
               v.i_c.have.forEach(function (v_i_c_have) {
-                if (arr_enum_i_c.indexOf(v_i_c_have) !== -1 &&
-                  arr_enum_n.length === 0) {
+                if (arr_enum_i_c.indexOf(v_i_c_have) !== -1) {
                   e.exist = true;
                 }
               });
