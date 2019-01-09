@@ -77,7 +77,7 @@ const gdcData = (prop, tgt, keyword) => {
     });
     items = new_items;
     // Sort the list alphabetical order.
-    items.sort((a, b) => (a.n > b.n) ? 1 : ((b.n > a.n) ? -1 : 0));
+    items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
 
     let header = $.templates(header_template).render({
