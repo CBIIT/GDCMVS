@@ -499,10 +499,6 @@ export const dtRender = (items, keyword, search_option) => {
   let offset = $('#root').offset().top;
   let h = window.innerHeight - offset - 313;
   options.height = (h < 430) ? 430 : h;
-  options.redirect = false;
-  if (window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0) {
-    options.redirect = true;
-  }
   let html = $.templates(tmpl).render({
     options: options,
     newtrs: newtrs
