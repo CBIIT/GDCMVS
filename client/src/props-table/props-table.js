@@ -69,10 +69,6 @@ export default (items, keyword, search_option) => {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 310;
       options.height = (h < 430) ? 430 : h;
-      options.redirect = false;
-      if (window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0) {
-        options.redirect = true;
-      }
       html = $.templates(tmpl).render({ options: options, props: props });
     }
 
