@@ -2626,6 +2626,74 @@ const exportMorphology = (req, res) => {
 	// res.send('Success');
 }
 
+const compareDataType = (req, res) => {
+	let merges = [];
+	let arr = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'CDE ID', 'GDC Data Type', 'CDE Data Type']
+	];
+	let cdeDataType = shared.readCDEDataType();
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		cde_id: {
+			width: 200
+		},
+		dt_gdc: {
+			width: 200
+		},
+		dt_cde: {
+			width: 200
+		}
+	};
+	let query = {
+		"match_all": {}
+	};
+	elastic.query(config.index_p, query, null, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		data.forEach((result) => {
+			let source = result._source;
+			if(source.cde !== undefined && source.cde.id !== undefined && cdeDataType[source.cde.id] !== undefined && source.enum === undefined){
+				if(source.type.toString().toLowerCase() !== cdeDataType[source.cde.id].toLowerCase()){
+					let temp_data = {};
+					temp_data.c = source.category;
+					temp_data.n = source.node;
+					temp_data.p = source.name;
+					temp_data.cde_id = source.cde.id;
+					temp_data.dt_gdc = source.type;
+					temp_data.dt_cde = cdeDataType[source.cde.id];
+					arr.push(temp_data);
+				}
+			}
+		});
+		const report = excel.buildExport(
+			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+				{
+					name: 'Report', // <- Specify sheet name (optional) 
+					heading: heading, // <- Raw heading array (optional) 
+					merges: merges, // <- Merge cell ranges 
+					specification: specification, // <- Report specification 
+					data: arr // <-- Report data 
+				}
+			]
+		);
+		res.attachment('datatype-comparison.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.send(report);
+	});
+	
+	// res.send('Success');
+}
+
 module.exports = {
 	releaseNote,
 	export_ICDO3,
@@ -2638,5 +2706,6 @@ module.exports = {
 	preProcess,
 	addTermType,
 	icdoMapping,
-	exportMorphology
+	exportMorphology,
+	compareDataType
 }
