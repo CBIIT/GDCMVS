@@ -51,9 +51,9 @@ export default (items, keyword, search_option) => {
         prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
         prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
         prop.type = Array.isArray(source.type) ? source.type[0] : source.type;
-        if (source.cde !== undefined && source.cde.dt !== undefined) {
-          prop.type = source.cde.dt;
-        }
+        // if (source.cde !== undefined && source.cde.dt !== undefined) {
+        //   prop.type = source.cde.dt;
+        // }
         if (prop.type) {
           prop.type = prop.type.toLowerCase();
         }
