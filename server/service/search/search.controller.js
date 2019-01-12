@@ -1076,13 +1076,13 @@ const getNCItInfo = (req, res) => {
 };
 
 const parseExcel = (req, res) => {
-	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
+	var folderPathMapping = path.join(__dirname, '..', '..', 'excel_mapping');
 	let concept = shared.readConceptCode();
 	let all_gdc_values = shared.readGDCValues();
-	fs.readdirSync(folderPath).forEach(file => {
+	fs.readdirSync(folderPathMapping).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
 			var dataParsed = [];
-			var obj = xlsx.parse(folderPath + '/' + file);
+			var obj = xlsx.parse(folderPathMapping + '/' + file);
 			obj.forEach(sheet => {
 				var worksheet = sheet.data;
 
@@ -1315,8 +1315,8 @@ const Unmapped = (req, res) => {
 
 	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
 	let gdc_data = {};
-	fs.readdirSync(folderPath_gdcdata).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+	fs.readdirSync(folderPath).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
 	});
 	let tmp_concept = shared.readConceptCode();
 	for (let keys in tmp_concept) {
