@@ -11,39 +11,21 @@
       {{for props}}
       <div class="table__row row">
         <div class="table__td col-xs-2">
-          {{if ~root.options.redirect === true}}
           <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-entity-list&anchor={{if ct == 'data_file' || ct == 'metadata_file'}}submittable_data_file{{else}}{{:ct}}{{/if}}" target="_blank">
             {{:ct}}
           </a>
-          {{else}}
-          <a href="/Data_Dictionary/viewer/#?view=table-entity-list&anchor={{if ct == 'data_file' || ct == 'metadata_file'}}submittable_data_file{{else}}{{:ct}}{{/if}}">
-            {{:ct}}
-          </a>
-          {{/if}}
           <ul class="table__ul">
             <li class="table__li table__td--word-break">
-              {{if ~root.options.redirect === true}}
               <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}" target="_blank">
                 {{:nd}}
               </a>
-              {{else}}
-              <a href="/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}">
-                {{:nd}}
-              </a>
-              {{/if}}
             </li>
           </ul>
         </div>
         <div class="table__td col-xs-2 table__td--word-break">
-          {{if ~root.options.redirect === true}}
           <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}&anchor={{:nm_link}}" target="_blank">
             {{:nm}}
           </a>
-          {{else}}
-          <a href="/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}&anchor={{:nm_link}}">
-            {{:nm}}
-          </a>
-          {{/if}}
         </div>
         <div class="table__td col-xs-4">{{:desc}}</div>
         <div class="table__td col-xs-2">
