@@ -11,6 +11,7 @@ const yaml = require('yamljs');
 const xlsx = require('node-xlsx');
 const _ = require('lodash');
 const shared = require('./shared');
+const folderPath = path.join(__dirname, '..', '..', 'data');
 // const git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
@@ -1004,7 +1005,6 @@ const getPVFunc = (ncitids, idx, next) => {
 const removeDeprecated = () => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
-	var folderPath = path.join(__dirname, '..', '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -1248,8 +1248,6 @@ const mappingExists = (arr, obj) => {
 
 const Unmapped = (req, res) => {
 	let concept = shared.readConceptCode();
-	var folderPath = path.join(__dirname, '..', '..', 'data');
-
 	for (let keys in concept) {
 		let node = keys.split('.')[1];
 		let property = keys.split('.')[2];
@@ -1316,7 +1314,6 @@ const Unmapped = (req, res) => {
 	});
 
 	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
-	let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
 	let gdc_data = {};
 	fs.readdirSync(folderPath_gdcdata).forEach(file => {
 		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);

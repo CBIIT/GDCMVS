@@ -11,6 +11,7 @@ const excel = require('node-excel-export');
 const _ = require('lodash');
 const xlsx = require('node-xlsx');
 const shared = require('./shared');
+const folderPath = path.join(__dirname, '..', '..', 'data');
 
 const export_ICDO3 = (req, res) => {
 	let heading = [
@@ -601,7 +602,6 @@ const export_ICDO3 = (req, res) => {
 const export2Excel = (req, res) => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
-	var folderPath = path.join(__dirname, '..', '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
