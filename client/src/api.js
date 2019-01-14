@@ -13,8 +13,8 @@ export const apiSuggestMisSpelled = (value, callback) => {
   });
 }
 
-export const gdcDictionaryVersion = (callback) => {
-  $.getJSON(`${baseUrl}/gdcDictionaryVersion`, function(result) {
+export const apiGDCDictionaryVersion = (callback) => {
+  $.getJSON(`${baseUrl}/gdcDictionaryVersion`, (result) => {
     callback(result);
   });
 }
