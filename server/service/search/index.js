@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
 router.get('/suggestMisSpelled', controller.suggestionMisSpelled);
+router.get('/gdcDictionaryVersion', controller.gdcDictionaryVersion);
 router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
 router.get('/loadNcitSynonymsContinue', controller.loadSynonyms_continue);
 router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
