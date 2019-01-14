@@ -8,11 +8,6 @@ const gdcData = (prop, tgt, keyword) => {
       $('#gdc_data').remove();
     }
 
-    //open loading animation
-    if (items.length > 1000 ) {
-      $('#gdc-loading-icon').show()
-    }
-
     let windowEl = $(window);
     let icdo = false;
     let new_items = [];
@@ -81,8 +76,15 @@ const gdcData = (prop, tgt, keyword) => {
       }
     });
     items = new_items;
+
+    //open loading animation
+    if (items.length > 1000 ) {
+      $('#gdc-loading-icon').show()
+    }
+
     // Sort the list alphabetical order.
     items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+
     let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
 
     let header = $.templates(header_template).render({
