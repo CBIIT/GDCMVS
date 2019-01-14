@@ -23,6 +23,7 @@ window.onload = () => {
     const $docsContainer = $('#docs-container');
     const $parentContainer = $('.parent-container');
     const $gdcLoadingIcon = $('#gdc-loading-icon');
+    const $gdcVersionContent = $('#version-content');
 
     const $searchOptionsBox = $('#search-bar-options');
     const $searchBooleanOptions = $('.search-bar__boolean');
@@ -30,6 +31,8 @@ window.onload = () => {
     search.removeExternalLinkIcons();
 
     search.renderLocalStorach($keywords, $root, $searchOptionsBox, $gdcLoadingIcon);
+
+    search.gdcDictionaryVersion($gdcVersionContent);
 
     $searchOptionsBox.on('show.bs.dropdown', (event) => {
       $suggestBox.hide();

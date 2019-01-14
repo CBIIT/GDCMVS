@@ -1358,7 +1358,7 @@ const gitClone = (req, res) => {
 }
 
 const gdcDictionaryVersion = (req, res) => {
-	res.send(shared.readGdcDictionaryVersion());
+	res.json(shared.readGdcDictionaryVersion());
 }
 
 module.exports = {
