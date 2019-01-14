@@ -10,11 +10,6 @@ const GDCTerms = (uid, tgts) => {
       $('#gdc_terms_data').remove();
     }
 
-    //open loading animation
-    if (items.length > 1000 ) {
-      $('#gdc-loading-icon').show()
-    }
-
     let targets = [];
     let icdo = false;
     let windowEl = $(window);
@@ -131,8 +126,15 @@ const GDCTerms = (uid, tgts) => {
     });
 
     items = new_items;
+
+    //open loading animation
+    if (items.length > 1000 ) {
+      $('#gdc-loading-icon').show()
+    }
+
     // Sort the list alphabetical order.
     items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+
     let header = $.templates(header_template).render({
       targets: targets,
       icdo: icdo,
