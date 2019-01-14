@@ -17,6 +17,7 @@ const _ = require('lodash');
 const report = require('../service/search/report');
 const searchable_nodes = require('../config').searchable_nodes;
 const shared = require('../service/search/shared');
+const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
@@ -45,7 +46,6 @@ const parseRef = (ref, termsJson, defJson) => {
 const parseRefYaml = (ref, termsJson, defJson) => {
 	let data = {};
 	//return {"$ref":ref};
-	var folderPath = path.join(__dirname, '..', 'data');
 	let fileName = ref.split("#/")[0];
 	let remmainingRef = ref.split("#/")[1];
 	let title = remmainingRef.split('/')[0];
@@ -374,7 +374,6 @@ const extendDef = (termsJson, defJson) => {
 const bulkIndex = next => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
-	var folderPath = path.join(__dirname, '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -426,7 +425,6 @@ const bulkIndex = next => {
 			}
 		});
 	}
-	var folderPath = path.join(__dirname, '..', 'data');
 	var count = 0,
 		total = 0;
 	var termsJson = yaml.load(folderPath + '/_terms.yaml');
@@ -453,9 +451,8 @@ const bulkIndex = next => {
 
 	});
 	let gdc_data = {};
-	let folderPath_gdcdata = path.join(__dirname, '..', 'data');
-	fs.readdirSync(folderPath_gdcdata).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+	fs.readdirSync(folderPath).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
 	});
 	gdc_data = report.preProcess(searchable_nodes, gdc_data);
 	//build suggestion index
@@ -704,7 +701,6 @@ const createIndexes = (params, next) => {
 exports.createIndexes = createIndexes;
 
 const preloadDataFromCaDSR = next => {
-	let folderPath = path.join(__dirname, '..', 'data');
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
 	let cdeDataJson = shared.readCDEData();
 

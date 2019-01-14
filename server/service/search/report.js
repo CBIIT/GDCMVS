@@ -11,6 +11,7 @@ const excel = require('node-excel-export');
 const _ = require('lodash');
 const xlsx = require('node-xlsx');
 const shared = require('./shared');
+const folderPath = path.join(__dirname, '..', '..', 'data');
 
 const export_ICDO3 = (req, res) => {
 	let heading = [
@@ -77,7 +78,6 @@ const export_ICDO3 = (req, res) => {
 		primary_diagnosis[p.toLowerCase()].term = p;
 	}
 	let diagnosis = null;
-	let folderPath = path.join(__dirname, '../..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file == "diagnosis.yaml") {
 			diagnosis = yaml.load(folderPath + '/' + file);
@@ -601,7 +601,6 @@ const export_ICDO3 = (req, res) => {
 const export2Excel = (req, res) => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
-	var folderPath = path.join(__dirname, '..', '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -866,7 +865,6 @@ const exportAllValues = (req, res) => {
 		}
 	};
 	let new_data = {};
-	let folderPath = path.join(__dirname, '../..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
@@ -998,7 +996,6 @@ const exportMapping = (req, res) => {
 		}
 	};
 	let new_data = {};
-	let folderPath = path.join(__dirname, '../..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
@@ -1235,7 +1232,6 @@ const export_difference = (req, res) => {
 	let data = [];
 	let deprecated_properties = [];
 	let deprecated_values = [];
-	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
 	fs.readdirSync(folderPath).forEach(file => {
@@ -1373,7 +1369,6 @@ const export_difference = (req, res) => {
 };
 
 const preProcess = (searchable_nodes, data) => {
-	let folderPath = path.join(__dirname, '../..', 'data');
 	// Remove deprecated properties and nodes
 	for (let key in data) {
 		if (searchable_nodes.indexOf(key) === -1) {
@@ -1446,7 +1441,6 @@ const preProcess = (searchable_nodes, data) => {
 const exportDifference = (req, res) => {
 	let icdo3_prop = ["primary_diagnosis", "site_of_resection_or_biopsy", "tissue_or_organ_of_origin", "progression_or_recurrence_anatomic_site"];
 	let data = [];
-	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_old');
 	let old_data = {};
 	let new_data = {};
@@ -2057,7 +2051,6 @@ const export_common = (req, res) => {
 	let merges = [];
 	let data = [];
 	let cc = shared.readConceptCode();
-	let folderPath = path.join(__dirname, '../..', 'data');
 	let folderPath_old = path.join(__dirname, '../..', 'data_elephant_cat');
 	let content = [];
 	fs.readdirSync(folderPath).forEach(file => {
@@ -2453,7 +2446,6 @@ const releaseNote = (req, res) => {
 	};
 	let all_gdc_values = shared.readGDCValues();
 	let cc = shared.readConceptCode();
-	let folderPath = path.join(__dirname, '../..', 'data');
 	
 	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
 

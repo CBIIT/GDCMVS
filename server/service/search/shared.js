@@ -49,6 +49,11 @@ const readSynonymsNcit = () => {
     return content;
 }
 
+const readGdcDictionaryVersion = () => {
+    let content = fs.readFileSync(dataFilesDir +  "/VERSION").toString();
+    return content;
+}
+
 module.exports = {
     readNCItDetails,
     readGDCValues,
@@ -57,5 +62,6 @@ module.exports = {
     readSynonyms,
     readCDEDataType,
     readSynonymsCtcae,
-    readSynonymsNcit
+    readSynonymsNcit,
+    readGdcDictionaryVersion
 };
