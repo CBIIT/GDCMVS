@@ -13,6 +13,12 @@ export const apiSuggestMisSpelled = (value, callback) => {
   });
 }
 
+export const gdcDictionaryVersion = (callback) => {
+  $.getJSON(`${baseUrl}/gdcDictionaryVersion`, function(result) {
+    callback(result);
+  });
+}
+
 export const apiSearchAll = (keyword, option, callback) => {
   $.getJSON(`${baseUrl}/all/p`, {keyword:keyword, option: JSON.stringify(option)}, function(result) {
       callback(keyword, option, result);
