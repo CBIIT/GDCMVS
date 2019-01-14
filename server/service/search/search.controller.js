@@ -1357,6 +1357,10 @@ const gitClone = (req, res) => {
 	res.send('Success');
 }
 
+const gdcDictionaryVersion = (req, res) => {
+	res.send(shared.readGdcDictionaryVersion());
+}
+
 module.exports = {
 	suggestion,
 	suggestionMisSpelled,
@@ -1378,5 +1382,6 @@ module.exports = {
 	parseExcel,
 	preloadDataTypeFromCaDSR,
 	Unmapped,
-	gitClone
+	gitClone,
+	gdcDictionaryVersion
 };
