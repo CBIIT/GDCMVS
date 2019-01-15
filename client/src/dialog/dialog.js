@@ -93,13 +93,24 @@ const generateCompareResult = (fromV, toV, option) => {
     if (tmp === '') {
       return;
     }
-    let text = '';
-    let idx = option.sensitive ? v_lowercase.indexOf(tmp) : v_lowercase.indexOf(tmp.toLowerCase());
-    if (idx >= 0) {
-      text = toV[idx];
-      v_matched.push(idx);
-    }
-    if (text === '') {
+    let text = [];
+    let idx;
+    if( option.sensitive){
+      idx = v_lowercase.indexOf(tmp);
+      if (idx >= 0) {
+        text.push(toV[idx]);
+        v_matched.push(idx);
+      }
+    } else{
+      v_lowercase.forEach((v_tmp, index) => {
+        if(v_tmp.indexOf(tmp.toLowerCase()) !== -1){
+          text.push(toV[index]);
+          v_matched.push(index);
+        }
+      })
+    } 
+    
+    if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
       table += '<div class="table__row row">'
         + '<div class="table__td table__td--slim col-xs-6">' + v + '</div>'
@@ -108,9 +119,12 @@ const generateCompareResult = (fromV, toV, option) => {
     }
     else {
       table += '<div class="table__row row">'
-        + '<div class="table__td table__td--slim col-xs-6">' + v + '</div>'
-        + '<div class="table__td table__td--slim col-xs-6">' + text + '</div>'
-        + '</div>';
+      text.forEach((tmp_text, index) => {
+        if(index !== 0 ) v = "";
+        table += '<div class="table__td table__td--slim col-xs-6">' + v + '</div>'
+        +'<div class="table__td table__td--slim col-xs-6">' + tmp_text + '</div>';
+      });
+      table += '</div>'
     }
   });
   for (var i = 0; i < toV.length; i++) {
@@ -139,7 +153,7 @@ export const compare = (gv) => {
 
     let compare_dialog = $('#compare_dialog').parent().find('.ui-dialog-titlebar');
 
-    let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Case Sensitive</label>'
+    let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact Match</label>'
       + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>';
 
     compare_dialog.append(titleComponent);
