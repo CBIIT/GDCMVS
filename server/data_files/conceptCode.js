@@ -792,17 +792,17 @@
         "Cirrhosis, Unknown Etiology": "",
         "Hepatitis A Infection": "C3096",
         "Herpes": "C50583",
-        "Cholelithiasis": "",
-        "Denys-Drash Syndrome": "",
-        "Fibrosis": "",
-        "Hemihypertrophy": "",
-        "Hepatitis, Chronic": "",
-        "High Grade Liver Dysplastic Nodule": "",
-        "Low Grade Liver Dysplastic Nodule": "",
-        "Nonalcoholic Steatohepatitis": "",
-        "Primary Sclerosing Cholangitis": "",
-        "Steatosis": "",
-        "Wagr Syndrome": ""
+        "Cholelithiasis": "C122822",
+        "Denys-Drash Syndrome": "C84668",
+        "Fibrosis": "C3044",
+        "Hemihypertrophy": "C88541",
+        "Hepatitis, Chronic": "C82978",
+        "High Grade Liver Dysplastic Nodule": "C96768",
+        "Low Grade Liver Dysplastic Nodule": "C96770",
+        "Nonalcoholic Steatohepatitis": "C84445",
+        "Primary Sclerosing Cholangitis": "C4828",
+        "Steatosis": "C82983",
+        "Wagr Syndrome": "C3718"
     },
     "clinical.follow_up.disease_response": {
         "AJ-Adjuvant Therapy": "C15675",
@@ -836,8 +836,8 @@
         "PLD-Persistent Locoregional Disease": "",
         "TF-Tumor Free": "",
         "WT-With Tumor": "",
-        "Unknown": "",
-        "Not Reported": ""
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "clinical.follow_up.ecog_performance_status": {
         "0": "C105722",
@@ -846,8 +846,8 @@
         "3": "C105726",
         "4": "C105727",
         "5": "C105728",
-        "Unknown": "",
-        "Not Reported": ""
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "clinical.follow_up.hpv_positive_type": {
         "16": "C14338",
@@ -1463,12 +1463,12 @@
         "Tonsillar Cancer": "C4825",
         "Unknown": "C17998",
         "Uterine Cancer": "C3552",
-        "Ewing Sarcoma": "",
-        "Glioblastoma": "",
-        "Neuroblastoma": "",
-        "Osteosarcoma": "",
-        "Rhabdomyosarcoma": "",
-        "Wilms Tumor": ""
+        "Ewing Sarcoma": "C4817",
+        "Glioblastoma": "C3058",
+        "Neuroblastoma": "C3270",
+        "Osteosarcoma": "C9145",
+        "Rhabdomyosarcoma": "C3359",
+        "Wilms Tumor": "C3267"
     },
     "clinical.family_history.relationship_type": {
         "Adopted Daughter": "",
@@ -4400,7 +4400,7 @@
         "WGS": "C101294",
         "WXS": "C101295",
         "miRNA-Seq": "",
-        "ATAC-Seq": ""
+        "ATAC-Seq": "C156056"
     },
     "biospecimen.read_group.platform": {
         "Illumina": "C146817",
@@ -4564,8 +4564,8 @@
         "Thoracoscopic Biopsy": "",
         "Transplant": "",
         "Tumor Resection": "",
-        "Partial Hepatectomy": "",
-        "Total Hepatectomy": ""
+        "Partial Hepatectomy": "C15394",
+        "Total Hepatectomy": "C51781"
     },
     "biospecimen.sample.preservation_method": {
         "Cryopreserved": "C16475",
@@ -5182,26 +5182,26 @@
         "Tobacco, Smoking": "C154329",
         "Undescended Testis": "C12326",
         "Vision Changes": "C118760",
-        "Alcoholic Liver Disease": "",
-        "Alpha-1 Antitrypsin Deficiency": "",
-        "Autoimmune Atrophic Chronic Gastritis": "",
-        "Cholelithiasis": "",
-        "Chronic Hepatitis": "",
-        "Fibrosis": "",
-        "Gastric Polyp(s)": "",
-        "Helicobacter Pylori-Associated Gastritis": "",
-        "Hemochromatosis": "",
-        "High Grade Dysplasia": "",
-        "Intestinal Metaplasia": "",
-        "Iron Overload": "",
-        "Low Grade Dysplasia": "",
-        "Nonalcoholic Fatty Liver Disease": "",
-        "Nonalcoholic Steatohepatitis": "",
+        "Alcoholic Liver Disease": "C34783",
+        "Alpha-1 Antitrypsin Deficiency": "C84397",
+        "Autoimmune Atrophic Chronic Gastritis": "C156076",
+        "Cholelithiasis": "C122822",
+        "Chronic Hepatitis": "C82978",
+        "Fibrosis": "C3044",
+        "Gastric Polyp(s)": "C3954",
+        "Helicobacter Pylori-Associated Gastritis": "C27121",
+        "Hemochromatosis": "C84481",
+        "High Grade Dysplasia": "C156083",
+        "Intestinal Metaplasia": "C8360",
+        "Iron Overload": "C78393",
+        "Low Grade Dysplasia": "C156084",
+        "Nonalcoholic Fatty Liver Disease": "C84444",
+        "Nonalcoholic Steatohepatitis": "C84445",
         "Parasitic Disease of Biliary Tract": "",
-        "Primary Sclerosing Cholangitis": "",
+        "Primary Sclerosing Cholangitis": "C4828",
         "Recurrent Pyogenic Cholangitis": "",
-        "Reflux Disease": "",
-        "Steatosis": ""
+        "Reflux Disease": "C26781",
+        "Steatosis": "C82983"
     },
     "clinical.follow_up.viral_hepatitis_serologies": {
         "HBV Core Antibody": "C62797",
@@ -5361,5 +5361,50 @@
         "R1": "",
         "R2": "",
         "Not Applicable": "C48660"
+    },
+    "clinical.diagnosis.tumor_focality": {
+        "Multifocal": "C25253",
+        "Not Reported": "C43234",
+        "Unifocal": "C47862",
+        "Unknown": "C17998"
+    },
+    "clinical.diagnosis.tumor_regression_grade": {
+        "0": "C155941",
+        "1": "C140890",
+        "2": "C140891",
+        "3": "C140892",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
+    },
+    "clinical.exposure.asbestos_exposure": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.exposure.radon_exposure": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.follow_up.hepatitis_sustained_virological_response": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.follow_up.risk_factor_treatment": {
+        "No": "C49487",
+        "Not Reported": "C43234",
+        "Unknown": "C17998",
+        "Yes": "C49488"
+    },
+    "clinical.treatment.treatment_effect": {
+        "Complete Necrosis (No Viable Tumor)": "C156234",
+        "Incomplete Necrosis (Viable Tumor Present)": "C156235",
+        "No Necrosis": "",
+        "Not Reported": "C43234",
+        "Unknown": "C17998"
     }
 }

@@ -1229,7 +1229,7 @@ const parseExcel = (req, res) => {
 	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
 		if (err) return logger.error(err);
 	});
-	removeDeprecated();
+	// removeDeprecated();
 	res.json({
 		"status": "success",
 		"message": "Done"
