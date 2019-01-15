@@ -45,6 +45,27 @@ export const dialogEvents = ($root, $body) => {
     let data = event.currentTarget.dataset;
     getNCITDetails(data.uid);
   });
+
+  $body.on('click', '.compare-form__toggle', (event) => {
+    event.preventDefault();
+    console.log('test');
+
+    const $this = $(event.currentTarget);
+    const $target = $this.closest('.compare-form__values').find('.compare-form__synm');
+    $target.slideToggle(350, () => {
+      if ($target.is(":visible")) {
+        $this.attr('title', 'collapse');
+        $this.attr('aria-label', 'collapse');
+        $this.attr('aria-expanded', 'true');
+        $this.html('<i class="fa fa-minus"></i>');
+      } else {
+        $this.attr('title', 'expand');
+        $this.attr('aria-label', 'expand');
+        $this.attr('aria-expanded', 'false');
+        $this.html('<i class="fa fa-plus"></i>');
+      }
+    });
+  });
 }
 
 const generateCompareResult = (fromV, toV, option) => {

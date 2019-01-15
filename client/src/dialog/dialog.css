@@ -123,9 +123,9 @@
 }
 
 .compare-form__middle {
-  width: 4%;
+  width: 2em;
   height: 28.5em;
-  margin-right: 5%;
+  margin-right: 2.5em;
   border-right: 1px dashed #bbb;
   display: inline-block;
 }
@@ -136,6 +136,7 @@
   overflow: auto;
   border: 1px solid #888;
   display: inline-block;
+  padding: 0.2em;
 }
 
 .compare-form__label--left {
@@ -146,6 +147,22 @@
 .compare-form__label--right {
   margin-left: calc(9% + 1px);
   font-weight: bold;
+}
+
+.compare-form__value {
+  display: inline-block;
+  padding-right: 1em;
+  width: 92%;
+  vertical-align: middle;
+}
+
+.compare-form__toggle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.compare-form__synm {
+  padding: 0.5em 1.5em;
 }
 
 .compare-form__bottom {
