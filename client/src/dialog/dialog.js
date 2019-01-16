@@ -4,7 +4,6 @@ import toCompare from './to-compare/to-compare';
 import compareGDC from './compare-gdc/compare-gdc';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
-import { removeDuplicateSynonyms } from '../shared';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getCDEData', (event) => {
@@ -69,21 +68,15 @@ export const dialogEvents = ($root, $body) => {
 }
 
 const generateCompareResult = (fromV, toV, option) => {
-  let v_lowercase = [], v_matched = [], v_synonyms = {};
+  let v_lowercase = [], v_matched = [];
   if (option.sensitive) {
     toV.forEach(function (v) {
       v_lowercase.push(v.n.trim());
-      if(v_synonyms[v.n.trim()] === undefined && v.s.length > 0){
-        v_synonyms[v.n.trim()] = removeDuplicateSynonyms(v);
-      }
     });
   }
   else {
     toV.forEach(function (v) {
       v_lowercase.push(v.n.trim().toLowerCase());
-      if(v_synonyms[v.n.trim().toLowerCase()] === undefined && v.s.length > 0){
-        v_synonyms[v.n.trim().toLowerCase()] = removeDuplicateSynonyms(v);
-      }
     });
   }
   let table = '<div class="table__thead row">'
@@ -99,19 +92,60 @@ const generateCompareResult = (fromV, toV, option) => {
       return;
     }
     let text = [];
-    let idx;
-    if( option.sensitive){
-      idx = v_lowercase.indexOf(tmp);
+    if( option.sensitive){ // If exact match is checked
+      let checker_n = [];
+      let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
         text.push(toV[idx].n);
+        checker_n.push(toV[idx].n);
         v_matched.push(idx);
       }
-    } else{
+      toV.forEach((em,i) => {
+        if(em.all_syn){ // If it's a ICDO3 code it will have all_syn
+          if(em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1){
+            text.push(toV[i].n);
+            checker_n.push(toV[i].n);
+            v_matched.push(i);
+          }
+        }
+        if(em.s){
+          if(em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1){
+            text.push(toV[i].n);
+            checker_n.push(toV[i].n);
+            v_matched.push(i);
+          }
+        }
+      });
+
+    } else{ // If exact match is not checked
+      let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
-        if(v_tmp.indexOf(tmp.toLowerCase()) !== -1){
+        let idx = v_tmp.indexOf(tmp.toLowerCase());
+        if(idx >= 0 && checker_n.indexOf(toV[index].n) === -1){
           text.push(toV[index].n);
+          checker_n.push(toV[index].n);
           v_matched.push(index);
         }
+        toV.forEach((em,i) => {
+          if(em.all_syn){
+            em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
+              if(syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1){
+                text.push(toV[i].n);
+                checker_n.push(toV[i].n);
+                v_matched.push(i);
+              }
+            });
+          }
+          if(em.s){
+            em.s.forEach(syn => {
+              if(syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1){
+                text.push(toV[i].n);
+                checker_n.push(toV[i].n);
+                v_matched.push(i);
+              }
+            });
+          }
+        });
       })
     } 
     
