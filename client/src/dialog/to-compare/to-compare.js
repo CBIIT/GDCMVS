@@ -15,22 +15,23 @@ const toCompare = (uid) => {
     let icdo_items = [];
     let item_checker = {};
     let n_c_all = {};
-
     // Collecting all synonyms and ncit in one array for particular value
     items.forEach(item => {
       item.s = removeDuplicateSynonyms(item);
       if (item.i_c === undefined) return;
-      if(item.i_c.c && item.i_c.c !== item.n) return;
-      if(n_c_all[item.n] === undefined){
+      if (item.gdc_d === false) return;
+      if (n_c_all[item.n] === undefined){
         n_c_all[item.n] = { n_syn: [], checker_n_c: [item.n_c] };
+        n_c_all[item.n].all_syn = [];
+        n_c_all[item.n].all_syn = n_c_all[item.n].all_syn.concat(removeDuplicateSynonyms(item));
         n_c_all[item.n].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
       }
       else if(n_c_all[item.n] !== undefined && n_c_all[item.n].checker_n_c.indexOf(item.n_c) === -1){
         n_c_all[item.n].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+        n_c_all[item.n].all_syn = n_c_all[item.n].all_syn.concat(removeDuplicateSynonyms(item));
         n_c_all[item.n].checker_n_c.push(item.n_c);
       }
     });
-
     items.forEach(function (item) {
       item.s = removeDuplicateSynonyms(item);
       if (item.i_c !== undefined) {
@@ -42,8 +43,9 @@ const toCompare = (uid) => {
       if (item_checker[item.n] === undefined) {
         let tmp_item = {
           n: item.n,
-          i_c: item.i_c ? item.i_c : "",
-          n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : []
+          i_c: item.i_c ? item.i_c : undefined,
+          n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : [],
+          all_syn: n_c_all[item.n] ? n_c_all[item.n].all_syn : undefined
         }
         icdo_items.push(tmp_item);
         item_checker[item.n] = item;
