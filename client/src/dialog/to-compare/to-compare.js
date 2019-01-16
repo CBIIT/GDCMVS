@@ -31,6 +31,7 @@ const toCompare = (uid) => {
     });
     
     items.forEach(function (item) {
+      item.s = removeDuplicateSynonyms(item);
       if (item.i_c !== undefined) {
         icdo = true;
       }
@@ -50,7 +51,6 @@ const toCompare = (uid) => {
     if (icdo) {
       items = icdo_items;
     }
-
     // Sort the list alphabetical order.
     items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     let html = $.templates(tmpl).render({ items: items });
