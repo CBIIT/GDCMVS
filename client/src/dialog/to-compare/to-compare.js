@@ -41,7 +41,7 @@ const toCompare = (uid) => {
       if (item_checker[item.n] === undefined) {
         let tmp_item = {
           n: item.n,
-          i_c: item.i_c ? item.i_c : "",
+          i_c: item.i_c ? item.i_c : undefined,
           n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : {n_c: item.n_c, s: removeDuplicateSynonyms(item)}
         }
         icdo_items.push(tmp_item);
