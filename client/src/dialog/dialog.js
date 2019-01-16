@@ -4,7 +4,7 @@ import toCompare from './to-compare/to-compare';
 import compareGDC from './compare-gdc/compare-gdc';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
-import { findWord } from '../shared';
+import { removeDuplicateSynonyms } from '../shared';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getCDEData', (event) => {
@@ -49,7 +49,6 @@ export const dialogEvents = ($root, $body) => {
 
   $body.on('click', '.compare-form__toggle', (event) => {
     event.preventDefault();
-    console.log('test');
 
     const $this = $(event.currentTarget);
     const $target = $this.closest('.compare-form__values').find('.compare-form__synm');
@@ -68,25 +67,7 @@ export const dialogEvents = ($root, $body) => {
     });
   });
 }
-// Remove duplicate synonyms case insensitive
-const removeDuplicateSynonyms = (it) => {
-    if (it.s == undefined) return;
-    let cache = {};
-    let tmp_s = [];
-    it.s.forEach(function (s) {
-      let lc = s.trim().toLowerCase();
-      if (!(lc in cache)) {
-        cache[lc] = [];
-      }
-      cache[lc].push(s);
-    });
-    for (let idx in cache) {
-      //find the term with the first character capitalized
-      let word = findWord(cache[idx]);
-      tmp_s.push(word);
-    }
-    return tmp_s;
-}
+
 const generateCompareResult = (fromV, toV, option) => {
   let v_lowercase = [], v_matched = [], v_synonyms = {};
   if (option.sensitive) {
