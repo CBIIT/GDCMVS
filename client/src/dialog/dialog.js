@@ -4,6 +4,7 @@ import toCompare from './to-compare/to-compare';
 import compareGDC from './compare-gdc/compare-gdc';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
+import { findWord } from '../shared';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getCDEData', (event) => {
@@ -67,20 +68,43 @@ export const dialogEvents = ($root, $body) => {
     });
   });
 }
-
+// Remove duplicate synonyms case insensitive
+const removeDuplicateSynonyms = (it) => {
+    if (it.s == undefined) return;
+    let cache = {};
+    let tmp_s = [];
+    it.s.forEach(function (s) {
+      let lc = s.trim().toLowerCase();
+      if (!(lc in cache)) {
+        cache[lc] = [];
+      }
+      cache[lc].push(s);
+    });
+    for (let idx in cache) {
+      //find the term with the first character capitalized
+      let word = findWord(cache[idx]);
+      tmp_s.push(word);
+    }
+    return tmp_s;
+}
 const generateCompareResult = (fromV, toV, option) => {
-  let v_lowercase = [], v_matched = [];
+  let v_lowercase = [], v_matched = [], v_synonyms = {};
   if (option.sensitive) {
     toV.forEach(function (v) {
-      v_lowercase.push(v.trim());
+      v_lowercase.push(v.n.trim());
+      if(v_synonyms[v.n.trim()] === undefined && v.s.length > 0){
+        v_synonyms[v.n.trim()] = removeDuplicateSynonyms(v);
+      }
     });
   }
   else {
     toV.forEach(function (v) {
-      v_lowercase.push(v.trim().toLowerCase());
+      v_lowercase.push(v.n.trim().toLowerCase());
+      if(v_synonyms[v.n.trim().toLowerCase()] === undefined && v.s.length > 0){
+        v_synonyms[v.n.trim().toLowerCase()] = removeDuplicateSynonyms(v);
+      }
     });
   }
-
   let table = '<div class="table__thead row">'
     + '<div class="table__th col-xs-6">User Defined Values</div>'
     + '<div class="table__th col-xs-6">Matched GDC Values</div>'
@@ -98,13 +122,13 @@ const generateCompareResult = (fromV, toV, option) => {
     if( option.sensitive){
       idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
-        text.push(toV[idx]);
+        text.push(toV[idx].n);
         v_matched.push(idx);
       }
     } else{
       v_lowercase.forEach((v_tmp, index) => {
         if(v_tmp.indexOf(tmp.toLowerCase()) !== -1){
-          text.push(toV[index]);
+          text.push(toV[index].n);
           v_matched.push(index);
         }
       })
@@ -133,7 +157,7 @@ const generateCompareResult = (fromV, toV, option) => {
     }
     table += '<div class="table__row row ' + (option.unmatched ? 'table__row--undisplay' : '') + '">'
       + '<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
-      + '<div class="table__td table__td--slim col-xs-6">' + toV[i] + '</div>'
+      + '<div class="table__td table__td--slim col-xs-6">' + toV[i].n + '</div>'
       + '</div>';
   }
   table += '</div></div>'
