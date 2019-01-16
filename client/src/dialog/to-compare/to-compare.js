@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset } from '../../shared';
+import { getHeaderOffset, findWord } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -23,6 +23,26 @@ const toCompare = (uid) => {
       }
       if (item_checker[item.n] === undefined) icdo_items.push(item);
       item_checker[item.n] = item;
+    });
+
+    //new synonyms list without duplicates
+    items.forEach(function (it) {
+      if (it.s == undefined) return;
+      let cache = {};
+      let tmp_s = [];
+      it.s.forEach(function (s) {
+        let lc = s.trim().toLowerCase();
+        if (!(lc in cache)) {
+          cache[lc] = [];
+        }
+        cache[lc].push(s);
+      });
+      for (let idx in cache) {
+        //find the term with the first character capitalized
+        let word = findWord(cache[idx]);
+        tmp_s.push(word);
+      }
+      it.s_r = tmp_s;
     });
 
     if (icdo) {
