@@ -4,6 +4,7 @@ import toCompare from './to-compare/to-compare';
 import compareGDC from './compare-gdc/compare-gdc';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
+import { findWord } from '../shared';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getCDEData', (event) => {
@@ -46,20 +47,43 @@ export const dialogEvents = ($root, $body) => {
     getNCITDetails(data.uid);
   });
 }
-
+// Remove duplicate synonyms case insensitive
+const removeDuplicateSynonyms = (it) => {
+    if (it.s == undefined) return;
+    let cache = {};
+    let tmp_s = [];
+    it.s.forEach(function (s) {
+      let lc = s.trim().toLowerCase();
+      if (!(lc in cache)) {
+        cache[lc] = [];
+      }
+      cache[lc].push(s);
+    });
+    for (let idx in cache) {
+      //find the term with the first character capitalized
+      let word = findWord(cache[idx]);
+      tmp_s.push(word);
+    }
+    return tmp_s;
+}
 const generateCompareResult = (fromV, toV, option) => {
-  let v_lowercase = [], v_matched = [];
+  let v_lowercase = [], v_matched = [], v_synonyms = {};
   if (option.sensitive) {
     toV.forEach(function (v) {
       v_lowercase.push(v.n.trim());
+      if(v_synonyms[v.n.trim()] === undefined && v.s.length > 0){
+        v_synonyms[v.n.trim()] = removeDuplicateSynonyms(v);
+      }
     });
   }
   else {
     toV.forEach(function (v) {
       v_lowercase.push(v.n.trim().toLowerCase());
+      if(v_synonyms[v.n.trim().toLowerCase()] === undefined && v.s.length > 0){
+        v_synonyms[v.n.trim().toLowerCase()] = removeDuplicateSynonyms(v);
+      }
     });
   }
-
   let table = '<div class="table__thead row">'
     + '<div class="table__th col-xs-6">User Defined Values</div>'
     + '<div class="table__th col-xs-6">Matched GDC Values</div>'
