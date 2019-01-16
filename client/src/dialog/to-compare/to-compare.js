@@ -18,6 +18,7 @@ const toCompare = (uid) => {
 
     // Collecting all synonyms and ncit in one array for particular value
     items.forEach(item => {
+      item.s = removeDuplicateSynonyms(item);
       if (item.i_c === undefined) return;
       if(item.i_c.c && item.i_c.c !== item.n) return;
       if(n_c_all[item.n] === undefined){
@@ -29,7 +30,7 @@ const toCompare = (uid) => {
         n_c_all[item.n].checker_n_c.push(item.n_c);
       }
     });
-    
+
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         icdo = true;
@@ -41,7 +42,7 @@ const toCompare = (uid) => {
         let tmp_item = {
           n: item.n,
           i_c: item.i_c ? item.i_c : "",
-          n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : {n_c: item.n_c, s: removeDuplicateSynonyms(item)}
+          n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : []
         }
         icdo_items.push(tmp_item);
         item_checker[item.n] = item;
