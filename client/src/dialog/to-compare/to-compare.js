@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, findWord } from '../../shared';
+import { getHeaderOffset, removeDuplicateSynonyms } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -14,6 +14,22 @@ const toCompare = (uid) => {
     let icdo = false;
     let icdo_items = [];
     let item_checker = {};
+    let n_c_all = {};
+
+    // Collecting all synonyms and ncit in one array for particular value
+    items.forEach(item => {
+      if (item.i_c === undefined) return;
+      if(item.i_c.c && item.i_c.c !== item.n) return;
+      if(n_c_all[item.n] === undefined){
+        n_c_all[item.n] = { n_syn: [], checker_n_c: [item.n_c] };
+        n_c_all[item.n].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+      }
+      else if(n_c_all[item.n] !== undefined && n_c_all[item.n].checker_n_c.indexOf(item.n_c) === -1){
+        n_c_all[item.n].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+        n_c_all[item.n].checker_n_c.push(item.n_c);
+      }
+    });
+    
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         icdo = true;
@@ -21,30 +37,16 @@ const toCompare = (uid) => {
       if (item.gdc_d === false) {
         return;
       }
-      if (item_checker[item.n] === undefined) icdo_items.push(item);
-      item_checker[item.n] = item;
-    });
-
-    //new synonyms list without duplicates
-    items.forEach(function (it) {
-      if (it.s == undefined) return;
-      let cache = {};
-      let tmp_s = [];
-      it.s.forEach(function (s) {
-        let lc = s.trim().toLowerCase();
-        if (!(lc in cache)) {
-          cache[lc] = [];
+      if (item_checker[item.n] === undefined) {
+        let tmp_item = {
+          n: item.n,
+          i_c: item.i_c ? item.i_c : "",
+          n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : {n_c: item.n_c, s: removeDuplicateSynonyms(item)}
         }
-        cache[lc].push(s);
-      });
-      for (let idx in cache) {
-        //find the term with the first character capitalized
-        let word = findWord(cache[idx]);
-        tmp_s.push(word);
-      }
-      it.s_r = tmp_s;
+        icdo_items.push(tmp_item);
+        item_checker[item.n] = item;
+    }
     });
-
     if (icdo) {
       items = icdo_items;
     }

@@ -62,6 +62,26 @@ export const htmlChildContent = (tag, tmpl) =>{
   return re.exec(tmpl)[1];
 }
 
+// Remove duplicate synonyms case insensitive
+ export const removeDuplicateSynonyms = (it) => {
+    if (it.s == undefined) return;
+    let cache = {};
+    let tmp_s = [];
+    it.s.forEach(function (s) {
+      let lc = s.trim().toLowerCase();
+      if (!(lc in cache)) {
+        cache[lc] = [];
+      }
+      cache[lc].push(s);
+    });
+    for (let idx in cache) {
+      //find the term with the first character capitalized
+      let word = findWord(cache[idx]);
+      tmp_s.push(word);
+    }
+    return tmp_s;
+}
+
 export const findWord = (words) => {
   let word = "";
   if (words.length == 1) {
