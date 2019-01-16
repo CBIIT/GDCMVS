@@ -83,11 +83,7 @@ const toCompare = (uid) => {
 
         $('#cp_result').css("display", "none");
         $('#compare').bind('click', function () {
-          let gv = [];
-          items.forEach(function (item) {
-            gv.push(item.n);
-          });
-          compare(gv);
+          compare(items);
         });
         $('#cancelCompare').bind('click', function () {
           $("#compare_dialog").dialog('close');
