@@ -10,7 +10,7 @@
       <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values">
       {{for items}}
         <div class="compare-form__values">
-          {{if s.length !== 0 }}
+          {{if n_syn !== undefined && n_syn.length !== 0}}
           <div>
             <div class="compare-form__value">{{:n}}</div>
             <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
@@ -18,8 +18,23 @@
             </a>
           </div>
           <div class="compare-form__synm" style="display: none;">
-            {{for s}}{{:}}</br>{{/for}}
+            {{for n_syn}}
+            <div class="compare-form__n_syn">
+              <div class="compare-form__n_c">{{:n_c}}</div>
+              <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
+            </div>
+            {{/for}}
           </div>
+          {{else s !== undefined && s.length !== 0}}
+          <div>
+              <div class="compare-form__value">{{:n}}</div>
+              <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+                <i class="fa fa-plus"></i>
+              </a>
+            </div>
+            <div class="compare-form__synm" style="display: none;">
+              {{for s}}{{:}}</br>{{/for}}
+            </div>
           {{else}}
           <div>
             <div class="compare-form__value">{{:n}}</div>

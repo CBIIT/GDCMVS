@@ -162,7 +162,15 @@
 }
 
 .compare-form__synm {
-  padding: 0.5em 1.5em;
+  padding: 0.5em 1.5em 0;
+}
+
+.compare-form__n_syn {
+  padding-bottom: 0.5em;
+}
+
+.compare-form__s {
+  padding-left: 1em;
 }
 
 .compare-form__bottom {
