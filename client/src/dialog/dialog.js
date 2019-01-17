@@ -174,7 +174,7 @@ const generateCompareResult = (fromV, toV, option) => {
           + '<div class="compare-form__synm" style="display: none;">'
             if (tmp_text.n_syn.length !== 0) {
               tmp_text.n_syn.forEach(function(syn){
-                if (syn.s !== 0) {
+                if (syn.s.length !== 0) {
                   table +='<div class="row table__td">'
                   + '<div class="col-xs-2">' + syn.n_c + '</div>'
                   + '<div class="col-xs-10">'
@@ -239,7 +239,7 @@ const generateCompareResult = (fromV, toV, option) => {
         + '<div class="compare-form__synm" style="display: none;">'
           if (toV[i].n_syn.length !== 0) {
             toV[i].n_syn.forEach(function(syn){
-              if (syn.s !== 0) {
+              if (syn.s.length !== 0) {
                 table +='<div class="row table__td">'
                 + '<div class="col-xs-2">' + syn.n_c + '</div>'
                 + '<div class="col-xs-10">'
