@@ -14,24 +14,22 @@ const toCompare = (uid) => {
     let icdo = false;
     let icdo_items = [];
     let item_checker = {};
-    let n_c_all = {};
-    // Collecting all synonyms and ncit in one array for particular value
+    let all_icdo3_syn = {};
+
+    // Collecting all synonyms and ncit in one array for particular ICDO3 code
     items.forEach(item => {
-      item.s = removeDuplicateSynonyms(item);
-      if (item.i_c === undefined) return;
-      if (item.gdc_d === false) return;
-      if (n_c_all[item.n] === undefined){
-        n_c_all[item.n] = { n_syn: [], checker_n_c: [item.n_c] };
-        n_c_all[item.n].all_syn = [];
-        n_c_all[item.n].all_syn = n_c_all[item.n].all_syn.concat(removeDuplicateSynonyms(item));
-        n_c_all[item.n].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
-      }
-      else if(n_c_all[item.n] !== undefined && n_c_all[item.n].checker_n_c.indexOf(item.n_c) === -1){
-        n_c_all[item.n].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
-        n_c_all[item.n].all_syn = n_c_all[item.n].all_syn.concat(removeDuplicateSynonyms(item));
-        n_c_all[item.n].checker_n_c.push(item.n_c);
+      if(item.i_c === undefined) return;
+      if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
+        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
+        all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+        all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+      }else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
+        all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+        all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+        all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
       }
     });
+   
     items.forEach(function (item) {
       item.s = removeDuplicateSynonyms(item);
       if (item.i_c !== undefined) {
@@ -44,8 +42,8 @@ const toCompare = (uid) => {
         let tmp_item = {
           n: item.n,
           i_c: item.i_c ? item.i_c : undefined,
-          n_syn: n_c_all[item.n] ? n_c_all[item.n].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : [],
-          all_syn: n_c_all[item.n] ? n_c_all[item.n].all_syn : undefined
+          n_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : [],
+          all_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].all_syn : undefined
         }
         icdo_items.push(tmp_item);
         item_checker[item.n] = item;

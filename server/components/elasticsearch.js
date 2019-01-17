@@ -591,6 +591,35 @@ const bulkIndex = next => {
 			}
 		}
 	});
+	let all_icdo3_syn = {};
+    // Collecting all synonyms and ncit in one array for particular ICDO3 code
+    allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		result.enum.forEach(item => {
+			if(item.i_c === undefined) return;
+			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
+				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
+				all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+				all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
+				all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+				all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+			}
+		});
+	});
+	allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		result.enum.forEach(item => {
+			if(item.i_c === undefined) return;
+			if(all_icdo3_syn[item.i_c.c]){
+				item.all_syn = [];
+				item.all_n_c = [];
+				item.all_syn = all_icdo3_syn[item.i_c.c].all_syn;
+				item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c;
+			}
+		});
+	});
 	allProperties.forEach(ap => {
 		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
 			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
@@ -636,7 +665,69 @@ const bulkIndex = next => {
 	});
 }
 exports.bulkIndex = bulkIndex;
-
+const removeDuplicateSynonyms = (it) => {
+    if (it.s == undefined) return;
+    let cache = {};
+    let tmp_s = [];
+    it.s.forEach(function (s) {
+      let lc = s.trim().toLowerCase();
+      if (!(lc in cache)) {
+        cache[lc] = [];
+      }
+      cache[lc].push(s);
+    });
+    for (let idx in cache) {
+      //find the term with the first character capitalized
+      let word = findWord(cache[idx]);
+      tmp_s.push(word);
+    }
+    return tmp_s;
+}
+const findWord = (words) => {
+	let word = "";
+	if (words.length == 1) {
+	  return words[0];
+	}
+	words.forEach(function (w) {
+	  if (word !== "") {
+		return;
+	  }
+	  let idx_space = w.indexOf(" ");
+	  let idx_comma = w.indexOf(",");
+	  if (idx_space == -1 && idx_comma == -1) {
+		if (/^[A-Z][a-z0-9]{0,}$/.test(w)) {
+		  word = w;
+		}
+	  }
+	  else if (idx_space !== -1 && idx_comma == -1) {
+		if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
+		  word = w;
+		}
+	  }
+	  else if (idx_space == -1 && idx_comma !== -1) {
+		if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
+		  word = w;
+		}
+	  }
+	  else {
+		if (idx_comma > idx_space) {
+		  if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
+			word = w;
+		  }
+		}
+		else {
+		  if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
+			word = w;
+		  }
+		}
+	  }
+  
+	});
+	if (word == "") {
+	  word = words[0];
+	}
+	return word;
+  };
 const query = (index, dsl, highlight, next) => {
 	var body = {
 		size: 1000,
