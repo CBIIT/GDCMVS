@@ -91,7 +91,6 @@ const GetCaretPosition = (ctrl) => {
 
 export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val().trim();
-  let keyword = keywordCase.toLowerCase();
   let activeTab = getActiveTap();
   let option = getOption(activeTab);
   let booleanKeyword = getBooleanKeyword(keywordCase)
@@ -112,6 +111,7 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   apiSearchAll(keywordCase, option, (keyword, option, items) => {
     if (keywordCase.indexOf(' AND ') !== -1 || keywordCase.indexOf(' OR ') !== -1 || keywordCase.indexOf(' NOT ') !== -1) items = removeExtraHighlighting(keywordCase, items);
     //Save the data in localStorage
+    localStorage.clear();
     localStorage.setItem('keyword', keywordCase);
     localStorage.setItem('option', JSON.stringify(option));
 
