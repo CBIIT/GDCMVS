@@ -174,12 +174,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			query.query_string.fields.push("enum.s.have");
+			query.query_string.fields.push("enum.all_syn.have");
 			query.query_string.fields.push("cde_pv.n.have");
 			query.query_string.fields.push("cde_pv.ss.s.have");
 			query.query_string.fields.push("cde_pv.ss.c");
 
 		}
 		query.query_string.fields.push("enum.n_c");
+		query.query_string.fields.push("enum.all_n_c");
 		query.query_string.fields.push("cde.id");
 		query.query_string.fields.push("enum.n.have");
 		query.query_string.fields.push("enum.i_c.have");
@@ -200,12 +202,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				m.multi_match.fields.push("enum.s");
+				m.multi_match.fields.push("enum.all_syn");
 				m.multi_match.fields.push("cde_pv.n");
 				m.multi_match.fields.push("cde_pv.ss.s");
 				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("enum.all_n_c");
 			m.multi_match.fields.push("cde.id");
 			m.multi_match.fields.push("enum.i_c.c");
 			query.bool.should.push(m);
@@ -225,12 +229,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 				}
 				if (option.syn) {
 					m.multi_match.fields.push("enum.s");
+					m.multi_match.fields.push("enum.all_syn");
 					m.multi_match.fields.push("cde_pv.n");
 					m.multi_match.fields.push("cde_pv.ss.s");
 					m.multi_match.fields.push("cde_pv.ss.c");
 				}
 				m.multi_match.fields.push("enum.n");
 				m.multi_match.fields.push("enum.n_c");
+				m.multi_match.fields.push("enum.all_n_c");
 				m.multi_match.fields.push("cde.id");
 				m.multi_match.fields.push("enum.i_c.c");
 				query.bool.should.push(m);
@@ -253,12 +259,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 					}
 					if (option.syn) {
 						m.multi_match.fields.push("enum.s");
+						m.multi_match.fields.push("enum.all_syn");
 						m.multi_match.fields.push("cde_pv.n");
 						m.multi_match.fields.push("cde_pv.ss.s");
 						m.multi_match.fields.push("cde_pv.ss.c");
 					}
 					m.multi_match.fields.push("enum.n");
 					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("enum.all_n_c");
 					m.multi_match.fields.push("cde.id");
 					m.multi_match.fields.push("enum.i_c.c");
 					query.bool.should.push(m);
@@ -274,12 +282,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 					}
 					if (option.syn) {
 						m.multi_match.fields.push("enum.s");
+						m.multi_match.fields.push("enum.all_syn");
 						m.multi_match.fields.push("cde_pv.n");
 						m.multi_match.fields.push("cde_pv.ss.s");
 						m.multi_match.fields.push("cde_pv.ss.c");
 					}
 					m.multi_match.fields.push("enum.n");
 					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("enum.all_n_c");
 					m.multi_match.fields.push("cde.id");
 					m.multi_match.fields.push("enum.i_c.c");
 					query.bool.must_not.push(m);
@@ -308,6 +318,10 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 				query.bool.should.push(m);
 				m = {};
 				m.match_phrase_prefix = {};
+				m.match_phrase_prefix["enum.all_syn.have"] = keyword;
+				query.bool.should.push(m);
+				m = {};
+				m.match_phrase_prefix = {};
 				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
 				query.bool.should.push(m);
 				m = {};
@@ -322,6 +336,10 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["enum.n_c"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.all_n_c"] = keyword;
 			query.bool.should.push(m);
 			m = {};
 			m.match_phrase_prefix = {};
@@ -348,12 +366,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				m.multi_match.fields.push("enum.s");
+				m.multi_match.fields.push("enum.all_syn");
 				m.multi_match.fields.push("cde_pv.n");
 				m.multi_match.fields.push("cde_pv.ss.s");
 				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("enum.all_n_c");
 			m.multi_match.fields.push("cde.id");
 			m.multi_match.fields.push("enum.i_c.c");
 			query.bool.should.push(m);
@@ -388,6 +408,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				"enum.n_c": {
 					"number_of_fragments": 0
 				},
+				"enum.all_n_c": {
+					"number_of_fragments": 0
+				},
 				"cde.id": {
 					"number_of_fragments": 0
 				}
@@ -399,12 +422,14 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			highlight.highlight_query.query_string.fields.push("enum.s.have");
+			highlight.highlight_query.query_string.fields.push("enum.all_s.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.n.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.ss.s.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.ss.c");
 
 		}
 		highlight.highlight_query.query_string.fields.push("enum.n_c");
+		highlight.highlight_query.query_string.fields.push("enum.all_n_c");
 		highlight.highlight_query.query_string.fields.push("cde.id");
 		highlight.highlight_query.query_string.fields.push("enum.n.have");
 		highlight.highlight_query.query_string.fields.push("enum.i_c.have");
@@ -415,6 +440,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			highlight.fields["enum.s.have"] = {
+				"number_of_fragments": 0
+			};
+			highlight.fields["enum.all_syn.have"] = {
 				"number_of_fragments": 0
 			};
 			highlight.fields["cde_pv.n.have"] = {
@@ -437,6 +465,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				"enum.n": {},
 				"enum.i_c.c": {},
 				"enum.n_c": {},
+				"enum.all_n_c": {},
 				"cde.id": {}
 			}
 		};
@@ -447,6 +476,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			highlight.fields["enum.s"] = {};
+			highlight.fields["enum.all_syn"] = {};
 			highlight.fields["cde_pv.n"] = {};
 			highlight.fields["cde_pv.ss.s"] = {};
 			highlight.fields["cde_pv.ss.c"] = {};
@@ -471,6 +501,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 					"enum.n_c": {
 						"number_of_fragments": 0
 					},
+					"enum.all_n_c": {
+						"number_of_fragments": 0
+					},
 					"cde.id": {
 						"number_of_fragments": 0
 					}
@@ -483,6 +516,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				highlight.fields["enum.s.have"] = {
+					"number_of_fragments": 0
+				};
+				highlight.fields["enum.all_syn.have"] = {
 					"number_of_fragments": 0
 				};
 				highlight.fields["cde_pv.n.have"] = {
@@ -504,6 +540,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 					"enum.n": {},
 					"enum.i_c.c": {},
 					"enum.n_c": {},
+					"enum.all_n_c": {},
 					"cde.id": {}
 				}
 			};
@@ -514,6 +551,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				highlight.fields["enum.s"] = {};
+				highlight.fields["enum.all_syn"] = {};
 				highlight.fields["cde_pv.n"] = {};
 				highlight.fields["cde_pv.ss.s"] = {};
 				highlight.fields["cde_pv.ss.c"] = {};
@@ -599,7 +637,21 @@ const indexing = (req, res) => {
 						},
 						"analyzer": "case_insensitive"
 					},
+					"enum.all_syn": {
+						"type": "text",
+						"fields": {
+							"have": {
+								"type": "text",
+								"analyzer": "my_standard"
+							}
+						},
+						"analyzer": "case_insensitive"
+					},
 					"enum.n_c": {
+						"type": "text",
+						"analyzer": "case_insensitive"
+					},
+					"enum.all_n_c": {
 						"type": "text",
 						"analyzer": "case_insensitive"
 					},
