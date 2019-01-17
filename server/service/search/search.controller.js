@@ -422,7 +422,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			highlight.highlight_query.query_string.fields.push("enum.s.have");
-			highlight.highlight_query.query_string.fields.push("enum.all_s.have");
+			highlight.highlight_query.query_string.fields.push("enum.all_syn.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.n.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.ss.s.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.ss.c");
