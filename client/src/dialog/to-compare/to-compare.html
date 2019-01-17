@@ -33,7 +33,10 @@
               </a>
             </div>
             <div class="compare-form__synm" style="display: none;">
-              {{for s}}{{:}}</br>{{/for}}
+              <div class="compare-form__n_syn">
+                <div class="compare-form__n_c">{{:n_c}}</div>
+                <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
+              </div>
             </div>
           {{else}}
           <div>

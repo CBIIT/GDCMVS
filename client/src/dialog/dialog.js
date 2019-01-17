@@ -48,9 +48,8 @@ export const dialogEvents = ($root, $body) => {
 
   $body.on('click', '.compare-form__toggle', (event) => {
     event.preventDefault();
-
     const $this = $(event.currentTarget);
-    const $target = $this.closest('.compare-form__values').find('.compare-form__synm');
+    const $target = $this.closest('.compare-form__values, .table__gdc-match').find('.compare-form__synm');
     $target.slideToggle(350, () => {
       if ($target.is(":visible")) {
         $this.attr('title', 'collapse');
@@ -92,54 +91,54 @@ const generateCompareResult = (fromV, toV, option) => {
       return;
     }
     let text = [];
-    if( option.sensitive){ // If exact match is checked
+    if (option.sensitive) { // If exact match is checked
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
-        text.push(toV[idx].n);
+        text.push({ n: toV[idx].n });
         checker_n.push(toV[idx].n);
         v_matched.push(idx);
       }
-      toV.forEach((em,i) => {
-        if(em.all_syn){ // If it's a ICDO3 code it will have all_syn
-          if(em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1){
-            text.push(toV[i].n);
+      toV.forEach((em, i) => {
+        if (em.all_syn) { // If it's a ICDO3 code it will have all_syn
+          if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+            text.push({ n: toV[i].n, n_syn: toV[i].n_syn })
             checker_n.push(toV[i].n);
             v_matched.push(i);
           }
         }
-        if(em.s){
-          if(em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1){
-            text.push(toV[i].n);
+        if (em.s) {
+          if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+            text.push({ n: toV[i].n, n_c: toV[i].n_c, s: toV[i].s });
             checker_n.push(toV[i].n);
             v_matched.push(i);
           }
         }
       });
 
-    } else{ // If exact match is not checked
+    } else { // If exact match is not checked
       let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
         let idx = v_tmp.indexOf(tmp.toLowerCase());
-        if(idx >= 0 && checker_n.indexOf(toV[index].n) === -1){
-          text.push(toV[index].n);
+        if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
+          text.push({ n: toV[index].n });
           checker_n.push(toV[index].n);
           v_matched.push(index);
         }
-        toV.forEach((em,i) => {
-          if(em.all_syn){
+        toV.forEach((em, i) => {
+          if (em.all_syn) {
             em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
-              if(syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1){
-                text.push(toV[i].n);
+              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                text.push({ n: toV[i].n, n_syn: toV[i].n_syn });
                 checker_n.push(toV[i].n);
                 v_matched.push(i);
               }
             });
           }
-          if(em.s){
+          if (em.s) {
             em.s.forEach(syn => {
-              if(syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1){
-                text.push(toV[i].n);
+              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                text.push({ n: toV[i].n, n_c: toV[i].n_c, s: toV[i].s });
                 checker_n.push(toV[i].n);
                 v_matched.push(i);
               }
@@ -147,8 +146,10 @@ const generateCompareResult = (fromV, toV, option) => {
           }
         });
       })
-    } 
-    
+    }
+
+    console.log(text);
+
     if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
       table += '<div class="table__row row">'
@@ -159,9 +160,63 @@ const generateCompareResult = (fromV, toV, option) => {
     else {
       table += '<div class="table__row row">'
       text.forEach((tmp_text, index) => {
-        if(index !== 0 ) v = "";
+        if (index !== 0) v = "";
         table += '<div class="table__td table__td--slim col-xs-6">' + v + '</div>'
-        +'<div class="table__td table__td--slim col-xs-6">' + tmp_text + '</div>';
+
+        if (tmp_text.n_syn) {
+          table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
+          + '<div class="row">'
+            + '<div class="col-xs-10">' + tmp_text.n + '</div>'
+            + '<div class="col-xs-2 table__center">'
+            if (tmp_text.n_syn.length !== 0) {
+              table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
+            }
+            table +='</div>'
+          +'</div>'
+          + '<div class="compare-form__synm" style="display: none;">'
+            if (tmp_text.n_syn.length !== 0) {
+              tmp_text.n_syn.forEach(function(syn){
+                if (syn.s !== 0) {
+                  table +='<div class="row table__td">'
+                  + '<div class="col-xs-2">' + syn.n_c + '</div>'
+                  + '<div class="col-xs-10">'
+                    syn.s.forEach(function (s_v) {
+                      table += s_v + '</br>'
+                    })
+                  table +='</div></div>'
+                }
+              });
+            }
+        table +='</div></div>';
+        }
+
+        if (tmp_text.s) {
+          table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
+            + '<div class="row">'
+              + '<div class="col-xs-10">' + tmp_text.n + '</div>'
+              + '<div class="col-xs-2 table__center">'
+              if (tmp_text.s.length !== 0) {
+                table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
+              }
+              table += '</div>'
+            +'</div>'
+            + '<div class="compare-form__synm" style="display: none;">'
+              if (tmp_text.s.length !== 0) {
+                table +='<div class="row table__td">'
+                  + '<div class="col-xs-2">' + tmp_text.n_c + '</div>'
+                  + '<div class="col-xs-10">'
+                    tmp_text.s.forEach(function (s_v) {
+                      table += s_v + '</br>'
+                    })
+                table +='</div></div>'
+              }
+          table +='</div></div>';
+        }
+
+        if (tmp_text.s === undefined && tmp_text.n_syn === undefined) {
+          table +='<div class="table__td table__td--slim col-xs-6">' + tmp_text.n + '</div>'
+        }
+
       });
       table += '</div>'
     }
@@ -172,8 +227,57 @@ const generateCompareResult = (fromV, toV, option) => {
     }
     table += '<div class="table__row row ' + (option.unmatched ? 'table__row--undisplay' : '') + '">'
       + '<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
-      + '<div class="table__td table__td--slim col-xs-6">' + toV[i].n + '</div>'
-      + '</div>';
+
+      if (toV[i].n_syn) {
+        table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
+        + '<div class="row">'
+          + '<div class="col-xs-10">' + toV[i].n + '</div>'
+          + '<div class="col-xs-2 table__center">'
+          if (toV[i].n_syn.length !== 0) {
+            table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
+          }
+          table +='</div>'
+        +'</div>'
+        + '<div class="compare-form__synm" style="display: none;">'
+          if (toV[i].n_syn.length !== 0) {
+            toV[i].n_syn.forEach(function(syn){
+              if (syn.s !== 0) {
+                table +='<div class="row table__td">'
+                + '<div class="col-xs-2">' + syn.n_c + '</div>'
+                + '<div class="col-xs-10">'
+                  syn.s.forEach(function (s_v) {
+                    table += s_v + '</br>'
+                  })
+                table +='</div></div>'
+              }
+            });
+          }
+      table +='</div></div>';
+      }
+
+      if (toV[i].s) {
+        table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
+          + '<div class="row">'
+            + '<div class="col-xs-10">' + toV[i].n + '</div>'
+            + '<div class="col-xs-2 table__center">'
+            if (toV[i].s.length !== 0) {
+              table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
+            }
+            table += '</div>'
+          +'</div>'
+          + '<div class="compare-form__synm" style="display: none;">'
+            if (toV[i].s.length !== 0) {
+              table +='<div class="row table__td">'
+                + '<div class="col-xs-2">' + toV[i].n_c + '</div>'
+                + '<div class="col-xs-10">'
+                toV[i].s.forEach(function (s_v) {
+                    table += s_v + '</br>'
+                  })
+              table +='</div></div>'
+            }
+        table +='</div></div>';
+      }
+      table +='</div>';
   }
   table += '</div></div>'
   return table;
