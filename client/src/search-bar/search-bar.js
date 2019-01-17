@@ -111,10 +111,11 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
 
   apiSearchAll(keywordCase, option, (keyword, option, items) => {
     if (keywordCase.indexOf(' AND ') !== -1 || keywordCase.indexOf(' OR ') !== -1 || keywordCase.indexOf(' NOT ') !== -1) items = removeExtraHighlighting(keywordCase, items);
-    //Save the data in localStorage
+    // Clear the data in localStorage
+    localStorage.clear();
+    // Save the data in localStorage
     localStorage.setItem('keyword', keywordCase);
     localStorage.setItem('option', JSON.stringify(option));
-    localStorage.setItem('items', JSON.stringify(items));
 
     render($root, keywordCase, option, items);
     //close progress bar
@@ -406,8 +407,7 @@ export const removeExternalLinkIcons = () => {
 export const renderLocalStorach = ($keywords, $root, $searchOptionsBox, $gdcLoadingIcon) => {
 
   if (localStorage.hasOwnProperty('keyword') &&
-    localStorage.hasOwnProperty('option') &&
-    localStorage.hasOwnProperty('items')) {
+    localStorage.hasOwnProperty('option')) {
 
     $gdcLoadingIcon.show();
 
@@ -415,7 +415,6 @@ export const renderLocalStorach = ($keywords, $root, $searchOptionsBox, $gdcLoad
 
       let keyword = localStorage.getItem('keyword');
       let option = JSON.parse(localStorage.getItem('option'));
-      let items = JSON.parse(localStorage.getItem('items'));
 
       if (keyword != null || option != null || items != null) {
 
@@ -432,10 +431,11 @@ export const renderLocalStorach = ($keywords, $root, $searchOptionsBox, $gdcLoad
         }
 
         $searchOptionsBox.show();
-
-        render($root, keyword, option, items);
-        //close progress bar
-        $gdcLoadingIcon.fadeOut('fast');
+        apiSearchAll(keyword, option, (keyword, option, items) => {
+          render($root, keyword, option, items);
+          //close progress bar
+          $gdcLoadingIcon.fadeOut('fast');
+        });
       }
 
     }, 100);
