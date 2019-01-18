@@ -359,7 +359,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
     }
 
     if (text.length === 0) {
-      csv += '--,"'+ v + '"\n'
+      csv += '"' + v + ',--\n'
     } else {
       text.forEach((tmp_text, index) => {
         if (index !== 0) v = "";
