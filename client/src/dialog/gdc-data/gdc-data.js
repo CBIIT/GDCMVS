@@ -78,7 +78,7 @@ const gdcData = (prop, tgt, keyword) => {
     items = new_items;
 
     //open loading animation
-    if (items.length > 1000 ) {
+    if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
     }
 
@@ -150,7 +150,7 @@ const gdcData = (prop, tgt, keyword) => {
             $("#gdc_data").dialog('close');
           });
 
-          if (items.length > 1000 ) {
+          if (items.length > 500 ) {
             $('#gdc-loading-icon').hide()
           }
         },

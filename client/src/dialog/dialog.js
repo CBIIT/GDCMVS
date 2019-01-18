@@ -66,6 +66,10 @@ export const dialogEvents = ($root, $body) => {
   });
 }
 
+const generateCompareAnimation = (fromV, toV, option) => {
+
+}
+
 const generateCompareResult = (fromV, toV, option) => {
   let v_lowercase = [], v_matched = [];
   if (option.sensitive) {
@@ -392,6 +396,13 @@ export const compare = (gv) => {
     return;
   }
   else {
+
+    if (gv.length > 500 ) {
+      $('#gdc-loading-icon').show()
+    }
+
+    setTimeout(() => {
+
     //compare and render
     $('#cp_massage').html("");
     $('#compare_form').css("display", "none");
@@ -421,24 +432,55 @@ export const compare = (gv) => {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
-      let table_new = generateCompareResult(vs, gv, options);
-      $('#cp_result_table').html(table_new);
 
+      if (gv.length > 500 ) {
+        $('#gdc-loading-icon').show()
+      }
+
+      setTimeout(() => {
+        let table_new = generateCompareResult(vs, gv, options);
+        $('#cp_result_table').html(table_new);
+
+        if (gv.length > 500 ) {
+          $('#gdc-loading-icon').hide()
+        }
+      },100);
     });
 
     $('#compare_unmatched').bind('click', function () {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
-      let table_new = generateCompareResult(vs, gv, options);
-      $('#cp_result_table').html(table_new);
+
+      if (gv.length > 500 ) {
+        $('#gdc-loading-icon').show()
+      }
+
+      setTimeout(() => {
+        let table_new = generateCompareResult(vs, gv, options);
+        $('#cp_result_table').html(table_new);
+
+        if (gv.length > 500 ) {
+          $('#gdc-loading-icon').hide()
+        }
+      },100);
     });
 
     $('#downloadCompareCVS').bind('click', function () {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
-      downloadCompareCVS(vs, gv, options);
+      if (gv.length > 500 ) {
+        $('#gdc-loading-icon').show()
+      }
+
+      setTimeout(() => {
+        downloadCompareCVS(vs, gv, options);
+
+        if (gv.length > 500 ) {
+          $('#gdc-loading-icon').hide()
+        }
+      },100);
     });
 
     $('#back2Compare').bind('click', function () {
@@ -448,6 +490,11 @@ export const compare = (gv) => {
       compare_dialog.find('.ui-checkbox').remove();
     });
 
+    if (gv.length > 500 ) {
+      $('#gdc-loading-icon').hide()
+    }
+
+    },100);
   }
 }
 
