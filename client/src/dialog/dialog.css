@@ -15,16 +15,21 @@
   border-radius: 6px;
 }
 
-.dialog__header{
+.dialog__header {
   position: absolute;
   width: 100%;
   top: 0;
   left: 0;
 }
 
-.dialog__titlebar{
+.dialog__titlebar {
   padding: 1em;
   border-bottom: 1px solid #DDDDDD
+}
+
+.titlebar__container-btn {
+  display: inline-block;
+  margin-left: 2em;
 }
 
 .ui-dialog .ui-dialog-title {

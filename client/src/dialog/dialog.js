@@ -148,16 +148,13 @@ const generateCompareResult = (fromV, toV, option) => {
       })
     }
 
-    console.log(text);
-
     if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
       table += '<div class="table__row row">'
         + '<div class="table__td table__td--slim col-xs-6">' + v + '</div>'
         + '<div class="table__td table__td--slim col-xs-6">' + text + '</div>'
         + '</div>';
-    }
-    else {
+    } else {
       table += '<div class="table__row row">'
       text.forEach((tmp_text, index) => {
         if (index !== 0) v = "";
@@ -283,6 +280,112 @@ const generateCompareResult = (fromV, toV, option) => {
   return table;
 }
 
+const downloadCompareCVS = (fromV, toV, option) => {
+
+  let v_lowercase = [], v_matched = [];
+  if (option.sensitive) {
+    toV.forEach(function (v) {
+      v_lowercase.push(v.n.trim());
+    });
+  } else {
+    toV.forEach(function (v) {
+      v_lowercase.push(v.n.trim().toLowerCase());
+    });
+  }
+
+  let csv = 'User Defined Values,Matched GDC Values\n';
+
+  fromV.forEach(function (v) {
+    let tmp = $.trim(v);
+    if (tmp === '') {
+      return;
+    }
+    let text = [];
+    if (option.sensitive) { // If exact match is checked
+      let checker_n = [];
+      let idx = v_lowercase.indexOf(tmp);
+      if (idx >= 0) {
+        text.push(toV[idx].n);
+        checker_n.push(toV[idx].n);
+        v_matched.push(idx);
+      }
+      toV.forEach((em, i) => {
+        if (em.all_syn) { // If it's a ICDO3 code it will have all_syn
+          if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+            text.push(toV[i].n)
+            checker_n.push(toV[i].n);
+            v_matched.push(i);
+          }
+        }
+        if (em.s) {
+          if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+            text.push(toV[i].n);
+            checker_n.push(toV[i].n);
+            v_matched.push(i);
+          }
+        }
+      });
+
+    } else { // If exact match is not checked
+      let checker_n = [];
+      v_lowercase.forEach((v_tmp, index) => {
+        let idx = v_tmp.indexOf(tmp.toLowerCase());
+        if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
+          text.push(toV[index].n);
+          checker_n.push(toV[index].n);
+          v_matched.push(index);
+        }
+        toV.forEach((em, i) => {
+          if (em.all_syn) {
+            em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
+              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                text.push(toV[i].n);
+                checker_n.push(toV[i].n);
+                v_matched.push(i);
+              }
+            });
+          }
+          if (em.s) {
+            em.s.forEach(syn => {
+              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                text.push(toV[i].n);
+                checker_n.push(toV[i].n);
+                v_matched.push(i);
+              }
+            });
+          }
+        });
+      });
+    }
+
+    if (text.length === 0) {
+      csv += '--,"'+ v + '"\n'
+    } else {
+      text.forEach((tmp_text, index) => {
+        if (index !== 0) v = "";
+        csv +='"' + v + '","' + tmp_text + '"\n'
+      });
+    }
+  });
+
+  for (var i = 0; i < toV.length; i++) {
+    if (v_matched.indexOf(i) >= 0) {
+      continue;
+    }
+    if(option.unmatched){
+      continue;
+    }
+
+    csv += '--,"'+ toV[i].n + '"\n'
+  }
+
+  let hiddenElement = document.createElement('a');
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  hiddenElement.target = '_blank';
+  hiddenElement.download = 'Compare_Values_GDC.csv';
+  hiddenElement.click();
+}
+
 export const compare = (gv) => {
   if ($('#cp_input').val().trim() === '') {
     $('#cp_massage').html("Please type in user defined values.");
@@ -297,7 +400,8 @@ export const compare = (gv) => {
     let compare_dialog = $('#compare_dialog').parent().find('.ui-dialog-titlebar');
 
     let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact Match</label>'
-      + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>';
+      + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>'
+      +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button">Download</button></div>';
 
     compare_dialog.append(titleComponent);
 
@@ -321,14 +425,22 @@ export const compare = (gv) => {
       $('#cp_result_table').html(table_new);
 
     });
+
     $('#compare_unmatched').bind('click', function () {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
       let table_new = generateCompareResult(vs, gv, options);
       $('#cp_result_table').html(table_new);
-
     });
+
+    $('#downloadCompareCVS').bind('click', function () {
+      let options = {};
+      options.sensitive = $("#compare_filter").prop('checked');
+      options.unmatched = $("#compare_unmatched").prop('checked');
+      downloadCompareCVS(vs, gv, options);
+    });
+
     $('#back2Compare').bind('click', function () {
       $('#compare_result').html("");
       $('#compare_result').css("display", "none");
