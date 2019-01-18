@@ -29,7 +29,7 @@ const toCompare = (uid) => {
         all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
       }
     });
-   
+
     items.forEach(function (item) {
       item.s = removeDuplicateSynonyms(item);
       if (item.i_c !== undefined) {
@@ -66,10 +66,10 @@ const toCompare = (uid) => {
         at: "center top",
         of: $('#docs-container')
       },
-      width: 750,
+      width: 860,
       height: 630,
-      minWidth: 750,
-      maxWidth: 900,
+      minWidth: 850,
+      maxWidth: 950,
       minHeight: 542,
       maxHeight: 800,
       title: "Compare Your Values with GDC Values ",
