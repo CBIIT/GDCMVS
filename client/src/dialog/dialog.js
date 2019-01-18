@@ -95,7 +95,7 @@ const generateCompareResult = (fromV, toV, option) => {
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
-        text.push({ n: toV[idx].n });
+        text.push({ n: toV[idx].n, n_syn: toV[idx].n_syn ? toV[idx].n_syn : undefined });
         checker_n.push(toV[idx].n);
         v_matched.push(idx);
       }
@@ -121,7 +121,7 @@ const generateCompareResult = (fromV, toV, option) => {
       v_lowercase.forEach((v_tmp, index) => {
         let idx = v_tmp.indexOf(tmp.toLowerCase());
         if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
-          text.push({ n: toV[index].n });
+          text.push({ n: toV[index].n, n_syn: toV[index].n_syn ? toV[index].n_syn : undefined });
           checker_n.push(toV[index].n);
           v_matched.push(index);
         }
@@ -173,7 +173,7 @@ const generateCompareResult = (fromV, toV, option) => {
           + '<div class="compare-form__synm" style="display: none;">'
             if (tmp_text.n_syn.length !== 0) {
               tmp_text.n_syn.forEach(function(syn){
-                if (syn.s !== 0) {
+                if (syn.s.length !== 0) {
                   table +='<div class="row table__td">'
                   + '<div class="col-xs-2">' + syn.n_c + '</div>'
                   + '<div class="col-xs-10">'
@@ -238,7 +238,7 @@ const generateCompareResult = (fromV, toV, option) => {
         + '<div class="compare-form__synm" style="display: none;">'
           if (toV[i].n_syn.length !== 0) {
             toV[i].n_syn.forEach(function(syn){
-              if (syn.s !== 0) {
+              if (syn.s.length !== 0) {
                 table +='<div class="row table__td">'
                 + '<div class="col-xs-2">' + syn.n_c + '</div>'
                 + '<div class="col-xs-10">'
