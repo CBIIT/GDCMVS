@@ -128,7 +128,7 @@ const GDCTerms = (uid, tgts) => {
     items = new_items;
 
     //open loading animation
-    if (items.length > 1000 ) {
+    if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
     }
 
@@ -203,8 +203,9 @@ const GDCTerms = (uid, tgts) => {
                 invariant[0].innerHTML = rp;
               });
           });
+
           //remove loading animation
-          if (items.length > 1000 ) {
+          if (items.length > 500 ) {
             $('#gdc-loading-icon').hide()
           }
         },

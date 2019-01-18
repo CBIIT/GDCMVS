@@ -52,6 +52,12 @@ const toCompare = (uid) => {
     if (icdo) {
       items = icdo_items;
     }
+
+    //open loading animation
+    if (items.length > 500 ) {
+      $('#gdc-loading-icon').show()
+    }
+
     // Sort the list alphabetical order.
     items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     let html = $.templates(tmpl).render({ items: items });
@@ -59,45 +65,53 @@ const toCompare = (uid) => {
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 : window.innerHeight * 0.2;
     //display result in a table
     $(document.body).append(html);
-    $("#compare_dialog").dialog({
-      modal: false,
-      position: {
-        my: "center top+" + tp,
-        at: "center top",
-        of: $('#docs-container')
-      },
-      width: 860,
-      height: 630,
-      minWidth: 850,
-      maxWidth: 950,
-      minHeight: 542,
-      maxHeight: 800,
-      title: "Compare Your Values with GDC Values ",
-      open: function () {
 
-        var target = $(this).parent();
-        target.find('.ui-dialog-titlebar').css('padding', '15px');
-        target.find('.ui-dialog-titlebar-close').html('');
-        if ((target.offset().top - windowEl.scrollTop()) <
-          getHeaderOffset()) {
-          target.css('top', (windowEl.scrollTop() +
-            getHeaderOffset() + 20) + 'px');
+    setTimeout(() => {
+      $("#compare_dialog").dialog({
+        modal: false,
+        position: {
+          my: "center top+" + tp,
+          at: "center top",
+          of: $('#docs-container')
+        },
+        width: 860,
+        height: 630,
+        minWidth: 850,
+        maxWidth: 950,
+        minHeight: 542,
+        maxHeight: 800,
+        title: "Compare Your Values with GDC Values ",
+        open: function () {
+
+          var target = $(this).parent();
+          target.find('.ui-dialog-titlebar').css('padding', '15px');
+          target.find('.ui-dialog-titlebar-close').html('');
+          if ((target.offset().top - windowEl.scrollTop()) <
+            getHeaderOffset()) {
+            target.css('top', (windowEl.scrollTop() +
+              getHeaderOffset() + 20) + 'px');
+          }
+
+          $('#cp_result').css("display", "none");
+          $('#compare').bind('click', function () {
+            compare(items);
+          });
+          $('#cancelCompare').bind('click', function () {
+            $("#compare_dialog").dialog('close');
+          });
+
+          //remove loading animation
+          if (items.length > 500) {
+            $('#gdc-loading-icon').hide()
+          }
+        },
+        close: function () {
+          $(this).remove();
         }
-
-        $('#cp_result').css("display", "none");
-        $('#compare').bind('click', function () {
-          compare(items);
-        });
-        $('#cancelCompare').bind('click', function () {
-          $("#compare_dialog").dialog('close');
-        });
-      },
-      close: function () {
-        $(this).remove();
-      }
-    }).parent().draggable({
-      containment: '#docs-container'
-    });
+      }).parent().draggable({
+        containment: '#docs-container'
+      });
+    }, 100);
   });
 }
 
