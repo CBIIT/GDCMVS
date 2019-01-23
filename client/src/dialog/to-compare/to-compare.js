@@ -74,9 +74,9 @@ const toCompare = (uid) => {
           at: "center top",
           of: $('#docs-container')
         },
-        width: 860,
+        width: 885,
         height: 630,
-        minWidth: 850,
+        minWidth: 860,
         maxWidth: 950,
         minHeight: 542,
         maxHeight: 800,
