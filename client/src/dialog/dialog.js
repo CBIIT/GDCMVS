@@ -101,14 +101,14 @@ const generateCompareResult = (fromV, toV, option) => {
       }
       if(option.synonyms === true){
         toV.forEach((em, i) => {
-          if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
+          if (em.all_syn) { // If it's a ICDO3 code it will have all_syn
             if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
               text.push(toV[i])
               checker_n.push(toV[i].n);
               v_matched.push(i);
             }
           }
-          if (em.s && option.synonyms === true) {
+          if (em.s) {
             if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
               text.push(toV[i]);
               checker_n.push(toV[i].n);
@@ -350,7 +350,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
                 }
               });
             }
-            if (em.s && option.synonyms === true) {
+            if (em.s) {
               em.s.forEach(syn => {
                 if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i].n);
