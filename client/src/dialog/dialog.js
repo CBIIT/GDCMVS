@@ -95,7 +95,7 @@ const generateCompareResult = (fromV, toV, option) => {
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
-        text.push({ n: toV[idx].n, n_syn: toV[idx].n_syn ? toV[idx].n_syn : undefined });
+        text.push(toV[idx]);
         checker_n.push(toV[idx].n);
         v_matched.push(idx);
       }
@@ -121,7 +121,7 @@ const generateCompareResult = (fromV, toV, option) => {
       v_lowercase.forEach((v_tmp, index) => {
         let idx = v_tmp.indexOf(tmp.toLowerCase());
         if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
-          text.push({ n: toV[index].n, n_syn: toV[index].n_syn ? toV[index].n_syn : undefined });
+          text.push(toV[index]);
           checker_n.push(toV[index].n);
           v_matched.push(index);
         }
@@ -359,7 +359,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
     }
 
     if (text.length === 0) {
-      csv += '"' + v + ',--\n'
+      csv += '"' + v + '","--' + '"\n'
     } else {
       text.forEach((tmp_text, index) => {
         if (index !== 0) v = "";
@@ -407,8 +407,8 @@ export const compare = (gv) => {
     let compare_dialog = $('#compare_dialog').parent().find('.ui-dialog-titlebar');
 
     let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact Match</label>'
+    + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
       + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>'
-      + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
       +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button></div>';
 
     compare_dialog.append(titleComponent);
