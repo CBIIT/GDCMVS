@@ -66,10 +66,6 @@ export const dialogEvents = ($root, $body) => {
   });
 }
 
-const generateCompareAnimation = (fromV, toV, option) => {
-
-}
-
 const generateCompareResult = (fromV, toV, option) => {
   let v_lowercase = [], v_matched = [];
   if (option.sensitive) {
@@ -104,14 +100,14 @@ const generateCompareResult = (fromV, toV, option) => {
         v_matched.push(idx);
       }
       toV.forEach((em, i) => {
-        if (em.all_syn) { // If it's a ICDO3 code it will have all_syn
+        if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
           if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
             text.push({ n: toV[i].n, n_syn: toV[i].n_syn })
             checker_n.push(toV[i].n);
             v_matched.push(i);
           }
         }
-        if (em.s) {
+        if (em.s && option.synonyms === true) {
           if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
             text.push({ n: toV[i].n, n_c: toV[i].n_c, s: toV[i].s });
             checker_n.push(toV[i].n);
@@ -130,7 +126,7 @@ const generateCompareResult = (fromV, toV, option) => {
           v_matched.push(index);
         }
         toV.forEach((em, i) => {
-          if (em.all_syn) {
+          if (em.all_syn && option.synonyms === true) {
             em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
               if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                 text.push({ n: toV[i].n, n_syn: toV[i].n_syn });
@@ -139,7 +135,7 @@ const generateCompareResult = (fromV, toV, option) => {
               }
             });
           }
-          if (em.s) {
+          if (em.s && option.synonyms === true) {
             em.s.forEach(syn => {
               if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                 text.push({ n: toV[i].n, n_c: toV[i].n_c, s: toV[i].s });
@@ -314,14 +310,14 @@ const downloadCompareCVS = (fromV, toV, option) => {
         v_matched.push(idx);
       }
       toV.forEach((em, i) => {
-        if (em.all_syn) { // If it's a ICDO3 code it will have all_syn
+        if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
           if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
             text.push(toV[i].n)
             checker_n.push(toV[i].n);
             v_matched.push(i);
           }
         }
-        if (em.s) {
+        if (em.s && option.synonyms === true) {
           if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
             text.push(toV[i].n);
             checker_n.push(toV[i].n);
@@ -340,7 +336,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
           v_matched.push(index);
         }
         toV.forEach((em, i) => {
-          if (em.all_syn) {
+          if (em.all_syn && option.synonyms === true) {
             em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
               if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                 text.push(toV[i].n);
@@ -349,7 +345,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
               }
             });
           }
-          if (em.s) {
+          if (em.s && option.synonyms === true) {
             em.s.forEach(syn => {
               if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                 text.push(toV[i].n);
@@ -363,7 +359,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
     }
 
     if (text.length === 0) {
-      csv += '"' + v + '","--' + '"\n'
+      csv += '"' + v + ',--\n'
     } else {
       text.forEach((tmp_text, index) => {
         if (index !== 0) v = "";
@@ -412,7 +408,8 @@ export const compare = (gv) => {
 
     let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact Match</label>'
       + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>'
-      +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button">Download</button></div>';
+      + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
+      +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button></div>';
 
     compare_dialog.append(titleComponent);
 
@@ -422,6 +419,7 @@ export const compare = (gv) => {
     let opt = {};
     opt.sensitive = false;
     opt.unmatched = false;
+    opt.synonyms = false;
     let table = generateCompareResult(vs, gv, opt);
     let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>'
       + '<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare-form__button">Back</button></div>';
@@ -432,6 +430,7 @@ export const compare = (gv) => {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
+      options.synonyms = $("#compare_synonyms").prop('checked');
 
       if (gv.length > 500 ) {
         $('#gdc-loading-icon').show()
@@ -451,6 +450,27 @@ export const compare = (gv) => {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
+      options.synonyms = $("#compare_synonyms").prop('checked');
+
+      if (gv.length > 500 ) {
+        $('#gdc-loading-icon').show()
+      }
+
+      setTimeout(() => {
+        let table_new = generateCompareResult(vs, gv, options);
+        $('#cp_result_table').html(table_new);
+
+        if (gv.length > 500 ) {
+          $('#gdc-loading-icon').hide()
+        }
+      },100);
+    });
+
+    $('#compare_synonyms').bind('click', function () {
+      let options = {};
+      options.sensitive = $("#compare_filter").prop('checked');
+      options.unmatched = $("#compare_unmatched").prop('checked');
+      options.synonyms = $("#compare_synonyms").prop('checked');
 
       if (gv.length > 500 ) {
         $('#gdc-loading-icon').show()
@@ -470,6 +490,8 @@ export const compare = (gv) => {
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
+      options.synonyms = $("#compare_synonyms").prop('checked');
+
       if (gv.length > 500 ) {
         $('#gdc-loading-icon').show()
       }
