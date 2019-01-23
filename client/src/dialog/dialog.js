@@ -102,14 +102,14 @@ const generateCompareResult = (fromV, toV, option) => {
       toV.forEach((em, i) => {
         if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
           if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-            text.push({ n: toV[i].n, n_syn: toV[i].n_syn })
+            text.push(toV[i])
             checker_n.push(toV[i].n);
             v_matched.push(i);
           }
         }
         if (em.s && option.synonyms === true) {
           if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-            text.push({ n: toV[i].n, n_c: toV[i].n_c, s: toV[i].s });
+            text.push(toV[i]);
             checker_n.push(toV[i].n);
             v_matched.push(i);
           }
@@ -129,7 +129,7 @@ const generateCompareResult = (fromV, toV, option) => {
           if (em.all_syn && option.synonyms === true) {
             em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
               if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-                text.push({ n: toV[i].n, n_syn: toV[i].n_syn });
+                text.push(toV[i]);
                 checker_n.push(toV[i].n);
                 v_matched.push(i);
               }
@@ -138,7 +138,7 @@ const generateCompareResult = (fromV, toV, option) => {
           if (em.s && option.synonyms === true) {
             em.s.forEach(syn => {
               if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-                text.push({ n: toV[i].n, n_c: toV[i].n_c, s: toV[i].s });
+                text.push(toV[i]);
                 checker_n.push(toV[i].n);
                 v_matched.push(i);
               }
