@@ -99,23 +99,24 @@ const generateCompareResult = (fromV, toV, option) => {
         checker_n.push(toV[idx].n);
         v_matched.push(idx);
       }
-      toV.forEach((em, i) => {
-        if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
-          if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-            text.push(toV[i])
-            checker_n.push(toV[i].n);
-            v_matched.push(i);
+      if(option.synonyms === true){
+        toV.forEach((em, i) => {
+          if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
+            if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+              text.push(toV[i])
+              checker_n.push(toV[i].n);
+              v_matched.push(i);
+            }
           }
-        }
-        if (em.s && option.synonyms === true) {
-          if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-            text.push(toV[i]);
-            checker_n.push(toV[i].n);
-            v_matched.push(i);
+          if (em.s && option.synonyms === true) {
+            if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+              text.push(toV[i]);
+              checker_n.push(toV[i].n);
+              v_matched.push(i);
+            }
           }
-        }
-      });
-
+        });
+      }
     } else { // If exact match is not checked
       let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
@@ -125,29 +126,31 @@ const generateCompareResult = (fromV, toV, option) => {
           checker_n.push(toV[index].n);
           v_matched.push(index);
         }
-        toV.forEach((em, i) => {
-          if (em.all_syn && option.synonyms === true) {
-            em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
-              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-                text.push(toV[i]);
-                checker_n.push(toV[i].n);
-                v_matched.push(i);
-              }
-            });
-          }
-          if (em.s && option.synonyms === true) {
-            em.s.forEach(syn => {
-              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-                text.push(toV[i]);
-                checker_n.push(toV[i].n);
-                v_matched.push(i);
-              }
-            });
-          }
-        });
+        if(option.synonyms === true){
+          toV.forEach((em, i) => {
+            if (em.all_syn) {
+              em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
+                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                  text.push(toV[i]);
+                  checker_n.push(toV[i].n);
+                  v_matched.push(i);
+                }
+              });
+            }
+            if (em.s) {
+              em.s.forEach(syn => {
+                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                  text.push(toV[i]);
+                  checker_n.push(toV[i].n);
+                  v_matched.push(i);
+                }
+              });
+            }
+          });
+        }
       })
     }
-
+    if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
       table += '<div class="table__row row">'
@@ -309,23 +312,24 @@ const downloadCompareCVS = (fromV, toV, option) => {
         checker_n.push(toV[idx].n);
         v_matched.push(idx);
       }
-      toV.forEach((em, i) => {
-        if (em.all_syn && option.synonyms === true) { // If it's a ICDO3 code it will have all_syn
-          if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-            text.push(toV[i].n)
-            checker_n.push(toV[i].n);
-            v_matched.push(i);
+      if(option.synonyms === true){
+        toV.forEach((em, i) => {
+          if (em.all_syn) { // If it's a ICDO3 code it will have all_syn
+            if (em.all_syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+              text.push(toV[i].n)
+              checker_n.push(toV[i].n);
+              v_matched.push(i);
+            }
           }
-        }
-        if (em.s && option.synonyms === true) {
-          if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-            text.push(toV[i].n);
-            checker_n.push(toV[i].n);
-            v_matched.push(i);
+          if (em.s) {
+            if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+              text.push(toV[i].n);
+              checker_n.push(toV[i].n);
+              v_matched.push(i);
+            }
           }
-        }
-      });
-
+        });
+      }
     } else { // If exact match is not checked
       let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
@@ -335,29 +339,31 @@ const downloadCompareCVS = (fromV, toV, option) => {
           checker_n.push(toV[index].n);
           v_matched.push(index);
         }
-        toV.forEach((em, i) => {
-          if (em.all_syn && option.synonyms === true) {
-            em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
-              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-                text.push(toV[i].n);
-                checker_n.push(toV[i].n);
-                v_matched.push(i);
-              }
-            });
-          }
-          if (em.s && option.synonyms === true) {
-            em.s.forEach(syn => {
-              if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-                text.push(toV[i].n);
-                checker_n.push(toV[i].n);
-                v_matched.push(i);
-              }
-            });
-          }
-        });
+        if(option.synonyms === true){
+          toV.forEach((em, i) => {
+            if (em.all_syn) {
+              em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
+                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                  text.push(toV[i].n);
+                  checker_n.push(toV[i].n);
+                  v_matched.push(i);
+                }
+              });
+            }
+            if (em.s && option.synonyms === true) {
+              em.s.forEach(syn => {
+                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                  text.push(toV[i].n);
+                  checker_n.push(toV[i].n);
+                  v_matched.push(i);
+                }
+              });
+            }
+          });
+        }
       });
     }
-
+    if(text.length > 0) text.sort((a, b) => (a.toLowerCase() > b.toLowerCase()) ? 1 : ((b.toLowerCase() > a.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
       csv += '"' + v + '","--' + '"\n'
     } else {
