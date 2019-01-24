@@ -407,7 +407,6 @@ export const compare = (gv) => {
     $('#compare_result').css('display', 'block');
 
     let compare_dialog = $('#compare_dialog');
-
     let titlebar_dialog = compare_dialog.parent().find('.dialog__titlebar');
 
     let titleComponent = '<div id="compare_options" class="titlebar__options"><div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact match</label>'
