@@ -426,8 +426,6 @@ export const compare = (gv) => {
     titlebar_dialog.append(titleComponent);
     titlebar_dialog.after(table_header);
 
-    compare_dialog.prev('.ui-dialog-titlebar').css('padding-top', '7.5em');
-
     let vs = $('#cp_input').val().split(/\n/);
 
     let opt = {};
@@ -524,7 +522,6 @@ export const compare = (gv) => {
       $('#compare_form').css("display", "block");
       titlebar_dialog.find('#compare_options').remove();
       compare_dialog.parent().find('#compare_thead').remove();
-      compare_dialog.prev('.ui-dialog-titlebar').css('padding-top', '3.8em');
 
       $('#compare').show();
       $('#cancelCompare').show();
