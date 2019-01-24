@@ -80,15 +80,15 @@ const toCompare = (uid) => {
           of: $('#docs-container')
         },
         width: 885,
-        height: 575,
+        height: 605,
         minWidth: 860,
         maxWidth: 950,
-        minHeight: 580,
-        maxHeight: 800,
+        minHeight: 605,
+        maxHeight: 700,
         title: "Compare Your Values with GDC Values",
         open: function () {
 
-          $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.8em').html(header);
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
           $(this).after(bottom);
 
           var target = $(this).parent();
