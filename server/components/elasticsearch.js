@@ -598,13 +598,13 @@ const bulkIndex = next => {
 		result.enum.forEach(item => {
 			if(item.i_c === undefined) return;
 			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
-				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-				all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
-				all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
 			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
-				all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
-				all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
-				all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
 			}
 		});
 	});
@@ -615,8 +615,10 @@ const bulkIndex = next => {
 			if(all_icdo3_syn[item.i_c.c]){
 				item.all_syn = [];
 				item.all_n_c = [];
-				item.all_syn = all_icdo3_syn[item.i_c.c].all_syn;
-				item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c;
+				item.n_syn = [];
+				item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
+				item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
+				item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
 			}
 		});
 	});
