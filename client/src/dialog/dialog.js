@@ -78,11 +78,7 @@ const generateCompareResult = (fromV, toV, option) => {
       v_lowercase.push(v.n.trim().toLowerCase());
     });
   }
-  let table = '<div class="table__thead row">'
-    + '<div class="table__th col-xs-6">User Defined Values</div>'
-    + '<div class="table__th col-xs-6">Matched GDC Values</div>'
-    + '</div>'
-    + '<div class="table__body row">'
+  let table = '<div class="table__body row">'
     + '<div class="col-xs-12">';
 
   fromV.forEach(function (v) {
@@ -407,18 +403,31 @@ export const compare = (gv) => {
 
     //compare and render
     $('#cp_massage').html("");
-    $('#compare_form').css("display", "none");
-    $('#compare_result').css("display", "block");
+    $('#compare_form').css('display', 'none');
+    $('#compare_result').css('display', 'block');
 
-    let compare_dialog = $('#compare_dialog').parent().find('.ui-dialog-titlebar');
+    let compare_dialog = $('#compare_dialog');
 
-    let titleComponent = '<div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact match</label>'
-    + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
-      + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label>'
-      +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button></div>';
+    let titlebar_dialog = compare_dialog.parent().find('.dialog__titlebar');
 
-    compare_dialog.append(titleComponent);
+    let titleComponent = '<div id="compare_options" class="titlebar__options"><div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact match</label>'
+      + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
+      + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label></div>'
+      +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button></div></div>';
 
+    let table_header = '<div id="compare_thead" class="table__container"><div class="table__thead row">'
+      + '<div class="table__th col-xs-6">User Defined Values</div>'
+      + '<div class="table__th col-xs-6">Matched GDC Values</div>'
+      + '</div></div>';
+
+    $('#compare').hide();
+    $('#cancelCompare').hide();
+    $('#back2Compare').show();
+
+    titlebar_dialog.append(titleComponent);
+    titlebar_dialog.after(table_header);
+
+    compare_dialog.prev('.ui-dialog-titlebar').css('padding-top', '7.5em');
 
     let vs = $('#cp_input').val().split(/\n/);
 
@@ -427,8 +436,7 @@ export const compare = (gv) => {
     opt.unmatched = false;
     opt.synonyms = false;
     let table = generateCompareResult(vs, gv, opt);
-    let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>'
-      + '<div id="cp_result_bottom" class="compare_result__bottom"><button id="back2Compare" class="btn btn-default compare-form__button">Back</button></div>';
+    let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>';
 
     $('#compare_result').html(html);
 
@@ -515,7 +523,13 @@ export const compare = (gv) => {
       $('#compare_result').html("");
       $('#compare_result').css("display", "none");
       $('#compare_form').css("display", "block");
-      compare_dialog.find('.ui-checkbox').remove();
+      titlebar_dialog.find('#compare_options').remove();
+      compare_dialog.parent().find('#compare_thead').remove();
+      compare_dialog.prev('.ui-dialog-titlebar').css('padding-top', '3.8em');
+
+      $('#compare').show();
+      $('#cancelCompare').show();
+      $('#back2Compare').hide();
     });
 
     if (gv.length > 500 ) {
