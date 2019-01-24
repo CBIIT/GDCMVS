@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, removeDuplicateSynonyms } from '../../shared';
+import { getHeaderOffset, htmlChildContent, removeDuplicateSynonyms } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -15,6 +15,9 @@ const toCompare = (uid) => {
     let icdo_items = [];
     let item_checker = {};
     let all_icdo3_syn = {};
+    let header_template = htmlChildContent('HeaderTemplate', tmpl);
+    let body_template = htmlChildContent('BodyTemplate', tmpl);
+    let bottom_template = htmlChildContent('BottomTemplate', tmpl);
 
     // Collecting all synonyms and ncit in one array for particular ICDO3 code
     items.forEach(item => {
@@ -60,7 +63,9 @@ const toCompare = (uid) => {
 
     // Sort the list alphabetical order.
     items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
-    let html = $.templates(tmpl).render({ items: items });
+    let header = $.templates(header_template).render();
+    let html = $.templates(body_template).render({ items: items });
+    let bottom = $.templates(bottom_template).render();
 
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 : window.innerHeight * 0.2;
     //display result in a table
@@ -75,17 +80,18 @@ const toCompare = (uid) => {
           of: $('#docs-container')
         },
         width: 885,
-        height: 630,
+        height: 575,
         minWidth: 860,
         maxWidth: 950,
-        minHeight: 542,
+        minHeight: 580,
         maxHeight: 800,
-        title: "Compare Your Values with GDC Values ",
+        title: "Compare Your Values with GDC Values",
         open: function () {
 
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.8em').html(header);
+          $(this).after(bottom);
+
           var target = $(this).parent();
-          target.find('.ui-dialog-titlebar').css('padding', '15px');
-          target.find('.ui-dialog-titlebar-close').html('');
           if ((target.offset().top - windowEl.scrollTop()) <
             getHeaderOffset()) {
             target.css('top', (windowEl.scrollTop() +
@@ -96,7 +102,7 @@ const toCompare = (uid) => {
           $('#compare').bind('click', function () {
             compare(items);
           });
-          $('#cancelCompare').bind('click', function () {
+          $('#cancelCompare, #close_to_compare').bind('click', function () {
             $("#compare_dialog").dialog('close');
           });
 
