@@ -105,11 +105,6 @@
   margin: 1em;
 }
 
-
-/* .compare_dialog {
-  margin: 0.3em 1em;
-} */
-
 .compare-form {
   margin: 0.3em 1em;
 }
@@ -138,7 +133,6 @@
 .compare-form__middle {
   width: 2em;
   height: 28.5em;
-  /* margin-right: 2.5em; */
   margin-right: 5%;
   border-right: 1px dashed #bbb;
   display: inline-block;
@@ -222,9 +216,6 @@
   margin-left: 1em;
 }
 
-/* .compare_result {
-  margin-bottom: 1em;
-} */
 
 .compare_result__bottom {
   text-align: center;
