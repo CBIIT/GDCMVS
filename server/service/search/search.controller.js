@@ -641,8 +641,7 @@ const indexing = (req, res) => {
 						"type": "text",
 						"fields": {
 							"have": {
-								"type": "text",
-								"analyzer": "my_standard"
+								"type": "text"
 							}
 						},
 						"analyzer": "case_insensitive"
