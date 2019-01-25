@@ -599,10 +599,10 @@ const bulkIndex = next => {
 			if(item.i_c === undefined) return;
 			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
 				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
 			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
 			}
