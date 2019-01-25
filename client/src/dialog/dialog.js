@@ -68,26 +68,22 @@ export const dialogEvents = ($root, $body) => {
 
 const generateCompareResult = (fromV, toV, option) => {
   let v_lowercase = [], v_matched = [];
-  if (option.sensitive) {
-    toV.forEach(function (v) {
-      v_lowercase.push(v.n.trim());
-    });
-  }
-  else {
-    toV.forEach(function (v) {
-      v_lowercase.push(v.n.trim().toLowerCase());
-    });
-  }
+  toV.forEach(function (v) {
+    v_lowercase.push(v.n.trim().toLowerCase());
+    if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return x.toLowerCase(); });
+    if(v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function(x){ return x.toLowerCase(); });
+  });
+  
   let table = '<div class="table__body row">'
     + '<div class="col-xs-12">';
-
+  
   fromV.forEach(function (v) {
-    let tmp = $.trim(v);
+    let tmp = v.trim().toLowerCase();
     if (tmp === '') {
       return;
     }
     let text = [];
-    if (option.sensitive) { // If exact match is checked
+    if (option.sensitive === false) { // If exact match is checked
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
@@ -116,7 +112,7 @@ const generateCompareResult = (fromV, toV, option) => {
     } else { // If exact match is not checked
       let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
-        let idx = v_tmp.indexOf(tmp.toLowerCase());
+        let idx = v_tmp.indexOf(tmp);
         if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
           text.push(toV[index]);
           checker_n.push(toV[index].n);
@@ -126,7 +122,7 @@ const generateCompareResult = (fromV, toV, option) => {
           toV.forEach((em, i) => {
             if (em.all_syn) {
               em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
-                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                if (syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i]);
                   checker_n.push(toV[i].n);
                   v_matched.push(i);
@@ -135,7 +131,7 @@ const generateCompareResult = (fromV, toV, option) => {
             }
             if (em.s) {
               em.s.forEach(syn => {
-                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                if (syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i]);
                   checker_n.push(toV[i].n);
                   v_matched.push(i);
@@ -282,25 +278,21 @@ const generateCompareResult = (fromV, toV, option) => {
 const downloadCompareCVS = (fromV, toV, option) => {
 
   let v_lowercase = [], v_matched = [];
-  if (option.sensitive) {
-    toV.forEach(function (v) {
-      v_lowercase.push(v.n.trim());
-    });
-  } else {
-    toV.forEach(function (v) {
-      v_lowercase.push(v.n.trim().toLowerCase());
-    });
-  }
+  toV.forEach(function (v) {
+    v_lowercase.push(v.n.trim().toLowerCase());
+    if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return x.toLowerCase(); });
+    if(v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function(x){ return x.toLowerCase(); });
+  });
 
   let csv = 'User Defined Values,Matched GDC Values\n';
 
   fromV.forEach(function (v) {
-    let tmp = $.trim(v);
+    let tmp = v.trim().toLowerCase();
     if (tmp === '') {
       return;
     }
     let text = [];
-    if (option.sensitive) { // If exact match is checked
+    if (option.sensitive === false) { // If exact match is checked
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
@@ -329,7 +321,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
     } else { // If exact match is not checked
       let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
-        let idx = v_tmp.indexOf(tmp.toLowerCase());
+        let idx = v_tmp.indexOf(tmp);
         if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
           text.push(toV[index].n);
           checker_n.push(toV[index].n);
@@ -339,7 +331,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
           toV.forEach((em, i) => {
             if (em.all_syn) {
               em.all_syn.forEach(syn => { // If it's a ICDO3 code it will have all_syn
-                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                if (syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i].n);
                   checker_n.push(toV[i].n);
                   v_matched.push(i);
@@ -348,7 +340,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
             }
             if (em.s) {
               em.s.forEach(syn => {
-                if (syn.toLowerCase().indexOf(tmp.toLowerCase()) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                if (syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i].n);
                   checker_n.push(toV[i].n);
                   v_matched.push(i);
@@ -409,7 +401,7 @@ export const compare = (gv) => {
     let compare_dialog = $('#compare_dialog');
     let titlebar_dialog = compare_dialog.parent().find('.dialog__titlebar');
 
-    let titleComponent = '<div id="compare_options" class="titlebar__options"><div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Exact match</label>'
+    let titleComponent = '<div id="compare_options" class="titlebar__options"><div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Partial match</label>'
       + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
       + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label></div>'
       +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button></div></div>';
