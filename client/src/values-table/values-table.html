@@ -51,13 +51,13 @@
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
             <a href="{{:cdeUrl}}" target="_blank">CDE</a>
-            {{if local && cdeLen}}
+            {{if local && cdeLen}},
               {{if tgts_cde_n !== ""}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
               {{else}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>, -->
               {{/if}}
-              <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}">, Compare with GDC</a>
+              <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}"> Compare with GDC</a>
             {{else cdeLen}},
               {{if tgts_cde_n !== ""}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
