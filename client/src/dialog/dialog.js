@@ -73,10 +73,10 @@ const generateCompareResult = (fromV, toV, option) => {
     if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return x.toLowerCase(); });
     if(v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function(x){ return x.toLowerCase(); });
   });
-  
+
   let table = '<div class="table__body row">'
     + '<div class="col-xs-12">';
-  
+
   fromV.forEach(function (v) {
     let tmp = v.trim().toLowerCase();
     if (tmp === '') {
@@ -398,33 +398,20 @@ export const compare = (gv) => {
     $('#compare_form').css('display', 'none');
     $('#compare_result').css('display', 'block');
 
-    let compare_dialog = $('#compare_dialog');
-    let titlebar_dialog = compare_dialog.parent().find('.dialog__titlebar');
-
-    let titleComponent = '<div id="compare_options" class="titlebar__options"><div class="checkbox ui-checkbox"><label class="checkbox__label checkbox__label--height"><input id="compare_filter" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Partial match</label>'
-      + '<label class="checkbox__label checkbox__label--height"><input id="compare_synonyms" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms</label>'
-      + '<label class="checkbox__label checkbox__label--height"><input id="compare_unmatched" class="checkbox__input" type="checkbox" value=""><span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Hide Unmatched Values</label></div>'
-      +'<div class="titlebar__container-btn"><button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button></div></div>';
-
-    let table_header = '<div id="compare_thead" class="table__container"><div class="table__thead row">'
-      + '<div class="table__th col-xs-6">User Defined Values</div>'
-      + '<div class="table__th col-xs-6">Matched GDC Values</div>'
-      + '</div></div>';
+    $('#compare_download').show();
 
     $('#compare').hide();
     $('#cancelCompare').hide();
     $('#back2Compare').show();
 
-    titlebar_dialog.append(titleComponent);
-    titlebar_dialog.after(table_header);
-
     let vs = $('#cp_input').val().split(/\n/);
 
-    let opt = {};
-    opt.sensitive = false;
-    opt.unmatched = false;
-    opt.synonyms = false;
-    let table = generateCompareResult(vs, gv, opt);
+    let options = {};
+
+    options.sensitive = $("#compare_filter").prop('checked');
+    options.unmatched = $("#compare_unmatched").prop('checked');
+    options.synonyms = $("#compare_synonyms").prop('checked');
+    let table = generateCompareResult(vs, gv, options);
     let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>';
 
     $('#compare_result').html(html);
@@ -512,8 +499,8 @@ export const compare = (gv) => {
       $('#compare_result').html("");
       $('#compare_result').css("display", "none");
       $('#compare_form').css("display", "block");
-      titlebar_dialog.find('#compare_options').remove();
-      compare_dialog.parent().find('#compare_thead').remove();
+
+      $('#compare_download').hide();
 
       $('#compare').show();
       $('#cancelCompare').show();
