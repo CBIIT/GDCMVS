@@ -50,8 +50,8 @@
             
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
-            <a href="{{:cdeUrl}}" target="_blank">CDE,</a>
-            {{if local && cdeLen}}
+            <a href="{{:cdeUrl}}" target="_blank">CDE</a>
+            {{if local && cdeLen}},
               {{if tgts_cde_n !== ""}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
               {{else}}
