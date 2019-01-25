@@ -592,6 +592,27 @@ const bulkIndex = next => {
 		}
 	});
 	let all_icdo3_syn = {};
+	let all_icdo3_enums = {};
+	// Collecting all enums ICDO3 code
+    allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		result.enum.forEach(item => {
+			if(item.i_c === undefined) return;
+			if(item.i_c.c && all_icdo3_enums[item.i_c.c] === undefined && item.n !== item.i_c.c){
+				all_icdo3_enums[item.i_c.c] = { n: item.term_type !== undefined && item.term_type !== "" ? [item.n +" ("+item.term_type+")"] : [item.n], checker_n: [item.n] };
+			}
+			else if(item.i_c.c && all_icdo3_enums[item.i_c.c] !== undefined && item.n !== item.i_c.c && all_icdo3_enums[item.i_c.c].checker_n.indexOf(item.n) === -1){
+				if(item.term_type !== undefined && item.term_type !== ""){
+					if(item.term_type === "PT") all_icdo3_enums[item.i_c.c].n.unshift(item.n +" ("+item.term_type+")");
+					if(item.term_type !== "PT") all_icdo3_enums[item.i_c.c].n.push(item.n +" ("+item.term_type+")");
+				}
+				else {
+					all_icdo3_enums[item.i_c.c].n.push(item.n);
+				} 
+				all_icdo3_enums[item.i_c.c].checker_n.push(item.n);
+			}
+		});
+	});
     // Collecting all synonyms and ncit in one array for particular ICDO3 code
     allProperties.forEach(result => {
 		if(result.enum === undefined) return;
@@ -617,8 +638,16 @@ const bulkIndex = next => {
 				item.all_n_c = [];
 				item.n_syn = [];
 				item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
+				if(all_icdo3_syn[item.i_c.c].n_syn.length){ // If it has mmore than 1 synonyms then remove the primary n_c and s
+					item.s = undefined;
+					item.n_c = undefined;
+				}
 				item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
 				item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
+			}
+			if(all_icdo3_enums[item.i_c.c]){
+				item.ic_enum = [];
+				item.ic_enum = all_icdo3_enums[item.i_c.c].n.length > 0 ? all_icdo3_enums[item.i_c.c].n : undefined;
 			}
 		});
 	});
