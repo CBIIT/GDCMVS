@@ -35,32 +35,34 @@
           <a href="#" class="gdc-details" aria-expanded="false">
             <i class="fa fa-caret-down"></i> detail</a>
           <div class="gdc-links" style="display: none;">
-            {{if local}}
-            <a class="getGDCData" href="#" data-ref="{{:ref}}">See All Values</a></br>
-            <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a></br>
-            {{/if}}
             {{if syn}}
               {{if tgts_enum_n === ""}}
-                <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Terms</a></br>
+                <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a></br>
               {{else}}
-                <a class="getGDCTerms" href="#" data-ref="{{:ref}}" data-targets="{{:tgts_enum_n}}">See All Terms</a></br>
+                <!-- <a class="getGDCTerms" href="#" data-ref="{{:ref}}" data-targets="{{:tgts_enum_n}}">See All Terms</a></br> -->
+                <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a></br>
               {{/if}}
             {{/if}}
+            {{if local}}
+            <!-- <a class="getGDCData" href="#" data-ref="{{:ref}}">See All Values</a> -->
+            <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a></br>
+            {{/if}}
+            
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
-            <a href="{{:cdeUrl}}" target="_blank">CDE</a>
-            {{if local && cdeLen}} ,
+            <a href="{{:cdeUrl}}" target="_blank">CDE,</a>
+            {{if local && cdeLen}}
               {{if tgts_cde_n !== ""}}
-                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>,
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
               {{else}}
-                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>,
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>, -->
               {{/if}}
               <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}"> Compare with GDC</a>
-            {{else cdeLen}} ,
+            {{else cdeLen}},
               {{if tgts_cde_n !== ""}}
-                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>,
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
               {{else}}
-                <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>,
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>, -->
               {{/if}}
             {{else}}{{/if}}
             {{/if}}
