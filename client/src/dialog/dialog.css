@@ -106,11 +106,12 @@
 }
 
 .compare-form {
-  margin: 0.3em 1em;
+  margin: 0.5em 1em;
 }
 
 .compare-form__message {
   text-align: center;
+  height: 2em;
   color: #c74060;
 }
 
@@ -119,42 +120,32 @@
 }
 
 .compare-form__left {
-  width: 45%;
-  height: 100%;
+  width: 46%;
+  height: 30em;
   display: inline-block;
 }
 
 .compare-form__textarea {
-  height: 28.5em;
+  height: 30em;
   width: 98%;
   resize: none;
 }
 
 .compare-form__middle {
-  width: 2em;
-  height: 28.5em;
-  margin-right: 5%;
+  width: 2%;
+  height: 30em;
+  margin-right: 3%;
   border-right: 1px dashed #bbb;
   display: inline-block;
 }
 
 .compare-form__right {
-  width: 45%;
-  height: calc(28.5em - 2px);
+  width: 48%;
+  height: 30em;
   overflow: auto;
   border: 1px solid #A9A9A9;
   display: inline-block;
   padding: 0.2em;
-}
-
-.compare-form__label--left {
-  width: 45%;
-  font-weight: bold;
-}
-
-.compare-form__label--right {
-  margin-left: calc(9% + 1px);
-  font-weight: bold;
 }
 
 .compare-form__value {
