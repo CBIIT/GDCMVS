@@ -638,10 +638,6 @@ const bulkIndex = next => {
 				item.all_n_c = [];
 				item.n_syn = [];
 				item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
-				if(all_icdo3_syn[item.i_c.c].n_syn.length){ // If it has mmore than 1 synonyms then remove the primary n_c and s
-					item.s = undefined;
-					item.n_c = undefined;
-				}
 				item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
 				item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
 			}
