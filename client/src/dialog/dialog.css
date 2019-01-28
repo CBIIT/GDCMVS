@@ -164,11 +164,13 @@
   padding: 0.5em 1.5em 0;
 }
 
-.compare-form__n_syn {
+.compare-form__n_syn,
+.compare-form__i_c  {
   padding-bottom: 0.5em;
 }
 
-.compare-form__s {
+.compare-form__s,
+.compare-form__ic_enum {
   padding-left: 1em;
 }
 

@@ -46,7 +46,8 @@ const toCompare = (uid) => {
           n: item.n,
           i_c: item.i_c ? item.i_c : undefined,
           n_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : [],
-          all_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].all_syn : undefined
+          ic_enum: item.i_c && item.ic_enum ? item.ic_enum : undefined,
+          all_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].all_syn : undefined,
         }
         icdo_items.push(tmp_item);
         item_checker[item.n] = item;
@@ -85,9 +86,6 @@ const toCompare = (uid) => {
         maxWidth: 950,
         minHeight: 580,
         maxHeight: 800,
-        // minHeight: 605,
-        // maxHeight: 700,
-
         title: "Compare Your Values with GDC Values",
         open: function () {
 

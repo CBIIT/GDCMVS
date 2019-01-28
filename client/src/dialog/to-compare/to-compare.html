@@ -50,11 +50,19 @@
               </a>
             </div>
             <div class="compare-form__synm" style="display: none;">
-              {{for n_syn}}
-              <div class="compare-form__n_syn">
-                <div class="compare-form__n_c">{{:n_c}}</div>
-                <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
+              {{if i_c !== undefined}}
+              <div class="compare-form__i_c">
+                <div class="compare-form__ic_c">{{:i_c.c}} (ICD-O-3)</div>
+                <div class="compare-form__ic_enum">{{for ic_enum}}{{:}}</br>{{/for}}</div>
               </div>
+              {{/if}}
+              {{for n_syn}}
+                {{if s.length !== 0 }}
+                <div class="compare-form__n_syn">
+                  <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
+                  <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
+                </div>
+                {{/if}}
               {{/for}}
             </div>
             {{else s !== undefined && s.length !== 0}}
@@ -65,10 +73,12 @@
                 </a>
               </div>
               <div class="compare-form__synm" style="display: none;">
+                {{if s.length !== 0 }}
                 <div class="compare-form__n_syn">
-                  <div class="compare-form__n_c">{{:n_c}}</div>
+                  <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
                   <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
                 </div>
+                {{/if}}
               </div>
             {{else}}
             <div>
