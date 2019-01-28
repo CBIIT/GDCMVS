@@ -142,6 +142,8 @@ const generateCompareResult = (fromV, toV, option) => {
         }
       })
     }
+
+    console.log(text);
     if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
@@ -166,15 +168,24 @@ const generateCompareResult = (fromV, toV, option) => {
             table +='</div>'
           +'</div>'
           + '<div class="compare-form__synm" style="display: none;">'
+            if (tmp_text.i_c !== undefined) {
+              table +='<div class="row table__td">'
+              + '<div class="col-xs-3">' + tmp_text.i_c.c + ' (ICD-O-3)</div>'
+              + '<div class="col-xs-9">'
+              tmp_text.ic_enum.forEach(function (ic_e) {
+                  table += ic_e + '</br>'
+                });
+              table +='</div></div>'
+            }
             if (tmp_text.n_syn.length !== 0) {
               tmp_text.n_syn.forEach(function(syn){
                 if (syn.s.length !== 0) {
                   table +='<div class="row table__td">'
-                  + '<div class="col-xs-2">' + syn.n_c + '</div>'
-                  + '<div class="col-xs-10">'
+                  + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
+                  + '<div class="col-xs-9">'
                     syn.s.forEach(function (s_v) {
                       table += s_v + '</br>'
-                    })
+                    });
                   table +='</div></div>'
                 }
               });
@@ -195,8 +206,8 @@ const generateCompareResult = (fromV, toV, option) => {
             + '<div class="compare-form__synm" style="display: none;">'
               if (tmp_text.s.length !== 0) {
                 table +='<div class="row table__td">'
-                  + '<div class="col-xs-2">' + tmp_text.n_c + '</div>'
-                  + '<div class="col-xs-10">'
+                  + '<div class="col-xs-3">' + tmp_text.n_c + ' (NCIt)</div>'
+                  + '<div class="col-xs-9">'
                     tmp_text.s.forEach(function (s_v) {
                       table += s_v + '</br>'
                     })
@@ -231,12 +242,21 @@ const generateCompareResult = (fromV, toV, option) => {
           table +='</div>'
         +'</div>'
         + '<div class="compare-form__synm" style="display: none;">'
+          if (toV[i].i_c !== undefined) {
+            table +='<div class="row table__td">'
+            + '<div class="col-xs-3">' + toV[i].i_c.c + ' (ICD-O-3)</div>'
+            + '<div class="col-xs-9">'
+            toV[i].ic_enum.forEach(function (ic_e) {
+                table += ic_e + '</br>'
+              });
+            table +='</div></div>'
+          }
           if (toV[i].n_syn.length !== 0) {
             toV[i].n_syn.forEach(function(syn){
               if (syn.s.length !== 0) {
                 table +='<div class="row table__td">'
-                + '<div class="col-xs-2">' + syn.n_c + '</div>'
-                + '<div class="col-xs-10">'
+                + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
+                + '<div class="col-xs-9">'
                   syn.s.forEach(function (s_v) {
                     table += s_v + '</br>'
                   })
@@ -260,8 +280,8 @@ const generateCompareResult = (fromV, toV, option) => {
           + '<div class="compare-form__synm" style="display: none;">'
             if (toV[i].s.length !== 0) {
               table +='<div class="row table__td">'
-                + '<div class="col-xs-2">' + toV[i].n_c + '</div>'
-                + '<div class="col-xs-10">'
+                + '<div class="col-xs-3">' + toV[i].n_c + ' (NCIt)</div>'
+                + '<div class="col-xs-9">'
                 toV[i].s.forEach(function (s_v) {
                     table += s_v + '</br>'
                   })
