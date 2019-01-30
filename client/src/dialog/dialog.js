@@ -430,11 +430,16 @@ const downloadCompareCVS = (fromV, toV, option) => {
     let new_line = true;
     csv +='"--","' + toV[i].n + '",'
         csv += toV[i].i_c !== undefined ? '"' + toV[i].i_c.c + '",': '"",';
+        if(toV[i].ic_enum){
+          toV[i].ic_enum.forEach((icenum, i) => {
+            csv += i === 0 ? '"","' + icenum + '",':'"' + icenum + '",';
+          })
+        }
         if (toV[i].n_syn) {
           if (toV[i].n_syn.length !== 0) {
             toV[i].n_syn.forEach(function(syn, index) {
               if (syn.s.length !== 0) {
-                csv += index === 0 ? '"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
+                csv += index === 0 ? '""\n,,,"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
                 syn.s.forEach(function (s_v) {
                   csv += '"' + s_v + '",';
                 });
