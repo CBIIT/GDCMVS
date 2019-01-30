@@ -497,6 +497,7 @@ export const compare = (gv) => {
     $('#compare_result').html(html);
 
     $('#compare_filter').bind('click', function () {
+      if(!$('#compare_result').is(':visible')) return;
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
@@ -517,6 +518,7 @@ export const compare = (gv) => {
     });
 
     $('#compare_unmatched').bind('click', function () {
+      if(!$('#compare_result').is(':visible')) return;
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
@@ -537,6 +539,7 @@ export const compare = (gv) => {
     });
 
     $('#compare_synonyms').bind('click', function () {
+      if(!$('#compare_result').is(':visible')) return;
       let options = {};
       options.sensitive = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
