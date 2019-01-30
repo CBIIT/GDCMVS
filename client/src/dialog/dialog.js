@@ -405,7 +405,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
         if (tmp_text.s) {
           if (tmp_text.s.length !== 0) {
             csv +='"' + tmp_text.n_c + '",';
-            syn.s.forEach(function (s_v) {
+            tmp_text.s.forEach(function (s_v) {
               csv += '"' + s_v + '",';
             });
             csv += '\n';
@@ -447,7 +447,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
         if (toV[i].s) {
           if (toV[i].s.length !== 0) {
             csv +='"' + toV[i].n_c + '",';
-            syn.s.forEach(function (s_v) {
+            toV[i].s.forEach(function (s_v) {
               csv += '"' + s_v + '",';
             });
             csv += '\n';
