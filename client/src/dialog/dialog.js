@@ -304,7 +304,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
     if(v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function(x){ return x.toLowerCase(); });
   });
 
-  let csv = 'User Defined Values,Matched GDC Values,ICDO3, NCIT,\n';
+  let csv = 'User Defined Values,Matched GDC Values,ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
 
   fromV.forEach(function (v) {
     let tmp = v.trim().toLowerCase();
@@ -381,11 +381,17 @@ const downloadCompareCVS = (fromV, toV, option) => {
         if (index !== 0) v = "";
         csv +='"' + v + '","' + tmp_text.n + '",';
         csv += tmp_text.i_c !== undefined ? '"' + tmp_text.i_c.c + '",': '"",';
+        if(tmp_text.ic_enum){
+          tmp_text.ic_enum.forEach((icenum, i) => {
+            csv += i === 0 ? '"","' + icenum + '",':'"' + icenum + '",';
+          })
+        }
+
         if (tmp_text.n_syn) {
           if (tmp_text.n_syn.length !== 0) {
-            tmp_text.n_syn.forEach(function(syn, index) {
+            tmp_text.n_syn.forEach(function(syn, tmp_index) {
               if (syn.s.length !== 0) {
-                csv += index === 0 ? '"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
+                csv += tmp_index === 0 ? '""\n,,,"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
                 syn.s.forEach(function (s_v) {
                   csv += '"' + s_v + '",';
                 });
@@ -399,7 +405,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
         if (tmp_text.s) {
           if (tmp_text.s.length !== 0) {
             csv +='"' + tmp_text.n_c + '",';
-            syn.s.forEach(function (s_v) {
+            tmp_text.s.forEach(function (s_v) {
               csv += '"' + s_v + '",';
             });
             csv += '\n';
@@ -441,7 +447,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
         if (toV[i].s) {
           if (toV[i].s.length !== 0) {
             csv +='"' + toV[i].n_c + '",';
-            syn.s.forEach(function (s_v) {
+            toV[i].s.forEach(function (s_v) {
               csv += '"' + s_v + '",';
             });
             csv += '\n';
