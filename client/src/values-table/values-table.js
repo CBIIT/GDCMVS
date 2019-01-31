@@ -319,6 +319,9 @@ export const vsRender = (items, keyword, search_option) => {
             if (em.term_type) {
               v.term_type = em.term_type;
             }
+            if(em.tt_official){
+              v.tt_official = em.tt_official;
+            }
             v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
             if (v.n == undefined) {
               v.n = em.n;
@@ -340,6 +343,9 @@ export const vsRender = (items, keyword, search_option) => {
               if (em.term_type) {
                 v.term_type = em.term_type;
               }
+              if(em.tt_official){
+                v.tt_official = em.tt_official;
+              }
               if (v.n == undefined) {
                 v.n = em.n;
                 v.ref = row.ref;
@@ -351,6 +357,9 @@ export const vsRender = (items, keyword, search_option) => {
               v.gdc_d = em.gdc_d;
               if (em.term_type) {
                 v.term_type = em.term_type;
+              }
+              if(em.tt_official){
+                v.tt_official = em.tt_official;
               }
             }
           }
@@ -413,6 +422,9 @@ export const vsRender = (items, keyword, search_option) => {
           let term_type = "";
           if (tt !== "") {
             term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+            if(item.tt_official !== undefined && item.tt_official === "no"){
+              term_type += "*";
+            }
           }
           if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
             if (item_n_clr !== item_i_c) {
@@ -447,6 +459,9 @@ export const vsRender = (items, keyword, search_option) => {
               let term_type = "";
               if (tt !== "") {
                 term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+              }
+              if(em.tt_official !== undefined && em.tt_official === "no"){
+                term_type += "*";
               }
               if (em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")) {
                 if (tt === 'PT') {
