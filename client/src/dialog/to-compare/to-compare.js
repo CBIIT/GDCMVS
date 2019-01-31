@@ -69,10 +69,11 @@ const toCompare = (uid) => {
     let bottom = $.templates(bottom_template).render();
 
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 : window.innerHeight * 0.2;
-    //display result in a table
-    $(document.body).append(html);
 
     setTimeout(() => {
+      //display result in a table
+      $(document.body).append(html);
+
       $("#compare_dialog").dialog({
         modal: false,
         position: {
