@@ -169,6 +169,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				tmp.pvc = v.n_c;
 				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
 				tmp.term_type = v.term_type;
+				tmp.tt_official = v.tt_official !== undefined ? v.tt_official : undefined;
 				entry.syns.push(tmp);
 				enums.push(v.nm);
 			});
@@ -270,6 +271,9 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 					let tmp = {};
 					if (item.term_type) {
 						tmp.term_type = item.term_type;
+					}
+					if(item.tt_official){
+						tmp.tt_official = item.tt_official;
 					}
 					tmp.n = item.pv;
 					if (item.code !== undefined) {
@@ -621,10 +625,10 @@ const bulkIndex = next => {
 			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
 				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
 			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
 			}
 		});

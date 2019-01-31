@@ -57,7 +57,7 @@
               </div>
               {{/if}}
               {{for n_syn}}
-                {{if s.length !== 0 }}
+                {{if s !== undefined && s.length !== 0 }}
                 <div class="compare-form__n_syn">
                   <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
                   <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
