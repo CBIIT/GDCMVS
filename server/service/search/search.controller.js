@@ -1173,6 +1173,16 @@ const parseExcel = (req, res) => {
 							} else {
 								temp_data.icdo3_term = "";
 							}
+							if(row[8]){
+								temp_data.term_type = row[8];
+							} else {
+								temp_data.term_type = "";
+							}
+							if(row[9]){
+								temp_data.tt_official = row[9];
+							} else {
+								temp_data.tt_official = "";
+							}
 						}
 						dataParsed.push(temp_data);
 					}
@@ -1189,7 +1199,9 @@ const parseExcel = (req, res) => {
 						var temp_obj = {
 							nm: dataParsed[dp].icdo3_term,
 							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code
+							n_c: dataParsed[dp].ncit_code,
+							term_type: dataParsed[dp].term_type,
+							tt_official: dataParsed[dp].tt_official
 						};
 						if (!mappingExists(icdo[category_node_property], temp_obj)) {
 							logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
@@ -1202,7 +1214,9 @@ const parseExcel = (req, res) => {
 						var temp_obj = {
 							nm: dataParsed[dp].icdo3_term,
 							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code
+							n_c: dataParsed[dp].ncit_code,
+							term_type: dataParsed[dp].term_type,
+							tt_official: dataParsed[dp].tt_official
 						};
 						icdo[category_node_property].push(temp_obj);
 					}
