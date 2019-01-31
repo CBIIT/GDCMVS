@@ -253,7 +253,7 @@ const generateCompareResult = (fromV, toV, option) => {
           }
           if (toV[i].n_syn.length !== 0) {
             toV[i].n_syn.forEach(function(syn){
-              if (syn.s.length !== 0) {
+              if (syn.s !== undefined && syn.s.length !== 0) {
                 table +='<div class="row table__td">'
                 + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
                 + '<div class="col-xs-9">'
@@ -438,7 +438,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
         if (toV[i].n_syn) {
           if (toV[i].n_syn.length !== 0) {
             toV[i].n_syn.forEach(function(syn, index) {
-              if (syn.s.length !== 0) {
+              if (syn.s !== undefined && syn.s.length !== 0) {
                 csv += index === 0 ? '""\n,,,"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
                 syn.s.forEach(function (s_v) {
                   csv += '"' + s_v + '",';
