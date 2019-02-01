@@ -108,6 +108,74 @@ const generateCompareResult = (fromV, toV, option) => {
             }
           }
         });
+
+        // Show matched synonyms in parenthesis
+        let checker_n_c = {};
+        text.forEach(em => {
+            if(em.n_syn !== undefined && em.s === undefined){
+              em.n_syn.forEach(n_s => {
+                if(n_s.s === undefined) return;
+                n_s.s = n_s.s.map(x => {return x.toLowerCase()});
+                let s_idx = n_s.s.indexOf(tmp);
+                if(s_idx >= 0){
+                  if(checker_n_c[n_s.n_c] === undefined ){
+                    checker_n_c[n_s.n_c] = [];
+                    checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
+                  }
+                  else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(n_s.s[s_idx]) === -1){
+                    checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
+                  }
+                }
+              });
+            }
+            else if(em.s !== undefined && em.n_syn === undefined){
+              em.s = em.s.map(x => { return x.toLowerCase()});
+              let s_idx = em.s.indexOf(tmp);
+              if(s_idx >= 0){
+                if(checker_n_c[em.n_c] === undefined ){
+                  checker_n_c[em.n_c] = [];
+                  checker_n_c[em.n_c].push(em.s[s_idx]);
+                }
+                else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(em.s[s_idx]) === -1){
+                  checker_n_c[em.n_c].push(em.s[s_idx]);
+                }
+              }
+            }
+        });
+        text.forEach(em => {
+          if(em.n_syn !== undefined && em.s === undefined){
+            em.n_syn.forEach(n_s => {
+              if(em.matched_s === undefined && checker_n_c[n_s.n_c] !== undefined){
+                em.matched_s = [];
+                em.chk_n_c = [];
+                em.chk_n_c.push(n_s.n_c);
+                em.matched_s.push({n_c: n_s.n_c, s: checker_n_c[n_s.n_c]});
+              }
+              else if(em.matched_s !== undefined && em.chk_n_c.indexOf(n_s.n_c) === -1 && checker_n_c[n_s.n_c] !== undefined){
+                let tmp_obj = {};
+                tmp_obj.n_c = n_s.n_c;
+                tmp_obj.s = checker_n_c[n_s.n_c];
+                em.matched_s.push(tmp_obj);
+                em.chk_n_c.push(n_s.n_c);
+              }
+            });
+          }
+          else if(em.s !== undefined && em.n_syn === undefined && checker_n_c[em.n_c] !== undefined){
+            if(em.matched_s === undefined){
+              em.matched_s = [];
+              em.chk_n_c = [];
+              em.chk_n_c.push(n_s.n_c);
+              em.matched_s.push({n_c: n_s.n_c, s: checker_n_c[n_s.n_c]});
+            }
+            else if(em.matched_s !== undefined && em.chk_n_c.indexOf(n_s.n_c) === -1 && checker_n_c[em.n_c] !== undefined){
+              let tmp_obj = {};
+              tmp_obj.n_c = n_s.n_c;
+              tmp_obj.s = checker_n_c[n_s.n_c];
+              em.matched_s.push(tmp_obj);
+              em.chk_n_c.push(n_s.n_c);
+            }
+          }
+        });
       }
     } else { // If exact match is not checked
       let checker_n = [];
@@ -139,9 +207,82 @@ const generateCompareResult = (fromV, toV, option) => {
               });
             }
           });
+        // Show matched synonyms in parenthesis
+        let checker_n_c = {};
+        text.forEach(em => {
+            if(em.n_syn !== undefined && em.s === undefined){
+              em.n_syn.forEach(n_s => {
+                if(n_s.s === undefined) return;
+                n_s.s = n_s.s.map(x => {return x.toLowerCase()});
+                n_s.s.forEach(tmp_s => {
+                  let s_idx = tmp_s.indexOf(tmp);
+                  if(s_idx >= 0){
+                    if(checker_n_c[n_s.n_c] === undefined ){
+                      checker_n_c[n_s.n_c] = [];
+                      checker_n_c[n_s.n_c].push(tmp_s);
+                    }
+                    else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(tmp_s) === -1){
+                      checker_n_c[n_s.n_c].push(tmp_s);
+                    }
+                  }
+                });
+              });
+            }
+            else if(em.s !== undefined && em.n_syn === undefined){
+              em.s = em.s.map(x => { return x.toLowerCase()});
+              em.s.forEach(tmp_s => {
+                let s_idx = tmp_s.indexOf(tmp);
+                if(s_idx >= 0){
+                  if(checker_n_c[em.n_c] === undefined ){
+                    checker_n_c[em.n_c] = [];
+                    checker_n_c[em.n_c].push(tmp_s);
+                  }
+                  else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(tmp_s) === -1){
+                    checker_n_c[em.n_c].push(tmp_s);
+                  }
+                }
+              });
+              
+            }
+        });
+          text.forEach(em => {
+            if(em.n_syn !== undefined && em.s === undefined){
+              em.n_syn.forEach(n_s => {
+                if(em.matched_s === undefined && checker_n_c[n_s.n_c] !== undefined){
+                  em.matched_s = [];
+                  em.chk_n_c = [];
+                  em.chk_n_c.push(n_s.n_c);
+                  em.matched_s.push({n_c: n_s.n_c, s: checker_n_c[n_s.n_c]});
+                }
+                else if(em.matched_s !== undefined && em.chk_n_c.indexOf(n_s.n_c) === -1 && checker_n_c[n_s.n_c] !== undefined){
+                  let tmp_obj = {};
+                  tmp_obj.n_c = n_s.n_c;
+                  tmp_obj.s = checker_n_c[n_s.n_c];
+                  em.matched_s.push(tmp_obj);
+                  em.chk_n_c.push(n_s.n_c);
+                }
+              });
+            }
+            else if(em.s !== undefined && em.n_syn === undefined && checker_n_c[em.n_c] !== undefined){
+              if(em.matched_s === undefined){
+                em.matched_s = [];
+                em.chk_n_c = [];
+                em.chk_n_c.push(n_s.n_c);
+                em.matched_s.push({n_c: n_s.n_c, s: checker_n_c[n_s.n_c]});
+              }
+              else if(em.matched_s !== undefined && em.chk_n_c.indexOf(n_s.n_c) === -1 && checker_n_c[em.n_c] !== undefined){
+                let tmp_obj = {};
+                tmp_obj.n_c = n_s.n_c;
+                tmp_obj.s = checker_n_c[n_s.n_c];
+                em.matched_s.push(tmp_obj);
+                em.chk_n_c.push(n_s.n_c);
+              }
+            }
+          });
         }
       })
     }
+    console.log(text);
 
     if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
