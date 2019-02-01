@@ -242,7 +242,7 @@ const generateCompareResult = (fromV, toV, option) => {
                   }
                 }
               });
-              
+
             }
         });
           text.forEach(em => {
@@ -282,7 +282,6 @@ const generateCompareResult = (fromV, toV, option) => {
         }
       })
     }
-    console.log(text);
 
     if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
@@ -300,7 +299,20 @@ const generateCompareResult = (fromV, toV, option) => {
         if (tmp_text.n_syn) {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
           + '<div class="row">'
-            + '<div class="col-xs-10">' + tmp_text.n + '</div>'
+            + '<div class="col-xs-10">' + tmp_text.n
+              +' (';
+                if (tmp_text.matched_s !== undefined && tmp_text.matched_s.length !== 0) {
+                  tmp_text.matched_s.forEach((match, index) => {
+                    table += index !== 0 ? ' ': ''
+                    table += match.n_c;
+                    match.s.forEach((syn) => {
+                      table += index !== 0 ? ', ': ' '
+                      table += syn;
+                    });
+                  });
+                }
+            table +=')'
+            + '</div>'
             + '<div class="col-xs-2 table__center">'
             if (tmp_text.n_syn.length !== 0) {
               table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
@@ -336,7 +348,20 @@ const generateCompareResult = (fromV, toV, option) => {
         if (tmp_text.s) {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
             + '<div class="row">'
-              + '<div class="col-xs-10">' + tmp_text.n + '</div>'
+              + '<div class="col-xs-10">' + tmp_text.n;
+              if (tmp_text.matched_s !== undefined && tmp_text.matched_s.length !== 0) {
+                table +=' ('
+                tmp_text.matched_s.forEach((match, index) => {
+                  table += index !== 0 ? ' ': ''
+                  table += match.n_c;
+                  match.s.forEach((syn, index) => {
+                    table += index !== 0 ? ', ': ' '
+                    table += syn;
+                  });
+                });
+                table +=')'
+              }
+              table +='</div>'
               + '<div class="col-xs-2 table__center">'
               if (tmp_text.s.length !== 0) {
                 table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
