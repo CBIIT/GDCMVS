@@ -283,7 +283,7 @@ const generateCompareResult = (fromV, toV, option) => {
         }
       })
     }
-    
+
     if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
@@ -463,7 +463,7 @@ const generateCompareResult = (fromV, toV, option) => {
 }
 
 const downloadCompareCVS = (fromV, toV, option) => {
-
+  toV = JSON.parse(JSON.stringify(toV));
   let v_lowercase = [], v_matched = [];
   toV.forEach(function (v) {
     v_lowercase.push(v.n.trim().toLowerCase());
