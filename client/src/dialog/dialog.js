@@ -267,15 +267,15 @@ const generateCompareResult = (fromV, toV, option) => {
               if(em.matched_s === undefined){
                 em.matched_s = [];
                 em.chk_n_c = [];
-                em.chk_n_c.push(n_s.n_c);
-                em.matched_s.push({n_c: n_s.n_c, s: checker_n_c[n_s.n_c]});
+                em.chk_n_c.push(em.n_c);
+                em.matched_s.push({n_c: em.n_c, s: checker_n_c[em.n_c]});
               }
-              else if(em.matched_s !== undefined && em.chk_n_c.indexOf(n_s.n_c) === -1 && checker_n_c[em.n_c] !== undefined){
+              else if(em.matched_s !== undefined && em.chk_n_c.indexOf(em.n_c) === -1 && checker_n_c[em.n_c] !== undefined){
                 let tmp_obj = {};
-                tmp_obj.n_c = n_s.n_c;
-                tmp_obj.s = checker_n_c[n_s.n_c];
+                tmp_obj.n_c = em.n_c;
+                tmp_obj.s = checker_n_c[em.n_c];
                 em.matched_s.push(tmp_obj);
-                em.chk_n_c.push(n_s.n_c);
+                em.chk_n_c.push(em.n_c);
               }
             }
           });
