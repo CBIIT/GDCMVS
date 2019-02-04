@@ -160,8 +160,9 @@
   vertical-align: middle;
 }
 
-.compare-form__synm {
-  padding: 0.5em 1.5em 0;
+.compare-form__synm,
+.compare-form__matched {
+  padding: 0.5em 0.5em 0;
 }
 
 .compare-form__n_syn,
