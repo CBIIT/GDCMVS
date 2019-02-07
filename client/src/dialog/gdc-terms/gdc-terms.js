@@ -296,10 +296,10 @@ const templateList = (items, icdo) => {
             ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
           </div>
           <div name="syn_area" class="table__td col-xs-8">
-            ${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+            ${n_syn.s_r !== undefined ? `${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}`:``}
           </div>
           <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">
-            ${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}
+            ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
           </div>
         </div>
         `.trim()).join('')}
@@ -327,10 +327,10 @@ const templateList = (items, icdo) => {
               ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
             </div>
             <div name="syn_area" class="table__td col-xs-8">
-              ${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+              ${n_syn.s_r !== undefined ? `${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}`:``}
             </div>
             <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">
-              ${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}
+              ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
             </div>
           </div>
         `.trim()).join('')}
