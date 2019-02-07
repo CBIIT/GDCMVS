@@ -21,6 +21,7 @@ const GDCTerms = (uid, tgts) => {
     }
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let body_template = htmlChildContent('BodyTemplate', tmpl);
+    let footer_template = htmlChildContent('FooterTemplate', tmpl);
 
     //new synonyms list without duplicates
     items.forEach(function (it) {
@@ -127,6 +128,8 @@ const GDCTerms = (uid, tgts) => {
 
     items = new_items;
 
+    //console.log(templateGDC(items, icdo));
+
     //open loading animation
     if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
@@ -140,20 +143,24 @@ const GDCTerms = (uid, tgts) => {
       icdo: icdo,
       items_length: items.length
     })
-    let html = $.templates({
-      markup: body_template,
-      allowCode: true
-    }).render({
-      targets: targets,
-      icdo: icdo,
-      items: items
-    });
+    // let html = $.templates({
+    //   markup: body_template,
+    //   allowCode: true
+    // }).render({
+    //   targets: targets,
+    //   icdo: icdo,
+    //   items: items
+    // });
+
+    let html = templateGDC();
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? getHeaderOffset() +
       20 : window.innerHeight * 0.2;
 
     setTimeout(() => {
       //display result in a table
       $(document.body).append(html);
+
+
 
 
       let dialog_width = {
@@ -176,15 +183,15 @@ const GDCTerms = (uid, tgts) => {
           of: $('#docs-container')
         },
         width: dialog_width.width,
-        height: 'auto',
+        height: 550,
         minWidth: dialog_width.minWidth,
         maxWidth: dialog_width.maxWidth,
-        minHeight: 300,
+        minHeight: 550,
         maxHeight: 600,
         open: function () {
           //add new custom header
-          $(this).prev('.ui-dialog-titlebar').css('padding-top',
-            '7.5em').html(header);
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
+          $(this).after(footer_template);
           var target = $(this).parent();
           if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
             target.css('top', (windowEl.scrollTop() + getHeaderOffset() +
@@ -203,6 +210,18 @@ const GDCTerms = (uid, tgts) => {
                 invariant[0].innerHTML = rp;
               });
           });
+
+          $('#pagination-container').pagination({
+            dataSource: items,
+            pageSize: 50,
+            showGoInput: true,
+            showGoButton: true,
+            callback: function(data, pagination) {
+                // template method of yourself
+                var html = templateList(data, icdo);
+                $('#gdc-syn-container').html(html);
+            }
+        });
 
           //remove loading animation
           if (items.length > 500 ) {
@@ -238,13 +257,97 @@ const GDCTerms = (uid, tgts) => {
     }, 100);
   });
 }
-function isEmpty(myObject) {
+
+const isEmpty = (myObject) => {
   for (var key in myObject) {
     if (myObject.hasOwnProperty(key)) {
       return false;
     }
   }
   return true;
+}
+
+const templateGDC = () =>  {
+  return `<div id="gdc_terms_data">
+    <div id="gdc-syn-data-list" class="table__container">
+      <div class="table__body row">
+        <div id="gdc-syn-container" class="col-xs-12"></div>
+      </div>
+    </div>
+  </div>`
+}
+
+const templateList = (items, icdo) => {
+  return `
+    ${items.map((item, i) => `
+    <div id="gdc_term_item" class="table__row row gdc-term__item--show">
+    ${icdo ? `
+      <div class="table__td col-xs-2">${item.n}</div>
+      <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
+      <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `${item.i_c.n.map((n) =>`${n}</br>`.trim()).join('')}`:`${item.i_c.n}`}`:``}</div>
+      <div class="col-xs-5">
+      ${item.i_c ? `
+        ${item.i_c.n_syn.map((n_syn) =>`
+        <div class="row">
+          <div class="table__td col-xs-4">
+            ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+          </div>
+          <div name="syn_area" class="table__td col-xs-8">
+            ${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+          </div>
+          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">
+            ${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}
+          </div>
+        </div>
+        `.trim()).join('')}
+      `:`
+        <div class="row">
+          <div class="table__td col-xs-4">
+            ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+          </div>
+          <div name="syn_area" class="table__td col-xs-8">
+            ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+          </div>
+          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">
+            ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
+          </div>
+        </div>
+      `}
+      </div>
+    ` : `
+      <div class="table__td col-xs-5">${item.n}</div>
+      <div class="col-xs-7">
+      ${item.i_c ? `
+        ${item.i_c.n_syn.map((n_syn) =>`
+          <div class="row">
+            <div class="table__td col-xs-4">
+              ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+            </div>
+            <div name="syn_area" class="table__td col-xs-8">
+              ${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+            </div>
+            <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">
+              ${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}
+            </div>
+          </div>
+        `.trim()).join('')}
+      `:`
+        <div class="row">
+          <div class="table__td col-xs-4">
+            ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+          </div>
+          <div name="syn_area" class="table__td col-xs-8">
+            ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+          </div>
+          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">
+            ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
+          </div>
+        </div>
+      `}
+      </div>
+    `}
+    </div>`.trim()).join('')}
+  `
 }
 
 export default GDCTerms;
