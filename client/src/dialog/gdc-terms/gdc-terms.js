@@ -155,16 +155,13 @@ const GDCTerms = (uid, tgts) => {
     //   items: items
     // });
 
-    let html = templateGDC();
+    let html = templateGDC(items, icdo);
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? getHeaderOffset() +
       20 : window.innerHeight * 0.2;
 
     setTimeout(() => {
       //display result in a table
       $(document.body).append(html);
-
-
-
 
       let dialog_width = {
         width: 750,
@@ -194,7 +191,6 @@ const GDCTerms = (uid, tgts) => {
         open: function () {
           //add new custom header
           $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
-          $(this).after(footer_template);
           var target = $(this).parent();
           if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
             target.css('top', (windowEl.scrollTop() + getHeaderOffset() +
@@ -214,17 +210,21 @@ const GDCTerms = (uid, tgts) => {
               });
           });
 
-          $('#pagination-container').pagination({
-            dataSource: items,
-            pageSize: 50,
-            showGoInput: true,
-            showGoButton: true,
-            callback: function(data, pagination) {
-                // template method of yourself
-                var html = templateList(data, icdo);
+          if (items.length > 50 ) {
+
+            $(this).after(footer_template);
+
+            $('#pagination-container').pagination({
+              dataSource: items,
+              pageSize: 50,
+              showGoInput: true,
+              showGoButton: true,
+              callback: function(data, pagination) {
+                let html = templateList(data, icdo);
                 $('#gdc-syn-container').html(html);
-            }
-        });
+              }
+            });
+          }
 
           //remove loading animation
           if (items.length > 500 ) {
@@ -270,11 +270,13 @@ const isEmpty = (myObject) => {
   return true;
 }
 
-const templateGDC = () =>  {
+const templateGDC = (items, icdo) => {
   return `<div id="gdc_terms_data">
     <div id="gdc-syn-data-list" class="table__container">
       <div class="table__body row">
-        <div id="gdc-syn-container" class="col-xs-12"></div>
+        <div id="gdc-syn-container" class="col-xs-12">
+        ${items.length > 50 ? ``: `${templateList(items, icdo)}`}
+        </div>
       </div>
     </div>
   </div>`
