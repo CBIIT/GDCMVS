@@ -22,9 +22,19 @@
   left: 0;
 }
 
+.dialog__footer {
+  text-align: center;
+  padding: 1em;
+  border-top: 1px solid #DDDDDD;
+}
+
 .dialog__titlebar {
   padding: 1em;
   border-bottom: 1px solid #DDDDDD
+}
+
+.dialog__pagination {
+  display: inline-block;
 }
 
 .titlebar__container-btn {
