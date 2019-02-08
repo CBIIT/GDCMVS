@@ -38,8 +38,7 @@
 }
 
 .dialog__input-group {
-  display: flex;
-  width: 265px;
+  width: 280px;
   display: inline-flex;
   margin-left: 30px;
 }
@@ -51,21 +50,11 @@
   padding: 5px 10px;
 }
 
-.dialog__input-btn {
-  background-color: #6A7676;
-  border-color: #6A7676;
+.dialog__input-addon {
   height: 2.1em;
+  padding: 7px 12px;
   font-size: 14px;
-  padding: 3px 12px;
-}
-
-.dialog__input-btn:active:hover,
-.dialog__input-btn:hover,
-.dialog__input-btn:focus,
-.dialog__input-btn:active {
-  background-color: #788787;
-  border-color: #788787;
-  outline: none;
+  display: inline-table;
 }
 
 .titlebar__container-btn {
