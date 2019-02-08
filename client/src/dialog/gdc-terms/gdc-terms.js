@@ -210,46 +210,6 @@ const GDCTerms = (uid, tgts) => {
               });
           });
 
-          // Add Search Filter functionality
-          $("#gdc-values-input").bind('keydown', () => {
-            let keyword = $("#gdc-values-input").val().trim().toLowerCase();
-            if(keyword.length > 3) {
-              let new_item = [];
-              items.forEach(item =>{
-                let idx = item.n.toLowerCase().indexOf(keyword);
-                if(idx > 0){
-                  new_item.push(item); 
-                }
-              });
-              items.forEach(item =>{
-                let idx = item.n.toLowerCase().indexOf(keyword);
-                if(idx === 0 ){
-                  new_item.unshift(item); 
-                }
-              });
-              $(this).after(footer_template);
-              $('#pagination-container').pagination({
-                dataSource: new_item,
-                pageSize: 50,
-                callback: function(data, pagination) {
-                  let html = templateList(data, icdo);
-                  $('#gdc-syn-container').html(html);
-                }
-              });
-            }
-            else{
-              $(this).after(footer_template);
-              $('#pagination-container').pagination({
-                dataSource: items,
-                pageSize: 50,
-                callback: function(data, pagination) {
-                  let html = templateList(data, icdo);
-                  $('#gdc-syn-container').html(html);
-                }
-              });
-            }
-          });
-
           if (items.length > 50 ) {
 
             $(this).after(footer_template);
@@ -263,6 +223,43 @@ const GDCTerms = (uid, tgts) => {
               }
             });
           }
+
+          // Add Search Filter functionality
+          $("#gdc-values-input").bind('keyup', () => {
+            let keyword = $("#gdc-values-input").val().trim().toLowerCase();
+            if(keyword.length >= 3) {
+              let new_item = [];
+              items.forEach(item =>{
+                let idx = item.n.toLowerCase().indexOf(keyword);
+                if(idx !== -1){
+                  if(idx === 0) new_item.unshift(item); 
+                  if(idx !== 0) new_item.push(item); 
+                }
+              });
+              
+              $('#pagination-container').pagination({
+                dataSource: new_item,
+                pageSize: 50,
+                callback: function(data, pagination) {
+                  let html = templateList(data, icdo);
+                  $('#gdc-syn-container').html(html);
+                }
+              });
+            }
+            else{
+              
+              $('#pagination-container').pagination({
+                dataSource: items,
+                pageSize: 50,
+                callback: function(data, pagination) {
+                  let html = templateList(data, icdo);
+                  $('#gdc-syn-container').html(html);
+                }
+              });
+            }
+          });
+
+          
 
           //remove loading animation
           if (items.length > 500 ) {
