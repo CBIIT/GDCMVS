@@ -210,6 +210,42 @@ const GDCTerms = (uid, tgts) => {
               });
           });
 
+          // Add Search Filter functionality
+          $("#gdc-values-input").bind('keydown', () => {
+            let keyword = $("#gdc-values-input").val().trim().toLowerCase();
+            if(keyword.length < 3) return;
+            let new_item = [];
+            items.forEach(item =>{
+              let idx = item.n.toLowerCase().indexOf(keyword);
+              if(idx > 0){
+                new_item.unshift(item); 
+              }
+              else{
+                new_item.push(item);
+              }
+            });
+            items = new_item;
+            new_item = [];
+            items.forEach(item =>{
+              let idx = item.n.toLowerCase().indexOf(keyword);
+              if(idx === 0 ){
+                new_item.unshift(item); 
+              }
+              else{
+                new_item.push(item);
+              }
+            });
+            items = new_item;
+            $('#pagination-container').pagination({
+              dataSource: items,
+              pageSize: 50,
+              callback: function(data, pagination) {
+                let html = templateList(data, icdo);
+                $('#gdc-syn-container').html(html);
+              }
+            });
+          });
+
           if (items.length > 50 ) {
 
             $(this).after(footer_template);
