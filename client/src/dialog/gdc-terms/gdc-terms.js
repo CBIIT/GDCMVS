@@ -219,13 +219,14 @@ const GDCTerms = (uid, tgts) => {
             }
           });
 
-          $("#gdc-values-input").bind('click', (e) => {
+          $('#gdc-values-input').bind('mousedown', (e) => {
             $(event.currentTarget).focus();
+            $('.ui-draggable').draggable('disable');
           });
 
           // Add Search Filter functionality
-          $("#gdc-values-input").bind('keyup', () => {
-            let keyword = $("#gdc-values-input").val().trim().toLowerCase();
+          $('#gdc-values-input').bind('keyup', () => {
+            let keyword = $('#gdc-values-input').val().trim().toLowerCase();
             if(keyword.length >= 3) {
               let new_item = [];
               items.forEach(item =>{
