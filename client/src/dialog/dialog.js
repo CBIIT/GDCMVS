@@ -81,6 +81,7 @@ const generateCompareResult = (fromV, toV, option) => {
     + '<div class="col-xs-12">';
 
   fromV.forEach(function (v) {
+    let reg_key = new RegExp(v, "ig");
     let tmp = v.trim().toLowerCase();
     if (tmp === '') {
       return;
@@ -315,7 +316,7 @@ const generateCompareResult = (fromV, toV, option) => {
               + '<div class="col-xs-3">' + match.n_c + ' (NCIt)</div>'
               + '<div class="col-xs-9">';
               match.s.forEach((syn, index) => {
-                table += syn + '</br>';
+                table += syn.replace(reg_key, "<b>$&</b>") + '</br>';
               });
               table +='</div></div>';
             });
@@ -364,7 +365,7 @@ const generateCompareResult = (fromV, toV, option) => {
                 + '<div class="col-xs-3">' + match.n_c + ' (NCIt)</div>'
                 + '<div class="col-xs-9">';
                 match.s.forEach((syn, index) => {
-                  table += syn + '</br>';
+                  table += syn.replace(reg_key, "<b>$&</b>") + '</br>';
                 });
                 table +='</div></div>';
               });
