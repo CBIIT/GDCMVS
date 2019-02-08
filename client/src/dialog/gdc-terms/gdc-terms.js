@@ -224,6 +224,10 @@ const GDCTerms = (uid, tgts) => {
             $('.ui-draggable').draggable('disable');
           });
 
+          $('.ui-draggable').bind('mousedown', (e) => {
+            $(event.currentTarget).draggable('enable');
+          });
+
           // Add Search Filter functionality
           $('#gdc-values-input').bind('keyup', () => {
             let keyword = $('#gdc-values-input').val().trim().toLowerCase();
