@@ -217,8 +217,6 @@ const GDCTerms = (uid, tgts) => {
             $('#pagination-container').pagination({
               dataSource: items,
               pageSize: 50,
-              showGoInput: true,
-              showGoButton: true,
               callback: function(data, pagination) {
                 let html = templateList(data, icdo);
                 $('#gdc-syn-container').html(html);

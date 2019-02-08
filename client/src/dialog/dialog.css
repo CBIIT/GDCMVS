@@ -37,6 +37,37 @@
   display: inline-block;
 }
 
+.dialog__input-group {
+  display: flex;
+  width: 265px;
+  display: inline-flex;
+  margin-left: 30px;
+}
+
+.dialog__input {
+  height: 2.1em;
+  border: 1px solid #dce4ec;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.dialog__input-btn {
+  background-color: #6A7676;
+  border-color: #6A7676;
+  height: 2.1em;
+  font-size: 14px;
+  padding: 3px 12px;
+}
+
+.dialog__input-btn:active:hover,
+.dialog__input-btn:hover,
+.dialog__input-btn:focus,
+.dialog__input-btn:active {
+  background-color: #788787;
+  border-color: #788787;
+  outline: none;
+}
+
 .titlebar__container-btn {
   display: inline-block;
   margin-left: 1.5em;
