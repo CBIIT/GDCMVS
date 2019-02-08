@@ -397,7 +397,7 @@ const generateCompareResult = (fromV, toV, option) => {
     if (v_matched.indexOf(i) >= 0) {
       continue;
     }
-    table += '<div class="table__row row ' + (option.unmatched ? 'table__row--undisplay' : '') + '">'
+    table += '<div class="table__row row ' + (!option.unmatched ? 'table__row--undisplay' : '') + '">'
       + '<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
 
       if (toV[i].n_syn) {
@@ -593,7 +593,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
     if (v_matched.indexOf(i) >= 0) {
       continue;
     }
-    if(option.unmatched){
+    if(!option.unmatched){
       continue;
     }
 
