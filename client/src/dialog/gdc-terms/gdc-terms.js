@@ -131,8 +131,6 @@ const GDCTerms = (uid, tgts) => {
 
     items = new_items;
 
-    //console.log(templateGDC(items, icdo));
-
     //open loading animation
     if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
@@ -210,19 +208,20 @@ const GDCTerms = (uid, tgts) => {
               });
           });
 
-          if (items.length > 50 ) {
+          $(this).after(footer_template);
 
-            $(this).after(footer_template);
+          $('#pagination-container').pagination({
+            dataSource: items,
+            pageSize: 50,
+            callback: function(data, pagination) {
+              let html = templateList(data, icdo);
+              $('#gdc-syn-container').html(html);
+            }
+          });
 
-            $('#pagination-container').pagination({
-              dataSource: items,
-              pageSize: 50,
-              callback: function(data, pagination) {
-                let html = templateList(data, icdo);
-                $('#gdc-syn-container').html(html);
-              }
-            });
-          }
+          $("#gdc-values-input").bind('click', (e) => {
+            $(event.currentTarget).focus();
+          });
 
           // Add Search Filter functionality
           $("#gdc-values-input").bind('keyup', () => {
@@ -232,11 +231,11 @@ const GDCTerms = (uid, tgts) => {
               items.forEach(item =>{
                 let idx = item.n.toLowerCase().indexOf(keyword);
                 if(idx !== -1){
-                  if(idx === 0) new_item.unshift(item); 
-                  if(idx !== 0) new_item.push(item); 
+                  if(idx === 0) new_item.unshift(item);
+                  if(idx !== 0) new_item.push(item);
                 }
               });
-              
+
               $('#pagination-container').pagination({
                 dataSource: new_item,
                 pageSize: 50,
@@ -245,9 +244,7 @@ const GDCTerms = (uid, tgts) => {
                   $('#gdc-syn-container').html(html);
                 }
               });
-            }
-            else{
-              
+            } else {
               $('#pagination-container').pagination({
                 dataSource: items,
                 pageSize: 50,
@@ -258,8 +255,6 @@ const GDCTerms = (uid, tgts) => {
               });
             }
           });
-
-          
 
           //remove loading animation
           if (items.length > 500 ) {
