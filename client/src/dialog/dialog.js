@@ -82,6 +82,7 @@ const generateCompareResult = (fromV, toV, option) => {
 
   fromV.forEach(function (v) {
     let reg_key = new RegExp(v, "ig");
+    let new_v = v;
     let tmp = v.trim().toLowerCase();
     if (tmp === '') {
       return;
@@ -339,7 +340,16 @@ const generateCompareResult = (fromV, toV, option) => {
                   + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
                   + '<div class="col-xs-9">';
                     syn.s.forEach(function (s_v) {
-                      table += s_v + '</br>';
+                      if(option.synonyms === false && option.sensitive === false) table += s_v + '</br>';
+                      if(option.synonyms === true && option.sensitive === true){
+                        table += s_v.replace(reg_key, "<b>$&</b>") + '</br>';
+                      }
+                      else if(option.synonyms === true && s_v.trim().toLowerCase() === new_v.trim().toLowerCase()){
+                        table += "<b>" +s_v + '</b></br>';
+                      }
+                      else{
+                        table += s_v  + '</br>';
+                      }
                     });
                   table +='</div></div>';
                 }
@@ -377,7 +387,16 @@ const generateCompareResult = (fromV, toV, option) => {
                   + '<div class="col-xs-3">' + tmp_text.n_c + ' (NCIt)</div>'
                   + '<div class="col-xs-9">';
                     tmp_text.s.forEach(function (s_v) {
-                      table += s_v + '</br>';
+                      if(option.synonyms === false && option.sensitive === false) table += s_v + '</br>';
+                      if(option.synonyms === true && option.sensitive === true){
+                        table += s_v.replace(reg_key, "<b>$&</b>") + '</br>';
+                      }
+                      else if(option.synonyms === true && s_v.trim().toLowerCase() === new_v.trim().toLowerCase()){
+                        table += "<b>" +s_v + '</b></br>';
+                      }
+                      else{
+                        table += s_v  + '</br>';
+                      }
                     })
                 table +='</div></div>'
               +'</div>';
