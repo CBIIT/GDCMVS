@@ -236,7 +236,7 @@ const GDCTerms = (uid, tgts) => {
               items.forEach(item =>{
                 let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
                 if(idx !== -1){
-                  item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toString().replace(new RegExp(keyword, "ig"), "<b>$&</b>");
+                  item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
                   if(idx === 0) new_item.unshift(item);
                   if(idx !== 0) new_item.push(item);
                 }
