@@ -258,3 +258,7 @@
 .gdc-term__item--hide {
   display: none;
 }
+
+.paginationjs .paginationjs-pages li.active>a {
+  background: #6A7676;
+}
