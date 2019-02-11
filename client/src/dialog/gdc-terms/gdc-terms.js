@@ -221,10 +221,10 @@ const GDCTerms = (uid, tgts) => {
 
           $('#gdc-values-input').bind('mousedown', (e) => {
             $(event.currentTarget).focus();
-            $('.ui-draggable').draggable('disable');
+            target.draggable('disable');
           });
 
-          $('.ui-draggable').bind('mousedown', (e) => {
+          target.bind('mousedown', (e) => {
             $(event.currentTarget).draggable('enable');
           });
 
