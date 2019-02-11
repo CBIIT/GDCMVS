@@ -94,10 +94,10 @@ const toCompare = (uid) => {
           $(this).after(bottom);
 
           var target = $(this).parent();
-          if ((target.offset().top - windowEl.scrollTop()) <
-            getHeaderOffset()) {
-            target.css('top', (windowEl.scrollTop() +
-              getHeaderOffset() + 20) + 'px');
+          if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
+            target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
+          } else {
+            target.css('top', (target.offset().top - 50) + 'px');
           }
 
           $('#cp_result').css("display", "none");
