@@ -233,7 +233,7 @@ const GDCTerms = (uid, tgts) => {
             let keyword = $('#gdc-values-input').val().trim().toLowerCase();
             if(keyword.length >= 3) {
               let new_item = [];
-              items.forEach(item =>{
+              JSON.parse(JSON.stringify(items)).forEach(item =>{
                 let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
                 if(idx !== -1){
                   item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
