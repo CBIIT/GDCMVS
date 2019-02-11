@@ -191,9 +191,11 @@ const GDCTerms = (uid, tgts) => {
           $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
           var target = $(this).parent();
           if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
-            target.css('top', (windowEl.scrollTop() + getHeaderOffset() +
-              20) + 'px');
+            target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
+          } else {
+            target.css('top', (target.offset().top - 50) + 'px');
           }
+
           $('#close_gdc_terms_data').bind('click', function () {
             $("#gdc_terms_data").dialog('close');
           });
