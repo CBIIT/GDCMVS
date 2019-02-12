@@ -81,9 +81,10 @@ const generateCompareResult = (fromV, toV, option) => {
     + '<div class="col-xs-12">';
 
   fromV.forEach(function (v) {
+    v = v.trim().toLowerCase().replace(/[\ ]+/g, " ");
     let reg_key = new RegExp(v, "ig");
     let new_v = v;
-    let tmp = v.trim().toLowerCase();
+    let tmp = v;
     if (tmp === '') {
       return;
     }
@@ -233,7 +234,7 @@ const generateCompareResult = (fromV, toV, option) => {
         if (tmp_text.n_syn) {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
           + '<div class="row">'
-            + '<div class="col-xs-10">' + tmp_text.n +'</div>'
+            + '<div class="col-xs-10">' + tmp_text.n.replace(reg_key, "<b>$&</b>") +'</div>'
             + '<div class="col-xs-2 table__center">';
             if (tmp_text.n_syn.length !== 0) {
               table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
@@ -291,7 +292,7 @@ const generateCompareResult = (fromV, toV, option) => {
         if (tmp_text.s) {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
             + '<div class="row">'
-              + '<div class="col-xs-10">' + tmp_text.n +'</div>'
+              + '<div class="col-xs-10">' + tmp_text.n.replace(reg_key, "<b>$&</b>") +'</div>'
               + '<div class="col-xs-2 table__center">';
               if (tmp_text.s.length !== 0) {
                 table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
