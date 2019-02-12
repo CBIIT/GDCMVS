@@ -20,7 +20,7 @@ export const onScroll = ($window) => {
 
 export const onResize = ($docsContainer, $parentContainer, $mainContainer) => {
   headerHeight = $('.navbar .container').height();
-  setHeight($docsContainer, $parentContainer);
+  setHeight($docsContainer, $parentContainer, $mainContainer);
   headerOffset = headerHeight;
 }
 
