@@ -413,74 +413,77 @@ const generateCompareResult = (fromV, toV, option) => {
     }
   });
 
-  for (var i = 0; i < toV.length; i++) {
-    if (v_matched.indexOf(i) >= 0) {
-      continue;
-    }
-    table += '<div class="table__row row ' + (!option.unmatched ? 'table__row--undisplay' : '') + '">'
-      + '<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
-
-      if (toV[i].n_syn) {
-        table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
-        + '<div class="row">'
-          + '<div class="col-xs-10">' + toV[i].n + '</div>'
-          + '<div class="col-xs-2 table__center">'
-          if (toV[i].n_syn.length !== 0) {
-            table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
-          }
-          table +='</div>'
-        +'</div>'
-        + '<div class="compare-form__synm" style="display: none;">'
-          if (toV[i].i_c !== undefined) {
-            table +='<div class="row table__td">'
-            + '<div class="col-xs-3">' + toV[i].i_c.c + ' (ICD-O-3)</div>'
-            + '<div class="col-xs-9">'
-            toV[i].ic_enum.forEach(function (ic_e) {
-                table += ic_e + '</br>'
-              });
-            table +='</div></div>'
-          }
-          if (toV[i].n_syn.length !== 0) {
-            toV[i].n_syn.forEach(function(syn){
-              if (syn.s !== undefined && syn.s.length !== 0) {
-                table +='<div class="row table__td">'
-                + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
-                + '<div class="col-xs-9">'
-                  syn.s.forEach(function (s_v) {
-                    table += s_v + '</br>'
-                  })
-                table +='</div></div>'
-              }
-            });
-          }
-      table +='</div></div>';
+  if(option.unmatched === true){
+    for (var i = 0; i < toV.length; i++) {
+      if (v_matched.indexOf(i) >= 0) {
+        continue;
       }
-
-      if (toV[i].s) {
-        table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
+      table += '<div class="table__row row">'
+        + '<div class="table__td table__td--slim col-xs-6"><div style="color:red;">--</div></div>'
+  
+        if (toV[i].n_syn) {
+          table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
           + '<div class="row">'
             + '<div class="col-xs-10">' + toV[i].n + '</div>'
-            + '<div class="col-xs-2 table__center">';
-            if (toV[i].s.length !== 0) {
-              table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
+            + '<div class="col-xs-2 table__center">'
+            if (toV[i].n_syn.length !== 0) {
+              table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
             }
-            table += '</div>'
-          +'</div>';
-          if (toV[i].s.length !== 0) {
-            table +='<div class="compare-form__synm" style="display: none;">'
-              +'<div class="row table__td">'
-                + '<div class="col-xs-3">' + toV[i].n_c + ' (NCIt)</div>'
-                + '<div class="col-xs-9">';
-                toV[i].s.forEach(function (s_v) {
-                    table += s_v + '</br>';
-                  })
+            table +='</div>'
+          +'</div>'
+          + '<div class="compare-form__synm" style="display: none;">'
+            if (toV[i].i_c !== undefined) {
+              table +='<div class="row table__td">'
+              + '<div class="col-xs-3">' + toV[i].i_c.c + ' (ICD-O-3)</div>'
+              + '<div class="col-xs-9">'
+              toV[i].ic_enum.forEach(function (ic_e) {
+                  table += ic_e + '</br>'
+                });
               table +='</div></div>'
+            }
+            if (toV[i].n_syn.length !== 0) {
+              toV[i].n_syn.forEach(function(syn){
+                if (syn.s !== undefined && syn.s.length !== 0) {
+                  table +='<div class="row table__td">'
+                  + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
+                  + '<div class="col-xs-9">'
+                    syn.s.forEach(function (s_v) {
+                      table += s_v + '</br>'
+                    })
+                  table +='</div></div>'
+                }
+              });
+            }
+        table +='</div></div>';
+        }
+  
+        if (toV[i].s) {
+          table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
+            + '<div class="row">'
+              + '<div class="col-xs-10">' + toV[i].n + '</div>'
+              + '<div class="col-xs-2 table__center">';
+              if (toV[i].s.length !== 0) {
+                table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
+              }
+              table += '</div>'
             +'</div>';
-          }
+            if (toV[i].s.length !== 0) {
+              table +='<div class="compare-form__synm" style="display: none;">'
+                +'<div class="row table__td">'
+                  + '<div class="col-xs-3">' + toV[i].n_c + ' (NCIt)</div>'
+                  + '<div class="col-xs-9">';
+                  toV[i].s.forEach(function (s_v) {
+                      table += s_v + '</br>';
+                    })
+                table +='</div></div>'
+              +'</div>';
+            }
+          table +='</div>';
+        }
         table +='</div>';
-      }
-      table +='</div>';
+    }
   }
+  
   table += '</div></div>'
   return table;
 }
