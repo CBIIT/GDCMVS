@@ -47,7 +47,7 @@ const GDCTerms = (uid, tgts) => {
       let tt = item.term_type !== undefined ? item.term_type : "";
       let term_type = "";
       if (tt !== "") {
-        term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+        term_type = '(' + tt + ')';
         if(item.tt_official !== undefined && item.tt_official === "no"){
           term_type += "*";
         }
