@@ -22,6 +22,7 @@ window.onload = () => {
 
     const $docsContainer = $('#docs-container');
     const $parentContainer = $('.parent-container');
+    const $mainContainer = $('.main-container');
     const $gdcLoadingIcon = $('#gdc-loading-icon');
     const $gdcVersionContent = $('#version-content');
 
@@ -66,14 +67,14 @@ window.onload = () => {
       search.booleanOptions(event, $keywords);
     });
 
-    setHeight($docsContainer, $parentContainer);
+    setHeight($docsContainer, $parentContainer, $mainContainer);
 
     $window.scroll(() => {
       onScroll($window);
     });
 
     $window.resize(() => {
-      onResize($docsContainer, $parentContainer);
+      onResize($docsContainer, $parentContainer, $mainContainer);
       dialogsOnResize($window);
     });
 
