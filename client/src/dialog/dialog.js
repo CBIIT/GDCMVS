@@ -113,40 +113,7 @@ const generateCompareResult = (fromV, toV, option) => {
             }
           }
         });
-
-        // Show matched synonyms in parenthesis
-        let checker_n_c = {};
-        text.forEach(em => {
-            if(em.n_syn !== undefined && em.s === undefined){
-              em.n_syn.forEach(n_s => {
-                if(n_s.s === undefined) return;
-                n_s.s = n_s.s.map(x => {return x.toLowerCase()});
-                let s_idx = n_s.s.indexOf(tmp);
-                if(s_idx >= 0){
-                  if(checker_n_c[n_s.n_c] === undefined ){
-                    checker_n_c[n_s.n_c] = [];
-                    checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
-                  }
-                  else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(n_s.s[s_idx]) === -1){
-                    checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
-                  }
-                }
-              });
-            }
-            else if(em.s !== undefined && em.n_syn === undefined){
-              em.s = em.s.map(x => { return x.toLowerCase()});
-              let s_idx = em.s.indexOf(tmp);
-              if(s_idx >= 0){
-                if(checker_n_c[em.n_c] === undefined ){
-                  checker_n_c[em.n_c] = [];
-                  checker_n_c[em.n_c].push(em.s[s_idx]);
-                }
-                else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(em.s[s_idx]) === -1){
-                  checker_n_c[em.n_c].push(em.s[s_idx]);
-                }
-              }
-            }
-        });
+        let checker_n_c = getMatchedSynonyms(text, tmp, option);
         text.forEach(em => {
           if(em.n_syn !== undefined && em.s === undefined){
             em.n_syn.forEach(n_s => {
@@ -212,44 +179,7 @@ const generateCompareResult = (fromV, toV, option) => {
               });
             }
           });
-        // Show matched synonyms in parenthesis
-        let checker_n_c = {};
-        text.forEach(em => {
-            if(em.n_syn !== undefined && em.s === undefined){
-              em.n_syn.forEach(n_s => {
-                if(n_s.s === undefined) return;
-                n_s.s = n_s.s.map(x => {return x.toLowerCase()});
-                n_s.s.forEach(tmp_s => {
-                  let s_idx = tmp_s.indexOf(tmp);
-                  if(s_idx >= 0){
-                    if(checker_n_c[n_s.n_c] === undefined ){
-                      checker_n_c[n_s.n_c] = [];
-                      checker_n_c[n_s.n_c].push(tmp_s);
-                    }
-                    else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(tmp_s) === -1){
-                      checker_n_c[n_s.n_c].push(tmp_s);
-                    }
-                  }
-                });
-              });
-            }
-            else if(em.s !== undefined && em.n_syn === undefined){
-              em.s = em.s.map(x => { return x.toLowerCase()});
-              em.s.forEach(tmp_s => {
-                let s_idx = tmp_s.indexOf(tmp);
-                if(s_idx >= 0){
-                  if(checker_n_c[em.n_c] === undefined ){
-                    checker_n_c[em.n_c] = [];
-                    checker_n_c[em.n_c].push(tmp_s);
-                  }
-                  else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(tmp_s) === -1){
-                    checker_n_c[em.n_c].push(tmp_s);
-                  }
-                }
-              });
-
-            }
-        });
+          let checker_n_c = getMatchedSynonyms(text, tmp, option);
           text.forEach(em => {
             if(em.n_syn !== undefined && em.s === undefined){
               em.n_syn.forEach(n_s => {
@@ -486,6 +416,85 @@ const generateCompareResult = (fromV, toV, option) => {
   
   table += '</div></div>'
   return table;
+}
+
+const getMatchedSynonyms = (text, tmp, option) => {
+  if(option.sensitive === false){
+    let checker_n_c = {};
+    text.forEach(em => {
+      if(em.matched_s) em.matched_s = undefined; // remove matched_s from previous tmp
+      if(em.n_syn !== undefined && em.s === undefined){
+        em.n_syn.forEach(n_s => {
+          if(n_s.s === undefined) return;
+          n_s.s = n_s.s.map(x => {return x.toLowerCase()});
+          let s_idx = n_s.s.indexOf(tmp);
+          if(s_idx >= 0){
+            if(checker_n_c[n_s.n_c] === undefined ){
+              checker_n_c[n_s.n_c] = [];
+              checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
+            }
+            else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(n_s.s[s_idx]) === -1){
+              checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
+            }
+          }
+        });
+      }
+      else if(em.s !== undefined && em.n_syn === undefined){
+        em.s = em.s.map(x => { return x.toLowerCase()});
+        let s_idx = em.s.indexOf(tmp);
+        if(s_idx >= 0){
+          if(checker_n_c[em.n_c] === undefined ){
+            checker_n_c[em.n_c] = [];
+            checker_n_c[em.n_c].push(em.s[s_idx]);
+          }
+          else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(em.s[s_idx]) === -1){
+            checker_n_c[em.n_c].push(em.s[s_idx]);
+          }
+        }
+      }
+    });
+    return checker_n_c;
+  }
+  else{
+    let checker_n_c = {};
+    text.forEach(em => {
+      if(em.matched_s) em.matched_s = undefined; // remove matched_s from previous tmp
+      if(em.n_syn !== undefined && em.s === undefined){
+        em.n_syn.forEach(n_s => {
+          if(n_s.s === undefined) return;
+          n_s.s = n_s.s.map(x => {return x.toLowerCase()});
+          n_s.s.forEach(tmp_s => {
+            let s_idx = tmp_s.indexOf(tmp);
+            if(s_idx >= 0){
+              if(checker_n_c[n_s.n_c] === undefined ){
+                checker_n_c[n_s.n_c] = [];
+                checker_n_c[n_s.n_c].push(tmp_s);
+              }
+              else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(tmp_s) === -1){
+                checker_n_c[n_s.n_c].push(tmp_s);
+              }
+            }
+          });
+        });
+      }
+      else if(em.s !== undefined && em.n_syn === undefined){
+        em.s = em.s.map(x => { return x.toLowerCase()});
+        em.s.forEach(tmp_s => {
+          let s_idx = tmp_s.indexOf(tmp);
+          if(s_idx >= 0){
+            if(checker_n_c[em.n_c] === undefined ){
+              checker_n_c[em.n_c] = [];
+              checker_n_c[em.n_c].push(tmp_s);
+            }
+            else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(tmp_s) === -1){
+              checker_n_c[em.n_c].push(tmp_s);
+            }
+          }
+        });
+      }
+    });
+    return checker_n_c;
+  }
 }
 
 const downloadCompareCVS = (fromV, toV, option) => {
