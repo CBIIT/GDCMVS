@@ -233,7 +233,8 @@ const GDCTerms = (uid, tgts) => {
 
           // Add Search Filter functionality
           $('#gdc-values-input').bind('keyup', () => {
-            let keyword = $('#gdc-values-input').val().trim().toLowerCase();
+            let keyword = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
+            let keywordCase = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ");
             if(keyword.length >= 3) {
               let new_item = [];
               JSON.parse(JSON.stringify(items)).forEach(item =>{
@@ -250,7 +251,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, keyword, invariant);
+                  let html = templateList(data, icdo, keywordCase, invariant);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -260,7 +261,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, keyword, invariant);
+                  let html = templateList(data, icdo, keywordCase, invariant);
                   $('#gdc-syn-container').html(html);
                 }
               });
