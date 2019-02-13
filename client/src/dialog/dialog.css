@@ -57,6 +57,18 @@
   display: inline-table;
 }
 
+.dialog__indicator {
+  min-width: 450px;
+  text-align: center;
+  margin: auto;
+  padding: 2em 0;
+  font-size: 1.2em;
+}
+
+.dialog__indicator-term {
+  color: #2a72a4;
+}
+
 .titlebar__container-btn {
   display: inline-block;
   margin-left: 1.5em;

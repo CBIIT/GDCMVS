@@ -250,7 +250,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, invariant);
+                  let html = templateList(data, icdo, keyword, invariant);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -260,7 +260,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, invariant);
+                  let html = templateList(data, icdo, keyword, invariant);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -323,48 +323,18 @@ const templateGDC = (items, icdo) => {
   </div>`
 }
 
-const templateList = (items, icdo, invariant = false) => {
+const templateList = (items, icdo, keyword = 'default', invariant = false) => {
   return `
-    ${items.map((item, i) => `
-    <div id="gdc_term_item" class="table__row row gdc-term__item--show">
-    ${icdo ? `
-      <div class="table__td col-xs-2">${item.n}</div>
-      <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
-      <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `${item.i_c.n.map((n) =>`${n}</br>`.trim()).join('')}`:`${item.i_c.n}`}`:``}</div>
-      <div class="col-xs-5">
-      ${item.i_c ? `
-        ${item.i_c.n_syn.map((n_syn) =>`
-        <div class="row">
-          <div class="table__td col-xs-4">
-            ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
-          </div>
-          <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-            ${n_syn.s_r !== undefined ? `${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}`:``}
-          </div>
-          <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-            ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
-          </div>
-        </div>
-        `.trim()).join('')}
-      `:`
-        <div class="row">
-          <div class="table__td col-xs-4">
-            ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
-          </div>
-          <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-            ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
-          </div>
-          <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-            ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
-          </div>
-        </div>
-      `}
-      </div>
-    ` : `
-      <div class="table__td col-xs-5">${item.n}</div>
-      <div class="col-xs-7">
-      ${item.i_c ? `
-        ${item.i_c.n_syn.map((n_syn) =>`
+    ${items.length !== 0 ? `
+      ${items.map((item, i) => `
+      <div id="gdc_term_item" class="table__row row gdc-term__item--show">
+      ${icdo ? `
+        <div class="table__td col-xs-2">${item.n}</div>
+        <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
+        <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `${item.i_c.n.map((n) =>`${n}</br>`.trim()).join('')}`:`${item.i_c.n}`}`:``}</div>
+        <div class="col-xs-5">
+        ${item.i_c ? `
+          ${item.i_c.n_syn.map((n_syn) =>`
           <div class="row">
             <div class="table__td col-xs-4">
               ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
@@ -376,23 +346,60 @@ const templateList = (items, icdo, invariant = false) => {
               ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
             </div>
           </div>
-        `.trim()).join('')}
-      `:`
-        <div class="row">
-          <div class="table__td col-xs-4">
-            ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+          `.trim()).join('')}
+        `:`
+          <div class="row">
+            <div class="table__td col-xs-4">
+              ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+            </div>
+            <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
+              ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+            </div>
+            <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
+              ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
+            </div>
           </div>
-          <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-            ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+        `}
+        </div>
+      ` : `
+        <div class="table__td col-xs-5">${item.n}</div>
+        <div class="col-xs-7">
+        ${item.i_c ? `
+          ${item.i_c.n_syn.map((n_syn) =>`
+            <div class="row">
+              <div class="table__td col-xs-4">
+                ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+              </div>
+              <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
+                ${n_syn.s_r !== undefined ? `${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}`:``}
+              </div>
+              <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
+                ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
+              </div>
+            </div>
+          `.trim()).join('')}
+        `:`
+          <div class="row">
+            <div class="table__td col-xs-4">
+              ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+            </div>
+            <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
+              ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
+            </div>
+            <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
+              ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
+            </div>
           </div>
-          <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-            ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
-          </div>
+        `}
         </div>
       `}
+      </div>`.trim()).join('')}
+
+    `: `
+      <div class="dialog__indicator">
+        <p>Sorry, no results found for keyword: <span class="dialog__indicator-term">${keyword}</span></p>
       </div>
     `}
-    </div>`.trim()).join('')}
   `
 }
 
