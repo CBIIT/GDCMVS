@@ -155,7 +155,7 @@ const GDCTerms = (uid, tgts) => {
 
       let dialog_width = {
         width: 750,
-        minWidth: 650,
+        minWidth: 700,
         maxWidth: 900
       }
 
