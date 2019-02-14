@@ -251,7 +251,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, keywordCase, invariant);
+                  let html = templateList(data, icdo, invariant, keywordCase);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -261,7 +261,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, keywordCase, invariant);
+                  let html = templateList(data, icdo, invariant, keywordCase);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -324,7 +324,7 @@ const templateGDC = (items, icdo) => {
   </div>`
 }
 
-const templateList = (items, icdo, keyword = 'default', invariant = false) => {
+const templateList = (items, icdo, invariant = false, keyword = 'default') => {
   return `
     ${items.length !== 0 ? `
       ${items.map((item, i) => `
