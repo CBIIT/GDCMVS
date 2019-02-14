@@ -223,12 +223,12 @@ const GDCTerms = (uid, tgts) => {
           });
 
           $('#gdc-values-input').bind('mousedown', (e) => {
-            $(event.currentTarget).focus();
+            $(e.currentTarget).focus();
             target.draggable('disable');
           });
 
           target.bind('mousedown', (e) => {
-            $(event.currentTarget).draggable('enable');
+            $(e.currentTarget).draggable('enable');
           });
 
           // Add Search Filter functionality
