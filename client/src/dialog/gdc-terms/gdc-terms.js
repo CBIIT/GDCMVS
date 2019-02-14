@@ -232,7 +232,7 @@ const GDCTerms = (uid, tgts) => {
           });
 
           // Add Search Filter functionality
-          $('#gdc-values-input').bind('keyup', () => {
+          $('#gdc-values-input').on('input', () => {
             let keyword = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
             let keywordCase = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ");
             if(keyword.length >= 3) {
