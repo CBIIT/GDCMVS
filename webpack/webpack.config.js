@@ -46,6 +46,7 @@ module.exports = {
             minimize: true,
             removeAttributeQuotes: false,
             caseSensitive: true,
+            ignoreCustomFragments: [/\{\{.*?}}/],
           }
         }
       }
