@@ -18,15 +18,16 @@ export const onScroll = ($window) => {
   }
 }
 
-export const onResize = ($docsContainer, $parentContainer) => {
+export const onResize = ($docsContainer, $parentContainer, $mainContainer) => {
   headerHeight = $('.navbar .container').height();
-  setHeight($docsContainer, $parentContainer);
+  setHeight($docsContainer, $parentContainer, $mainContainer);
   headerOffset = headerHeight;
 }
 
-export const setHeight = ($docsContainer, $parentContainer) => {
+export const setHeight = ($docsContainer, $parentContainer, $mainContainer) => {
   $docsContainer.attr('style', 'margin-top: ' + (headerHeight - 54) + 'px !important');
   $parentContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
+  $mainContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 12) + 'px)');
 }
 
 export const errorNotification = (status, errorThrown) => {
@@ -60,6 +61,26 @@ export const dialogsOnResize = ($window) => {
 export const htmlChildContent = (tag, tmpl) =>{
   const re = new RegExp('<'+tag+'>([^]*)<\/'+tag+'>', 'g');
   return re.exec(tmpl)[1];
+}
+
+// Remove duplicate synonyms case insensitive
+ export const removeDuplicateSynonyms = (it) => {
+    if (it.s == undefined) return;
+    let cache = {};
+    let tmp_s = [];
+    it.s.forEach(function (s) {
+      let lc = s.trim().toLowerCase();
+      if (!(lc in cache)) {
+        cache[lc] = [];
+      }
+      cache[lc].push(s);
+    });
+    for (let idx in cache) {
+      //find the term with the first character capitalized
+      let word = findWord(cache[idx]);
+      tmp_s.push(word);
+    }
+    return tmp_s;
 }
 
 export const findWord = (words) => {
