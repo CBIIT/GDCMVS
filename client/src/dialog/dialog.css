@@ -58,11 +58,20 @@
 }
 
 .dialog__indicator {
+  position: relative;
+  padding-bottom: 39%;
+}
+
+.dialog__indicator-content {
   min-width: 450px;
   text-align: center;
   margin: auto;
-  padding: 2em 0;
   font-size: 1.2em;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
 }
 
 .dialog__indicator-term {
