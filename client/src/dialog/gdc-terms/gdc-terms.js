@@ -397,9 +397,11 @@ const templateList = (items, icdo, invariant = false, keyword = 'default') => {
       </div>`.trim()).join('')}
 
     `: `
-      <div class="dialog__indicator">
-        <p>Sorry, no results found for keyword: <span class="dialog__indicator-term">${keyword}</span></p>
+    <div  class="dialog__indicator">
+      <div class="dialog__indicator-content">
+        Sorry, no results found for keyword: <span class="dialog__indicator-term">${keyword}</span>
       </div>
+    <div>
     `}
   `
 }
