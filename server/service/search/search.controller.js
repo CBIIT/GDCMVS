@@ -174,12 +174,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			query.query_string.fields.push("enum.s.have");
+			// query.query_string.fields.push("enum.all_syn.have");
 			query.query_string.fields.push("cde_pv.n.have");
 			query.query_string.fields.push("cde_pv.ss.s.have");
 			query.query_string.fields.push("cde_pv.ss.c");
 
 		}
 		query.query_string.fields.push("enum.n_c");
+		query.query_string.fields.push("enum.all_n_c");
 		query.query_string.fields.push("cde.id");
 		query.query_string.fields.push("enum.n.have");
 		query.query_string.fields.push("enum.i_c.have");
@@ -200,12 +202,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				m.multi_match.fields.push("enum.s");
+				// m.multi_match.fields.push("enum.all_syn");
 				m.multi_match.fields.push("cde_pv.n");
 				m.multi_match.fields.push("cde_pv.ss.s");
 				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("enum.all_n_c");
 			m.multi_match.fields.push("cde.id");
 			m.multi_match.fields.push("enum.i_c.c");
 			query.bool.should.push(m);
@@ -225,12 +229,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 				}
 				if (option.syn) {
 					m.multi_match.fields.push("enum.s");
+					// m.multi_match.fields.push("enum.all_syn");
 					m.multi_match.fields.push("cde_pv.n");
 					m.multi_match.fields.push("cde_pv.ss.s");
 					m.multi_match.fields.push("cde_pv.ss.c");
 				}
 				m.multi_match.fields.push("enum.n");
 				m.multi_match.fields.push("enum.n_c");
+				m.multi_match.fields.push("enum.all_n_c");
 				m.multi_match.fields.push("cde.id");
 				m.multi_match.fields.push("enum.i_c.c");
 				query.bool.should.push(m);
@@ -253,12 +259,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 					}
 					if (option.syn) {
 						m.multi_match.fields.push("enum.s");
+						// m.multi_match.fields.push("enum.all_syn");
 						m.multi_match.fields.push("cde_pv.n");
 						m.multi_match.fields.push("cde_pv.ss.s");
 						m.multi_match.fields.push("cde_pv.ss.c");
 					}
 					m.multi_match.fields.push("enum.n");
 					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("enum.all_n_c");
 					m.multi_match.fields.push("cde.id");
 					m.multi_match.fields.push("enum.i_c.c");
 					query.bool.should.push(m);
@@ -274,12 +282,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 					}
 					if (option.syn) {
 						m.multi_match.fields.push("enum.s");
+						// m.multi_match.fields.push("enum.all_syn");
 						m.multi_match.fields.push("cde_pv.n");
 						m.multi_match.fields.push("cde_pv.ss.s");
 						m.multi_match.fields.push("cde_pv.ss.c");
 					}
 					m.multi_match.fields.push("enum.n");
 					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("enum.all_n_c");
 					m.multi_match.fields.push("cde.id");
 					m.multi_match.fields.push("enum.i_c.c");
 					query.bool.must_not.push(m);
@@ -306,6 +316,10 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 				m.match_phrase_prefix = {};
 				m.match_phrase_prefix["enum.s.have"] = keyword;
 				query.bool.should.push(m);
+				// m = {};
+				// m.match_phrase_prefix = {};
+				// m.match_phrase_prefix["enum.all_syn.have"] = keyword;
+				// query.bool.should.push(m);
 				m = {};
 				m.match_phrase_prefix = {};
 				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
@@ -322,6 +336,10 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["enum.n_c"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.all_n_c"] = keyword;
 			query.bool.should.push(m);
 			m = {};
 			m.match_phrase_prefix = {};
@@ -348,12 +366,14 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				m.multi_match.fields.push("enum.s");
+				// m.multi_match.fields.push("enum.all_syn");
 				m.multi_match.fields.push("cde_pv.n");
 				m.multi_match.fields.push("cde_pv.ss.s");
 				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("enum.all_n_c");
 			m.multi_match.fields.push("cde.id");
 			m.multi_match.fields.push("enum.i_c.c");
 			query.bool.should.push(m);
@@ -388,6 +408,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				"enum.n_c": {
 					"number_of_fragments": 0
 				},
+				"enum.all_n_c": {
+					"number_of_fragments": 0
+				},
 				"cde.id": {
 					"number_of_fragments": 0
 				}
@@ -399,12 +422,14 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			highlight.highlight_query.query_string.fields.push("enum.s.have");
+			// highlight.highlight_query.query_string.fields.push("enum.all_syn.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.n.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.ss.s.have");
 			highlight.highlight_query.query_string.fields.push("cde_pv.ss.c");
 
 		}
 		highlight.highlight_query.query_string.fields.push("enum.n_c");
+		highlight.highlight_query.query_string.fields.push("enum.all_n_c");
 		highlight.highlight_query.query_string.fields.push("cde.id");
 		highlight.highlight_query.query_string.fields.push("enum.n.have");
 		highlight.highlight_query.query_string.fields.push("enum.i_c.have");
@@ -417,6 +442,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			highlight.fields["enum.s.have"] = {
 				"number_of_fragments": 0
 			};
+			// highlight.fields["enum.all_syn.have"] = {
+			// 	"number_of_fragments": 0
+			// };
 			highlight.fields["cde_pv.n.have"] = {
 				"number_of_fragments": 0
 			};
@@ -437,6 +465,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				"enum.n": {},
 				"enum.i_c.c": {},
 				"enum.n_c": {},
+				"enum.all_n_c": {},
 				"cde.id": {}
 			}
 		};
@@ -447,6 +476,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 		}
 		if (option.syn) {
 			highlight.fields["enum.s"] = {};
+			// highlight.fields["enum.all_syn"] = {};
 			highlight.fields["cde_pv.n"] = {};
 			highlight.fields["cde_pv.ss.s"] = {};
 			highlight.fields["cde_pv.ss.c"] = {};
@@ -471,6 +501,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 					"enum.n_c": {
 						"number_of_fragments": 0
 					},
+					"enum.all_n_c": {
+						"number_of_fragments": 0
+					},
 					"cde.id": {
 						"number_of_fragments": 0
 					}
@@ -485,6 +518,9 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				highlight.fields["enum.s.have"] = {
 					"number_of_fragments": 0
 				};
+				// highlight.fields["enum.all_syn.have"] = {
+				// 	"number_of_fragments": 0
+				// };
 				highlight.fields["cde_pv.n.have"] = {
 					"number_of_fragments": 0
 				};
@@ -504,6 +540,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 					"enum.n": {},
 					"enum.i_c.c": {},
 					"enum.n_c": {},
+					"enum.all_n_c": {},
 					"cde.id": {}
 				}
 			};
@@ -514,6 +551,7 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			}
 			if (option.syn) {
 				highlight.fields["enum.s"] = {};
+				// highlight.fields["enum.all_syn"] = {};
 				highlight.fields["cde_pv.n"] = {};
 				highlight.fields["cde_pv.ss.s"] = {};
 				highlight.fields["cde_pv.ss.c"] = {};
@@ -599,7 +637,20 @@ const indexing = (req, res) => {
 						},
 						"analyzer": "case_insensitive"
 					},
+					"enum.all_syn": {
+						"type": "text",
+						"fields": {
+							"have": {
+								"type": "text"
+							}
+						},
+						"analyzer": "case_insensitive"
+					},
 					"enum.n_c": {
+						"type": "text",
+						"analyzer": "case_insensitive"
+					},
+					"enum.all_n_c": {
 						"type": "text",
 						"analyzer": "case_insensitive"
 					},
@@ -1122,6 +1173,16 @@ const parseExcel = (req, res) => {
 							} else {
 								temp_data.icdo3_term = "";
 							}
+							if(row[8]){
+								temp_data.term_type = row[8];
+							} else {
+								temp_data.term_type = "";
+							}
+							if(row[9]){
+								temp_data.tt_official = row[9];
+							} else {
+								temp_data.tt_official = "";
+							}
 						}
 						dataParsed.push(temp_data);
 					}
@@ -1138,7 +1199,9 @@ const parseExcel = (req, res) => {
 						var temp_obj = {
 							nm: dataParsed[dp].icdo3_term,
 							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code
+							n_c: dataParsed[dp].ncit_code,
+							term_type: dataParsed[dp].term_type,
+							tt_official: dataParsed[dp].tt_official
 						};
 						if (!mappingExists(icdo[category_node_property], temp_obj)) {
 							logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
@@ -1151,7 +1214,9 @@ const parseExcel = (req, res) => {
 						var temp_obj = {
 							nm: dataParsed[dp].icdo3_term,
 							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code
+							n_c: dataParsed[dp].ncit_code,
+							term_type: dataParsed[dp].term_type,
+							tt_official: dataParsed[dp].tt_official
 						};
 						icdo[category_node_property].push(temp_obj);
 					}

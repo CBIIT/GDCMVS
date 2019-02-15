@@ -1,23 +1,103 @@
+<HeaderTemplate>
+  <div class="dialog__header">
+    <div class="dialog__titlebar">
+      <span id="ui-id-4" class="ui-dialog-title">Compare Your Values with GDC Values</span>
+      <button type="button" id="close_to_compare" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
 
-<div id="compare_dialog">
-  <div id="compare_form" class="compare-form">
-    <div id="cp_top" class="compare-form__top">
-      <label for="cp_input"class="compare-form__label--left">User Defined Values:</label>
-      <label class="compare-form__label--right">GDC Values:</label>
-      <div id="cp_left" class="compare-form__left">
-      <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
-      <div id="cp_middle" class="compare-form__middle"></div>
-      <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values">
-      {{for items}}
-      <div>{{:n}}</div>
-      {{/for}}
+      <div class="checkbox ui-checkbox">
+        <label class="checkbox__label checkbox__label--height">
+          <input id="compare_filter" class="checkbox__input" type="checkbox" value="">
+          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Partial match
+        </label>
+        <label class="checkbox__label checkbox__label--height">
+          <input id="compare_synonyms" class="checkbox__input" type="checkbox" value="">
+          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms
+        </label>
+        <label class="checkbox__label checkbox__label--height">
+          <input id="compare_unmatched" class="checkbox__input" type="checkbox" value="">
+          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Unmatched Values
+        </label>
+      </div>
+      <div id="compare_download" class="titlebar__container-btn" style="display: none;">
+        <button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download">
+          <i class="fa fa-download" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
-    <div id="cp_massage" class="compare-form__message"></div>
-    <div id="cp_bottom" class="compare-form__bottom">
-      <button id="compare" class="btn btn-default compare-form__button">Compare</button>
-      <button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>
+    <div id="compare_thead" class="table__container">
+      <div class="table__thead row">
+        <div class="table__th col-xs-6">User Defined Values</div>
+        <div class="table__th col-xs-6">Matched GDC Values</div>
+      </div>
     </div>
   </div>
-  <div id="compare_result" class="compare_result"></div>
-</div>
+</HeaderTemplate>
+<BodyTemplate>
+  <div id="compare_dialog" class="compare_dialog">
+    <div id="compare_form" class="compare-form">
+      <div id="cp_top" class="compare-form__top">
+        <div id="cp_left" class="compare-form__left">
+        <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
+        <div id="cp_middle" class="compare-form__middle"></div>
+        <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values">
+        {{for items}}
+          <div class="compare-form__values">
+            {{if n_syn !== undefined && n_syn.length !== 0}}
+            <div>
+              <div class="compare-form__value">{{:n}}</div>
+              <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+                <i class="fa fa-plus"></i>
+              </a>
+            </div>
+            <div class="compare-form__synm" style="display: none;">
+              {{if i_c !== undefined}}
+              <div class="compare-form__i_c">
+                <div class="compare-form__ic_c">{{:i_c.c}} (ICD-O-3)</div>
+                <div class="compare-form__ic_enum">{{for ic_enum}}{{:}}</br>{{/for}}</div>
+              </div>
+              {{/if}}
+              {{for n_syn}}
+                {{if s !== undefined && s.length !== 0 }}
+                <div class="compare-form__n_syn">
+                  <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
+                  <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
+                </div>
+                {{/if}}
+              {{/for}}
+            </div>
+            {{else s !== undefined && s.length !== 0}}
+            <div>
+                <div class="compare-form__value">{{:n}}</div>
+                <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+                  <i class="fa fa-plus"></i>
+                </a>
+              </div>
+              <div class="compare-form__synm" style="display: none;">
+                {{if s.length !== 0 }}
+                <div class="compare-form__n_syn">
+                  <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
+                  <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
+                </div>
+                {{/if}}
+              </div>
+            {{else}}
+            <div>
+              <div class="compare-form__value">{{:n}}</div>
+            </div>
+            {{/if}}
+          </div>
+        {{/for}}
+        </div>
+      </div>
+      <div id="cp_massage" class="compare-form__message"></div>
+    </div>
+    <div id="compare_result" class="compare_result" style="display: none;"></div>
+  </div>
+</BodyTemplate>
+<BottomTemplate>
+  <div id="cp_bottom" class="compare-form__bottom">
+    <button id="compare" class="btn btn-default compare-form__button">Compare</button>
+    <button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>
+    <button id="back2Compare" class="btn btn-default compare-form__button" style="display: none;">Back</button>
+  </div>
+</BottomTemplate>
