@@ -66,6 +66,7 @@ export const vsRender = (items, keyword, search_option) => {
   // RegExp Keyword
   keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
   let reg_key = new RegExp(keyword, "ig");
+  let term_type_not_official = false;
 
   items.forEach(function (item) {
     let hl = item.highlight;
@@ -319,6 +320,9 @@ export const vsRender = (items, keyword, search_option) => {
             if (em.term_type) {
               v.term_type = em.term_type;
             }
+            if(em.tt_official){
+              v.tt_official = em.tt_official;
+            }
             v.i_c = em.i_c.c.replace(reg_key, "<b>$&</b>");
             if (v.n == undefined) {
               v.n = em.n;
@@ -340,6 +344,9 @@ export const vsRender = (items, keyword, search_option) => {
               if (em.term_type) {
                 v.term_type = em.term_type;
               }
+              if(em.tt_official){
+                v.tt_official = em.tt_official;
+              }
               if (v.n == undefined) {
                 v.n = em.n;
                 v.ref = row.ref;
@@ -351,6 +358,9 @@ export const vsRender = (items, keyword, search_option) => {
               v.gdc_d = em.gdc_d;
               if (em.term_type) {
                 v.term_type = em.term_type;
+              }
+              if(em.tt_official){
+                v.tt_official = em.tt_official;
               }
             }
           }
@@ -413,6 +423,10 @@ export const vsRender = (items, keyword, search_option) => {
           let term_type = "";
           if (tt !== "") {
             term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+            if(item.tt_official !== undefined && item.tt_official === "no"){
+              term_type += "*";
+              term_type_not_official = true;
+            }
           }
           if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
             if (item_n_clr !== item_i_c) {
@@ -447,6 +461,10 @@ export const vsRender = (items, keyword, search_option) => {
               let term_type = "";
               if (tt !== "") {
                 term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+              }
+              if(em.tt_official !== undefined && em.tt_official === "no"){
+                term_type += "*";
+                term_type_not_official = true;
               }
               if (em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")) {
                 if (tt === 'PT') {
@@ -549,6 +567,11 @@ export const vsRender = (items, keyword, search_option) => {
   });
   let html = "";
   let searched_keyword = $("#keywords").val();
+  if (term_type_not_official === true) 
+    $("#unofficial-term").html('(*) Term type data is not official.');
+  else
+    $("#unofficial-term").html('');
+  
   if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
     html =
       '<div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' +

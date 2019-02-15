@@ -26,6 +26,9 @@ const gdcData = (prop, tgt, keyword) => {
       if(tt !== ""){
         term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
       }
+      if(item.tt_official !== undefined && item.tt_official === "no"){
+        term_type += "*";
+      }
       if (item.i_c !== undefined) {
         if(item.i_c.c in tmp_obj){
           if(item.n !== item.i_c.c){
@@ -78,7 +81,7 @@ const gdcData = (prop, tgt, keyword) => {
     items = new_items;
 
     //open loading animation
-    if (items.length > 1000 ) {
+    if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
     }
 
@@ -102,22 +105,22 @@ const gdcData = (prop, tgt, keyword) => {
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 :
       window.innerHeight * 0.2;
 
-    //display result in a table
-    $(document.body).append(html);
-
-    let dialog_width = {
-      width: 450,
-      minWidth: 400,
-      maxWidth: 700
-    }
-
-    if (icdo) {
-      dialog_width.width = 700;
-      dialog_width.minWidth = 600;
-      dialog_width.maxWidth = 900;
-    }
-
     setTimeout(() => {
+      //display result in a table
+      $(document.body).append(html);
+
+      let dialog_width = {
+        width: 450,
+        minWidth: 400,
+        maxWidth: 700
+      }
+
+      if (icdo) {
+        dialog_width.width = 700;
+        dialog_width.minWidth = 600;
+        dialog_width.maxWidth = 900;
+      }
+
       $('#gdc_data').dialog({
         modal: false,
         position: {
@@ -150,7 +153,7 @@ const gdcData = (prop, tgt, keyword) => {
             $("#gdc_data").dialog('close');
           });
 
-          if (items.length > 1000 ) {
+          if (items.length > 500 ) {
             $('#gdc-loading-icon').hide()
           }
         },
