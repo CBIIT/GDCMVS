@@ -568,7 +568,7 @@ export const vsRender = (items, keyword, search_option) => {
   let html = "";
   let searched_keyword = $("#keywords").val();
   if (term_type_not_official === true) 
-    $("#unofficial-term").html('(*) Term type data is not official.');
+    $("#unofficial-term").html('(*) Term type not assigned.');
   else
     $("#unofficial-term").html('');
   
