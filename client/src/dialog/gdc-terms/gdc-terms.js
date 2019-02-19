@@ -179,6 +179,7 @@ const GDCTerms = (uid, tgts) => {
         minHeight: 550,
         maxHeight: 600,
         open: function () {
+          let previous_keyword = "";
           //add new custom header
           $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
           var target = $(this).parent();
@@ -234,6 +235,8 @@ const GDCTerms = (uid, tgts) => {
           // Add Search Filter functionality
           $('#gdc-values-input').on('input', () => {
             let keyword = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
+            if(previous_keyword === keyword) return;
+            previous_keyword = keyword;
             let keywordCase = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ");
             if(keyword.length >= 3) {
               let new_item = [];
