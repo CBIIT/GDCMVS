@@ -294,6 +294,7 @@ const loadNcitSynonyms_continue = next => {
 	let synonyms = shared.readSynonyms();
 	//load concept codes
 	let cc = shared.readConceptCode();
+	let gdc_values = shared.readGDCValues();
 	for (let c in cc) {
 		let vs = cc[c];
 		for (let v in vs) {
@@ -302,7 +303,15 @@ const loadNcitSynonyms_continue = next => {
 				ncitids.push(code);
 			}
 		}
-
+	}
+	for(let cnp in gdc_values){
+		let enums = gdc_values[cnp];
+		enums.forEach(em => {
+			let n_c = em.n_c;
+			if(ncitids.indexOf(n_c) === -1){
+				ncitids.push(n_c);
+			}
+		});
 	}
 	let ncit = [];
 	let ctcae = [];
