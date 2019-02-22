@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, removeDuplicateSynonyms } from '../../shared';
+import { getHeaderOffset, htmlChildContent, removeDuplicateSynonyms, searchFilter } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -81,14 +81,16 @@ const toCompare = (uid) => {
           at: "center top",
           of: $('#docs-container')
         },
-        width: 885,
-        height: 585,
-        minWidth: 875,
-        maxWidth: 950,
-        minHeight: 585,
-        maxHeight: 805,
+        width: 1200,
+        height: 590,
+        minWidth: 1200,
+        maxWidth: 1200,
+        minHeight: 590,
+        maxHeight: 810,
         title: "Compare Your Values with GDC Values",
         open: function () {
+
+          let previous_keyword = '';
 
           $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
           $(this).after(bottom);
@@ -115,6 +117,45 @@ const toCompare = (uid) => {
               //let invariant = $('#gdc-data-invariant').prop("checked");
               let html = templateList(data);
               $('#cp_right').html(html);
+            }
+          });
+
+          $('#compare-input').bind('mousedown', (e) => {
+            $(e.currentTarget).focus();
+            target.draggable('disable');
+          });
+
+          target.bind('mousedown', (e) => {
+            $(e.currentTarget).draggable('enable');
+          });
+
+          // Add Search Filter functionality
+          $('#compare-input').on('input', () => {
+            let keyword = $('#compare-input').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
+            if(previous_keyword === keyword) return;
+            previous_keyword = keyword;
+            let keywordCase = $('#compare-input').val().trim().replace(/[\ ]+/g, " ");
+            if(keyword.length >= 3) {
+              let new_item = searchFilter(items, keyword);
+              $('#pagination-compare').pagination({
+                dataSource: new_item,
+                pageSize: 50,
+                callback: function(data, pagination) {
+                  //let invariant = $('#gdc-data-invariant').prop("checked");
+                  let html = templateList(data);
+                  $('#cp_right').html(html);
+                }
+              });
+            } else {
+              $('#pagination-compare').pagination({
+                dataSource: items,
+                pageSize: 50,
+                callback: function(data, pagination) {
+                  //let invariant = $('#gdc-data-invariant').prop("checked");
+                  let html = templateList(data);
+                  $('#cp_right').html(html);
+                }
+              });
             }
           });
 
