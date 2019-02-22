@@ -581,8 +581,9 @@ const bulkIndex = next => {
 		let property = p.name;
 		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
 			if (p.enum) {
+				let checker_enum = JSON.parse(JSON.stringify(gdc_data[node].properties[property].enum)).map(ems => {return ems.trim().toLowerCase()});
 				p.enum.forEach(em => {
-					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
+					if (checker_enum.indexOf(em.n.trim().toLowerCase()) !== -1) {
 						em.gdc_d = true;
 					} else {
 						em.gdc_d = false;
