@@ -128,3 +128,54 @@ export const findWord = (words) => {
   }
   return word;
 };
+
+export const findCapitalWord = (words) => {
+  let word = {};
+  if (words.length == 1) {
+    return words[0];
+  }
+  words.forEach(function (w) {
+    if (_.isEmpty(word) === false) {
+      return;
+    }
+    let idx_space = w.termName.indexOf(" ");
+    let idx_comma = w.termName.indexOf(",");
+    if (idx_space == -1 && idx_comma == -1) {
+      if (/^[A-Z][a-z0-9]{0,}$/.test(w.termName)) {
+        word.termName = w.termName;
+        word.termGroup = w.termGroup;
+      }
+    }
+    else if (idx_space !== -1 && idx_comma == -1) {
+      if (/^[A-Z][a-z0-9]{0,}$/.test(w.termName.substr(0, idx_space))) {
+        word.termName = w.termName;
+        word.termGroup = w.termGroup;
+      }
+    }
+    else if (idx_space == -1 && idx_comma !== -1) {
+      if (/^[A-Z][a-z0-9]{0,}$/.test(w.termName.substr(0, idx_comma))) {
+        word.termName = w.termName;
+        word.termGroup = w.termGroup;
+      }
+    }
+    else {
+      if (idx_comma > idx_space) {
+        if (/^[A-Z][a-z0-9]{0,}$/.test(w.termName.substr(0, idx_space))) {
+          word.termName = w.termName;
+          word.termGroup = w.termGroup;
+        }
+      }
+      else {
+        if (/^[A-Z][a-z0-9]{0,}$/.test(w.termName.substr(0, idx_comma))) {
+          word.termName = w.termName;
+          word.termGroup = w.termGroup;
+        }
+      }
+    }
+
+  });
+  if (_.isEmpty(word) === true) {
+    word = words[0];
+  }
+  return word;
+};
