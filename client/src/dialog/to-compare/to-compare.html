@@ -39,57 +39,15 @@
         <div id="cp_left" class="compare-form__left">
         <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
         <div id="cp_middle" class="compare-form__middle"></div>
-        <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values">
-        {{for items}}
-          <div class="compare-form__values">
-            {{if n_syn !== undefined && n_syn.length !== 0}}
-            <div>
-              <div class="compare-form__value">{{:n}}</div>
-              <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
-                <i class="fa fa-plus"></i>
-              </a>
-            </div>
-            <div class="compare-form__synm" style="display: none;">
-              {{if i_c !== undefined}}
-              <div class="compare-form__i_c">
-                <div class="compare-form__ic_c">{{:i_c.c}} (ICD-O-3)</div>
-                <div class="compare-form__ic_enum">{{for ic_enum}}{{:}}</br>{{/for}}</div>
-              </div>
-              {{/if}}
-              {{for n_syn}}
-                {{if s !== undefined && s.length !== 0 }}
-                <div class="compare-form__n_syn">
-                  <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
-                  <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
-                </div>
-                {{/if}}
-              {{/for}}
-            </div>
-            {{else s !== undefined && s.length !== 0}}
-            <div>
-                <div class="compare-form__value">{{:n}}</div>
-                <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
-                  <i class="fa fa-plus"></i>
-                </a>
-              </div>
-              <div class="compare-form__synm" style="display: none;">
-                {{if s.length !== 0 }}
-                <div class="compare-form__n_syn">
-                  <div class="compare-form__n_c">{{:n_c}} (NCIt)</div>
-                  <div class="compare-form__s">{{for s}}{{:}}</br>{{/for}}</div>
-                </div>
-                {{/if}}
-              </div>
-            {{else}}
-            <div>
-              <div class="compare-form__value">{{:n}}</div>
-            </div>
-            {{/if}}
+        <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values"></div>
+
+        <div class="compare-form__menu">
+          <div id="cp_massage" class="compare-form__message"></div>
+          <div class= "compare-form__pagination">
+            <div id="pagination-compare" class="dialog__pagination"></div>
           </div>
-        {{/for}}
         </div>
       </div>
-      <div id="cp_massage" class="compare-form__message"></div>
     </div>
     <div id="compare_result" class="compare_result" style="display: none;"></div>
   </div>
