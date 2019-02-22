@@ -164,6 +164,8 @@
   text-align: center;
   height: 2em;
   color: #c74060;
+  width: 50%;
+  display: inline-block;
 }
 
 .compare-form__top {
@@ -232,6 +234,12 @@
   border-top: 1px solid #DDDDDD;
 }
 
+.compare-form__pagination {
+  text-align: center;
+  width: 49%;
+  display: inline-block;
+}
+
 .compare-form__button {
   padding: 0.4em 2em;
   min-width: 9em;
@@ -265,6 +273,9 @@
 .compare_result__bottom {
   text-align: center;
 }
+
+
+
 
 .gdc-data-list {
   outline: none;

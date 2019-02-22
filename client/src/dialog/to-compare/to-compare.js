@@ -82,11 +82,11 @@ const toCompare = (uid) => {
           of: $('#docs-container')
         },
         width: 885,
-        height: 580,
+        height: 585,
         minWidth: 875,
         maxWidth: 950,
-        minHeight: 580,
-        maxHeight: 800,
+        minHeight: 585,
+        maxHeight: 805,
         title: "Compare Your Values with GDC Values",
         open: function () {
 
@@ -108,6 +108,16 @@ const toCompare = (uid) => {
             $("#compare_dialog").dialog('close');
           });
 
+          $('#pagination-compare').pagination({
+            dataSource: items,
+            pageSize: 50,
+            callback: function(data, pagination) {
+              //let invariant = $('#gdc-data-invariant').prop("checked");
+              let html = templateList(data);
+              $('#cp_right').html(html);
+            }
+          });
+
           //remove loading animation
           if (items.length > 500) {
             $('#gdc-loading-icon').hide()
@@ -121,6 +131,58 @@ const toCompare = (uid) => {
       });
     }, 100);
   });
+}
+
+const templateList = (items) => {
+  return `${items.map((item) => `
+    <div class="compare-form__values">
+    ${item.n_syn !== undefined && item.n_syn.length !== 0 ? `
+      <div>
+        <div class="compare-form__value">${item.n}</div>
+        <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+          <i class="fa fa-plus"></i>
+        </a>
+      </div>
+      <div class="compare-form__synm" style="display: none;">
+      ${item.i_c !== undefined ? `
+        <div class="compare-form__i_c">
+          <div class="compare-form__ic_c">${item.i_c.c} (ICD-O-3)</div>
+          <div class="compare-form__ic_enum">${item.ic_enum.map((ic_enum) => `${ic_enum}</br>`.trim()).join('')}</div>
+        </div>
+      `:``}
+      ${item.n_syn.map((n_syn) => `
+        ${n_syn.s !== undefined && n_syn.s.length !== 0 ? `
+          <div class="compare-form__n_syn">
+            <div class="compare-form__n_c">${n_syn.n_c} (NCIt)</div>
+            <div class="compare-form__s">${n_syn.s.map((s) => `${s}</br>`.trim()).join('')}</div>
+          </div>
+        `:``}
+      `.trim()).join('')}
+      </div>
+    `:`
+      ${item.s !== undefined && item.s.length !== 0 ? `
+        <div>
+          <div class="compare-form__value">${item.n}</div>
+          <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+            <i class="fa fa-plus"></i>
+          </a>
+        </div>
+        <div class="compare-form__synm" style="display: none;">
+        ${item.s.length !== 0 ? `
+          <div class="compare-form__n_syn">
+            <div class="compare-form__n_c">${item.n_c} (NCIt)</div>
+            <div class="compare-form__s">${item.s.map((s) => `${s}</br>`.trim()).join('')}</div>
+          </div>
+        `:``}
+        </div>
+      `:`
+        <div>
+          <div class="compare-form__value">${item.n}</div>
+        </div>
+      `}
+    `}
+    </div>
+  `.trim()).join('')}`
 }
 
 export default toCompare;
