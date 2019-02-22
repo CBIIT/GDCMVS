@@ -1,6 +1,6 @@
 import tmpl from './ncit-details.html';
 import { apiEVSRest } from '../../api';
-import { getHeaderOffset, htmlChildContent, findCapitalWord } from '../../shared';
+import { getHeaderOffset, htmlChildContent } from '../../shared';
 
 export default function ncitDetails(uid){
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
