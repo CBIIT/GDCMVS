@@ -599,11 +599,11 @@ const bulkIndex = next => {
 		result.enum.forEach(item => {
 			if(item.i_c === undefined) return;
 			if(item.i_c.c && all_icdo3_enums[item.i_c.c] === undefined && item.n !== item.i_c.c){
-				all_icdo3_enums[item.i_c.c] = { n: item.term_type !== undefined && item.term_type !== "" ? [item.n +" ("+item.term_type+")"] : [item.n], checker_n: [item.n] };
+				all_icdo3_enums[item.i_c.c] = { n: item.term_type !== undefined && item.term_type !== "" ? [item.n +" ("+item.term_type+")"] : [item.n +" (*)"], checker_n: [item.n] };
 				if(item.term_type !== undefined && item.term_type !== ""){
 					all_icdo3_enums[item.i_c.c].n = [item.n +" ("+item.term_type+")"];
 				}else{
-					all_icdo3_enums[item.i_c.c].n = [item.n];
+					all_icdo3_enums[item.i_c.c].n = [item.n +" (*)"];
 				}
 			}
 			else if(item.i_c.c && all_icdo3_enums[item.i_c.c] !== undefined && item.n !== item.i_c.c && all_icdo3_enums[item.i_c.c].checker_n.indexOf(item.n) === -1){
@@ -612,7 +612,7 @@ const bulkIndex = next => {
 					if(item.term_type !== "PT") all_icdo3_enums[item.i_c.c].n.push(item.n +" ("+item.term_type+")");
 				}
 				else {
-					all_icdo3_enums[item.i_c.c].n.push(item.n);
+					all_icdo3_enums[item.i_c.c].n.push(item.n +" (*)");
 				} 
 				all_icdo3_enums[item.i_c.c].checker_n.push(item.n);
 			}
