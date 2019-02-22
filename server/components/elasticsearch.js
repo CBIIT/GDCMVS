@@ -169,7 +169,6 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				tmp.pvc = v.n_c;
 				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
 				tmp.term_type = v.term_type;
-				tmp.tt_official = v.tt_official !== undefined ? v.tt_official : undefined;
 				entry.syns.push(tmp);
 				enums.push(v.nm);
 			});
@@ -271,9 +270,6 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 					let tmp = {};
 					if (item.term_type) {
 						tmp.term_type = item.term_type;
-					}
-					if(item.tt_official){
-						tmp.tt_official = item.tt_official;
 					}
 					tmp.n = item.pv;
 					if (item.code !== undefined) {
@@ -605,15 +601,15 @@ const bulkIndex = next => {
 			if(item.i_c.c && all_icdo3_enums[item.i_c.c] === undefined && item.n !== item.i_c.c){
 				all_icdo3_enums[item.i_c.c] = { n: item.term_type !== undefined && item.term_type !== "" ? [item.n +" ("+item.term_type+")"] : [item.n], checker_n: [item.n] };
 				if(item.term_type !== undefined && item.term_type !== ""){
-					all_icdo3_enums[item.i_c.c].n = [item.tt_official !== undefined && item.tt_official !== "" ? item.n +" ("+item.term_type+")*" : item.n +" ("+item.term_type+")"];
+					all_icdo3_enums[item.i_c.c].n = [item.n +" ("+item.term_type+")"];
 				}else{
 					all_icdo3_enums[item.i_c.c].n = [item.n];
 				}
 			}
 			else if(item.i_c.c && all_icdo3_enums[item.i_c.c] !== undefined && item.n !== item.i_c.c && all_icdo3_enums[item.i_c.c].checker_n.indexOf(item.n) === -1){
 				if(item.term_type !== undefined && item.term_type !== ""){
-					if(item.term_type === "PT") all_icdo3_enums[item.i_c.c].n.unshift(item.tt_official !== undefined && item.tt_official !== "" ? item.n +" ("+item.term_type+")*" : item.n +" ("+item.term_type+")");
-					if(item.term_type !== "PT") all_icdo3_enums[item.i_c.c].n.push(item.tt_official !== undefined && item.tt_official !== "" ? item.n +" ("+item.term_type+")*" : item.n +" ("+item.term_type+")");
+					if(item.term_type === "PT") all_icdo3_enums[item.i_c.c].n.unshift(item.n +" ("+item.term_type+")");
+					if(item.term_type !== "PT") all_icdo3_enums[item.i_c.c].n.push(item.n +" ("+item.term_type+")");
 				}
 				else {
 					all_icdo3_enums[item.i_c.c].n.push(item.n);
