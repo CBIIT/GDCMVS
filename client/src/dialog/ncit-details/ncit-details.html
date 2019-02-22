@@ -17,7 +17,24 @@
     </p>
     {{if item.synonyms.length }}
       <p><b>Synonyms &amp; Abbreviations:</b></p>
-      <p>{{for item.synonyms}}{{:}}</br>{{/for}}</p>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Source</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+
+        {{for item.synonyms}}
+        <tr>
+          <td>{{:termName}}</td>
+          <td>{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
+          <td>{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
+        </tr>
+        {{/for}}
+      </table>
+      
     {{/if}}
     <p><a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code={{:item.code }}" target="_blank"">more details</p>
     </div>
