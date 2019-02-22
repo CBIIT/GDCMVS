@@ -4284,7 +4284,6 @@
 {"i_c":"C11.8","nm":"Overlapping lesion of nasopharynx","n_c":"","term_type":"PT"},
 {"i_c":"C11.9","nm":"Nasopharynx, NOS","n_c":"C12423","term_type":"PT"},
 {"i_c":"C11.9","nm":"Nasopharyngeal wall","n_c":"","term_type":"RT"},
-{"i_c":"C12","nm":"PYRIFORM SINUS","n_c":"C33439","term_type":"HT"},
 {"i_c":"C12.9","nm":"Pyriform sinus","n_c":"C33439","term_type":"PT"},
 {"i_c":"C12.9","nm":"Piriform fossa","n_c":"C33439","term_type":"SY"},
 {"i_c":"C12.9","nm":"Piriform sinus","n_c":"C33439","term_type":"SY"},
