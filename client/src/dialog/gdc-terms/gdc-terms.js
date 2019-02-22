@@ -1,6 +1,6 @@
 import tmpl from './gdc-terms.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, findWord } from '../../shared';
+import { getHeaderOffset, htmlChildContent, findWord, searchFilter } from '../../shared';
 
 const GDCTerms = (uid, tgts) => {
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -239,16 +239,7 @@ const GDCTerms = (uid, tgts) => {
             previous_keyword = keyword;
             let keywordCase = $('#gdc-values-input').val().trim().replace(/[\ ]+/g, " ");
             if(keyword.length >= 3) {
-              let new_item = [];
-              JSON.parse(JSON.stringify(items)).forEach(item =>{
-                let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
-                if(idx !== -1){
-                  item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
-                  if(idx === 0) new_item.unshift(item);
-                  if(idx !== 0) new_item.push(item);
-                }
-              });
-
+              let new_item = searchFilter(items, keyword);
               $('#pagination-container').pagination({
                 dataSource: new_item,
                 pageSize: 50,

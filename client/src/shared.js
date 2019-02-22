@@ -83,6 +83,19 @@ export const htmlChildContent = (tag, tmpl) =>{
     return tmp_s;
 }
 
+export const searchFilter = (items, keyword) => {
+  let new_item = [];
+  JSON.parse(JSON.stringify(items)).forEach(item =>{
+    let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
+    if(idx !== -1){
+      item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
+      if(idx === 0) new_item.unshift(item);
+      if(idx !== 0) new_item.push(item);
+    }
+  });
+  return new_item;
+}
+
 export const findWord = (words) => {
   let word = "";
   if (words.length == 1) {
