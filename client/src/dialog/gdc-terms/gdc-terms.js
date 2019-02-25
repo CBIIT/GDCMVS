@@ -1,6 +1,6 @@
 import tmpl from './gdc-terms.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, findWord, searchFilter } from '../../shared';
+import { getHeaderOffset, htmlChildContent, searchFilter } from '../../shared';
 
 const GDCTerms = (uid, tgts) => {
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -20,36 +20,16 @@ const GDCTerms = (uid, tgts) => {
       targets = tgts.split("#");
     }
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
-    let body_template = htmlChildContent('BodyTemplate', tmpl);
     let footer_template = htmlChildContent('FooterTemplate', tmpl);
 
-    //new synonyms list without duplicates
-    items.forEach(function (it) {
-      if (it.s == undefined) return;
-      let cache = {};
-      let tmp_s = [];
-      it.s.forEach(function (s) {
-        let lc = s.trim().toLowerCase();
-        if (!(lc in cache)) {
-          cache[lc] = [];
-        }
-        cache[lc].push(s);
-      });
-      for (let idx in cache) {
-        //find the term with the first character capitalized
-        let word = findWord(cache[idx]);
-        tmp_s.push(word);
-      }
-      it.s_r = tmp_s;
-    });
-
     items.forEach(function (item) {
-      let tt = item.term_type !== undefined ? item.term_type : "";
+      let tt = item.term_type !== undefined && item.term_type !== ""? item.term_type : "";
       let term_type = "";
       if (tt !== "") {
         term_type = '(' + tt + ')';
-      }else{
-        term_type += "(*)";
+      }
+      else if(tt === ""){
+        term_type = "(*)";
       }
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
@@ -57,8 +37,7 @@ const GDCTerms = (uid, tgts) => {
             if (item.n_c !== "" && item.s !== undefined && item.s.length !== 0) {
               tmp_obj[item.i_c.c].n_syn.push({
                 n_c: item.n_c,
-                s: item.s,
-                s_r: item.s_r
+                s: item.s.length > 0 ? item.s : undefined
               });
               tmp_obj[item.i_c.c].checker_n_c.push(item.n_c);
             }
@@ -77,8 +56,7 @@ const GDCTerms = (uid, tgts) => {
             n: [],
             n_syn: [{
               n_c: item.n_c,
-              s: item.s,
-              s_r: item.s_r
+              s: item.s.length > 0 ? item.s : undefined
             }],
             checker_n_c: [item.n_c]
           };
@@ -102,8 +80,7 @@ const GDCTerms = (uid, tgts) => {
           tmp_data.n = item.n;
           tmp_data.i_c = tmp_obj[item.n];
           tmp_data.n_c = item.n_c;
-          tmp_data.s = item.s;
-          tmp_data.s_r = item.s_r;
+          tmp_data.s = item.s.length > 0 ? item.s : undefined;
           if (targets.indexOf(item.n) !== -1) {
             tmp_data.e = true;
           }
@@ -114,8 +91,7 @@ const GDCTerms = (uid, tgts) => {
           }
           tmp_data.n = item.n;
           tmp_data.n_c = item.n_c;
-          tmp_data.s = item.s;
-          tmp_data.s_r = item.s_r;
+          tmp_data.s = item.s.length > 0 ? item.s : undefined;
           if (targets.indexOf(item.n) !== -1) {
             tmp_data.e = true;
           }
@@ -153,15 +129,15 @@ const GDCTerms = (uid, tgts) => {
       $(document.body).append(html);
 
       let dialog_width = {
-        width: 750,
+        width: 800,
         minWidth: 700,
         maxWidth: 900
       }
 
       if (icdo) {
-        dialog_width.width = 900;
+        dialog_width.width = 1000;
         dialog_width.minWidth = 900;
-        dialog_width.maxWidth = 1000;
+        dialog_width.maxWidth = 1100;
       }
 
       $("#gdc_terms_data").dialog({
@@ -216,8 +192,7 @@ const GDCTerms = (uid, tgts) => {
             dataSource: items,
             pageSize: 50,
             callback: function(data, pagination) {
-              let invariant = $('#gdc-data-invariant').prop("checked");
-              let html = templateList(data, icdo, invariant);
+              let html = templateList(data, icdo);
               $('#gdc-syn-container').html(html);
             }
           });
@@ -243,8 +218,7 @@ const GDCTerms = (uid, tgts) => {
                 dataSource: new_item,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, invariant, keywordCase);
+                  let html = templateList(data, icdo, keywordCase);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -253,8 +227,7 @@ const GDCTerms = (uid, tgts) => {
                 dataSource: items,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data, icdo, invariant, keywordCase);
+                  let html = templateList(data, icdo, keywordCase);
                   $('#gdc-syn-container').html(html);
                 }
               });
@@ -317,7 +290,7 @@ const templateGDC = (items, icdo) => {
   </div>`
 }
 
-const templateList = (items, icdo, invariant = false, keyword = 'default') => {
+const templateList = (items, icdo, keyword = 'default') => {
   return `
     ${items.length !== 0 ? `
       ${items.map((item, i) => `
@@ -333,11 +306,25 @@ const templateList = (items, icdo, invariant = false, keyword = 'default') => {
             <div class="table__td col-xs-4">
               ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
             </div>
-            <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-              ${n_syn.s_r !== undefined ? `${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}`:``}
-            </div>
-            <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-              ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
+            <div name="syn_area" class="table__td col-xs-8">
+            ${n_syn.s !== undefined ? `
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                ${n_syn.s.map((s) =>`
+                  <tr>
+                    <td>${s.termName}</td>
+                    ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
+                    ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                  </tr>
+                `.trim()).join('')}
+                </table>
+              `:``}
             </div>
           </div>
           `.trim()).join('')}
@@ -346,11 +333,25 @@ const templateList = (items, icdo, invariant = false, keyword = 'default') => {
             <div class="table__td col-xs-4">
               ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
             </div>
-            <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-              ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
-            </div>
-            <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-              ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
+            <div name="syn_area" class="table__td col-xs-8">
+              ${item.s !== undefined ? `
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Term</th>
+                      <th>Source</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  ${item.s.map((s) =>`
+                    <tr>
+                      <td>${s.termName}</td>
+                      ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
+                      ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                    </tr>
+                  `.trim()).join('')}
+                </table>
+              `:``}
             </div>
           </div>
         `}
@@ -364,11 +365,25 @@ const templateList = (items, icdo, invariant = false, keyword = 'default') => {
               <div class="table__td col-xs-4">
                 ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
               </div>
-              <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-                ${n_syn.s_r !== undefined ? `${n_syn.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}`:``}
-              </div>
-              <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-                ${n_syn.s !== undefined ? `${n_syn.s.map((s) =>`${s}</br>`.trim()).join('')}`:``}
+              <div name="syn_area" class="table__td col-xs-8">
+              ${n_syn.s !== undefined ? `
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Term</th>
+                      <th>Source</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  ${n_syn.s.map((s) =>`
+                    <tr>
+                      <td>${s.termName}</td>
+                      ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
+                      ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                    </tr>
+                `.trim()).join('')}
+                </table>
+              `:``}
               </div>
             </div>
           `.trim()).join('')}
@@ -377,11 +392,25 @@ const templateList = (items, icdo, invariant = false, keyword = 'default') => {
             <div class="table__td col-xs-4">
               ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
             </div>
-            <div name="syn_area" class="table__td col-xs-8" ${invariant?`style="display: none;"`:``}>
-              ${item.s_r.map((s_r) =>`${s_r}</br>`.trim()).join('')}
-            </div>
-            <div name="syn_invariant" class="table__td col-xs-8" ${invariant?``:`style="display: none;"`}>
-              ${item.s.map((s) =>`${s}</br>`.trim()).join('')}
+            <div name="syn_area" class="table__td col-xs-8">
+              ${item.s !== undefined ? `
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Term</th>
+                      <th>Source</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  ${item.s.map((s) =>`
+                    <tr>
+                      <td>${s.termName}</td>
+                      ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
+                      ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                    </tr>
+                  `.trim()).join('')}
+                </table>
+              `:``}
             </div>
           </div>
         `}

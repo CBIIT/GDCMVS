@@ -73,7 +73,7 @@ const generateCompareResult = (fromV, toV, option) => {
   let v_lowercase = [], v_matched = [];
   toV.forEach(function (v) {
     v_lowercase.push(v.n.trim().toLowerCase());
-    if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return x.toLowerCase(); });
+    if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return {termName: x.termName.toLowerCase(), termSource: x.termSource, termGroup: x.termGroup}; });
     if(v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function(x){ return x.toLowerCase(); });
   });
 
@@ -150,7 +150,7 @@ const generateCompareResult = (fromV, toV, option) => {
           }
         });
       }
-    } else { // If exact match is not checked
+    } else { // If it's partial match
       let checker_n = [];
       v_lowercase.forEach((v_tmp, index) => {
         let idx = v_tmp.indexOf(tmp);
@@ -172,7 +172,7 @@ const generateCompareResult = (fromV, toV, option) => {
             }
             if (em.s) {
               em.s.forEach(syn => {
-                if (syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                if (syn.termName.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i]);
                   checker_n.push(toV[i].n);
                   v_matched.push(i);
@@ -218,7 +218,7 @@ const generateCompareResult = (fromV, toV, option) => {
         }
       })
     }
-
+    
     if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
     if (text.length === 0) {
       text = '<div style="color:red;">--</div>';
@@ -247,9 +247,24 @@ const generateCompareResult = (fromV, toV, option) => {
               table +='<div class="row table__td">'
               + '<div class="col-xs-3">' + match.n_c + ' (NCIt)</div>'
               + '<div class="col-xs-9">';
-              match.s.forEach((syn, index) => {
-                table += syn.replace(reg_key, "<b>$&</b>") + '</br>';
-              });
+              if(match.s){
+                table += '<table class="table table-striped">'
+                  +'<thead>'
+                    +'<tr>'
+                      +'<th>Term</th>'
+                      +'<th>Source</th>'
+                      +'<th>Type</th>'
+                    +'</tr>'
+                  +'</thead>';
+                  match.s.forEach((syn) => {
+                    table += '<tr>'
+                      + '<td>' + syn.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                      if(syn.termSource !== undefined && syn.termSource !== null) table += '<td>'+ syn.termSource + '</td>'
+                      if(syn.termGroup !== undefined && syn.termGroup !== null) table += '<td>'+ syn.termGroup + '</td>'
+                      +'</tr>';
+                  });
+                table += '</table>';
+              }
               table +='</div></div>';
             });
             table +='</div>';
@@ -270,18 +285,47 @@ const generateCompareResult = (fromV, toV, option) => {
                   table +='<div class="row table__td">'
                   + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
                   + '<div class="col-xs-9">';
+                  if(syn.s){
+                    table += '<table class="table table-striped">'
+                      +'<thead>'
+                        +'<tr>'
+                          +'<th>Term</th>'
+                          +'<th>Source</th>'
+                          +'<th>Type</th>'
+                        +'</tr>'
+                      +'</thead>';
                     syn.s.forEach(function (s_v) {
-                      if(option.synonyms === false && option.sensitive === false) table += s_v + '</br>';
-                      if(option.synonyms === true && option.sensitive === true){
-                        table += s_v.replace(reg_key, "<b>$&</b>") + '</br>';
+                      if(option.synonyms === false && option.sensitive === false){
+                        table += '<tr>'
+                          + '<td>' + s_v.termName + '</td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
+                      } 
+                      else if(option.synonyms === true && option.sensitive === true){
+                        table += '<tr>'
+                          + '<td>' + s_v.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
                       }
-                      else if(option.synonyms === true && s_v.trim().toLowerCase() === new_v.trim().toLowerCase()){
-                        table += "<b>" +s_v + '</b></br>';
+                      else if(option.synonyms === true && s_v.termName.trim().toLowerCase() === new_v.trim().toLowerCase()){
+                        table += '<tr>'
+                          + '<td><b>' +s_v.termName + '</b></td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
                       }
                       else{
-                        table += s_v  + '</br>';
+                        table += '<tr>'
+                          + '<td>' +s_v.termName + '</td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
                       }
                     });
+                    table += '</table>';
+                  }
                   table +='</div></div>';
                 }
               });
@@ -305,9 +349,24 @@ const generateCompareResult = (fromV, toV, option) => {
                 table +='<div class="row table__td">'
                 + '<div class="col-xs-3">' + match.n_c + ' (NCIt)</div>'
                 + '<div class="col-xs-9">';
-                match.s.forEach((syn, index) => {
-                  table += syn.replace(reg_key, "<b>$&</b>") + '</br>';
-                });
+                if(match.s){
+                  table += '<table class="table table-striped">'
+                    +'<thead>'
+                      +'<tr>'
+                        +'<th>Term</th>'
+                        +'<th>Source</th>'
+                        +'<th>Type</th>'
+                      +'</tr>'
+                    +'</thead>';
+                    match.s.forEach((syn) => {
+                      table += '<tr>'
+                        + '<td>' + syn.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                        if(syn.termSource !== undefined && syn.termSource !== null) table += '<td>'+ syn.termSource + '</td>'
+                        if(syn.termGroup !== undefined && syn.termGroup !== null) table += '<td>'+ syn.termGroup + '</td>'
+                        +'</tr>';
+                    });
+                  table += '</table>';
+                }
                 table +='</div></div>';
               });
               table +='</div>';
@@ -317,18 +376,48 @@ const generateCompareResult = (fromV, toV, option) => {
                 +'<div class="row table__td">'
                   + '<div class="col-xs-3">' + tmp_text.n_c + ' (NCIt)</div>'
                   + '<div class="col-xs-9">';
+                  if(tmp_text.s){
+                    table += '<table class="table table-striped">'
+                      +'<thead>'
+                        +'<tr>'
+                          +'<th>Term</th>'
+                          +'<th>Source</th>'
+                          +'<th>Type</th>'
+                        +'</tr>'
+                      +'</thead>';
                     tmp_text.s.forEach(function (s_v) {
-                      if(option.synonyms === false && option.sensitive === false) table += s_v + '</br>';
-                      if(option.synonyms === true && option.sensitive === true){
-                        table += s_v.replace(reg_key, "<b>$&</b>") + '</br>';
+                      if(option.synonyms === false && option.sensitive === false){ 
+                        table += '<tr>'
+                          + '<td>' + s_v.termName + '</td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
                       }
-                      else if(option.synonyms === true && s_v.trim().toLowerCase() === new_v.trim().toLowerCase()){
-                        table += "<b>" +s_v + '</b></br>';
+                      else if(option.synonyms === true && option.sensitive === true){
+                        table += '<tr>'
+                          + '<td>' + s_v.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
+                      }
+                      else if(option.synonyms === true && s_v.termName.trim().toLowerCase() === new_v.trim().toLowerCase()){
+                        table += '<tr>'
+                          + '<td><b>' +s_v.termName + '</b></td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
                       }
                       else{
-                        table += s_v  + '</br>';
+                        table += '<tr>'
+                          + '<td>' +s_v.termName + '</td>';
+                          if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
+                          if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
+                          +'</tr>';
                       }
-                    })
+                    });
+                    table += '</table>';
+                  }
+                    
                 table +='</div></div>'
               +'</div>';
             }
@@ -378,9 +467,24 @@ const generateCompareResult = (fromV, toV, option) => {
                   table +='<div class="row table__td">'
                   + '<div class="col-xs-3">' + syn.n_c + ' (NCIt)</div>'
                   + '<div class="col-xs-9">'
-                    syn.s.forEach(function (s_v) {
-                      table += s_v + '</br>'
-                    })
+                  if(syn.s){
+                    table += '<table class="table table-striped">'
+                      +'<thead>'
+                        +'<tr>'
+                          +'<th>Term</th>'
+                          +'<th>Source</th>'
+                          +'<th>Type</th>'
+                        +'</tr>'
+                      +'</thead>';
+                      syn.s.forEach((syn) => {
+                        table += '<tr>'
+                          + '<td>' + syn.termName + '</td>';
+                          if(syn.termSource !== undefined && syn.termSource !== null) table += '<td>'+ syn.termSource + '</td>'
+                          if(syn.termGroup !== undefined && syn.termGroup !== null) table += '<td>'+ syn.termGroup + '</td>'
+                          +'</tr>';
+                      });
+                    table += '</table>';
+                  }
                   table +='</div></div>'
                 }
               });
@@ -403,9 +507,24 @@ const generateCompareResult = (fromV, toV, option) => {
                 +'<div class="row table__td">'
                   + '<div class="col-xs-3">' + toV[i].n_c + ' (NCIt)</div>'
                   + '<div class="col-xs-9">';
-                  toV[i].s.forEach(function (s_v) {
-                      table += s_v + '</br>';
-                    })
+                  if(toV[i].s){
+                    table += '<table class="table table-striped">'
+                      +'<thead>'
+                        +'<tr>'
+                          +'<th>Term</th>'
+                          +'<th>Source</th>'
+                          +'<th>Type</th>'
+                        +'</tr>'
+                      +'</thead>';
+                      toV[i].s.forEach((syn) => {
+                        table += '<tr>'
+                          + '<td>' + syn.termName + '</td>';
+                          if(syn.termSource !== undefined && syn.termSource !== null) table += '<td>'+ syn.termSource + '</td>'
+                          if(syn.termGroup !== undefined && syn.termGroup !== null) table += '<td>'+ syn.termGroup + '</td>'
+                          +'</tr>';
+                      });
+                    table += '</table>';
+                  }
                 table +='</div></div>'
               +'</div>';
             }
@@ -427,31 +546,31 @@ const getMatchedSynonyms = (text, tmp, option) => {
       if(em.n_syn !== undefined && em.s === undefined){
         em.n_syn.forEach(n_s => {
           if(n_s.s === undefined) return;
-          n_s.s = n_s.s.map(x => {return x.toLowerCase()});
-          let s_idx = n_s.s.indexOf(tmp);
-          if(s_idx >= 0){
-            if(checker_n_c[n_s.n_c] === undefined ){
-              checker_n_c[n_s.n_c] = [];
-              checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
+          n_s.s.forEach(x => {
+            if(x.termName.trim().toLowerCase() === tmp){
+              if(checker_n_c[n_s.n_c] === undefined ){
+                checker_n_c[n_s.n_c] = [];
+                checker_n_c[n_s.n_c].push(x);
+              }
+              else if(checker_n_c[n_s.n_c] !== undefined && !_.some(checker_n_c[n_s.n_c], x)){
+                checker_n_c[n_s.n_c].push(x);
+              }
             }
-            else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(n_s.s[s_idx]) === -1){
-              checker_n_c[n_s.n_c].push(n_s.s[s_idx]);
-            }
-          }
+          });
         });
       }
       else if(em.s !== undefined && em.n_syn === undefined){
-        em.s = em.s.map(x => { return x.toLowerCase()});
-        let s_idx = em.s.indexOf(tmp);
-        if(s_idx >= 0){
-          if(checker_n_c[em.n_c] === undefined ){
-            checker_n_c[em.n_c] = [];
-            checker_n_c[em.n_c].push(em.s[s_idx]);
+        em.s.forEach(x => {
+          if(x.termName.trim().toLowerCase() === tmp){
+            if(checker_n_c[em.n_c] === undefined ){
+              checker_n_c[em.n_c] = [];
+              checker_n_c[em.n_c].push(x);
+            }
+            else if(checker_n_c[em.n_c] !== undefined && !_.some(checker_n_c[em.n_c], x)){
+              checker_n_c[em.n_c].push(x);
+            }
           }
-          else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(em.s[s_idx]) === -1){
-            checker_n_c[em.n_c].push(em.s[s_idx]);
-          }
-        }
+        });
       }
     });
     return checker_n_c;
@@ -463,15 +582,15 @@ const getMatchedSynonyms = (text, tmp, option) => {
       if(em.n_syn !== undefined && em.s === undefined){
         em.n_syn.forEach(n_s => {
           if(n_s.s === undefined) return;
-          n_s.s = n_s.s.map(x => {return x.toLowerCase()});
+          n_s.s = n_s.s.map(x => {return {termName: x.termName.toLowerCase(), termGroup: x.termGroup, termSource: x.termSource}});
           n_s.s.forEach(tmp_s => {
-            let s_idx = tmp_s.indexOf(tmp);
+            let s_idx = tmp_s.termName.indexOf(tmp);
             if(s_idx >= 0){
               if(checker_n_c[n_s.n_c] === undefined ){
                 checker_n_c[n_s.n_c] = [];
                 checker_n_c[n_s.n_c].push(tmp_s);
               }
-              else if(checker_n_c[n_s.n_c] !== undefined && checker_n_c[n_s.n_c].indexOf(tmp_s) === -1){
+              else if(checker_n_c[n_s.n_c] !== undefined && !_.some(checker_n_c[n_s.n_c], tmp_s)){
                 checker_n_c[n_s.n_c].push(tmp_s);
               }
             }
@@ -479,15 +598,15 @@ const getMatchedSynonyms = (text, tmp, option) => {
         });
       }
       else if(em.s !== undefined && em.n_syn === undefined){
-        em.s = em.s.map(x => { return x.toLowerCase()});
+        em.s = em.s.map(x => { return {termName: x.termName.toLowerCase(), termGroup: x.termGroup, termSource: x.termSource}});
         em.s.forEach(tmp_s => {
-          let s_idx = tmp_s.indexOf(tmp);
+          let s_idx = tmp_s.termName.indexOf(tmp);
           if(s_idx >= 0){
             if(checker_n_c[em.n_c] === undefined ){
               checker_n_c[em.n_c] = [];
               checker_n_c[em.n_c].push(tmp_s);
             }
-            else if(checker_n_c[em.n_c] !== undefined && checker_n_c[em.n_c].indexOf(tmp_s) === -1){
+            else if(checker_n_c[em.n_c] !== undefined && !_.some(checker_n_c[em.n_c], tmp_s)){
               checker_n_c[em.n_c].push(tmp_s);
             }
           }
@@ -503,7 +622,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
   let v_lowercase = [], v_matched = [];
   toV.forEach(function (v) {
     v_lowercase.push(v.n.trim().toLowerCase());
-    if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return x.toLowerCase(); });
+    if(v.s && v.s.length > 0) v.s = v.s.map(function(x){ return {termName: x.termName.toLowerCase(), termSource: x.termSource, termGroup: x.termGroup}; });
     if(v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function(x){ return x.toLowerCase(); });
   });
 
@@ -563,7 +682,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
             }
             if (em.s) {
               em.s.forEach(syn => {
-                if (syn.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
+                if (syn.termName.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
                   text.push(toV[i]);
                   checker_n.push(toV[i].n);
                   v_matched.push(i);
@@ -596,7 +715,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
               if (syn.s.length !== 0) {
                 csv += tmp_index === 0 ? '""\n,,,"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
                 syn.s.forEach(function (s_v) {
-                  csv += '"' + s_v + '",';
+                  csv += '"' + s_v.termName + '",';
                 });
                 csv += '\n';
                 new_line = false;
@@ -609,7 +728,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
           if (tmp_text.s.length !== 0) {
             csv +='"' + tmp_text.n_c + '",';
             tmp_text.s.forEach(function (s_v) {
-              csv += '"' + s_v + '",';
+              csv += '"' + s_v.termName + '",';
             });
             csv += '\n';
             new_line = false;
@@ -644,7 +763,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
               if (syn.s !== undefined && syn.s.length !== 0) {
                 csv += index === 0 ? '""\n,,,"' + syn.n_c + '",':'"","","","' + syn.n_c + '",';
                 syn.s.forEach(function (s_v) {
-                  csv += '"' + s_v + '",';
+                  csv += '"' + s_v.termName + '",';
                 });
                 csv += '\n';
                 new_line = false;
@@ -656,7 +775,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
           if (toV[i].s.length !== 0) {
             csv +='"' + toV[i].n_c + '",';
             toV[i].s.forEach(function (s_v) {
-              csv += '"' + s_v + '",';
+              csv += '"' + s_v.termName + '",';
             });
             csv += '\n';
             new_line = false;

@@ -83,14 +83,76 @@ export const htmlChildContent = (tag, tmpl) =>{
     return tmp_s;
 }
 
+export const getAllSyn = (items) => {
+  let all_icdo3_syn = {};
+  items.forEach(item => {
+    if(item.i_c === undefined) return;
+    if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
+      all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
+      if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+      if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
+    }else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
+      if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+      if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
+      all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+    }
+  });
+  return  all_icdo3_syn;
+}
+
 export const searchFilter = (items, keyword) => {
+  let all_icdo3_syn = all_icdo3_syn = getAllSyn(items);
   let new_item = [];
   JSON.parse(JSON.stringify(items)).forEach(item =>{
     let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
     if(idx !== -1){
-      item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
       if(idx === 0) new_item.unshift(item);
       if(idx !== 0) new_item.push(item);
+    }
+  });
+  // Search in synonyms
+  JSON.parse(JSON.stringify(items)).forEach(item =>{
+   if(item.s !== undefined){
+    let tmp_arr = item.s.map(function(s){return s.termName.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
+    if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
+      new_item.push(item);
+    }
+   }
+  });
+
+  // Search in all_syn synonyms if it has icdo3 code
+  JSON.parse(JSON.stringify(items)).forEach(item =>{
+    if(item.all_syn !== undefined){
+      let tmp_arr = item.all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
+      if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
+        new_item.push(item);
+      }
+    }
+    else if(item.i_c !== undefined && all_icdo3_syn[item.i_c.c] && all_icdo3_syn[item.i_c.c].all_syn){
+     let tmp_arr = all_icdo3_syn[item.i_c.c].all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
+     if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
+       new_item.push(item);
+     }
+    }
+   });
+
+  // Highlight matched values and synonyms
+  new_item.forEach(item =>{
+    item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
+    if(item.s !== undefined){
+     item.s = item.s.map(function(s) {return {termName: s.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: s.termGroup, termSource: s.termSource}});
+    }
+    if(item.i_c !== undefined && item.i_c.n_syn !== undefined){
+      item.i_c.n_syn.forEach(syn => {
+        if(syn.s === undefined) return;
+        syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
+      })
+    }
+    if(item.n_syn !== undefined){
+      item.n_syn.forEach(syn => {
+        if(syn.s === undefined) return;
+        syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
+      })
     }
   });
   return new_item;
