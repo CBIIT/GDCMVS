@@ -152,33 +152,10 @@ const loadDataType = (ids, next)  => {
 
 const loadSynonyms = next => {
 	let ncitids = [];
-	//load cde ncit codes
-	let cde = shared.readCDEData();
 	//load concept codes
 	let concept = shared.readConceptCode();
 	//load ICD-0 codes
 	let icdo = shared.readGDCValues();
-	for (let c in cde) {
-		let arr = cde[c];
-		if (arr.length !== 0) {
-			arr.forEach(pv => {
-				if (pv.pvc && pv.pvc !== "") {
-					if (pv.pvc.indexOf(':') >= 0) {
-						let cs = pv.pvc.split(":");
-						cs.forEach(c => {
-							if (ncitids.indexOf(c) === -1) {
-								ncitids.push(c);
-							}
-						});
-					} else {
-						if (ncitids.indexOf(pv.pvc) === -1) {
-							ncitids.push(pv.pvc);
-						}
-					}
-				}
-			});
-		}
-	}
 	for (let cc in concept) {
 		let dict = concept[cc];
 		for (let v in dict) {
@@ -196,19 +173,16 @@ const loadSynonyms = next => {
 		});
 	}
 	let ncit = [];
-	let ctcae = [];
 
 	ncitids.forEach(id => {
-		if (id.indexOf('E') >= 0) {
-			ctcae.push(id);
-		} else {
+		if (id.indexOf('E') === -1) {
 			ncit.push(id);
 		}
 	});
 	//get data
 	if(ncit.length > 0){
-		fs.truncate('./server/data_files/synonyms_ncit.js', 0, () => {
-			console.log('synonyms_ncit.js truncated')
+		fs.truncate('./server/data_files/ncit_details.js', 0, () => {
+			console.log('ncit_details.js truncated')
 		});
 		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
 			return next(data);
@@ -217,6 +191,106 @@ const loadSynonyms = next => {
 		logger.debug('Already up to date');
 		return next('Success');
 	}
+};
+
+const loadNcitSynonyms_continue = next => {
+	let ncitids = [];
+	let synonyms = shared.readNCItDetails();
+	//load concept codes
+	let cc = shared.readConceptCode();
+	let gdc_values = shared.readGDCValues();
+	for (let c in cc) {
+		let vs = cc[c];
+		for (let v in vs) {
+			let code = vs[v];
+			if (code !== "" && ncitids.indexOf(code) == -1) {
+				ncitids.push(code);
+			}
+		}
+	}
+	for(let cnp in gdc_values){
+		let enums = gdc_values[cnp];
+		enums.forEach(em => {
+			let n_c = em.n_c;
+			if(ncitids.indexOf(n_c) === -1){
+				ncitids.push(n_c);
+			}
+		});
+	}
+	let ncit = [];
+	ncitids.forEach(id => {
+		if (!(id in synonyms)) {
+			if (id.indexOf('E') === -1) {
+				ncit.push(id);
+			}
+		} else {
+			logger.debug("in the synonyms:" + id);
+		}
+	});
+	if(ncit.length > 0){
+		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
+			return next(data);
+		});
+	}else{
+		logger.debug('Already up to date');
+		return next('Success');
+	}
+};
+
+const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
+	if (idx >= ncitids.length) {
+		return;
+	}
+	let syn = [];
+	https.get(config.NCIt_url[4] + ncitids[idx], (rsp) => {
+		let html = '';
+		rsp.on('data', (dt) => {
+			html += dt;
+		});
+		rsp.on('end', () => {
+			if (html.trim() !== '') {
+				let d = JSON.parse(html);
+				if (d.synonyms !== undefined) {
+					let tmp = {}
+					tmp[ncitids[idx]] = {};
+					tmp[ncitids[idx]].preferredName = d.preferredName;
+					tmp[ncitids[idx]].code = d.code;
+					tmp[ncitids[idx]].definitions = d.definitions;
+					tmp[ncitids[idx]].synonyms = [];
+					let checker_arr = [];
+					d.synonyms.forEach(data => {
+						if(checker_arr.indexOf((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase()) !== -1) return;
+						let obj = {};
+						obj.termName = data.termName;
+						obj.termGroup = data.termGroup;
+						obj.termSource = data.termSource;
+						tmp[ncitids[idx]].synonyms.push(obj);
+						checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
+					});
+					let str = {};
+					str[ncitids[idx]] = syns;
+					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), err => {
+						if (err) return logger.error(err);
+					});
+				} else {
+					logger.debug("!!!!!!!!!!!! no synonyms for " + ncitids[idx]);
+				}
+
+			}
+			syns[ncitids[idx]] = syn;
+			idx++;
+			synchronziedLoadSynonmysfromNCIT(ncitids, idx, next);
+			if (ncitids.length == idx) {
+				return next('Success');
+			} else {
+				return next("NCIT finished number: " + idx + " of " + ncitids.length + "\n");
+			}
+
+		});
+
+	}).on('error', (e) => {
+		logger.debug(e);
+	});
 };
 
 const loadSynonymsCtcae = next => {
@@ -264,14 +338,11 @@ const loadSynonymsCtcae = next => {
 			}
 		});
 	}
-	let ncit = [];
 	let ctcae = [];
 
 	ncitids.forEach(id => {
 		if (id.indexOf('E') >= 0) {
 			ctcae.push(id);
-		} else {
-			ncit.push(id);
 		}
 	});
 
@@ -284,55 +355,6 @@ const loadSynonymsCtcae = next => {
 			return next(data);
 		});
 	} else {
-		logger.debug('Already up to date');
-		return next('Success');
-	}
-};
-
-const loadNcitSynonyms_continue = next => {
-	let ncitids = [];
-	let synonyms = shared.readSynonyms();
-	//load concept codes
-	let cc = shared.readConceptCode();
-	let gdc_values = shared.readGDCValues();
-	for (let c in cc) {
-		let vs = cc[c];
-		for (let v in vs) {
-			let code = vs[v];
-			if (code !== "" && ncitids.indexOf(code) == -1) {
-				ncitids.push(code);
-			}
-		}
-	}
-	for(let cnp in gdc_values){
-		let enums = gdc_values[cnp];
-		enums.forEach(em => {
-			let n_c = em.n_c;
-			if(ncitids.indexOf(n_c) === -1){
-				ncitids.push(n_c);
-			}
-		});
-	}
-	let ncit = [];
-	let ctcae = [];
-	ncitids.forEach(id => {
-		if (!(id in synonyms)) {
-			if (id.indexOf('E') >= 0) {
-				ctcae.push(id);
-			} else {
-				ncit.push(id);
-			}
-		} else {
-			logger.debug("in the synonyms:" + id);
-		}
-	});
-	logger.debug(ncit);
-	logger.debug("length of NCIt codes: " + ncit.length);
-	if(ncit.length > 0){
-		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
-			return next(data);
-		});
-	}else{
 		logger.debug('Already up to date');
 		return next('Success');
 	}
@@ -353,14 +375,11 @@ const loadCtcaeSynonyms_continue = next => {
 		}
 
 	}
-	let ncit = [];
 	let ctcae = [];
 	ncitids.forEach(id => {
 		if (!(id in synonyms)) {
 			if (id.indexOf('E') >= 0) {
 				ctcae.push(id);
-			} else {
-				ncit.push(id);
 			}
 		}
 	});
@@ -374,57 +393,6 @@ const loadCtcaeSynonyms_continue = next => {
 		logger.debug('Already up to date');
 		return next('Success');
 	}
-};
-
-
-const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
-	if (idx >= ncitids.length) {
-		return;
-	}
-	logger.debug("searching synonyms using NCIT code (#" + idx + "): total = " + ncitids.length + ": " + ncitids[idx]);
-	let syn = [];
-	https.get(config.NCIt_url[4] + ncitids[idx], (rsp) => {
-		let html = '';
-		rsp.on('data', (dt) => {
-			html += dt;
-		});
-		rsp.on('end', () => {
-			if (html.trim() !== '') {
-				let d = JSON.parse(html);
-				if (d.synonyms !== undefined) {
-					let syns = d.synonyms;
-					let pool = [];
-					syns.forEach(s => {
-						if (pool.indexOf(s.termName) === -1) {
-							pool.push(s.termName);
-							syn.push(s.termName);
-						}
-					});
-					let str = {};
-					str[ncitids[idx]] = syn;
-					fs.appendFile("./server/data_files/synonyms_ncit.js", JSON.stringify(str), err => {
-						if (err) return logger.error(err);
-						logger.debug("#########synonyms for " + ncitids[idx] + ": " + syn.toString());
-					});
-				} else {
-					logger.debug("!!!!!!!!!!!! no synonyms for " + ncitids[idx]);
-				}
-
-			}
-			syns[ncitids[idx]] = syn;
-			idx++;
-			synchronziedLoadSynonmysfromNCIT(ncitids, idx, next);
-			if (ncitids.length == idx) {
-				return next('Success');
-			} else {
-				return next("NCIT finished number: " + idx + " of " + ncitids.length + "\n");
-			}
-
-		});
-
-	}).on('error', (e) => {
-		logger.debug(e);
-	});
 };
 
 const synchronziedLoadSynonmysfromCTCAE = (ids, idx, next) => {
@@ -468,8 +436,6 @@ const synchronziedLoadSynonmysfromCTCAE = (ids, idx, next) => {
 					str[ids[idx]] = syn;
 					fs.appendFile("./server/data_files/synonyms_ctcae.js", JSON.stringify(str), err => {
 						if (err) return logger.error(err);
-
-						logger.debug("#########synonyms for " + ids[idx] + ": " + syn.toString());
 					});
 				} else {
 					logger.debug("!!!!!!!!!!!! no synonyms for " + ids[idx]);

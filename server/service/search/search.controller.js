@@ -173,12 +173,8 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			query.query_string.fields.push("desc");
 		}
 		if (option.syn) {
-			query.query_string.fields.push("enum.s.have");
+			query.query_string.fields.push("enum.s.termName.have");
 			// query.query_string.fields.push("enum.all_syn.have");
-			query.query_string.fields.push("cde_pv.n.have");
-			query.query_string.fields.push("cde_pv.ss.s.have");
-			query.query_string.fields.push("cde_pv.ss.c");
-
 		}
 		query.query_string.fields.push("enum.n_c");
 		query.query_string.fields.push("enum.all_n_c");
@@ -201,11 +197,8 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 				m.multi_match.fields.push("desc");
 			}
 			if (option.syn) {
-				m.multi_match.fields.push("enum.s");
+				m.multi_match.fields.push("enum.s.termName");
 				// m.multi_match.fields.push("enum.all_syn");
-				m.multi_match.fields.push("cde_pv.n");
-				m.multi_match.fields.push("cde_pv.ss.s");
-				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
@@ -228,11 +221,8 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 					m.multi_match.fields.push("desc");
 				}
 				if (option.syn) {
-					m.multi_match.fields.push("enum.s");
+					m.multi_match.fields.push("enum.s.termName");
 					// m.multi_match.fields.push("enum.all_syn");
-					m.multi_match.fields.push("cde_pv.n");
-					m.multi_match.fields.push("cde_pv.ss.s");
-					m.multi_match.fields.push("cde_pv.ss.c");
 				}
 				m.multi_match.fields.push("enum.n");
 				m.multi_match.fields.push("enum.n_c");
@@ -258,11 +248,8 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 						m.multi_match.fields.push("desc");
 					}
 					if (option.syn) {
-						m.multi_match.fields.push("enum.s");
+						m.multi_match.fields.push("enum.s.termName");
 						// m.multi_match.fields.push("enum.all_syn");
-						m.multi_match.fields.push("cde_pv.n");
-						m.multi_match.fields.push("cde_pv.ss.s");
-						m.multi_match.fields.push("cde_pv.ss.c");
 					}
 					m.multi_match.fields.push("enum.n");
 					m.multi_match.fields.push("enum.n_c");
@@ -281,11 +268,8 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 						m.multi_match.fields.push("desc");
 					}
 					if (option.syn) {
-						m.multi_match.fields.push("enum.s");
+						m.multi_match.fields.push("enum.s.termName");
 						// m.multi_match.fields.push("enum.all_syn");
-						m.multi_match.fields.push("cde_pv.n");
-						m.multi_match.fields.push("cde_pv.ss.s");
-						m.multi_match.fields.push("cde_pv.ss.c");
 					}
 					m.multi_match.fields.push("enum.n");
 					m.multi_match.fields.push("enum.n_c");
@@ -314,24 +298,12 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 			if (option.syn) {
 				m = {};
 				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["enum.s.have"] = keyword;
+				m.match_phrase_prefix["enum.s.termName.have"] = keyword;
 				query.bool.should.push(m);
 				// m = {};
 				// m.match_phrase_prefix = {};
 				// m.match_phrase_prefix["enum.all_syn.have"] = keyword;
 				// query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
-				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
-				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.ss.c"] = keyword;
-				query.bool.should.push(m);
 			}
 			m = {};
 			m.match_phrase_prefix = {};
@@ -365,11 +337,8 @@ const generateQuery = (keyword, option, isBoolSearch) => {
 				m.multi_match.fields.push("desc");
 			}
 			if (option.syn) {
-				m.multi_match.fields.push("enum.s");
+				m.multi_match.fields.push("enum.s.termName");
 				// m.multi_match.fields.push("enum.all_syn");
-				m.multi_match.fields.push("cde_pv.n");
-				m.multi_match.fields.push("cde_pv.ss.s");
-				m.multi_match.fields.push("cde_pv.ss.c");
 			}
 			m.multi_match.fields.push("enum.n");
 			m.multi_match.fields.push("enum.n_c");
@@ -421,11 +390,8 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			highlight.highlight_query.query_string.fields.push("desc");
 		}
 		if (option.syn) {
-			highlight.highlight_query.query_string.fields.push("enum.s.have");
+			highlight.highlight_query.query_string.fields.push("enum.s.termName.have");
 			// highlight.highlight_query.query_string.fields.push("enum.all_syn.have");
-			highlight.highlight_query.query_string.fields.push("cde_pv.n.have");
-			highlight.highlight_query.query_string.fields.push("cde_pv.ss.s.have");
-			highlight.highlight_query.query_string.fields.push("cde_pv.ss.c");
 
 		}
 		highlight.highlight_query.query_string.fields.push("enum.n_c");
@@ -439,21 +405,12 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			};
 		}
 		if (option.syn) {
-			highlight.fields["enum.s.have"] = {
+			highlight.fields["enum.s.termName.have"] = {
 				"number_of_fragments": 0
 			};
 			// highlight.fields["enum.all_syn.have"] = {
 			// 	"number_of_fragments": 0
 			// };
-			highlight.fields["cde_pv.n.have"] = {
-				"number_of_fragments": 0
-			};
-			highlight.fields["cde_pv.ss.s.have"] = {
-				"number_of_fragments": 0
-			};
-			highlight.fields["cde_pv.ss.c"] = {
-				"number_of_fragments": 0
-			};
 		}
 	}
 	else if(isBoolSearch.value === true && option.match === "exact"){
@@ -475,11 +432,8 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 			};
 		}
 		if (option.syn) {
-			highlight.fields["enum.s"] = {};
+			highlight.fields["enum.s.termName"] = {};
 			// highlight.fields["enum.all_syn"] = {};
-			highlight.fields["cde_pv.n"] = {};
-			highlight.fields["cde_pv.ss.s"] = {};
-			highlight.fields["cde_pv.ss.c"] = {};
 		}
 
 	} 
@@ -515,21 +469,12 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				};
 			}
 			if (option.syn) {
-				highlight.fields["enum.s.have"] = {
+				highlight.fields["enum.s.termName.have"] = {
 					"number_of_fragments": 0
 				};
 				// highlight.fields["enum.all_syn.have"] = {
 				// 	"number_of_fragments": 0
 				// };
-				highlight.fields["cde_pv.n.have"] = {
-					"number_of_fragments": 0
-				};
-				highlight.fields["cde_pv.ss.s.have"] = {
-					"number_of_fragments": 0
-				};
-				highlight.fields["cde_pv.ss.c"] = {
-					"number_of_fragments": 0
-				};
 			}
 		} else {
 			highlight = {
@@ -550,11 +495,8 @@ const generateHighlight = (keyword, option, isBoolSearch) => {
 				};
 			}
 			if (option.syn) {
-				highlight.fields["enum.s"] = {};
+				highlight.fields["enum.s.termName"] = {};
 				// highlight.fields["enum.all_syn"] = {};
-				highlight.fields["cde_pv.n"] = {};
-				highlight.fields["cde_pv.ss.s"] = {};
-				highlight.fields["cde_pv.ss.c"] = {};
 			}
 		}
 	}
@@ -628,7 +570,7 @@ const indexing = (req, res) => {
 						},
 						"analyzer": "case_insensitive"
 					},
-					"enum.s": {
+					"enum.s.termName": {
 						"type": "text",
 						"fields": {
 							"have": {
@@ -637,15 +579,15 @@ const indexing = (req, res) => {
 						},
 						"analyzer": "case_insensitive"
 					},
-					"enum.all_syn": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
-							}
-						},
-						"analyzer": "case_insensitive"
-					},
+					// "enum.all_syn.termName": {
+					// 	"type": "text",
+					// 	"fields": {
+					// 		"have": {
+					// 			"type": "text"
+					// 		}
+					// 	},
+					// 	"analyzer": "case_insensitive"
+					// },
 					"enum.n_c": {
 						"type": "text",
 						"analyzer": "case_insensitive"
@@ -655,28 +597,6 @@ const indexing = (req, res) => {
 						"analyzer": "case_insensitive"
 					},
 					"cde.id": {
-						"type": "text",
-						"analyzer": "case_insensitive"
-					},
-					"cde_pv.n": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
-							}
-						},
-						"analyzer": "case_insensitive"
-					},
-					"cde_pv.ss.s": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
-							}
-						},
-						"analyzer": "case_insensitive"
-					},
-					"cde_pv.ss.c": {
 						"type": "text",
 						"analyzer": "case_insensitive"
 					},
@@ -918,7 +838,6 @@ const preloadSynonumsNcit = (req, res) => {
 	let arr = [];
 	elastic.loadSynonyms(result => {
 		if (result === "Success") {
-			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
 			if (arr.length === 50) {

@@ -21,13 +21,13 @@ const gdcData = (prop, tgt, keyword) => {
     let reg_key = new RegExp(keyword.replace(/( NOT | AND | OR )/g, "|"), "ig");
 
     items.forEach(function (item) {
-      let tt = item.term_type !== undefined ? item.term_type : "";
+      let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "";
       let term_type = "";
       if(tt !== ""){
         term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
       }
-      else{
-        term_type += "(*)";
+      else if(tt === ""){
+        term_type = "(*)";
       }
       if (item.i_c !== undefined) {
         if(item.i_c.c in tmp_obj){

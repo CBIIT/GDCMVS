@@ -5,18 +5,18 @@
     </div>
     <div class="col-xs-9">
       <div class="table__thead row">
-        <div class="table__th col-xs-6">Matched GDC Values
+        <div class="table__th col-xs-12">Matched GDC Values
           <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
             title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property.">
             <i class="fa fa-info-circle"></i>
           </a>
         </div>
-        <div class="table__th col-xs-6">CDE Permissible Values
+        <!-- <div class="table__th col-xs-6">CDE Permissible Values
           <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
             title="For GDC dictionary properties that have a corresponding caDSR clinical data element (CDE), these values are part of that CDE\s value domain in the caDSR. They may not currently be available in the GDC dictionary.">
             <i class="fa fa-info-circle"></i>
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -51,13 +51,14 @@
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
             <a href="{{:cdeUrl}}" target="_blank">CDE</a>
-            {{if local && cdeLen}},
+            {{if local && cdeLen}}
+            <!-- , -->
               {{if tgts_cde_n !== ""}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
               {{else}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>, -->
               {{/if}}
-              <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}"> Compare with GDC</a>
+              <!-- <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}"> Compare with GDC</a> -->
             {{else cdeLen}},
               {{if tgts_cde_n !== ""}}
                 <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
@@ -75,7 +76,7 @@
             {{/if}}
             <div class="row table__row--flex">
 
-              <div class="table__td table__gdc-values col-xs-6">
+              <div class="table__td table__gdc-values col-xs-12">
                 {{if n == "no match" || gdc_d == false}}
                 <div class="row">
                   <div class="col-xs-8">no match</div>
@@ -88,7 +89,7 @@
                   <div class="col-xs-10">
                     <a class="getGDCData" href="#" data-ref="{{:ref}}" data-tgt="{{:n}}" data-keyword="{{:~root.options.keyword}}">{{:n}}</a>
                   </div>
-                  <div class="col-xs-2 table__center">
+                  <div class="col-xs-2 table__right">
                     {{if s.length || term_i_c !== undefined}}
                     <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
                       <i class="fa fa-plus"></i>
@@ -108,7 +109,24 @@
                       <div class="col-xs-4">
                         <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
                       </div>
-                      <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
+                      <div class="col-xs-8">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Term</th>
+                              <th>Source</th>
+                              <th>Type</th>
+                            </tr>
+                          </thead>
+                          {{for s}}
+                          <tr>
+                            <td>{{:termName}}</td>
+                            <td>{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
+                            <td>{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
+                          </tr>
+                          {{/for}}
+                        </table>
+                      </div>
                     </div>
                     {{/for}}
                   {{/if}}
@@ -117,18 +135,36 @@
                     <div class="col-xs-4">
                       <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
                     </div>
-                    <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
+                    <div class="col-xs-8">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Term</th>
+                            <th>Source</th>
+                            <th>Type</th>
+                          </tr>
+                        </thead>
+                
+                        {{for s}}
+                        <tr>
+                          <td>{{:termName}}</td>
+                          <td>{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
+                          <td>{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
+                        </tr>
+                        {{/for}}
+                      </table>
+                    </div>
                   </div>
                   {{/if}}
                 </div>
                 {{/if}}
               </div>
 
-              <div class="table__td table__cde-values col-xs-6">
+              <!-- <div class="table__td table__cde-values col-xs-6">
                 {{if cde_s.length }}
                 <div class="row">
                   <div class="col-xs-10">{{:cde_pv}}</div>
-                  <div class="col-xs-2 table__center">
+                  <div class="col-xs-2 table__right">
                     <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
                       <i class="fa fa-plus"></i>
                     </a>
@@ -145,12 +181,30 @@
                       <a class="getNCITDetails" href="#" data-uid="{{:c}}">{{:c}}</a> (NCIt) {{* } else { }} {{:c}} (CTCAE){{*
                       } }}
                     </div>
-                    <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
+                    <div class="col-xs-8">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Term</th>
+                            <th>Source</th>
+                            <th>Type</th>
+                          </tr>
+                        </thead>
+                
+                        {{for s}}
+                        <tr>
+                          <td>{{:termName}}</td>
+                          <td>{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
+                          <td>{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
+                        </tr>
+                        {{/for}}
+                      </table>
+                    </div>
                   </div>
                   {{/for}}
                 </div>
                 {{/if}}
-              </div>
+              </div> -->
             </div>
           {{/for}}
           {{if vs.length > 5}}
