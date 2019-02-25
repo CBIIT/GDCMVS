@@ -92,7 +92,7 @@ export const dtRender = (items, keyword, search_option) => {
     let hl = item.highlight;
     if(_.isEmpty(hl)) return;
     let source = item._source;
-    let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+    let enum_s = ("enum.s.termName" in hl) || ("enum.s.termName.have" in hl) ? hl['enum.s.termName'] || hl["enum.s.termName.have"] : [];
     let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
     let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
     let enum_gdc_n = [];
@@ -344,7 +344,7 @@ export const dtRender = (items, keyword, search_option) => {
 
             if (v.s !== undefined && e.exist !== true) {
               v.s.forEach(function (syn) {
-                if (arr_enum_s.indexOf(syn) !== -1) {
+                if (arr_enum_s.indexOf(syn.termName) !== -1) {
                   e.exist = true;
                 }
               });

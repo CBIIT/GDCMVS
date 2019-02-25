@@ -107,28 +107,28 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 
 
 							//generate cde_pv for properties index
-							p.cde_pv = [];
-							entry.syns.forEach(sn => {
-								let tmp = {};
-								tmp.n = sn.pv;
-								tmp.m = sn.pvm;
-								tmp.d = sn.pvd;
-								tmp.ss = [];
-								if (sn.syn !== undefined) {
-									let v = {};
-									v.c = sn.pvc;
-									v.s = sn.syn;
-									tmp.ss.push(v);
-								} else if (sn.ss !== undefined) {
-									sn.ss.forEach(s => {
-										let v = {};
-										v.c = s.code;
-										v.s = s.syn;
-										tmp.ss.push(v);
-									});
-								}
-								p.cde_pv.push(tmp);
-							});
+							// p.cde_pv = [];
+							// entry.syns.forEach(sn => {
+							// 	let tmp = {};
+							// 	tmp.n = sn.pv;
+							// 	tmp.m = sn.pvm;
+							// 	tmp.d = sn.pvd;
+							// 	tmp.ss = [];
+							// 	if (sn.syn !== undefined) {
+							// 		let v = {};
+							// 		v.c = sn.pvc;
+							// 		v.s = sn.syn;
+							// 		tmp.ss.push(v);
+							// 	} else if (sn.ss !== undefined) {
+							// 		sn.ss.forEach(s => {
+							// 			let v = {};
+							// 			v.c = s.code;
+							// 			v.s = s.syn;
+							// 			tmp.ss.push(v);
+							// 		});
+							// 	}
+							// 	p.cde_pv.push(tmp);
+							// });
 						}
 					} else if (entry.term.termDef.source === 'NCIt') {
 						p.ncit = {};
@@ -151,7 +151,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				let tmp = {};
 				tmp.pv = s;
 				tmp.pvc = cc[s];
-				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
+				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc].synonyms : [];
 				entry.syns.push(tmp);
 			}
 			if (entry.enum === undefined) {
@@ -167,7 +167,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				tmp.pv = v.nm;
 				tmp.code = v.i_c;
 				tmp.pvc = v.n_c;
-				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
+				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc].synonyms : [];
 				tmp.term_type = v.term_type;
 				entry.syns.push(tmp);
 				enums.push(v.nm);
@@ -400,37 +400,38 @@ const bulkIndex = next => {
 	
 	let ccode = shared.readConceptCode();
 	gdc_values = shared.readGDCValues();
+	let syns = shared.readNCItDetails();
+
 	cdeData = shared.readCDEData();
-	let syns = shared.readSynonyms();
 	cdeDataType = shared.readCDEDataType();
-	for (var c in cdeData) {
-		let pvs = cdeData[c];
-		pvs.forEach(pv => {
-			if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
-				pv.syn = syns[pv.pvc];
-			}
-			if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
-				let cs = pv.pvc.split(":");
-				let synonyms = [];
-				cs.forEach(s => {
-					if (!(s in syns)) {
-						return;
-					}
-					let entry = {};
-					entry.code = s;
-					entry.syn = syns[s];
-					synonyms.push(entry);
-				});
-				pv.ss = synonyms;
-			}
-		});
-	}
-	var count = 0,
-		total = 0;
+	// for (var c in cdeData) {
+	// 	let pvs = cdeData[c];
+	// 	pvs.forEach(pv => {
+	// 		if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
+	// 			pv.syn = syns[pv.pvc].synonyms;
+	// 		}
+	// 		if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
+	// 			let cs = pv.pvc.split(":");
+	// 			let synonyms = [];
+	// 			cs.forEach(s => {
+	// 				if (!(s in syns)) {
+	// 					return;
+	// 				}
+	// 				let entry = {};
+	// 				entry.code = s;
+	// 				entry.syn = syns[s].synonyms;
+	// 				synonyms.push(entry);
+	// 			});
+	// 			pv.ss = synonyms;
+	// 		}
+	// 	});
+	// }
+	// var count = 0,
+	// 	total = 0;
 	var termsJson = yaml.load(folderPath + '/_terms.yaml');
 	var defJson = yaml.load(folderPath + '/_definitions.yaml');
 	extendDef(termsJson, defJson);
-	let bulkBody = [];
+	// let bulkBody = [];
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -627,10 +628,10 @@ const bulkIndex = next => {
 			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
 				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
 			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
+				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
 				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
 			}
 		});
@@ -640,12 +641,12 @@ const bulkIndex = next => {
 		result.enum.forEach(item => {
 			if(item.i_c === undefined) return;
 			if(all_icdo3_syn[item.i_c.c]){
-				item.all_syn = [];
-				item.all_n_c = [];
+				// item.all_syn = [];
+				// item.all_n_c = [];
 				item.n_syn = [];
 				item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
-				item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
-				item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
+				// item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
+				// item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
 			}
 			if(all_icdo3_enums[item.i_c.c]){
 				item.ic_enum = [];
@@ -698,69 +699,7 @@ const bulkIndex = next => {
 	});
 }
 exports.bulkIndex = bulkIndex;
-const removeDuplicateSynonyms = (it) => {
-    if (it.s == undefined) return;
-    let cache = {};
-    let tmp_s = [];
-    it.s.forEach(function (s) {
-      let lc = s.trim().toLowerCase();
-      if (!(lc in cache)) {
-        cache[lc] = [];
-      }
-      cache[lc].push(s);
-    });
-    for (let idx in cache) {
-      //find the term with the first character capitalized
-      let word = findWord(cache[idx]);
-      tmp_s.push(word);
-    }
-    return tmp_s;
-}
-const findWord = (words) => {
-	let word = "";
-	if (words.length == 1) {
-	  return words[0];
-	}
-	words.forEach(function (w) {
-	  if (word !== "") {
-		return;
-	  }
-	  let idx_space = w.indexOf(" ");
-	  let idx_comma = w.indexOf(",");
-	  if (idx_space == -1 && idx_comma == -1) {
-		if (/^[A-Z][a-z0-9]{0,}$/.test(w)) {
-		  word = w;
-		}
-	  }
-	  else if (idx_space !== -1 && idx_comma == -1) {
-		if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
-		  word = w;
-		}
-	  }
-	  else if (idx_space == -1 && idx_comma !== -1) {
-		if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
-		  word = w;
-		}
-	  }
-	  else {
-		if (idx_comma > idx_space) {
-		  if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
-			word = w;
-		  }
-		}
-		else {
-		  if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
-			word = w;
-		  }
-		}
-	  }
-  
-	});
-	if (word == "") {
-	  word = words[0];
-	}
-	return word;
-  };
+
 const query = (index, dsl, highlight, next) => {
 	var body = {
 		size: 1000,

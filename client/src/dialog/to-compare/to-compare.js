@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, removeDuplicateSynonyms, searchFilter } from '../../shared';
+import { getHeaderOffset, htmlChildContent, searchFilter, getAllSyn } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -14,27 +14,14 @@ const toCompare = (uid) => {
     let icdo = false;
     let icdo_items = [];
     let item_checker = {};
-    let all_icdo3_syn = {};
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let body_template = htmlChildContent('BodyTemplate', tmpl);
     let bottom_template = htmlChildContent('BottomTemplate', tmpl);
 
-    // Collecting all synonyms and ncit in one array for particular ICDO3 code
-    items.forEach(item => {
-      if(item.i_c === undefined) return;
-      if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
-        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-        if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
-        if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
-      }else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
-        if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: removeDuplicateSynonyms(item)});
-        if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(removeDuplicateSynonyms(item));
-        all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
-      }
-    });
+    // Collecting all synonyms and ncit code in one array for particular ICDO3 code
+    let all_icdo3_syn = getAllSyn(items);
 
     items.forEach(function (item) {
-      item.s = removeDuplicateSynonyms(item);
       if (item.i_c !== undefined) {
         icdo = true;
       }
@@ -45,7 +32,7 @@ const toCompare = (uid) => {
         let tmp_item = {
           n: item.n,
           i_c: item.i_c ? item.i_c : undefined,
-          n_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].n_syn : item.n_c ? [{n_c: item.n_c, s: removeDuplicateSynonyms(item)}] : [],
+          n_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].n_syn : item.n_c ? [{n_c: item.n_c, s: item.s}] : [],
           ic_enum: item.i_c && item.ic_enum ? item.ic_enum : undefined,
           all_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].all_syn : undefined,
         }
@@ -195,7 +182,26 @@ const templateList = (items) => {
         ${n_syn.s !== undefined && n_syn.s.length !== 0 ? `
           <div class="compare-form__n_syn">
             <div class="compare-form__n_c">${n_syn.n_c} (NCIt)</div>
-            <div class="compare-form__s">${n_syn.s.map((s) => `${s}</br>`.trim()).join('')}</div>
+            <div class="compare-form__s">
+              ${n_syn.s !== undefined ? `
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Term</th>
+                      <th>Source</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  ${n_syn.s.map((s_r) =>`
+                    <tr>
+                      <td>${s_r.termName}</td>
+                      ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
+                      ${s_r.termGroup !== undefined && s_r.termGroup !== null? `<td>${s_r.termGroup}</td>`: ``}
+                    </tr>
+                  `.trim()).join('')}
+                  </table>
+              `:``}
+            </div>
           </div>
         `:``}
       `.trim()).join('')}
@@ -212,7 +218,26 @@ const templateList = (items) => {
         ${item.s.length !== 0 ? `
           <div class="compare-form__n_syn">
             <div class="compare-form__n_c">${item.n_c} (NCIt)</div>
-            <div class="compare-form__s">${item.s.map((s) => `${s}</br>`.trim()).join('')}</div>
+            <div class="compare-form__s">
+              ${item.s !== undefined ? `
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Term</th>
+                        <th>Source</th>
+                        <th>Type</th>
+                      </tr>
+                    </thead>
+                    ${item.s.map((s_r) =>`
+                      <tr>
+                        <td>${s_r.termName}</td>
+                        ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
+                        ${s_r.termGroup !== undefined && s_r.termGroup !== null? `<td>${s_r.termGroup}</td>`: ``}
+                      </tr>
+                    `.trim()).join('')}
+                    </table>
+                `:``}
+            </div>
           </div>
         `:``}
         </div>

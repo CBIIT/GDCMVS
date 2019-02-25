@@ -20,8 +20,8 @@
   align-items: stretch;
 }
 
-.table__center{
-  text-align: center;
+.table__right{
+  text-align: right;
 }
 
 .table__gdc-values {

@@ -71,7 +71,7 @@ export const vsRender = (items, keyword, search_option) => {
   items.forEach(function (item) {
     let hl = item.highlight;
     if (hl["enum.n"] == undefined && hl["enum.n.have"] == undefined &&
-      hl["enum.s"] == undefined && hl["enum.s.have"] == undefined &&
+      hl["enum.s.termName"] == undefined && hl["enum.s.termName.have"] == undefined &&
       hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined &&
       hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined &&
       hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined &&
@@ -115,7 +115,7 @@ export const vsRender = (items, keyword, search_option) => {
     row.tgts_enum_n = ""; //added
     row.tgts_cde_n = "";
     let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
-    let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl['enum.s'] || hl["enum.s.have"] : [];
+    let enum_s = ("enum.s.termName" in hl) || ("enum.s.termName.have" in hl) ? hl['enum.s.termName'] || hl["enum.s.termName.have"] : [];
     let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
     let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
     let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
@@ -260,26 +260,11 @@ export const vsRender = (items, keyword, search_option) => {
           exist = true;
         }
         let tmp_s = [];
-        let t_s = [];
         if (em.s) {
-          //remove depulicates in local synonyms
-          let cache = {};
           em.s.forEach(function (s) {
-            let lc = s.trim().toLowerCase();
-            if (!(lc in cache)) {
-              cache[lc] = [];
-            }
-            cache[lc].push(s);
-          });
-          for (let idx in cache) {
-            //find the term with the first character capitalized
-            let word = findWord(cache[idx]);
-            t_s.push(word);
-          }
-          t_s.forEach(function (s) {
-            if (s in dict_enum_s) {
+            if (s.termName in dict_enum_s) {
               exist = true;
-              tmp_s.push(dict_enum_s[s])
+              tmp_s.push({termName: dict_enum_s[s.termName], termGroup: s.termGroup, termSource: s.termSource})
             } else {
               tmp_s.push(s);
             }
@@ -410,14 +395,13 @@ export const vsRender = (items, keyword, search_option) => {
           }
           let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          let tt = item.term_type !== undefined ? item.term_type : "";
+          let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "";
           let term_type = "";
           if (tt !== "") {
             term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
           }
-          else{
-            term_type += "(*)";
-            term_type_not_official = true;
+          else if(tt === ""){
+            term_type = "(*)"; // Asterisk foot note
           }
           if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
             if (item_n_clr !== item_i_c) {
@@ -425,6 +409,7 @@ export const vsRender = (items, keyword, search_option) => {
                 temp_i_c[item_i_c].n.unshift(item.n + " " + term_type);
               } else {
                 temp_i_c[item_i_c].n.push(item.n + " " + term_type);
+                if(term_type === "(*)") term_type_not_official = true; // Asterisk foot note
               }
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
             }
@@ -448,43 +433,29 @@ export const vsRender = (items, keyword, search_option) => {
         for (let index_i_c in temp_i_c) {
           source.enum.forEach(function (em) {
             if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
-              let tt = em.term_type !== undefined ? em.term_type : "";
+              let tt = em.term_type !== undefined && em.term_type !== "" ? em.term_type : "";
               let term_type = "";
               if (tt !== "") {
                 term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
-              }else{
-                term_type += "(*)";
-                term_type_not_official = true;
+              }else if(tt === ""){
+                term_type = "(*)"; // Asterisk foot note
               }
               if (em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")) {
                 if (tt === 'PT') {
                   temp_i_c[index_i_c].n.unshift(em.n + " " + term_type);
                 } else {
                   temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                  if(term_type === "(*)") term_type_not_official = true; // Asterisk foot note
                 }
               }
               if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1) {
                 //remove depulicates in local synonyms
                 let tmp_s = [];
-                let t_s = [];
                 if (em.s) {
-                  let cache = {};
                   em.s.forEach(function (s) {
-                    let lc = s.trim().toLowerCase();
-                    if (!(lc in cache)) {
-                      cache[lc] = [];
-                    }
-                    cache[lc].push(s);
-                  });
-                  for (let idx in cache) {
-                    //find the term with the first character capitalized
-                    let word = findWord(cache[idx]);
-                    t_s.push(word);
-                  }
-                  t_s.forEach(function (s) {
-                    if (s in dict_enum_s) {
+                    if (s.termName in dict_enum_s) {
                       exist = true;
-                      tmp_s.push(dict_enum_s[s])
+                      tmp_s.push({termName: dict_enum_s[s.termName], termGroup: s.termGroup, termSource: s.termSource})
                     } else {
                       tmp_s.push(s);
                     }
@@ -526,7 +497,6 @@ export const vsRender = (items, keyword, search_option) => {
           }
           new_vs.push(item)
         });
-
         //add the reformated to vs values
         row.vs = new_vs;
       }
