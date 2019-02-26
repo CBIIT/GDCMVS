@@ -221,8 +221,8 @@ const compareGDCvalues = (fromV, toV, option) => {
         }
       })
     }
-
     if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+    if(text.length === 0) text.push({n: '', n_c: '', match: caseSensitiveV, s: []});
     items = items.concat(JSON.parse(JSON.stringify(text)));
   });
 
@@ -241,16 +241,20 @@ const generateCompareResult = (fromV, toV, option) => {
     <div class="col-xs-12">
       ${items.map((item, i) => {
         let reg_key = new RegExp(item.match, "ig");
-        return `<div class="table__row row">
+        return `
+        ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? `<div class="table__hr"></div>` : ``}
+        ${item.match === undefined && i !== 0 ? `<div class="table__hr"></div>` : ``}
+        <div class="row">
           <div class="table__td table__td--slim col-xs-6">
-            ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? item.match: ''}
-            ${item.match !== undefined && i === 0 ? item.match: ''}
+            ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? item.match: ``}
+            ${item.match !== undefined && i === 0 ? item.match: ``}
+            ${item.match === undefined ? `<span style="color:red;">--</span>` : ``}
           </div>
           ${item.n_syn !== undefined ? `
             <div class="table__td table__gdc-match table__td--slim col-xs-6">
               <div class="row">
-                <div class="col-xs-10">${item.n.replace(reg_key, "<b>$&</b>")}</div>
-                <div class="col-xs-2 table__center">
+                <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                <div class="col-xs-2 table__right">
                   ${item.n_syn.length !== 0 ? `
                     <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
                   ` :``}
@@ -275,7 +279,7 @@ const generateCompareResult = (fromV, toV, option) => {
 
                             ${match.s.map((syn) => `
                               <tr>
-                                <td>${syn.termName.replace(reg_key, "<b>$&</b>")}</td>
+                                <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                 <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
                                 <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
                               </tr>
@@ -294,7 +298,7 @@ const generateCompareResult = (fromV, toV, option) => {
                   <div class="row table__td">
                     <div class="col-xs-3">${item.i_c.c} (ICD-O-3)</div>
                     <div class="col-xs-9">
-                      ${item.ic_enum.map((ic_e)=>`${ic_e.replace(reg_key, "<b>$&</b>")}</br>`.trim()).join('')}
+                      ${item.ic_enum.map((ic_e)=>`${ic_e.replace(reg_key, '<b>$&</b>')}</br>`.trim()).join('')}
                     </div>
                   </div>
                 `:``}
@@ -325,7 +329,7 @@ const generateCompareResult = (fromV, toV, option) => {
                                 `:`
                                   ${option.synonyms === true && option.sensitive === true ? `
                                     <tr>
-                                      <td>${s_v.termName.replace(reg_key, "<b>$&</b>")}</td>
+                                      <td>${s_v.termName.replace(reg_key, '<b>$&</b>')}</td>
                                       <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
                                       <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
                                     </tr>
@@ -364,8 +368,8 @@ const generateCompareResult = (fromV, toV, option) => {
           ${item.s !== undefined ? `
             <div class="table__td table__gdc-match table__td--slim col-xs-6">
               <div class="row">
-                <div class="col-xs-10">${item.n.replace(reg_key, "<b>$&</b>")}</div>
-                <div class="col-xs-2 table__center">
+                <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                <div class="col-xs-2 table__right">
                   ${item.s.length !== 0 ? `
                   <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
                   ` :``}
@@ -390,7 +394,7 @@ const generateCompareResult = (fromV, toV, option) => {
 
                             ${match.s.map((syn) => `
                               <tr>
-                                <td>${syn.termName.replace(reg_key, "<b>$&</b>")}</td>
+                                <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                 <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
                                 <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
                               </tr>
@@ -430,7 +434,7 @@ const generateCompareResult = (fromV, toV, option) => {
                               `:`
                                 ${option.synonyms === true && option.sensitive === true ? `
                                   <tr>
-                                    <td>${syn.termName.replace(reg_key, "<b>$&</b>")}</td>
+                                    <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                     <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
                                     <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
                                   </tr>
@@ -468,6 +472,7 @@ const generateCompareResult = (fromV, toV, option) => {
             <div class="table__td table__td--slim col-xs-6">${item.n}</div>
           `:``}
         </div>
+        ${items.length-1 === i ? `<div class="table__hr"></div>` : ``}
       `.trim()}).join('')}
     </div>
   </div>`
@@ -643,8 +648,8 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
         if (tmp_text.n_syn) {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
           + '<div class="row">'
-            + '<div class="col-xs-10">' + tmp_text.n.replace(reg_key, "<b>$&</b>") +'</div>'
-            + '<div class="col-xs-2 table__center">';
+            + '<div class="col-xs-10">' + tmp_text.n.replace(reg_key, '<b>$&</b>') +'</div>'
+            + '<div class="col-xs-2 table__right">';
             if (tmp_text.n_syn.length !== 0) {
               table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
             }
@@ -667,7 +672,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
                   +'</thead>';
                   match.s.forEach((syn) => {
                     table += '<tr>'
-                      + '<td>' + syn.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                      + '<td>' + syn.termName.replace(reg_key, '<b>$&</b>') + '</td>';
                       if(syn.termSource !== undefined && syn.termSource !== null) table += '<td>'+ syn.termSource + '</td>'
                       if(syn.termGroup !== undefined && syn.termGroup !== null) table += '<td>'+ syn.termGroup + '</td>'
                       +'</tr>';
@@ -713,7 +718,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
                       }
                       else if(option.synonyms === true && option.sensitive === true){
                         table += '<tr>'
-                          + '<td>' + s_v.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                          + '<td>' + s_v.termName.replace(reg_key, '<b>$&</b>') + '</td>';
                           if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
                           if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
                           +'</tr>';
@@ -745,8 +750,8 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
         if (tmp_text.s) {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
             + '<div class="row">'
-              + '<div class="col-xs-10">' + tmp_text.n.replace(reg_key, "<b>$&</b>") +'</div>'
-              + '<div class="col-xs-2 table__center">';
+              + '<div class="col-xs-10">' + tmp_text.n.replace(reg_key, '<b>$&</b>') +'</div>'
+              + '<div class="col-xs-2 table__right">';
               if (tmp_text.s.length !== 0) {
                 table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
               }
@@ -769,7 +774,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
                     +'</thead>';
                     match.s.forEach((syn) => {
                       table += '<tr>'
-                        + '<td>' + syn.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                        + '<td>' + syn.termName.replace(reg_key, '<b>$&</b>') + '</td>';
                         if(syn.termSource !== undefined && syn.termSource !== null) table += '<td>'+ syn.termSource + '</td>'
                         if(syn.termGroup !== undefined && syn.termGroup !== null) table += '<td>'+ syn.termGroup + '</td>'
                         +'</tr>';
@@ -804,7 +809,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
                       }
                       else if(option.synonyms === true && option.sensitive === true){
                         table += '<tr>'
-                          + '<td>' + s_v.termName.replace(reg_key, "<b>$&</b>") + '</td>';
+                          + '<td>' + s_v.termName.replace(reg_key, '<b>$&</b>') + '</td>';
                           if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
                           if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
                           +'</tr>';
@@ -854,7 +859,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
           + '<div class="row">'
             + '<div class="col-xs-10">' + toV[i].n + '</div>'
-            + '<div class="col-xs-2 table__center">'
+            + '<div class="col-xs-2 table__right">'
             if (toV[i].n_syn.length !== 0) {
               table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>'
             }
@@ -905,7 +910,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
           table +='<div class="table__td table__gdc-match table__td--slim col-xs-6">'
             + '<div class="row">'
               + '<div class="col-xs-10">' + toV[i].n + '</div>'
-              + '<div class="col-xs-2 table__center">';
+              + '<div class="col-xs-2 table__right">';
               if (toV[i].s.length !== 0) {
                 table += '<a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>';
               }
@@ -1026,7 +1031,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
   }
 }
 
-const downloadCompareCVStestt = (fromV, toV, option) => {
+const downloadCompareCVS = (fromV, toV, option) => {
   toV = JSON.parse(JSON.stringify(toV));
   let v_lowercase = [], v_matched = [];
   toV.forEach(function (v) {
