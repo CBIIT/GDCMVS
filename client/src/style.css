@@ -163,6 +163,12 @@ a:hover, a:focus {
   display: none;
 }
 
+.table__hr {
+  border-bottom: 1px solid #ecf0f1; 
+  margin-left: -15px; 
+  margin-right: -15px;
+}
+
 .table__content {
   border-bottom: 1px solid #ecf0f1;
   display: none;
