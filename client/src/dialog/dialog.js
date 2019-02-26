@@ -334,7 +334,7 @@ const generateCompareResult = (fromV, toV, option) => {
                                       <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
                                     </tr>
                                   `:`
-                                    ${option.synonyms === true && syn.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
+                                    ${option.synonyms === true && s_v.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
                                       <tr>
                                         <td><b>${s_v.termName}<b></td>
                                         <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
