@@ -952,7 +952,17 @@ const getPVFunc = (ncitids, idx, next) => {
 					tmp[ncitids[idx]].preferredName = d.preferredName;
 					tmp[ncitids[idx]].code = d.code;
 					tmp[ncitids[idx]].definitions = d.definitions;
-					tmp[ncitids[idx]].synonyms = d.synonyms;
+					tmp[ncitids[idx]].synonyms = [];
+					let checker_arr = [];
+					d.synonyms.forEach(data => {
+						if(checker_arr.indexOf((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase()) !== -1) return;
+						let obj = {};
+						obj.termName = data.termName;
+						obj.termGroup = data.termGroup;
+						obj.termSource = data.termSource;
+						tmp[ncitids[idx]].synonyms.push(obj);
+						checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
+					});
 
 					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), err => {
 						if (err) return logger.error(err);
