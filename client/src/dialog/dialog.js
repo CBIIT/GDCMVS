@@ -80,9 +80,9 @@ const compareGDCvalues = (fromV, toV, option) => {
 
   let items = [];
   fromV.forEach(function (v) {
+    let caseSensitiveV = v;
     v = v.trim().toLowerCase().replace(/[\ ]+/g, " ");
     let reg_key = new RegExp(v, "ig");
-    let new_v = v;
     let tmp = v;
     if (tmp === '') {
       return;
@@ -115,7 +115,7 @@ const compareGDCvalues = (fromV, toV, option) => {
         });
         let checker_n_c = getMatchedSynonyms(text, tmp, option);
         text.forEach(em => {
-          em.match = v;
+          em.match = caseSensitiveV;
           if(em.n_syn !== undefined && em.s === undefined){
             em.n_syn.forEach(n_s => {
               if(em.matched_s === undefined && checker_n_c[n_s.n_c] !== undefined){
@@ -155,7 +155,7 @@ const compareGDCvalues = (fromV, toV, option) => {
       v_lowercase.forEach((v_tmp, index) => {
         let idx = v_tmp.indexOf(tmp);
         if (idx >= 0 && checker_n.indexOf(toV[index].n) === -1) {
-          toV[index].match = v;
+          toV[index].match = caseSensitiveV;
           text.push(toV[index]);
           checker_n.push(toV[index].n);
           v_matched.push(index);
@@ -183,7 +183,7 @@ const compareGDCvalues = (fromV, toV, option) => {
           });
           let checker_n_c = getMatchedSynonyms(text, tmp, option);
           text.forEach(em => {
-            em.match = v;
+            em.match = caseSensitiveV;
             if(em.n_syn !== undefined && em.s === undefined){
               em.n_syn.forEach(n_s => {
                 if(em.matched_s === undefined && checker_n_c[n_s.n_c] !== undefined){
