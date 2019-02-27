@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
-import { compare } from '../dialog'
+import { compare, showCompareResult } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, searchFilter, getAllSyn } from '../../shared';
+import { getHeaderOffset, htmlChildContent, searchFilter,searchFilterCR , getAllSyn } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -146,11 +146,24 @@ const toCompare = (uid) => {
             }
           });
 
+          let prev_keyword = "";
           $('#compare-matched').on('input', () => {
             let keyword = $('#compare-matched').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
-
-            console.log($('#compare-matched').data('compareResult'));
-
+            if(prev_keyword === keyword) return;
+            prev_keyword = keyword;
+            let keywordCase = $('#compare-matched').val().trim().replace(/[\ ]+/g, " ");
+            if(keyword.length >= 3) {
+              const items = $('#compare-matched').data('compareResult');
+              const options = $('#compare-matched').data('options');
+              const new_item = searchFilterCR(items, keyword);
+              const table_new = showCompareResult(new_item, options, keywordCase);
+              $('#cp_result_table').html(table_new);
+            }else{
+              const items = $('#compare-matched').data('compareResult');
+              const options = $('#compare-matched').data('options');
+              const table_new = showCompareResult(items, options, keywordCase);
+              $('#cp_result_table').html(table_new);
+            }
           });
 
           //remove loading animation

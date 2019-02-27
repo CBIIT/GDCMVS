@@ -417,7 +417,6 @@ const templateList = (items, icdo, keyword = 'default') => {
         </div>
       `}
       </div>`.trim()).join('')}
-
     `: `
     <div  class="dialog__indicator">
       <div class="dialog__indicator-content">
