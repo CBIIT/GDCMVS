@@ -158,6 +158,64 @@ export const searchFilter = (items, keyword) => {
   return new_item;
 }
 
+export const searchFilterCR = (items, keyword) => {
+  let all_icdo3_syn = all_icdo3_syn = getAllSyn(items);
+  let new_item = [];
+  JSON.parse(JSON.stringify(items)).forEach(item =>{
+    let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
+    if(idx !== -1){
+      if(idx === 0) new_item.unshift(item);
+      if(idx !== 0) new_item.push(item);
+    }
+  });
+  // Search in synonyms
+  JSON.parse(JSON.stringify(items)).forEach(item =>{
+   if(item.s !== undefined){
+    let tmp_arr = item.s.map(function(s){return s.termName.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
+    if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
+      new_item.push(item);
+    }
+   }
+  });
+
+  // Search in all_syn synonyms if it has icdo3 code
+  JSON.parse(JSON.stringify(items)).forEach(item =>{
+    if(item.all_syn !== undefined){
+      let tmp_arr = item.all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
+      if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
+        new_item.push(item);
+      }
+    }
+    else if(item.i_c !== undefined && all_icdo3_syn[item.i_c.c] && all_icdo3_syn[item.i_c.c].all_syn){
+     let tmp_arr = all_icdo3_syn[item.i_c.c].all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
+     if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
+       new_item.push(item);
+     }
+    }
+   });
+
+  // Highlight matched values and synonyms
+  // new_item.forEach(item =>{
+  //   item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
+  //   if(item.s !== undefined){
+  //    item.s = item.s.map(function(s) {return {termName: s.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: s.termGroup, termSource: s.termSource}});
+  //   }
+  //   if(item.i_c !== undefined && item.i_c.n_syn !== undefined){
+  //     item.i_c.n_syn.forEach(syn => {
+  //       if(syn.s === undefined) return;
+  //       syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
+  //     })
+  //   }
+  //   if(item.n_syn !== undefined){
+  //     item.n_syn.forEach(syn => {
+  //       if(syn.s === undefined) return;
+  //       syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
+  //     })
+  //   }
+  // });
+  return new_item;
+}
+
 export const findWord = (words) => {
   let word = "";
   if (words.length == 1) {
