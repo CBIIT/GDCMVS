@@ -91,7 +91,6 @@ const toCompare = (uid) => {
 
           $('#cp_result').css("display", "none");
           $('#compare').bind('click', function () {
-            $('#compare-matched').val('');
             compare(items);
           });
           $('#cancelCompare, #close_to_compare').bind('click', function () {
