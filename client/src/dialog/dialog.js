@@ -1225,11 +1225,14 @@ export const compare = (gv) => {
     $('#compare_form').css('display', 'none');
     $('#compare_result').css('display', 'block');
 
+    $('#compare-input').hide();
+    $('#compare-matched').show();
     $('#compare_download').show();
 
     $('#compare').hide();
     $('#cancelCompare').hide();
     $('#back2Compare').show();
+
 
     let vs = $('#cp_input').val().split(/\n/);
 
@@ -1330,6 +1333,8 @@ export const compare = (gv) => {
       $('#compare_result').css("display", "none");
       $('#compare_form').css("display", "block");
 
+      $('#compare-input').show();
+      $('#compare-matched').hide();
       $('#compare_download').hide();
 
       $('#compare').show();

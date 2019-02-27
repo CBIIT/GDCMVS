@@ -107,7 +107,7 @@ const toCompare = (uid) => {
             }
           });
 
-          $('#compare-input').bind('mousedown', (e) => {
+          $('#compare-input, #compare-matched').bind('mousedown', (e) => {
             $(e.currentTarget).focus();
             target.draggable('disable');
           });
@@ -144,6 +144,11 @@ const toCompare = (uid) => {
                 }
               });
             }
+          });
+
+          $('#compare-matched').on('input', () => {
+            let keyword = $('#compare-matched').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
+            console.log(keyword);
           });
 
           //remove loading animation
