@@ -204,7 +204,7 @@
 .compare-form__value {
   display: inline-block;
   padding-right: 1em;
-  width: 92%;
+  width: 95%;
   vertical-align: middle;
 }
 
@@ -273,9 +273,6 @@
 .compare_result__bottom {
   text-align: center;
 }
-
-
-
 
 .gdc-data-list {
   outline: none;
