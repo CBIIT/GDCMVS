@@ -233,83 +233,39 @@ const compareGDCvalues = (fromV, toV, option) => {
 }
 
 
-const generateCompareResult = (items, option) => {
-
-  
-  //console.log(items[-1]);
+export const showCompareResult = (items, option, keywordCase) => {
   return `<div class="table__body row">
     <div class="col-xs-12">
-      ${items.map((item, i) => {
-        let reg_key = new RegExp(item.match, "ig");
-        return `
-        ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? `<div class="table__hr"></div>` : ``}
-        ${item.match === undefined && i !== 0 ? `<div class="table__hr"></div>` : ``}
-        <div class="row">
-          <div class="table__td table__td--slim col-xs-6">
-            ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? item.match: ``}
-            ${item.match !== undefined && i === 0 ? item.match: ``}
-            ${item.match === undefined ? `<span style="color:red;">--</span>` : ``}
-          </div>
-          ${item.n_syn !== undefined ? `
-            <div class="table__td table__gdc-match table__td--slim col-xs-6">
-              <div class="row">
-                <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
-                <div class="col-xs-2 table__right">
-                  ${item.n_syn.length !== 0 ? `
-                    <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
-                  ` :``}
-                </div>
-              </div>
-
-              ${item.matched_s !== undefined && item.matched_s.length !== 0 ? `
-                <div class="compare-form__matched">
-                  ${item.matched_s.map((match) => `
-                    <div class="row table__td">
-                      <div class="col-xs-3">${match.n_c} (NCIt)</div>
-                      <div class="col-xs-9">
-                        ${match.s !== undefined ? `
-                          <table class="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>Term</th>
-                                <th>Source</th>
-                                <th>Type</th>
-                              </tr>
-                            </thead>
-
-                            ${match.s.map((syn) => `
-                              <tr>
-                                <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
-                                <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
-                              </tr>
-                            `.trim()).join('')}
-                          </table>
-                        `:``}
-                      </div>
-                    </div>
-                  `.trim()).join('')}
-                </div>
-              `:``}
-
-              <div class="compare-form__synm" style="display: none;">
-
-                ${item.i_c !== undefined ? `
-                  <div class="row table__td">
-                    <div class="col-xs-3">${item.i_c.c} (ICD-O-3)</div>
-                    <div class="col-xs-9">
-                      ${item.ic_enum.map((ic_e)=>`${ic_e.replace(reg_key, '<b>$&</b>')}</br>`.trim()).join('')}
-                    </div>
+      ${items.length > 0 ? `
+        ${items.map((item, i) => {
+          let reg_key = new RegExp(item.match, "ig");
+          return `
+          ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? `<div class="table__hr"></div>` : ``}
+          ${item.match === undefined && i !== 0 ? `<div class="table__hr"></div>` : ``}
+          <div class="row">
+            <div class="table__td table__td--slim col-xs-6">
+              ${item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match ? item.match: ``}
+              ${item.match !== undefined && i === 0 ? item.match: ``}
+              ${item.match === undefined ? `<span style="color:red;">--</span>` : ``}
+            </div>
+            ${item.n_syn !== undefined ? `
+              <div class="table__td table__gdc-match table__td--slim col-xs-6">
+                <div class="row">
+                  <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                  <div class="col-xs-2 table__right">
+                    ${item.n_syn.length !== 0 ? `
+                      <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
+                    ` :``}
                   </div>
-                `:``}
+                </div>
 
-                ${item.n_syn.length !== 0 ? `
-                  ${item.n_syn.map((syn) => `
-                    ${syn.s !== undefined && syn.s.length !== 0 ? `
+                ${item.matched_s !== undefined && item.matched_s.length !== 0 ? `
+                  <div class="compare-form__matched">
+                    ${item.matched_s.map((match) => `
                       <div class="row table__td">
-                        <div class="col-xs-3">${syn.n_c} (NCIt)</div>
+                        <div class="col-xs-3">${match.n_c} (NCIt)</div>
                         <div class="col-xs-9">
-                          ${syn.s !== undefined ? `
+                          ${match.s !== undefined ? `
                             <table class="table table-striped">
                               <thead>
                                 <tr>
@@ -319,32 +275,179 @@ const generateCompareResult = (items, option) => {
                                 </tr>
                               </thead>
 
-                              ${syn.s.map((s_v) => `
-                                ${option.synonyms === false && option.partial === false ? `
+                              ${match.s.map((syn) => `
+                                <tr>
+                                  <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
+                                  <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                </tr>
+                              `.trim()).join('')}
+                            </table>
+                          `:``}
+                        </div>
+                      </div>
+                    `.trim()).join('')}
+                  </div>
+                `:``}
+
+                <div class="compare-form__synm" style="display: none;">
+
+                  ${item.i_c !== undefined ? `
+                    <div class="row table__td">
+                      <div class="col-xs-3">${item.i_c.c} (ICD-O-3)</div>
+                      <div class="col-xs-9">
+                        ${item.ic_enum.map((ic_e)=>`${ic_e.replace(reg_key, '<b>$&</b>')}</br>`.trim()).join('')}
+                      </div>
+                    </div>
+                  `:``}
+
+                  ${item.n_syn.length !== 0 ? `
+                    ${item.n_syn.map((syn) => `
+                      ${syn.s !== undefined && syn.s.length !== 0 ? `
+                        <div class="row table__td">
+                          <div class="col-xs-3">${syn.n_c} (NCIt)</div>
+                          <div class="col-xs-9">
+                            ${syn.s !== undefined ? `
+                              <table class="table table-striped">
+                                <thead>
                                   <tr>
-                                    <td>${s_v.termName}</td>
-                                    <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
-                                    <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                    <th>Term</th>
+                                    <th>Source</th>
+                                    <th>Type</th>
                                   </tr>
-                                `:`
-                                  ${option.synonyms === true && option.partial === true ? `
+                                </thead>
+
+                                ${syn.s.map((s_v) => `
+                                  ${option.synonyms === false && option.partial === false ? `
                                     <tr>
-                                      <td>${s_v.termName.replace(reg_key, '<b>$&</b>')}</td>
+                                      <td>${s_v.termName}</td>
                                       <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
                                       <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
                                     </tr>
                                   `:`
-                                    ${option.synonyms === true && s_v.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
+                                    ${option.synonyms === true && option.partial === true ? `
                                       <tr>
-                                        <td><b>${s_v.termName}<b></td>
+                                        <td>${s_v.termName.replace(reg_key, '<b>$&</b>')}</td>
                                         <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
                                         <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
                                       </tr>
                                     `:`
+                                      ${option.synonyms === true && s_v.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
+                                        <tr>
+                                          <td><b>${s_v.termName}<b></td>
+                                          <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
+                                          <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                        </tr>
+                                      `:`
+                                        <tr>
+                                          <td>${s_v.termName}</td>
+                                          <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
+                                          <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                        </tr>
+                                      `}
+                                    `}
+                                  `}
+                                `.trim()).join('')}
+                              </table>
+                            `:``}
+                          </div>
+                        </div>
+                      `:``}
+
+                    `.trim()).join('')}
+
+                  `:``}
+
+                </div>
+              </div>
+
+            `:``}
+
+            ${item.s !== undefined ? `
+              <div class="table__td table__gdc-match table__td--slim col-xs-6">
+                <div class="row">
+                  <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                  <div class="col-xs-2 table__right">
+                    ${item.s.length !== 0 ? `
+                    <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
+                    ` :``}
+                  </div>
+                </div>
+
+                ${item.matched_s !== undefined && item.matched_s.length !== 0 ? `
+                  <div class="compare-form__matched">
+                    ${item.matched_s.map((match) => `
+                      <div class="row table__td">
+                        <div class="col-xs-3">${match.n_c} (NCIt)</div>
+                        <div class="col-xs-9">
+                          ${match.s !== undefined ? `
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Term</th>
+                                  <th>Source</th>
+                                  <th>Type</th>
+                                </tr>
+                              </thead>
+
+                              ${match.s.map((syn) => `
+                                <tr>
+                                  <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
+                                  <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                </tr>
+                              `.trim()).join('')}
+                            </table>
+                          `:``}
+                        </div>
+                      </div>
+                    `.trim()).join('')}
+                  </div>
+                `:``}
+
+                ${item.s.length !== 0 ? `
+                  <div class="compare-form__synm" style="display: none;">
+
+                    ${item.s !== undefined && item.s.length !== 0 ? `
+                      <div class="row table__td">
+                        <div class="col-xs-3">${item.n_c} (NCIt)</div>
+                        <div class="col-xs-9">
+                          ${item.s !== undefined ? `
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Term</th>
+                                  <th>Source</th>
+                                  <th>Type</th>
+                                </tr>
+                              </thead>
+
+                              ${item.s.map((syn) => `
+                                ${option.synonyms === false && option.partial === false ? `
+                                  <tr>
+                                    <td>${syn.termName}</td>
+                                    <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                    <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                  </tr>
+                                `:`
+                                  ${option.synonyms === true && option.partial === true ? `
+                                    <tr>
+                                      <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
+                                      <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                      <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                    </tr>
+                                  `:`
+                                    ${option.synonyms === true && syn.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
                                       <tr>
-                                        <td>${s_v.termName}</td>
-                                        <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
-                                        <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                        <td><b>${syn.termName}<b></td>
+                                        <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                        <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                      </tr>
+                                    `:`
+                                      <tr>
+                                        <td>${syn.termName}</td>
+                                        <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                        <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
                                       </tr>
                                     `}
                                   `}
@@ -356,124 +459,25 @@ const generateCompareResult = (items, option) => {
                       </div>
                     `:``}
 
-                  `.trim()).join('')}
-
+                  </div>
                 `:``}
 
               </div>
-            </div>
 
-          `:``}
+            `:``}
 
-          ${item.s !== undefined ? `
-            <div class="table__td table__gdc-match table__td--slim col-xs-6">
-              <div class="row">
-                <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
-                <div class="col-xs-2 table__right">
-                  ${item.s.length !== 0 ? `
-                  <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
-                  ` :``}
-                </div>
-              </div>
-
-              ${item.matched_s !== undefined && item.matched_s.length !== 0 ? `
-                <div class="compare-form__matched">
-                  ${item.matched_s.map((match) => `
-                    <div class="row table__td">
-                      <div class="col-xs-3">${match.n_c} (NCIt)</div>
-                      <div class="col-xs-9">
-                        ${match.s !== undefined ? `
-                          <table class="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>Term</th>
-                                <th>Source</th>
-                                <th>Type</th>
-                              </tr>
-                            </thead>
-
-                            ${match.s.map((syn) => `
-                              <tr>
-                                <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
-                                <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
-                              </tr>
-                            `.trim()).join('')}
-                          </table>
-                        `:``}
-                      </div>
-                    </div>
-                  `.trim()).join('')}
-                </div>
-              `:``}
-
-              ${item.s.length !== 0 ? `
-                <div class="compare-form__synm" style="display: none;">
-
-                  ${item.s !== undefined && item.s.length !== 0 ? `
-                    <div class="row table__td">
-                      <div class="col-xs-3">${item.n_c} (NCIt)</div>
-                      <div class="col-xs-9">
-                        ${item.s !== undefined ? `
-                          <table class="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>Term</th>
-                                <th>Source</th>
-                                <th>Type</th>
-                              </tr>
-                            </thead>
-
-                            ${item.s.map((syn) => `
-                              ${option.synonyms === false && option.partial === false ? `
-                                <tr>
-                                  <td>${syn.termName}</td>
-                                  <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
-                                </tr>
-                              `:`
-                                ${option.synonyms === true && option.partial === true ? `
-                                  <tr>
-                                    <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
-                                    <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                    <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
-                                  </tr>
-                                `:`
-                                  ${option.synonyms === true && syn.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
-                                    <tr>
-                                      <td><b>${syn.termName}<b></td>
-                                      <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                      <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
-                                    </tr>
-                                  `:`
-                                    <tr>
-                                      <td>${syn.termName}</td>
-                                      <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                      <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
-                                    </tr>
-                                  `}
-                                `}
-                              `}
-                            `.trim()).join('')}
-                          </table>
-                        `:``}
-                      </div>
-                    </div>
-                  `:``}
-
-                </div>
-              `:``}
-
-            </div>
-
-          `:``}
-
-          ${item.s === undefined && item.n_syn === undefined ? `
-            <div class="table__td table__td--slim col-xs-6">${item.n}</div>
-          `:``}
-        </div>
-        ${items.length-1 === i ? `<div class="table__hr"></div>` : ``}
-      `.trim()}).join('')}
+            ${item.s === undefined && item.n_syn === undefined ? `
+              <div class="table__td table__td--slim col-xs-6">${item.n}</div>
+            `:``}
+          </div>
+          ${items.length-1 === i ? `<div class="table__hr"></div>` : ``}
+        `.trim()}).join('')} `: `
+        <div  class="dialog__indicator">
+          <div class="dialog__indicator-content">
+            Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
+          </div>
+        <div>
+        `}
     </div>
   </div>`
 }
@@ -1244,7 +1248,8 @@ export const compare = (gv) => {
     options.synonyms = $("#compare_synonyms").prop('checked');
     const items = compareGDCvalues(vs, gv, options);
     $('#compare-matched').data('compareResult', items);
-    const table = generateCompareResult(items, options);
+    $('#compare-matched').data('options', options);
+    const table = showCompareResult(items, options);
     let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>';
 
     $('#compare_result').html(html);
@@ -1263,7 +1268,8 @@ export const compare = (gv) => {
       setTimeout(() => {
         const items = compareGDCvalues(vs, gv, options);
         $('#compare-matched').data('compareResult', items);
-        const table_new = generateCompareResult(items, options);
+        $('#compare-matched').data('options', options);
+        const table_new = showCompareResult(items, options);
         $('#cp_result_table').html(table_new);
 
         if (gv.length > 500 ) {
@@ -1286,7 +1292,8 @@ export const compare = (gv) => {
       setTimeout(() => {
         const items = compareGDCvalues(vs, gv, options);
         $('#compare-matched').data('compareResult', items);
-        const table_new = generateCompareResult(items, options);
+        $('#compare-matched').data('options', options);
+        const table_new = showCompareResult(items, options);
         $('#cp_result_table').html(table_new);
 
         if (gv.length > 500 ) {
@@ -1309,7 +1316,8 @@ export const compare = (gv) => {
       setTimeout(() => {
         const items = compareGDCvalues(vs, gv, options);
         $('#compare-matched').data('compareResult', items);
-        const table_new = generateCompareResult(items, options);
+        $('#compare-matched').data('options', options);
+        const table_new = showCompareResult(items, options);
         $('#cp_result_table').html(table_new);
 
         if (gv.length > 500 ) {
