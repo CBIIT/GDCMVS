@@ -148,7 +148,9 @@ const toCompare = (uid) => {
 
           $('#compare-matched').on('input', () => {
             let keyword = $('#compare-matched').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
-            console.log(keyword);
+
+            console.log($('#compare-matched').data('compareResult'));
+
           });
 
           //remove loading animation
