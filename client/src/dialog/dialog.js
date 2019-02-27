@@ -88,7 +88,7 @@ const compareGDCvalues = (fromV, toV, option) => {
       return;
     }
     let text = [];
-    if (option.sensitive === false) { // If exact match is checked
+    if (option.partial === false) { // If exact match is checked
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
@@ -233,9 +233,9 @@ const compareGDCvalues = (fromV, toV, option) => {
 }
 
 
-const generateCompareResult = (fromV, toV, option) => {
+const generateCompareResult = (items, option) => {
 
-  let items = compareGDCvalues(fromV, toV, option);
+  
   //console.log(items[-1]);
   return `<div class="table__body row">
     <div class="col-xs-12">
@@ -320,14 +320,14 @@ const generateCompareResult = (fromV, toV, option) => {
                               </thead>
 
                               ${syn.s.map((s_v) => `
-                                ${option.synonyms === false && option.sensitive === false ? `
+                                ${option.synonyms === false && option.partial === false ? `
                                   <tr>
                                     <td>${s_v.termName}</td>
                                     <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
                                     <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
                                   </tr>
                                 `:`
-                                  ${option.synonyms === true && option.sensitive === true ? `
+                                  ${option.synonyms === true && option.partial === true ? `
                                     <tr>
                                       <td>${s_v.termName.replace(reg_key, '<b>$&</b>')}</td>
                                       <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
@@ -425,14 +425,14 @@ const generateCompareResult = (fromV, toV, option) => {
                             </thead>
 
                             ${item.s.map((syn) => `
-                              ${option.synonyms === false && option.sensitive === false ? `
+                              ${option.synonyms === false && option.partial === false ? `
                                 <tr>
                                   <td>${syn.termName}</td>
                                   <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
                                   <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
                                 </tr>
                               `:`
-                                ${option.synonyms === true && option.sensitive === true ? `
+                                ${option.synonyms === true && option.partial === true ? `
                                   <tr>
                                     <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                     <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
@@ -501,7 +501,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
       return;
     }
     let text = [];
-    if (option.sensitive === false) { // If exact match is checked
+    if (option.partial === false) { // If exact match is checked
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
@@ -709,14 +709,14 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
                         +'</tr>'
                       +'</thead>';
                     syn.s.forEach(function (s_v) {
-                      if(option.synonyms === false && option.sensitive === false){
+                      if(option.synonyms === false && option.partial === false){
                         table += '<tr>'
                           + '<td>' + s_v.termName + '</td>';
                           if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
                           if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
                           +'</tr>';
                       }
-                      else if(option.synonyms === true && option.sensitive === true){
+                      else if(option.synonyms === true && option.partial === true){
                         table += '<tr>'
                           + '<td>' + s_v.termName.replace(reg_key, '<b>$&</b>') + '</td>';
                           if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
@@ -800,14 +800,14 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
                         +'</tr>'
                       +'</thead>';
                     tmp_text.s.forEach(function (s_v) {
-                      if(option.synonyms === false && option.sensitive === false){
+                      if(option.synonyms === false && option.partial === false){
                         table += '<tr>'
                           + '<td>' + s_v.termName + '</td>';
                           if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
                           if(s_v.termGroup !== undefined && s_v.termGroup !== null) table += '<td>'+ s_v.termGroup + '</td>'
                           +'</tr>';
                       }
-                      else if(option.synonyms === true && option.sensitive === true){
+                      else if(option.synonyms === true && option.partial === true){
                         table += '<tr>'
                           + '<td>' + s_v.termName.replace(reg_key, '<b>$&</b>') + '</td>';
                           if(s_v.termSource !== undefined && s_v.termSource !== null) table += '<td>'+ s_v.termSource + '</td>'
@@ -953,7 +953,7 @@ const OLD_generateCompareResult = (fromV, toV, option) => {
 }
 
 const getMatchedSynonyms = (text, tmp, option) => {
-  if(option.sensitive === false){
+  if(option.partial === false){
     let checker_n_c = {};
     text.forEach(em => {
       if(em.matched_s) em.matched_s = undefined; // remove matched_s from previous tmp
@@ -1048,7 +1048,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
       return;
     }
     let text = [];
-    if (option.sensitive === false) { // If exact match is checked
+    if (option.partial === false) { // If exact match is checked
       let checker_n = [];
       let idx = v_lowercase.indexOf(tmp);
       if (idx >= 0) {
@@ -1208,6 +1208,7 @@ const downloadCompareCVS = (fromV, toV, option) => {
 }
 
 export const compare = (gv) => {
+  
   if ($('#cp_input').val().trim() === '') {
     $('#cp_massage').html("Please type in user defined values.");
     return;
@@ -1238,10 +1239,12 @@ export const compare = (gv) => {
 
     let options = {};
 
-    options.sensitive = $("#compare_filter").prop('checked');
+    options.partial = $("#compare_filter").prop('checked');
     options.unmatched = $("#compare_unmatched").prop('checked');
     options.synonyms = $("#compare_synonyms").prop('checked');
-    let table = generateCompareResult(vs, gv, options);
+    const items = compareGDCvalues(vs, gv, options);
+    $('#compare-matched').data('compareResult', items);
+    const table = generateCompareResult(items, options);
     let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>';
 
     $('#compare_result').html(html);
@@ -1249,7 +1252,7 @@ export const compare = (gv) => {
     $('#compare_filter').bind('click', function () {
       if(!$('#compare_result').is(':visible')) return;
       let options = {};
-      options.sensitive = $("#compare_filter").prop('checked');
+      options.partial = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
       options.synonyms = $("#compare_synonyms").prop('checked');
 
@@ -1258,7 +1261,9 @@ export const compare = (gv) => {
       }
 
       setTimeout(() => {
-        let table_new = generateCompareResult(vs, gv, options);
+        const items = compareGDCvalues(vs, gv, options);
+        $('#compare-matched').data('compareResult', items);
+        const table_new = generateCompareResult(items, options);
         $('#cp_result_table').html(table_new);
 
         if (gv.length > 500 ) {
@@ -1270,7 +1275,7 @@ export const compare = (gv) => {
     $('#compare_unmatched').bind('click', function () {
       if(!$('#compare_result').is(':visible')) return;
       let options = {};
-      options.sensitive = $("#compare_filter").prop('checked');
+      options.partial = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
       options.synonyms = $("#compare_synonyms").prop('checked');
 
@@ -1279,7 +1284,9 @@ export const compare = (gv) => {
       }
 
       setTimeout(() => {
-        let table_new = generateCompareResult(vs, gv, options);
+        const items = compareGDCvalues(vs, gv, options);
+        $('#compare-matched').data('compareResult', items);
+        const table_new = generateCompareResult(items, options);
         $('#cp_result_table').html(table_new);
 
         if (gv.length > 500 ) {
@@ -1291,7 +1298,7 @@ export const compare = (gv) => {
     $('#compare_synonyms').bind('click', function () {
       if(!$('#compare_result').is(':visible')) return;
       let options = {};
-      options.sensitive = $("#compare_filter").prop('checked');
+      options.partial = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
       options.synonyms = $("#compare_synonyms").prop('checked');
 
@@ -1300,7 +1307,9 @@ export const compare = (gv) => {
       }
 
       setTimeout(() => {
-        let table_new = generateCompareResult(vs, gv, options);
+        const items = compareGDCvalues(vs, gv, options);
+        $('#compare-matched').data('compareResult', items);
+        const table_new = generateCompareResult(items, options);
         $('#cp_result_table').html(table_new);
 
         if (gv.length > 500 ) {
@@ -1311,7 +1320,7 @@ export const compare = (gv) => {
 
     $('#downloadCompareCVS').bind('click', function () {
       let options = {};
-      options.sensitive = $("#compare_filter").prop('checked');
+      options.partial = $("#compare_filter").prop('checked');
       options.unmatched = $("#compare_unmatched").prop('checked');
       options.synonyms = $("#compare_synonyms").prop('checked');
 
