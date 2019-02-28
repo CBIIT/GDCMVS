@@ -35,6 +35,7 @@
 
 .dialog__pagination {
   display: inline-block;
+  margin-bottom: -0.9em;
 }
 
 .dialog__input-group {

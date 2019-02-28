@@ -156,13 +156,29 @@ const toCompare = (uid) => {
               const items = $('#compare-matched').data('compareResult');
               const options = $('#compare-matched').data('options');
               const new_item = searchFilterCR(items, keyword);
-              const table_new = showCompareResult(new_item, options, keywordCase);
-              $('#cp_result_table').html(table_new);
-            }else{
+
+              $('#pagination-matched').pagination({
+                dataSource: new_item,
+                pageSize: 50,
+                callback: function(data, pagination) {
+                  const table_new = showCompareResult(data, options);
+                  $('#cp_result_table').html(table_new);
+                }
+              });
+
+            } else {
               const items = $('#compare-matched').data('compareResult');
               const options = $('#compare-matched').data('options');
-              const table_new = showCompareResult(items, options, keywordCase);
-              $('#cp_result_table').html(table_new);
+
+              $('#pagination-matched').pagination({
+                dataSource: items,
+                pageSize: 50,
+                callback: function(data, pagination) {
+                  const table_new = showCompareResult(data, options);
+                  $('#cp_result_table').html(table_new);
+                }
+              });
+
             }
           });
 
