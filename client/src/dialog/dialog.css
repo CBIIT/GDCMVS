@@ -243,6 +243,10 @@
   display: inline-block;
 }
 
+.compare-form__bottom-pagination {
+  margin-left: 5em;
+}
+
 .compare-form__button {
   padding: 0.4em 2em;
   min-width: 9em;
