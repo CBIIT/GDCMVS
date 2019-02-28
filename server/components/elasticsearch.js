@@ -574,6 +574,21 @@ const bulkIndex = next => {
 		});
 		suggestionBody.push(doc);
 	}
+
+	let ncitDetail = [];
+	for (let conceptCode in syns) {
+		let doc = {};
+		doc.id = conceptCode.toString();
+		doc.data = syns[conceptCode];
+		ncitDetail.push({
+			index: {
+				_index: config.ncitDetails,
+				_type: 'props',
+				_id: doc.id
+			}
+		});
+		ncitDetail.push(doc);
+	}
 	//build property index
 	let propertyBody = [];
 
@@ -689,11 +704,23 @@ const bulkIndex = next => {
 					logger.error(++errorCount_s, itm.index.error);
 				}
 			});
-			next({
-				property_indexed: (propertyBody.length - errorCount_p),
-				property_total: propertyBody.length,
-				suggestion_indexed: (suggestionBody.length - errorCount_s),
-				suggestion_total: suggestionBody.length
+			esClient.bulk({body: ncitDetail}, (err_s, data_s) => {
+				if (err_s) {
+					return next(err_s);
+				}
+				let errorCount_s = 0;
+				data_s.items.forEach(itm => {
+					if (itm.index && itm.index.error) {
+						logger.error(++errorCount_s, itm.index.error);
+					}
+				});
+				next({
+					property_indexed: (propertyBody.length - errorCount_p),
+					property_total: propertyBody.length,
+					suggestion_indexed: (suggestionBody.length - errorCount_s),
+					suggestion_total: suggestionBody.length,
+					ncit_details: ncitDetail.length
+				});
 			});
 		});
 	});
@@ -726,6 +753,20 @@ const query = (index, dsl, highlight, next) => {
 
 exports.query = query;
 
+const ncitDetails = (index, dsl, next) => {
+	let body = {};
+	body.query = dsl;
+	esClient.search({index: index, "_source": true, body: body}, (err, data) => {
+		if (err) {
+			logger.error(err);
+			next(err);
+		} else {
+			next(data);
+		}
+	});
+}
+
+exports.ncitDetails = ncitDetails;
 
 const suggest = (index, suggest, next) => {
 	let body = {};
