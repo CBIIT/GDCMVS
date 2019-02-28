@@ -6,7 +6,7 @@
 
 const fs = require('fs');
 const https = require('https');
-const http = require('http');
+const fetch = require('node-fetch');
 const config = require('../config');
 const logger = require('./logger');
 const shared = require('../service/search/shared');
@@ -175,7 +175,7 @@ const loadSynonyms = next => {
 	let ncit = [];
 
 	ncitids.forEach(id => {
-		if (id.indexOf('E') === -1) {
+		if (ncit.indexOf(id) === -1) {
 			ncit.push(id);
 		}
 	});
@@ -184,6 +184,7 @@ const loadSynonyms = next => {
 		fs.truncate('./server/data_files/ncit_details.js', 0, () => {
 			console.log('ncit_details.js truncated')
 		});
+		// let new_ncit = spliceArray(ncit, 1000);
 		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
 			return next(data);
 		});
@@ -235,6 +236,43 @@ const loadNcitSynonyms_continue = next => {
 		logger.debug('Already up to date');
 		return next('Success');
 	}
+};
+
+const spliceArray = (inputArray, chunkSize) => {
+	var R = [];
+  for (var i=0,len=inputArray.length; i<len; i+=chunkSize)
+    R.push(inputArray.slice(i,i+chunkSize));
+  return R;
+}
+
+const getDataURL = async url => {
+	try {
+	  const response = await fetch(url);
+	  const json = await response.json();
+	  return json;
+	} catch (error) {
+	  console.log(error);
+	}
+  };
+
+const synchronziedLoadSynonmysfromNCITTEST = (ncitids, idx, next) => {
+	if (idx >= ncitids.length) {
+		return;
+	}
+	// let syn = [];
+	let param = "";
+	ncitids[idx].forEach((n_c, index) => {
+		if(index === 0) param += n_c;
+		if(index !== 0) param += ","+n_c;
+	});
+	let response = getDataURL(config.NCIt_url[5] + param);
+	response.then(data => {
+		console.log(data);
+		idx++;
+		synchronziedLoadSynonmysfromNCITTEST(ncitids, idx, next);
+	}).catch(err => {
+		console.log(err);
+	});
 };
 
 const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
