@@ -79,7 +79,7 @@ const compareGDCvalues = (fromV, toV, option) => {
 
   let items = [];
   fromV.forEach(function (v) {
-    let caseSensitiveV = v;
+    let caseSensitiveV = v.trim().replace(/[\ ]+/g, " ");
     v = v.trim().toLowerCase().replace(/[\ ]+/g, " ");
     let reg_key = new RegExp(v, "ig");
     let tmp = v;
