@@ -319,8 +319,8 @@ const templateList = (items, icdo, keyword = 'default') => {
                 ${n_syn.s.map((s) =>`
                   <tr>
                     <td>${s.termName}</td>
-                    ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
-                    ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                    <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                    <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                   </tr>
                 `.trim()).join('')}
                 </table>
@@ -346,8 +346,8 @@ const templateList = (items, icdo, keyword = 'default') => {
                   ${item.s.map((s) =>`
                     <tr>
                       <td>${s.termName}</td>
-                      ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
-                      ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                      <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                      <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                     </tr>
                   `.trim()).join('')}
                 </table>
@@ -378,8 +378,8 @@ const templateList = (items, icdo, keyword = 'default') => {
                   ${n_syn.s.map((s) =>`
                     <tr>
                       <td>${s.termName}</td>
-                      ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
-                      ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                      <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                      <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                     </tr>
                 `.trim()).join('')}
                 </table>
@@ -405,8 +405,8 @@ const templateList = (items, icdo, keyword = 'default') => {
                   ${item.s.map((s) =>`
                     <tr>
                       <td>${s.termName}</td>
-                      ${s.termSource !== undefined && s.termSource !== null ? `<td>${s.termSource}</td>`: ``}
-                      ${s.termGroup !== undefined && s.termGroup !== null? `<td>${s.termGroup}</td>`: ``}
+                      <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                      <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                     </tr>
                   `.trim()).join('')}
                 </table>
