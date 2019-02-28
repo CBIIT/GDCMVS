@@ -293,7 +293,7 @@ export const showCompareResult = (items, option, keywordCase) => {
                     <div class="row table__td">
                       <div class="col-xs-3">${item.i_c.c} (ICD-O-3)</div>
                       <div class="col-xs-9">
-                        ${item.ic_enum.map((ic_e)=>`${ic_e.replace(reg_key, '<b>$&</b>')}</br>`.trim()).join('')}
+                        ${item.ic_enum.map((ic_e)=>`${ic_e}</br>`.trim()).join('')}
                       </div>
                     </div>
                   `:``}
