@@ -671,6 +671,7 @@ export const compare = (gv) => {
 
     $('#back2Compare').bind('click', function () {
       $('#compare_result').html("");
+      $('#compare-matched').val('');
       $('#compare_result').css("display", "none");
       $('#compare_form').css("display", "block");
 
