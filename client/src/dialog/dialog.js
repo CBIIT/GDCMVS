@@ -560,13 +560,12 @@ const getMatchedSynonyms = (text, tmp, option) => {
 
 const downloadCompareCVS = (items, option) => {
   let csv = 'User Defined Values,Matched GDC Values,ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
-
   items.forEach((item, i) => {
     let new_line = true;
-    if (item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match) item.match = "";
-    if (item.match === undefined) item.match = "--";
-
-    csv +='"' + item.match + '","' + item.n + '",';
+    let match = item.match;
+    if (item.match !== undefined && i !== 0 && items[i-1].match === items[i].match) match = "";
+    if (item.match === undefined) match = "--";
+    csv +='"' + match + '","' + item.n + '",';
     csv += item.i_c !== undefined ? '"' + item.i_c.c + '",': '"",';
     if(item.ic_enum){
       item.ic_enum.forEach((icenum, i) => {
@@ -604,11 +603,14 @@ const downloadCompareCVS = (items, option) => {
     }
   });
 
-  let hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-  hiddenElement.target = '_blank';
-  hiddenElement.download = 'Compare_Values_GDC.csv';
-  hiddenElement.click();
+  let link  = document.createElement('a');
+  link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  link.target = '_blank';
+  link.download = 'Compare_Values_GDC.csv';
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 export const compare = (gv) => {
@@ -637,7 +639,7 @@ export const compare = (gv) => {
     $('#compare').hide();
     $('#cancelCompare').hide();
     $('#back2Compare').show();
-
+    $('#pagination-matched').show();
 
     let vs = $('#cp_input').val().split(/\n/);
 
@@ -649,10 +651,16 @@ export const compare = (gv) => {
     const items = compareGDCvalues(vs, gv, options);
     $('#compare-matched').data('compareResult', items);
     $('#compare-matched').data('options', options);
-    const table = showCompareResult(items, options);
-    let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>';
 
-    $('#compare_result').html(html);
+    $('#pagination-matched').pagination({
+      dataSource: items,
+      pageSize: 50,
+      callback: function(data, pagination) {
+        const table = showCompareResult(data, options);
+        let html = '<div id="cp_result_table" class="table__container table__container--margin-bottom">' + table + '</div>';
+        $('#compare_result').html(html);
+      }
+    });
 
     $('#compare_filter').bind('click', function () {
       if(!$('#compare_result').is(':visible')) return;
@@ -669,8 +677,15 @@ export const compare = (gv) => {
         const items = compareGDCvalues(vs, gv, options);
         $('#compare-matched').data('compareResult', items);
         $('#compare-matched').data('options', options);
-        const table_new = showCompareResult(items, options);
-        $('#cp_result_table').html(table_new);
+
+        $('#pagination-matched').pagination({
+          dataSource: items,
+          pageSize: 50,
+          callback: function(data, pagination) {
+            const table_new = showCompareResult(data, options);
+            $('#cp_result_table').html(table_new);
+          }
+        });
 
         if (gv.length > 500 ) {
           $('#gdc-loading-icon').hide()
@@ -693,8 +708,15 @@ export const compare = (gv) => {
         const items = compareGDCvalues(vs, gv, options);
         $('#compare-matched').data('compareResult', items);
         $('#compare-matched').data('options', options);
-        const table_new = showCompareResult(items, options);
-        $('#cp_result_table').html(table_new);
+
+        $('#pagination-matched').pagination({
+          dataSource: items,
+          pageSize: 50,
+          callback: function(data, pagination) {
+            const table_new = showCompareResult(data, options);
+            $('#cp_result_table').html(table_new);
+          }
+        });
 
         if (gv.length > 500 ) {
           $('#gdc-loading-icon').hide()
@@ -717,8 +739,15 @@ export const compare = (gv) => {
         const items = compareGDCvalues(vs, gv, options);
         $('#compare-matched').data('compareResult', items);
         $('#compare-matched').data('options', options);
-        const table_new = showCompareResult(items, options);
-        $('#cp_result_table').html(table_new);
+
+        $('#pagination-matched').pagination({
+          dataSource: items,
+          pageSize: 50,
+          callback: function(data, pagination) {
+            const table_new = showCompareResult(data, options);
+            $('#cp_result_table').html(table_new);
+          }
+        });
 
         if (gv.length > 500 ) {
           $('#gdc-loading-icon').hide()
@@ -761,6 +790,7 @@ export const compare = (gv) => {
       $('#compare').show();
       $('#cancelCompare').show();
       $('#back2Compare').hide();
+      $('#pagination-matched').hide();
     });
 
     if (gv.length > 500 ) {
