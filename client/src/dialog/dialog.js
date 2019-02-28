@@ -479,6 +479,85 @@ export const showCompareResult = (items, option, keywordCase) => {
   </div>`
 }
 
+const getMatchedSynonyms = (text, tmp, option) => {
+  if(option.partial === false){
+    let checker_n_c = {};
+    text.forEach(em => {
+      if(em.matched_s) em.matched_s = undefined; // remove matched_s from previous tmp
+      if(em.n_syn !== undefined && em.s === undefined){
+        em.n_syn.forEach(n_s => {
+          if(n_s.s === undefined) return;
+          n_s.s.forEach(x => {
+            if(x.termName.trim().toLowerCase() === tmp){
+              if(checker_n_c[n_s.n_c] === undefined ){
+                checker_n_c[n_s.n_c] = [];
+                checker_n_c[n_s.n_c].push(x);
+              }
+              else if(checker_n_c[n_s.n_c] !== undefined && !_.some(checker_n_c[n_s.n_c], x)){
+                checker_n_c[n_s.n_c].push(x);
+              }
+            }
+          });
+        });
+      }
+      else if(em.s !== undefined && em.n_syn === undefined){
+        em.s.forEach(x => {
+          if(x.termName.trim().toLowerCase() === tmp){
+            if(checker_n_c[em.n_c] === undefined ){
+              checker_n_c[em.n_c] = [];
+              checker_n_c[em.n_c].push(x);
+            }
+            else if(checker_n_c[em.n_c] !== undefined && !_.some(checker_n_c[em.n_c], x)){
+              checker_n_c[em.n_c].push(x);
+            }
+          }
+        });
+      }
+    });
+    return checker_n_c;
+  }
+  else{
+    let checker_n_c = {};
+    text.forEach(em => {
+      if(em.matched_s) em.matched_s = undefined; // remove matched_s from previous tmp
+      if(em.n_syn !== undefined && em.s === undefined){
+        em.n_syn.forEach(n_s => {
+          if(n_s.s === undefined) return;
+          n_s.s = n_s.s.map(x => {return {termName: x.termName.toLowerCase(), termGroup: x.termGroup, termSource: x.termSource}});
+          n_s.s.forEach(tmp_s => {
+            let s_idx = tmp_s.termName.indexOf(tmp);
+            if(s_idx >= 0){
+              if(checker_n_c[n_s.n_c] === undefined ){
+                checker_n_c[n_s.n_c] = [];
+                checker_n_c[n_s.n_c].push(tmp_s);
+              }
+              else if(checker_n_c[n_s.n_c] !== undefined && !_.some(checker_n_c[n_s.n_c], tmp_s)){
+                checker_n_c[n_s.n_c].push(tmp_s);
+              }
+            }
+          });
+        });
+      }
+      else if(em.s !== undefined && em.n_syn === undefined){
+        em.s = em.s.map(x => { return {termName: x.termName.toLowerCase(), termGroup: x.termGroup, termSource: x.termSource}});
+        em.s.forEach(tmp_s => {
+          let s_idx = tmp_s.termName.indexOf(tmp);
+          if(s_idx >= 0){
+            if(checker_n_c[em.n_c] === undefined ){
+              checker_n_c[em.n_c] = [];
+              checker_n_c[em.n_c].push(tmp_s);
+            }
+            else if(checker_n_c[em.n_c] !== undefined && !_.some(checker_n_c[em.n_c], tmp_s)){
+              checker_n_c[em.n_c].push(tmp_s);
+            }
+          }
+        });
+      }
+    });
+    return checker_n_c;
+  }
+}
+
 const downloadCompareCVS = (items, option) => {
   let csv = 'User Defined Values,Matched GDC Values,ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
 
