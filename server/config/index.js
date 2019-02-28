@@ -22,6 +22,9 @@ const all = {
 	//suggestion index name for typeahead
 	suggestionName: 'gdc-suggestion',
 
+	//NCIT details index name;
+	ncitDetails: 'ncit-details',
+
 	//index name for properties
 	index_p: 'gdc-p',
 

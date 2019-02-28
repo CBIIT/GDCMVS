@@ -631,6 +631,32 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_suggestion);
+	let config_ncitDetails = {};
+	config_ncitDetails.index = config.ncitDetails;
+	config_ncitDetails.body = {
+		"mappings": {
+			"props": {
+				"properties": {
+					"id": {
+						"type": "keyword"
+					},
+					"preferred_name": {
+						"type": "text"
+					},
+					"code": {
+						"type": "text"
+					},
+					"synonyms": {
+						"type": "text"
+					},
+					"definitions": {
+						"type": "text"
+					}
+				}
+			}
+		}
+	};
+	configs.push(config_ncitDetails);
 	elastic.createIndexes(configs, result => {
 		if (result.acknowledged === undefined) {
 			return handleError.error(res, result);
@@ -1033,26 +1059,18 @@ const removeDeprecated = () => {
 
 const getNCItInfo = (req, res) => {
 	let code = req.query.code;
-	let ncit_pv = shared.readNCItDetails();
-	if (ncit_pv[code]) {
-		res.json(ncit_pv[code]);
-	} else {
-		let url = config.NCIt_url[4] + code;
-		https.get(url, (rsp) => {
-			let html = '';
-			rsp.on('data', (dt) => {
-				html += dt;
-			});
-			rsp.on('end', () => {
-				if (html.trim() !== '') {
-					let data = JSON.parse(html);
-					res.json(data);
-				}
-			});
-		}).on('error', (e) => {
-			logger.debug(e);
-		});
-	}
+	let query = {
+		"match": {
+			"id": code
+		}
+	};
+	elastic.ncitDetails(config.ncitDetails, query, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		res.json(data[0]._source.data);
+	});
 };
 
 const parseExcel = (req, res) => {
