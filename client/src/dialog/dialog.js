@@ -559,14 +559,14 @@ const getMatchedSynonyms = (text, tmp, option) => {
 }
 
 const downloadCompareCVS = (items, option) => {
-  let csv = 'User Defined Values,Matched GDC Values,ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
 
+  let csv = 'User Defined Values,Matched GDC Values,ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
   items.forEach((item, i) => {
     let new_line = true;
-    if (item.match !== undefined && i !== 0 && items[i-1].match !== items[i].match) item.match = "";
-    if (item.match === undefined) item.match = "--";
-
-    csv +='"' + item.match + '","' + item.n + '",';
+    let match = item.match;
+    if (item.match !== undefined && i !== 0 && items[i-1].match === items[i].match) match = "";
+    if (item.match === undefined) match = "--";
+    csv +='"' + match + '","' + item.n + '",';
     csv += item.i_c !== undefined ? '"' + item.i_c.c + '",': '"",';
     if(item.ic_enum){
       item.ic_enum.forEach((icenum, i) => {
@@ -740,7 +740,9 @@ export const compare = (gv) => {
 
         const items = $('#compare-matched').data('compareResult');
 
-        downloadCompareCVS(items, options);
+        old_downloadCompareCVS(vs, gv, options)
+
+        //downloadCompareCVS(items, options);
 
         if (gv.length > 500 ) {
           $('#gdc-loading-icon').hide()
