@@ -115,7 +115,7 @@ const compareGDCvalues = (fromV, toV, option) => {
         });
         let checker_n_c = getMatchedSynonyms(text, tmp, option);
         text.forEach(em => {
-          if(em.match === undefined) em.match = caseSensitiveV;
+          em.match = caseSensitiveV;
           if(em.n_syn !== undefined && em.s === undefined){
             em.n_syn.forEach(n_s => {
               if(em.matched_s === undefined && checker_n_c[n_s.n_c] !== undefined){
@@ -183,7 +183,7 @@ const compareGDCvalues = (fromV, toV, option) => {
           });
           let checker_n_c = getMatchedSynonyms(text, tmp, option);
           text.forEach(em => {
-            if(em.match === undefined) em.match = caseSensitiveV;
+            em.match = caseSensitiveV;
             if(em.n_syn !== undefined && em.s === undefined){
               em.n_syn.forEach(n_s => {
                 if(em.matched_s === undefined && checker_n_c[n_s.n_c] !== undefined){
