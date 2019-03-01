@@ -243,8 +243,9 @@
   display: inline-block;
 }
 
-.compare-form__bottom-pagination {
-  margin-left: 5em;
+.compare-form__content-pagination {
+  display: inline-block;
+  width: 49%;
 }
 
 .compare-form__button {
@@ -276,6 +277,10 @@
   margin-left: 1em;
 }
 
+.compare-form__button-content{
+  display: inline-block;
+  width: 50%;
+}
 
 .compare_result__bottom {
   text-align: center;
