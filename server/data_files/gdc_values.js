@@ -6617,7 +6617,6 @@
 {"nm":"Chronic erythremia","i_c":"9950/3","n_c":"","term_type":"IS"},
 {"nm":"Chronic granulocytic leukemia, BCR/ABL","i_c":"9875/3","n_c":"C9128","term_type":"SY"},
 {"nm":"Chronic granulocytic leukemia, NOS","i_c":"9863/3","n_c":"C3174","term_type":"SY"},
-{"nm":"Chronic granulocytic leukemia, NOS","i_c":"9863/3","n_c":"C3174","term_type":"SY"},
 {"nm":"Chronic granulocytic leukemia, Philadelphia chromosome (Ph1) positive","i_c":"9875/3","n_c":"C9128","term_type":"SY"},
 {"nm":"Chronic granulocytic leukemia, t(9;22)(q34;q11)","i_c":"9875/3","n_c":"C9128","term_type":"SY"},
 {"nm":"Chronic idiopathic myelofibrosis","i_c":"9961/3","n_c":"C2862","term_type":"SY"},
