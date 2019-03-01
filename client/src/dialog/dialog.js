@@ -638,8 +638,7 @@ export const compare = (gv) => {
 
     $('#compare').hide();
     $('#cancelCompare').hide();
-    $('#back2Compare').show();
-    $('#pagination-matched').show();
+    $('#cp_bottom-matched').show();
 
     let vs = $('#cp_input').val().split(/\n/);
 
@@ -789,8 +788,7 @@ export const compare = (gv) => {
 
       $('#compare').show();
       $('#cancelCompare').show();
-      $('#back2Compare').hide();
-      $('#pagination-matched').hide();
+      $('#cp_bottom-matched').hide();
     });
 
     if (gv.length > 500 ) {
