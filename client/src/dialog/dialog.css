@@ -290,6 +290,12 @@
   outline: none;
 }
 
+.table_td-term {
+  word-wrap: break-word;
+  width: 115px;
+  margin: 0;
+}
+
 .gdc-data__item--show,
 .gdc-term__item--show {
   display: block;
