@@ -95,6 +95,11 @@ a:hover, a:focus {
 }
 
 /* Table */
+
+.table {
+  margin-bottom: 0;
+}
+
 .table__container {
   font-size: 1.3rem;
   padding-left: 15px;
@@ -164,8 +169,8 @@ a:hover, a:focus {
 }
 
 .table__hr {
-  border-bottom: 1px solid #ecf0f1; 
-  margin-left: -15px; 
+  border-bottom: 1px solid #ecf0f1;
+  margin-left: -15px;
   margin-right: -15px;
 }
 
