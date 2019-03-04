@@ -276,7 +276,7 @@ export const showCompareResult = (items, option, keywordCase) => {
                                 <tr>
                                   <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                   <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                 </tr>
                               `.trim()).join('')}
                             </table>
@@ -319,27 +319,27 @@ export const showCompareResult = (items, option, keywordCase) => {
                                     <tr>
                                       <td>${s_v.termName}</td>
                                       <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
-                                      <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                      <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termGroup : ``}</td>
                                     </tr>
                                   `:`
                                     ${option.synonyms === true && option.partial === true ? `
                                       <tr>
                                         <td>${s_v.termName.replace(reg_key, '<b>$&</b>')}</td>
                                         <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
-                                        <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                        <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termGroup : ``}</td>
                                       </tr>
                                     `:`
                                       ${option.synonyms === true && s_v.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
                                         <tr>
                                           <td><b>${s_v.termName}<b></td>
                                           <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
-                                          <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                          <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termGroup : ``}</td>
                                         </tr>
                                       `:`
                                         <tr>
                                           <td>${s_v.termName}</td>
                                           <td>${s_v.termSource !== undefined && s_v.termSource !== null ? s_v.termSource : ``}</td>
-                                          <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termSource : ``}</td>
+                                          <td>${s_v.termGroup !== undefined && s_v.termGroup !== null ? s_v.termGroup : ``}</td>
                                         </tr>
                                       `}
                                     `}
@@ -391,7 +391,7 @@ export const showCompareResult = (items, option, keywordCase) => {
                                 <tr>
                                   <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                   <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                  <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                 </tr>
                               `.trim()).join('')}
                             </table>
@@ -424,27 +424,27 @@ export const showCompareResult = (items, option, keywordCase) => {
                                   <tr>
                                     <td>${syn.termName}</td>
                                     <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                    <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                    <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                   </tr>
                                 `:`
                                   ${option.synonyms === true && option.partial === true ? `
                                     <tr>
                                       <td>${syn.termName.replace(reg_key, '<b>$&</b>')}</td>
                                       <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                      <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                      <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                     </tr>
                                   `:`
                                     ${option.synonyms === true && syn.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
                                       <tr>
                                         <td><b>${syn.termName}<b></td>
                                         <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                        <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                        <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                       </tr>
                                     `:`
                                       <tr>
                                         <td>${syn.termName}</td>
                                         <td>${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                        <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termSource : ``}</td>
+                                        <td>${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                       </tr>
                                     `}
                                   `}
