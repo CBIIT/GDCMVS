@@ -350,14 +350,10 @@ export const showCompareResult = (items, option, keywordCase) => {
                           </div>
                         </div>
                       `:``}
-
                     `.trim()).join('')}
-
                   `:``}
-
                 </div>
               </div>
-
             `:``}
 
             ${item.s !== undefined ? `
@@ -455,14 +451,10 @@ export const showCompareResult = (items, option, keywordCase) => {
                         </div>
                       </div>
                     `:``}
-
                   </div>
                 `:``}
-
               </div>
-
             `:``}
-
             ${item.s === undefined && item.n_syn === undefined ? `
               <div class="table__td table__td--slim col-xs-6">${item.n}</div>
             `:``}

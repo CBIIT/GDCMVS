@@ -318,7 +318,7 @@ const templateList = (items, icdo, keyword = 'default') => {
                 </thead>
                 ${n_syn.s.map((s) =>`
                   <tr>
-                    <td><p class="table_td-term">${s.termName}<p></td>
+                    <td><p class="table_td-term">${s.termName}</p></td>
                     <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
                     <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                   </tr>
