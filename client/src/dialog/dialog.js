@@ -595,8 +595,10 @@ const downloadCompareCVS = (items, option) => {
     }
   });
 
+  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' }); 
+  var csvUrl = URL.createObjectURL(csvData);
   let link  = document.createElement('a');
-  link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  link.href = csvUrl;
   link.target = '_blank';
   link.download = 'Compare_Values_GDC.csv';
   link.style.visibility = 'hidden';
