@@ -120,7 +120,7 @@ const GDCTerms = (uid, tgts) => {
       items_length: items.length
     });
 
-    let html = templateGDC(items, icdo);
+    let html = '<div id="gdc_terms_data"></div>';
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? getHeaderOffset() +
       20 : window.innerHeight * 0.2;
 
@@ -193,7 +193,7 @@ const GDCTerms = (uid, tgts) => {
             pageSize: 50,
             callback: function(data, pagination) {
               let html = templateList(data, icdo);
-              $('#gdc-syn-container').html(html);
+              $('#gdc_terms_data').html(html);
             }
           });
 
@@ -219,7 +219,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let html = templateList(data, icdo, keywordCase);
-                  $('#gdc-syn-container').html(html);
+                  $('#gdc_terms_data').html(html);
                 }
               });
             } else {
@@ -228,7 +228,7 @@ const GDCTerms = (uid, tgts) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   let html = templateList(data, icdo, keywordCase);
-                  $('#gdc-syn-container').html(html);
+                  $('#gdc_terms_data').html(html);
                 }
               });
             }
@@ -278,153 +278,145 @@ const isEmpty = (myObject) => {
   return true;
 }
 
-const templateGDC = (items, icdo) => {
-  return `<div id="gdc_terms_data">
+const templateList = (items, icdo, keywordCase) => {
+  return `${items.length !== 0 ? `
     <div id="gdc-syn-data-list" class="table__container">
       <div class="table__body row">
         <div id="gdc-syn-container" class="col-xs-12">
-        ${items.length > 50 ? ``: `${templateList(items, icdo)}`}
+          ${items.map((item, i) => `
+          <div id="gdc_term_item" class="table__row row gdc-term__item--show">
+          ${icdo ? `
+            <div class="table__td col-xs-2">${item.n}</div>
+            <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
+            <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `${item.i_c.n.map((n) =>`${n}</br>`.trim()).join('')}`:`${item.i_c.n}`}`:``}</div>
+            <div class="col-xs-5">
+            ${item.i_c ? `
+              ${item.i_c.n_syn.map((n_syn) =>`
+              <div class="row">
+                <div class="table__td col-xs-4">
+                  ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+                </div>
+                <div name="syn_area" class="table__td col-xs-8">
+                ${n_syn.s !== undefined ? `
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Term</th>
+                        <th>Source</th>
+                        <th>Type</th>
+                      </tr>
+                    </thead>
+                    ${n_syn.s.map((s) =>`
+                      <tr>
+                        <td><p class="table_td-term">${s.termName}</p></td>
+                        <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                        <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                      </tr>
+                    `.trim()).join('')}
+                    </table>
+                  `:``}
+                </div>
+              </div>
+              `.trim()).join('')}
+            `:`
+              <div class="row">
+                <div class="table__td col-xs-4">
+                  ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+                </div>
+                <div name="syn_area" class="table__td col-xs-8">
+                  ${item.s !== undefined ? `
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Term</th>
+                          <th>Source</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      ${item.s.map((s) =>`
+                        <tr>
+                          <td><p class="table_td-term">${s.termName}</p></td>
+                          <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                          <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                        </tr>
+                      `.trim()).join('')}
+                    </table>
+                  `:``}
+                </div>
+              </div>
+            `}
+            </div>
+          ` : `
+            <div class="table__td col-xs-5">${item.n}</div>
+            <div class="col-xs-7">
+            ${item.i_c ? `
+              ${item.i_c.n_syn.map((n_syn) =>`
+                <div class="row">
+                  <div class="table__td col-xs-4">
+                    ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+                  </div>
+                  <div name="syn_area" class="table__td col-xs-8">
+                  ${n_syn.s !== undefined ? `
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Term</th>
+                          <th>Source</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      ${n_syn.s.map((s) =>`
+                        <tr>
+                          <td><p class="table_td-term">${s.termName}</p></td>
+                          <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                          <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                        </tr>
+                    `.trim()).join('')}
+                    </table>
+                  `:``}
+                  </div>
+                </div>
+              `.trim()).join('')}
+            `:`
+              <div class="row">
+                <div class="table__td col-xs-4">
+                  ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+                </div>
+                <div name="syn_area" class="table__td col-xs-8">
+                  ${item.s !== undefined ? `
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Term</th>
+                          <th>Source</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      ${item.s.map((s) =>`
+                        <tr>
+                          <td><p class="table_td-term">${s.termName}</p></td>
+                          <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                          <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                        </tr>
+                      `.trim()).join('')}
+                    </table>
+                  `:``}
+                </div>
+              </div>
+            `}
+            </div>
+          `}
+          </div>`.trim()).join('')}
         </div>
       </div>
     </div>
-  </div>`
-}
-
-const templateList = (items, icdo, keyword = 'default') => {
-  return `
-    ${items.length !== 0 ? `
-      ${items.map((item, i) => `
-      <div id="gdc_term_item" class="table__row row gdc-term__item--show">
-      ${icdo ? `
-        <div class="table__td col-xs-2">${item.n}</div>
-        <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
-        <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `${item.i_c.n.map((n) =>`${n}</br>`.trim()).join('')}`:`${item.i_c.n}`}`:``}</div>
-        <div class="col-xs-5">
-        ${item.i_c ? `
-          ${item.i_c.n_syn.map((n_syn) =>`
-          <div class="row">
-            <div class="table__td col-xs-4">
-              ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
-            </div>
-            <div name="syn_area" class="table__td col-xs-8">
-            ${n_syn.s !== undefined ? `
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Term</th>
-                    <th>Source</th>
-                    <th>Type</th>
-                  </tr>
-                </thead>
-                ${n_syn.s.map((s) =>`
-                  <tr>
-                    <td><p class="table_td-term">${s.termName}</p></td>
-                    <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                    <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                  </tr>
-                `.trim()).join('')}
-                </table>
-              `:``}
-            </div>
-          </div>
-          `.trim()).join('')}
-        `:`
-          <div class="row">
-            <div class="table__td col-xs-4">
-              ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
-            </div>
-            <div name="syn_area" class="table__td col-xs-8">
-              ${item.s !== undefined ? `
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Term</th>
-                      <th>Source</th>
-                      <th>Type</th>
-                    </tr>
-                  </thead>
-                  ${item.s.map((s) =>`
-                    <tr>
-                      <td><p class="table_td-term">${s.termName}</p></td>
-                      <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                      <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                    </tr>
-                  `.trim()).join('')}
-                </table>
-              `:``}
-            </div>
-          </div>
-        `}
-        </div>
-      ` : `
-        <div class="table__td col-xs-5">${item.n}</div>
-        <div class="col-xs-7">
-        ${item.i_c ? `
-          ${item.i_c.n_syn.map((n_syn) =>`
-            <div class="row">
-              <div class="table__td col-xs-4">
-                ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
-              </div>
-              <div name="syn_area" class="table__td col-xs-8">
-              ${n_syn.s !== undefined ? `
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Term</th>
-                      <th>Source</th>
-                      <th>Type</th>
-                    </tr>
-                  </thead>
-                  ${n_syn.s.map((s) =>`
-                    <tr>
-                      <td><p class="table_td-term">${s.termName}</p></td>
-                      <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                      <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                    </tr>
-                `.trim()).join('')}
-                </table>
-              `:``}
-              </div>
-            </div>
-          `.trim()).join('')}
-        `:`
-          <div class="row">
-            <div class="table__td col-xs-4">
-              ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
-            </div>
-            <div name="syn_area" class="table__td col-xs-8">
-              ${item.s !== undefined ? `
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Term</th>
-                      <th>Source</th>
-                      <th>Type</th>
-                    </tr>
-                  </thead>
-                  ${item.s.map((s) =>`
-                    <tr>
-                      <td><p class="table_td-term">${s.termName}</p></td>
-                      <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                      <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                    </tr>
-                  `.trim()).join('')}
-                </table>
-              `:``}
-            </div>
-          </div>
-        `}
-        </div>
-      `}
-      </div>`.trim()).join('')}
-    `: `
+  `: `
     <div  class="dialog__indicator">
       <div class="dialog__indicator-content">
-        Sorry, no results found for keyword: <span class="dialog__indicator-term">${keyword}</span>
+        Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
       </div>
     </div>
-    `}
-  `
+  `} `
 }
 
 export default GDCTerms;
