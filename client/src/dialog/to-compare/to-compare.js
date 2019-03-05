@@ -128,7 +128,6 @@ const toCompare = (uid) => {
                 dataSource: new_item,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  //let invariant = $('#gdc-data-invariant').prop("checked");
                   let html = templateList(data, keywordCase);
                   $('#cp_right').html(html);
                 }
@@ -138,7 +137,6 @@ const toCompare = (uid) => {
                 dataSource: items,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  //let invariant = $('#gdc-data-invariant').prop("checked");
                   let html = templateList(data, keywordCase);
                   $('#cp_right').html(html);
                 }
@@ -161,8 +159,8 @@ const toCompare = (uid) => {
                 dataSource: new_item,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  const table_new = showCompareResult(data, options, keywordCase);
-                  $('#cp_result_table').html(table_new);
+                  const html = showCompareResult(data, options, keywordCase);
+                  $('#compare_result').html(html);
                 }
               });
 
@@ -174,8 +172,8 @@ const toCompare = (uid) => {
                 dataSource: items,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  const table_new = showCompareResult(data, options, keywordCase);
-                  $('#cp_result_table').html(table_new);
+                  const html = showCompareResult(data, options, keywordCase);
+                  $('#compare_result').html(html);
                 }
               });
             }
@@ -285,7 +283,7 @@ const templateList = (items, keywordCase) => {
       `}
       </div>
     `.trim()).join('')}`:`
-    <div  class="dialog__indicator-toCompare">
+    <div  class="dialog__indicator">
       <div class="dialog__indicator-content">
         Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
       </div>
