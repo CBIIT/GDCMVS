@@ -465,7 +465,7 @@ export const showCompareResult = (items, option, keywordCase) => {
           <div class="dialog__indicator-content">
             Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
           </div>
-        <div>
+        </div>
         `}
     </div>
   </div>`
