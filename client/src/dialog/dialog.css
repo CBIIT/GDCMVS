@@ -60,11 +60,6 @@
 
 .dialog__indicator {
   position: relative;
-  padding-bottom: 39%;
-}
-
-.dialog__indicator-toCompare {
-  position: relative;
   height: 100%;
 }
 
@@ -165,6 +160,10 @@
 .compare-form {
   margin: 0.5em 1em;
   height: 97%;
+}
+
+.compare_result {
+  height: 100%;
 }
 
 .compare-form__message {
