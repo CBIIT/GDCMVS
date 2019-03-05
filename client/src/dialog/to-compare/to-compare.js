@@ -129,7 +129,7 @@ const toCompare = (uid) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   //let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data);
+                  let html = templateList(data, keywordCase);
                   $('#cp_right').html(html);
                 }
               });
@@ -139,7 +139,7 @@ const toCompare = (uid) => {
                 pageSize: 50,
                 callback: function(data, pagination) {
                   //let invariant = $('#gdc-data-invariant').prop("checked");
-                  let html = templateList(data);
+                  let html = templateList(data, keywordCase);
                   $('#cp_right').html(html);
                 }
               });
@@ -161,7 +161,7 @@ const toCompare = (uid) => {
                 dataSource: new_item,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  const table_new = showCompareResult(data, options);
+                  const table_new = showCompareResult(data, options, keywordCase);
                   $('#cp_result_table').html(table_new);
                 }
               });
@@ -174,11 +174,10 @@ const toCompare = (uid) => {
                 dataSource: items,
                 pageSize: 50,
                 callback: function(data, pagination) {
-                  const table_new = showCompareResult(data, options);
+                  const table_new = showCompareResult(data, options, keywordCase);
                   $('#cp_result_table').html(table_new);
                 }
               });
-
             }
           });
 
@@ -197,53 +196,11 @@ const toCompare = (uid) => {
   });
 }
 
-const templateList = (items) => {
-  return `${items.map((item) => `
-    <div class="compare-form__values">
-    ${item.n_syn !== undefined && item.n_syn.length !== 0 ? `
-      <div>
-        <div class="compare-form__value">${item.n}</div>
-        <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
-          <i class="fa fa-plus"></i>
-        </a>
-      </div>
-      <div class="compare-form__synm" style="display: none;">
-      ${item.i_c !== undefined ? `
-        <div class="compare-form__i_c">
-          <div class="compare-form__ic_c">${item.i_c.c} (ICD-O-3)</div>
-          <div class="compare-form__ic_enum">${item.ic_enum.map((ic_enum) => `${ic_enum}</br>`.trim()).join('')}</div>
-        </div>
-      `:``}
-      ${item.n_syn.map((n_syn) => `
-        ${n_syn.s !== undefined && n_syn.s.length !== 0 ? `
-          <div class="compare-form__n_syn">
-            <div class="compare-form__n_c">${n_syn.n_c} (NCIt)</div>
-            <div class="compare-form__s">
-              ${n_syn.s !== undefined ? `
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Term</th>
-                      <th>Source</th>
-                      <th>Type</th>
-                    </tr>
-                  </thead>
-                  ${n_syn.s.map((s_r) =>`
-                    <tr>
-                      <td>${s_r.termName}</td>
-                      ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
-                      ${s_r.termGroup !== undefined && s_r.termGroup !== null? `<td>${s_r.termGroup}</td>`: ``}
-                    </tr>
-                  `.trim()).join('')}
-                  </table>
-              `:``}
-            </div>
-          </div>
-        `:``}
-      `.trim()).join('')}
-      </div>
-    `:`
-      ${item.s !== undefined && item.s.length !== 0 ? `
+const templateList = (items, keywordCase) => {
+  return `${items.length > 0 ? `
+    ${items.map((item) => `
+      <div class="compare-form__values">
+      ${item.n_syn !== undefined && item.n_syn.length !== 0 ? `
         <div>
           <div class="compare-form__value">${item.n}</div>
           <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
@@ -251,11 +208,18 @@ const templateList = (items) => {
           </a>
         </div>
         <div class="compare-form__synm" style="display: none;">
-        ${item.s.length !== 0 ? `
-          <div class="compare-form__n_syn">
-            <div class="compare-form__n_c">${item.n_c} (NCIt)</div>
-            <div class="compare-form__s">
-              ${item.s !== undefined ? `
+        ${item.i_c !== undefined ? `
+          <div class="compare-form__i_c">
+            <div class="compare-form__ic_c">${item.i_c.c} (ICD-O-3)</div>
+            <div class="compare-form__ic_enum">${item.ic_enum.map((ic_enum) => `${ic_enum}</br>`.trim()).join('')}</div>
+          </div>
+        `:``}
+        ${item.n_syn.map((n_syn) => `
+          ${n_syn.s !== undefined && n_syn.s.length !== 0 ? `
+            <div class="compare-form__n_syn">
+              <div class="compare-form__n_c">${n_syn.n_c} (NCIt)</div>
+              <div class="compare-form__s">
+                ${n_syn.s !== undefined ? `
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -264,7 +228,7 @@ const templateList = (items) => {
                         <th>Type</th>
                       </tr>
                     </thead>
-                    ${item.s.map((s_r) =>`
+                    ${n_syn.s.map((s_r) =>`
                       <tr>
                         <td>${s_r.termName}</td>
                         ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
@@ -273,18 +237,60 @@ const templateList = (items) => {
                     `.trim()).join('')}
                     </table>
                 `:``}
+              </div>
             </div>
-          </div>
-        `:``}
+          `:``}
+        `.trim()).join('')}
         </div>
       `:`
-        <div>
-          <div class="compare-form__value">${item.n}</div>
-        </div>
+        ${item.s !== undefined && item.s.length !== 0 ? `
+          <div>
+            <div class="compare-form__value">${item.n}</div>
+            <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+              <i class="fa fa-plus"></i>
+            </a>
+          </div>
+          <div class="compare-form__synm" style="display: none;">
+          ${item.s.length !== 0 ? `
+            <div class="compare-form__n_syn">
+              <div class="compare-form__n_c">${item.n_c} (NCIt)</div>
+              <div class="compare-form__s">
+                ${item.s !== undefined ? `
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Term</th>
+                          <th>Source</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      ${item.s.map((s_r) =>`
+                        <tr>
+                          <td>${s_r.termName}</td>
+                          ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
+                          ${s_r.termGroup !== undefined && s_r.termGroup !== null? `<td>${s_r.termGroup}</td>`: ``}
+                        </tr>
+                      `.trim()).join('')}
+                      </table>
+                  `:``}
+              </div>
+            </div>
+          `:``}
+          </div>
+        `:`
+          <div>
+            <div class="compare-form__value">${item.n}</div>
+          </div>
+        `}
       `}
-    `}
-    </div>
-  `.trim()).join('')}`
+      </div>
+    `.trim()).join('')}`:`
+    <div  class="dialog__indicator-toCompare">
+      <div class="dialog__indicator-content">
+        Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
+      </div>
+    <div>
+    `}`
 }
 
 export default toCompare;
