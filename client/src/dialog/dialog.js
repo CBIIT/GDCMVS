@@ -554,8 +554,8 @@ const getMatchedSynonyms = (text, tmp, option) => {
   }
 }
 
-const downloadCompareCVS = (items, option) => {
-  let csv = 'User Defined Values,Matched GDC Values,ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
+const downloadCompareCVS = (items) => {
+  let csv = 'User Defined Values, Matched GDC Values, ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
   items.forEach((item, i) => {
     let new_line = true;
     let match = item.match;
@@ -599,8 +599,8 @@ const downloadCompareCVS = (items, option) => {
     }
   });
 
-  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' });
-  var csvUrl = URL.createObjectURL(csvData);
+  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' }); 
+  let csvUrl = URL.createObjectURL(csvData);
   let link  = document.createElement('a');
   link.href = csvUrl;
   link.target = '_blank';
@@ -752,21 +752,12 @@ export const compare = (gv) => {
     });
 
     $('#downloadCompareCVS').bind('click', function () {
-      let options = {};
-      options.partial = $("#compare_filter").prop('checked');
-      options.unmatched = $("#compare_unmatched").prop('checked');
-      options.synonyms = $("#compare_synonyms").prop('checked');
-
       if (gv.length > 500 ) {
         $('#gdc-loading-icon').show()
       }
-
       setTimeout(() => {
-
         const items = $('#compare-matched').data('compareResult');
-
-        downloadCompareCVS(items, options);
-
+        downloadCompareCVS(items);
         if (gv.length > 500 ) {
           $('#gdc-loading-icon').hide()
         }
