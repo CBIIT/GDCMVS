@@ -289,7 +289,7 @@ const templateList = (items, keywordCase) => {
       <div class="dialog__indicator-content">
         Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
       </div>
-    <div>
+    </div>
     `}`
 }
 

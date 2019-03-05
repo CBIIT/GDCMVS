@@ -422,7 +422,7 @@ const templateList = (items, icdo, keyword = 'default') => {
       <div class="dialog__indicator-content">
         Sorry, no results found for keyword: <span class="dialog__indicator-term">${keyword}</span>
       </div>
-    <div>
+    </div>
     `}
   `
 }
