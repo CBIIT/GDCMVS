@@ -63,6 +63,11 @@
   padding-bottom: 39%;
 }
 
+.dialog__indicator-toCompare {
+  position: relative;
+  height: 100%;
+}
+
 .dialog__indicator-content {
   min-width: 450px;
   text-align: center;
