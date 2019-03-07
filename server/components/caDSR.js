@@ -4,28 +4,29 @@
  */
 'use strict';
 
-var fs = require('fs');
-var https = require('https');
-var http = require('http');
-var config = require('../config');
-var logger = require('./logger');
+const fs = require('fs');
+const https = require('https');
+const fetch = require('node-fetch');
+const config = require('../config');
+const logger = require('./logger');
+const shared = require('../service/search/shared');
 var datas = {};
 var syns = {};
 
-var loadData = function (ids, next) {
+const loadData = (ids, next) => {
 	if (ids.length > 0) {
 		logger.debug(ids.length);
 		let ncitids = [];
 		let count = 0,
 			has = 0;
-		ids.forEach(function (uid) {
+		ids.forEach(uid => {
 			logger.debug("request:" + config.caDSR_url[0] + uid);
 			https.get(config.caDSR_url[0] + uid, (response) => {
 				let info = '';
 				response.on('data', (d) => {
 					info += d;
 				});
-				response.on('end', function () {
+				response.on('end', () => {
 					let parsed = JSON.parse(info);
 					if (parsed.length > 0) {
 						https.get(config.caDSR_url[1] + parsed[0].deIdseq, (result) => {
@@ -33,11 +34,11 @@ var loadData = function (ids, next) {
 							result.on('data', (r) => {
 								body += r;
 							});
-							result.on('end', function () {
+							result.on('end', () => {
 								let b = JSON.parse(body);
 								let pvs = b.valueDomain.permissibleValues;
 								let data = [];
-								pvs.forEach(function (pv) {
+								pvs.forEach(pv => {
 									let value = {};
 									value.pv = pv.value;
 									value.pvm = pv.shortMeaning;
@@ -53,7 +54,7 @@ var loadData = function (ids, next) {
 										if (value.pvc.indexOf(':') >= 0) {
 											let cs = value.pvc.split(":");
 											logger.debug("get synonyms for :" + cs);
-											cs.forEach(function (c) {
+											cs.forEach(c => {
 												if (ncitids.indexOf(c) === -1) {
 													ncitids.push(c);
 												}
@@ -70,11 +71,8 @@ var loadData = function (ids, next) {
 								//save to local
 								let str = {};
 								str[uid] = data;
-								fs.appendFileSync("./server/data_files/cdeData.js", JSON.stringify(str), function (err) {
-									if (err) {
-										return logger.error(err);
-									}
-
+								fs.appendFileSync("./server/data_files/cdeData.js", JSON.stringify(str), err => {
+									if (err) return logger.error(err);
 									logger.debug(" " + data.length + " PVs for caDSR :" + uid);
 								});
 								count++;
@@ -102,17 +100,17 @@ var loadData = function (ids, next) {
 
 };
 
-var loadDataType = function (ids, next) {
+const loadDataType = (ids, next)  => {
 	let count = 0;
 	if (ids.length > 0) {
 		logger.debug(ids.length);
-		ids.forEach(function (uid) {
+		ids.forEach(uid => {
 			https.get(config.caDSR_url[0] + uid, (response) => {
 				let info = '';
 				response.on('data', (d) => {
 					info += d;
 				});
-				response.on('end', function () {
+				response.on('end', () => {
 					let parsed = JSON.parse(info);
 					if (parsed.length > 0) {
 						https.get(config.caDSR_url[1] + parsed[0].deIdseq, (result) => {
@@ -120,17 +118,14 @@ var loadDataType = function (ids, next) {
 							result.on('data', (r) => {
 								body += r;
 							});
-							result.on('end', function () {
+							result.on('end', () => {
 								let b = JSON.parse(body);
 								let dataType = b.valueDomain.valueDomainDetails.dataType;
 								let str = {};
 								str[uid] = dataType;
 								logger.debug("save to file:" + uid);
-								fs.appendFile("./server/data_files/cdeDataType.js", JSON.stringify(str), function (err) {
-									if (err) {
-										return logger.error(err);
-									}
-
+								fs.appendFile("./server/data_files/cdeDataType.js", JSON.stringify(str), err => {
+									if (err) return logger.error(err);
 									logger.debug(" dataType for caDSR (" + uid + ") :" + dataType);
 								});
 								count++;
@@ -155,40 +150,12 @@ var loadDataType = function (ids, next) {
 	}
 };
 
-
-var loadSynonyms = function (next) {
+const loadSynonyms = next => {
 	let ncitids = [];
-	//load cde ncit codes
-	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	cdeData = cdeData.replace(/}{/g, ",");
-	let cde = JSON.parse(cdeData);
 	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
+	let concept = shared.readConceptCode();
 	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
-	for (let c in cde) {
-		let arr = cde[c];
-		if (arr.length !== 0) {
-			arr.forEach(function (pv) {
-				if (pv.pvc && pv.pvc !== "") {
-					if (pv.pvc.indexOf(':') >= 0) {
-						let cs = pv.pvc.split(":");
-						cs.forEach(function (c) {
-							if (ncitids.indexOf(c) === -1) {
-								ncitids.push(c);
-							}
-						});
-					} else {
-						if (ncitids.indexOf(pv.pvc) === -1) {
-							ncitids.push(pv.pvc);
-						}
-					}
-				}
-			});
-		}
-	}
+	let icdo = shared.readGDCValues();
 	for (let cc in concept) {
 		let dict = concept[cc];
 		for (let v in dict) {
@@ -199,121 +166,40 @@ var loadSynonyms = function (next) {
 	}
 	for (let ic in icdo) {
 		let arr = icdo[ic];
-		arr.forEach(function (dict) {
+		arr.forEach(dict => {
 			if (dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1) {
 				ncitids.push(dict.n_c);
 			}
 		});
-
 	}
 	let ncit = [];
-	let ctcae = [];
 
-	ncitids.forEach(function (id) {
-		if (id.indexOf('E') >= 0) {
-			ctcae.push(id);
-		} else {
+	ncitids.forEach(id => {
+		if (ncit.indexOf(id) === -1) {
 			ncit.push(id);
 		}
 	});
 	//get data
 	if(ncit.length > 0){
-		fs.truncate('./server/data_files/synonyms_ncit.js', 0, function () {
-			console.log('synonyms_ncit.js truncated')
+		fs.truncate('./server/data_files/ncit_details.js', 0, () => {
+			console.log('ncit_details.js truncated')
 		});
-		synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
+		// let new_ncit = spliceArray(ncit, 1000);
+		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
 			return next(data);
 		});
 	}else{
 		logger.debug('Already up to date');
 		return next('Success');
 	}
-
 };
 
-var loadSynonymsCtcae = function (next) {
+const loadNcitSynonyms_continue = next => {
 	let ncitids = [];
-	//load cde ncit codes
-	let cdeData = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	cdeData = cdeData.replace(/}{/g, ",");
-	let cde = JSON.parse(cdeData);
+	let synonyms = shared.readNCItDetails();
 	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
-	//load ICD-0 codes
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
-	for (let c in cde) {
-		let arr = cde[c];
-		if (arr.length !== 0) {
-			arr.forEach(function (pv) {
-				if (pv.pvc && pv.pvc !== "") {
-					if (pv.pvc.indexOf(':') >= 0) {
-						let cs = pv.pvc.split(":");
-						cs.forEach(function (c) {
-							if (ncitids.indexOf(c) === -1) {
-								ncitids.push(c);
-							}
-						});
-					} else {
-						if (ncitids.indexOf(pv.pvc) === -1) {
-							ncitids.push(pv.pvc);
-						}
-					}
-				}
-			});
-		}
-	}
-	for (let cc in concept) {
-		let dict = concept[cc];
-		for (let v in dict) {
-			if (dict[v] !== "" && ncitids.indexOf(dict[v]) == -1) {
-				ncitids.push(dict[v]);
-			}
-		}
-	}
-	for (let ic in icdo) {
-		let arr = icdo[ic];
-		arr.forEach(function (dict) {
-			if (dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1) {
-				ncitids.push(dict.n_c);
-			}
-		});
-
-	}
-	let ncit = [];
-	let ctcae = [];
-
-	ncitids.forEach(function (id) {
-		if (id.indexOf('E') >= 0) {
-			ctcae.push(id);
-		} else {
-			ncit.push(id);
-		}
-	});
-
-	if (ctcae.length > 0) {
-		fs.truncate('./server/data_files/synonyms_ctcae.js', 0, function () {
-			console.log('synonyms_ctcae.js truncated')
-		});
-		logger.debug(ctcae);
-		synchronziedLoadSynonmysfromCTCAE(ctcae, 0, function (data) {
-			return next(data);
-		});
-	} else {
-		logger.debug('Already up to date');
-		return next('Success');
-	}
-};
-
-var loadNcitSynonyms_continue = function (next) {
-	let ncitids = [];
-	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-	content_2 = content_2.replace(/}{/g, ",");
-	let synonyms = JSON.parse(content_2);
-	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(conceptCode);
+	let cc = shared.readConceptCode();
+	let gdc_values = shared.readGDCValues();
 	for (let c in cc) {
 		let vs = cc[c];
 		for (let v in vs) {
@@ -322,25 +208,28 @@ var loadNcitSynonyms_continue = function (next) {
 				ncitids.push(code);
 			}
 		}
-
+	}
+	for(let cnp in gdc_values){
+		let enums = gdc_values[cnp];
+		enums.forEach(em => {
+			let n_c = em.n_c;
+			if(ncitids.indexOf(n_c) === -1){
+				ncitids.push(n_c);
+			}
+		});
 	}
 	let ncit = [];
-	let ctcae = [];
-	ncitids.forEach(function (id) {
+	ncitids.forEach(id => {
 		if (!(id in synonyms)) {
-			if (id.indexOf('E') >= 0) {
-				ctcae.push(id);
-			} else {
+			if (id.indexOf('E') === -1) {
 				ncit.push(id);
 			}
 		} else {
 			logger.debug("in the synonyms:" + id);
 		}
 	});
-	logger.debug(ncit);
-	logger.debug("length of NCIt codes: " + ncit.length);
 	if(ncit.length > 0){
-		synchronziedLoadSynonmysfromNCIT(ncit, 0, function (data) {
+		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
 			return next(data);
 		});
 	}else{
@@ -349,79 +238,77 @@ var loadNcitSynonyms_continue = function (next) {
 	}
 };
 
-var loadCtcaeSynonyms_continue = function (next) {
-	let ncitids = [];
-	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-	content_2 = content_2.replace(/}{/g, ",");
-	let synonyms = JSON.parse(content_2);
-	//load concept codes
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let cc = JSON.parse(conceptCode);
-	for (let c in cc) {
-		let vs = cc[c];
-		for (let v in vs) {
-			let code = vs[v];
-			if (code !== "" && ncitids.indexOf(code) == -1) {
-				ncitids.push(code);
-			}
-		}
+const spliceArray = (inputArray, chunkSize) => {
+	var R = [];
+  for (var i=0,len=inputArray.length; i<len; i+=chunkSize)
+    R.push(inputArray.slice(i,i+chunkSize));
+  return R;
+}
 
+const getDataURL = async url => {
+	try {
+	  const response = await fetch(url);
+	  const json = await response.json();
+	  return json;
+	} catch (error) {
+	  console.log(error);
 	}
-	let ncit = [];
-	let ctcae = [];
-	ncitids.forEach(function (id) {
-		if (!(id in synonyms)) {
-			if (id.indexOf('E') >= 0) {
-				ctcae.push(id);
-			} else {
-				ncit.push(id);
-			}
-		}
-	});
+  };
 
-	if (ctcae.length > 0) {
-		logger.debug(ctcae);
-		synchronziedLoadSynonmysfromCTCAE(ctcae, 0, function (data) {
-			return next(data);
-		});
-	} else {
-		logger.debug('Already up to date');
-		return next('Success');
-	}
-};
-
-
-var synchronziedLoadSynonmysfromNCIT = function (ncitids, idx, next) {
+const synchronziedLoadSynonmysfromNCITTEST = (ncitids, idx, next) => {
 	if (idx >= ncitids.length) {
 		return;
 	}
-	logger.debug("searching synonyms using NCIT code (#" + idx + "): total = " + ncitids.length + ": " + ncitids[idx]);
+	// let syn = [];
+	let param = "";
+	ncitids[idx].forEach((n_c, index) => {
+		if(index === 0) param += n_c;
+		if(index !== 0) param += ","+n_c;
+	});
+	let response = getDataURL(config.NCIt_url[5] + param);
+	response.then(data => {
+		console.log(data);
+		idx++;
+		synchronziedLoadSynonmysfromNCITTEST(ncitids, idx, next);
+	}).catch(err => {
+		console.log(err);
+	});
+};
+
+const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
+	if (idx >= ncitids.length) {
+		return;
+	}
 	let syn = [];
 	https.get(config.NCIt_url[4] + ncitids[idx], (rsp) => {
 		let html = '';
 		rsp.on('data', (dt) => {
 			html += dt;
 		});
-		rsp.on('end', function () {
+		rsp.on('end', () => {
 			if (html.trim() !== '') {
 				let d = JSON.parse(html);
 				if (d.synonyms !== undefined) {
-					let syns = d.synonyms;
-					let pool = [];
-					syns.forEach(function (s) {
-						if (pool.indexOf(s.termName) === -1) {
-							pool.push(s.termName);
-							syn.push(s.termName);
-						}
+					let tmp = {}
+					tmp[ncitids[idx]] = {};
+					tmp[ncitids[idx]].preferredName = d.preferredName;
+					tmp[ncitids[idx]].code = d.code;
+					tmp[ncitids[idx]].definitions = d.definitions;
+					tmp[ncitids[idx]].synonyms = [];
+					let checker_arr = [];
+					d.synonyms.forEach(data => {
+						if(checker_arr.indexOf((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase()) !== -1) return;
+						let obj = {};
+						obj.termName = data.termName;
+						obj.termGroup = data.termGroup;
+						obj.termSource = data.termSource;
+						tmp[ncitids[idx]].synonyms.push(obj);
+						checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
 					});
 					let str = {};
-					str[ncitids[idx]] = syn;
-					fs.appendFile("./server/data_files/synonyms_ncit.js", JSON.stringify(str), function (err) {
-						if (err) {
-							return logger.error(err);
-						}
-
-						logger.debug("#########synonyms for " + ncitids[idx] + ": " + syn.toString());
+					str[ncitids[idx]] = syns;
+					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), err => {
+						if (err) return logger.error(err);
 					});
 				} else {
 					logger.debug("!!!!!!!!!!!! no synonyms for " + ncitids[idx]);
@@ -444,7 +331,109 @@ var synchronziedLoadSynonmysfromNCIT = function (ncitids, idx, next) {
 	});
 };
 
-var synchronziedLoadSynonmysfromCTCAE = function (ids, idx, next) {
+const loadSynonymsCtcae = next => {
+	let ncitids = [];
+	//load cde ncit codes
+	let cde = shared.readCDEData();
+	//load concept codes
+	let concept = shared.readConceptCode();
+	//load ICD-0 codes
+	let icdo = shared.readGDCValues();
+	for (let c in cde) {
+		let arr = cde[c];
+		if (arr.length !== 0) {
+			arr.forEach(pv => {
+				if (pv.pvc && pv.pvc !== "") {
+					if (pv.pvc.indexOf(':') >= 0) {
+						let cs = pv.pvc.split(":");
+						cs.forEach(c => {
+							if (ncitids.indexOf(c) === -1) {
+								ncitids.push(c);
+							}
+						});
+					} else {
+						if (ncitids.indexOf(pv.pvc) === -1) {
+							ncitids.push(pv.pvc);
+						}
+					}
+				}
+			});
+		}
+	}
+	for (let cc in concept) {
+		let dict = concept[cc];
+		for (let v in dict) {
+			if (dict[v] !== "" && ncitids.indexOf(dict[v]) == -1) {
+				ncitids.push(dict[v]);
+			}
+		}
+	}
+	for (let ic in icdo) {
+		let arr = icdo[ic];
+		arr.forEach(dict => {
+			if (dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1) {
+				ncitids.push(dict.n_c);
+			}
+		});
+	}
+	let ctcae = [];
+
+	ncitids.forEach(id => {
+		if (id.indexOf('E') >= 0) {
+			ctcae.push(id);
+		}
+	});
+
+	if (ctcae.length > 0) {
+		fs.truncate('./server/data_files/synonyms_ctcae.js', 0, () => {
+			console.log('synonyms_ctcae.js truncated')
+		});
+		logger.debug(ctcae);
+		synchronziedLoadSynonmysfromCTCAE(ctcae, 0, data => {
+			return next(data);
+		});
+	} else {
+		logger.debug('Already up to date');
+		return next('Success');
+	}
+};
+
+const loadCtcaeSynonyms_continue = next => {
+	let ncitids = [];
+	let synonyms = shared.readSynonyms();
+	//load concept codes
+	let cc = shared.readConceptCode();
+	for (let c in cc) {
+		let vs = cc[c];
+		for (let v in vs) {
+			let code = vs[v];
+			if (code !== "" && ncitids.indexOf(code) == -1) {
+				ncitids.push(code);
+			}
+		}
+
+	}
+	let ctcae = [];
+	ncitids.forEach(id => {
+		if (!(id in synonyms)) {
+			if (id.indexOf('E') >= 0) {
+				ctcae.push(id);
+			}
+		}
+	});
+
+	if (ctcae.length > 0) {
+		logger.debug(ctcae);
+		synchronziedLoadSynonmysfromCTCAE(ctcae, 0, data => {
+			return next(data);
+		});
+	} else {
+		logger.debug('Already up to date');
+		return next('Success');
+	}
+};
+
+const synchronziedLoadSynonmysfromCTCAE = (ids, idx, next) => {
 	if (idx >= ids.length) {
 		return;
 	}
@@ -456,7 +445,7 @@ var synchronziedLoadSynonmysfromCTCAE = function (ids, idx, next) {
 		rsp.on('data', (dt) => {
 			html += dt;
 		});
-		rsp.on('end', function () {
+		rsp.on('end', () => {
 			if (html.trim() !== '') {
 				let sub = html;
 				let index = 0;
@@ -483,12 +472,8 @@ var synchronziedLoadSynonmysfromCTCAE = function (ids, idx, next) {
 				if (syn.length > 0) {
 					let str = {};
 					str[ids[idx]] = syn;
-					fs.appendFile("./server/data_files/synonyms_ctcae.js", JSON.stringify(str), function (err) {
-						if (err) {
-							return logger.error(err);
-						}
-
-						logger.debug("#########synonyms for " + ids[idx] + ": " + syn.toString());
+					fs.appendFile("./server/data_files/synonyms_ctcae.js", JSON.stringify(str), err => {
+						if (err) return logger.error(err);
 					});
 				} else {
 					logger.debug("!!!!!!!!!!!! no synonyms for " + ids[idx]);
@@ -510,18 +495,18 @@ var synchronziedLoadSynonmysfromCTCAE = function (ids, idx, next) {
 	});
 };
 
-var decodeHtmlEntity = function (str) {
-	return str.replace(/&#(\d+);/g, function (match, dec) {
+const decodeHtmlEntity = str => {
+	return str.replace(/&#(\d+);/g, (match, dec) => {
 		return String.fromCharCode(dec);
 	});
 };
 
-var getData = function () {
+const getData = () => {
 	return datas;
 };
 
 
-var getSynonyms = function () {
+const getSynonyms = () => {
 	return syns;
 };
 

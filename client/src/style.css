@@ -3,7 +3,7 @@ body {
 }
 
 #body {
-  min-height: 715px;
+  min-height: 640px;
   margin-top: 0 !important;
 }
 
@@ -12,8 +12,9 @@ body {
   font-size: 1.3rem;
 }
 
-.version-content {
-  text-align: right;
+.info-content {
+  display: flex;
+  justify-content: space-between;
   margin: 0.5em 0;
 }
 
@@ -94,6 +95,11 @@ a:hover, a:focus {
 }
 
 /* Table */
+
+.table {
+  margin-bottom: 0;
+}
+
 .table__container {
   font-size: 1.3rem;
   padding-left: 15px;
@@ -160,6 +166,12 @@ a:hover, a:focus {
 
 .table__row--undisplay {
   display: none;
+}
+
+.table__hr {
+  border-bottom: 1px solid #ecf0f1;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 .table__content {
@@ -274,22 +286,51 @@ a:hover, a:focus {
 }
 
 .indicator {
+  position: relative;
+  padding-bottom: 36%;
+}
+
+.indicator__content {
   width: 60%;
   min-width: 550px;
   text-align: center;
-  margin: 10em auto;
-  padding: 2em 0;
+  margin: auto;
+  padding: 1em 0;
   background-color: #fff;
   color: #535A60;
   font-size: 1.2em;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
 }
 
-.indicator--has-error{
+.indicator--has-error {
   color: #c74060;
 }
 
-.indicator__term{
+.indicator__term {
   color: #2a72a4;
+}
+
+.indicator__card {
+  margin: 2em auto;
+  max-width: 450px;
+  text-align: left;
+}
+
+.indicator__mean-span {
+  color: #c74060;
+  font-size: 1.1em;
+}
+
+.indicator__suggestion {
+  font-style: italic;
+}
+
+.indicator__suggestion-p {
+  margin: 0.8em 0;
 }
 
 .tooltip.bottom:after{
@@ -374,7 +415,7 @@ a:hover, a:focus {
   }
 }
 
-@import url(./dialog/style.css);
+@import url(./dialog/dialog.css);
 @import url(./dict-table/dict-table.css);
 @import url(./search-bar/search-bar.css);
 @import url(./tabs/tabs.css);

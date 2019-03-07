@@ -1,9 +1,10 @@
-import tmpl from './view';
+import tmpl from './cde-data.html';
 import { apiGetCDEDataById } from '../../api';
-import { getHeaderOffset } from '../../shared';
+import { getHeaderOffset, htmlChildContent, findWord } from '../../shared';
 
-export default function cdeData(uid, tgts) {
-  apiGetCDEDataById(uid, function (id, items) {
+const cdeData = (uid, tgts) => {
+  uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
+  apiGetCDEDataById(uid, function(id, items) {
     //data precessing
     let tmp = [];
     items.forEach(function (item) {
@@ -42,6 +43,8 @@ export default function cdeData(uid, tgts) {
 
     let targets = null;
     let windowEl = $(window);
+    let header_template = htmlChildContent('HeaderTemplate', tmpl);
+    let body_template = htmlChildContent('BodyTemplate', tmpl);
 
     if (tgts !== null && tgts !== undefined && tgts !== "") {
       tgts = tgts.replace(/\^/g, '\'');
@@ -57,9 +60,9 @@ export default function cdeData(uid, tgts) {
     if ($('#caDSR_data').length) {
       $('#caDSR_data').remove();
     }
-    let header = $.templates(tmpl.header).render({ targets: targets, items_length: items.length });
+    let header = $.templates(header_template).render({ targets: targets, items_length: items.length });
 
-    let html = $.templates({ markup: tmpl.body, allowCode: true }).render({ targets: targets, items: tmp });
+    let html = $.templates({ markup: body_template, allowCode: true }).render({ targets: targets, items: tmp });
     let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? getHeaderOffset() + 20 : window.innerHeight * 0.2;
 
     //display result in a table
@@ -121,3 +124,5 @@ export default function cdeData(uid, tgts) {
     }
   });
 }
+
+export default cdeData;

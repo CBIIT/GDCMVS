@@ -1,5 +1,5 @@
 import tmpl from './values-table.html';
-import { getHeaderOffset } from '../shared'
+import { getHeaderOffset, findWord } from '../shared'
 
 const tableToggleHandle = (event) => {
   event.preventDefault();
@@ -57,7 +57,7 @@ const showMoreToggleHandle = (event) => {
   }
 }
 
-export const vsRender = (items, keyword) => {
+export const vsRender = (items, keyword, search_option) => {
   //data preprocessing
   let values = [];
   let len = 0;
@@ -66,23 +66,27 @@ export const vsRender = (items, keyword) => {
   // RegExp Keyword
   keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
   let reg_key = new RegExp(keyword, "ig");
+  let term_type_not_official = false;
 
   items.forEach(function (item) {
     let hl = item.highlight;
     if (hl["enum.n"] == undefined && hl["enum.n.have"] == undefined &&
-      hl["enum.s"] == undefined && hl["enum.s.have"] == undefined &&
+      hl["enum.s.termName"] == undefined && hl["enum.s.termName.have"] == undefined &&
       hl["cde_pv.n"] == undefined && hl["cde_pv.n.have"] == undefined &&
-      hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] ==
-      undefined &&
-      hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined
+      hl["cde_pv.ss.s"] == undefined && hl["cde_pv.ss.s.have"] == undefined &&
+      hl["enum.i_c.c"] == undefined && hl["enum.i_c.have"] == undefined &&
+      hl["enum.n_c"] == undefined && hl["cde_pv.ss.c"] == undefined && hl["cde.id"] == undefined
     ) {
       return;
     }
     let source = item._source;
     let dict_enum_n = {};
     let dict_enum_s = {};
+    let dict_enum_n_c = {};
     let dict_cde_n = {};
     let dict_cde_s = {};
+    let dict_cde_id = {};
+    let dict_cde_n_c = {};
     let arr_enum_c = [];
     let arr_enum_c_have = [];
     //each row in the values tab will be put into values
@@ -105,20 +109,18 @@ export const vsRender = (items, keyword) => {
     row.ref = source.name + "@" + source.node + "@" + source.category;
     row.cdeId = source.cde !== undefined ? source.cde.id : "";
     row.cdeUrl = source.cde !== undefined ? source.cde.url : "";
-    row.cdeLen = source.cde_pv == undefined || source.cde_pv.length ==
-      0 ? false : true;
+    row.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
     //value informations in the subtable
     row.vs = [];
     row.tgts_enum_n = ""; //added
     row.tgts_cde_n = "";
-    let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
-      "enum.n"] || hl["enum.n.have"] : [];
-    let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl[
-      'enum.s'] || hl["enum.s.have"] : [];
-    let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl[
-      "cde_pv.n"] || hl["cde_pv.n.have"] : [];
-    let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ?
-      hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+    let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+    let enum_s = ("enum.s.termName" in hl) || ("enum.s.termName.have" in hl) ? hl['enum.s.termName'] || hl["enum.s.termName.have"] : [];
+    let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
+    let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
+    let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
+    let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+    let cde_n_c = ("cde_pv.ss.c" in hl) ? hl["cde_pv.ss.c"] : [];
     let enum_c = ("enum.i_c.c" in hl) ? hl["enum.i_c.c"] : [];
     let enum_c_have = ("enum.i_c.have" in hl) ? hl["enum.i_c.have"] : [];
     enum_n.forEach(function (n, i) {
@@ -137,6 +139,22 @@ export const vsRender = (items, keyword) => {
         dict_enum_s[tmp] = s;
       }
     });
+    enum_n_c.forEach(function (s) {
+      let tmp = s.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      if (keyword.indexOf(' ') === -1) {
+        dict_enum_n_c[tmp] = s.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+      } else {
+        dict_enum_n_c[tmp] = s;
+      }
+    });
+    cde_id.forEach(function (pn) {
+      let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      if (keyword.indexOf(' ') === -1) {
+        dict_cde_id[tmp] = pn.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+      } else {
+        dict_cde_id[tmp] = pn;
+      }
+    });
     cde_n.forEach(function (pn) {
       let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
       if (keyword.indexOf(' ') === -1) {
@@ -151,6 +169,14 @@ export const vsRender = (items, keyword) => {
         dict_cde_s[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
       } else {
         dict_cde_s[tmp] = ps;
+      }
+    });
+    cde_n_c.forEach(function (ps) {
+      let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      if (keyword.indexOf(' ') === -1) {
+        dict_cde_n_c[tmp] = ps.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+      } else {
+        dict_cde_n_c[tmp] = ps;
       }
     });
     enum_c.forEach(function (c) {
@@ -171,6 +197,9 @@ export const vsRender = (items, keyword) => {
     if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
       source.cde_pv.forEach(function (pv) {
         let exist = false;
+        if (source.cde && source.cde.id in dict_cde_id && search_option.syn) { // check if the searched term is CDE ID
+          exist = true;
+        }
         let tmp_ss = [];
         if (pv.ss !== undefined && pv.ss.length > 0) {
           pv.ss.forEach(function (ss) {
@@ -198,6 +227,11 @@ export const vsRender = (items, keyword) => {
                 tmp_s_h.push(s);
               }
             });
+            // check if the searched NCIt code matches with CDE NCIt code
+            if (ss.c in dict_cde_n_c && search_option.syn) {
+              ss.c = dict_cde_n_c[ss.c];
+              exist = true;
+            }
             tmp_ss.push({
               c: ss.c,
               s: tmp_s_h
@@ -222,27 +256,15 @@ export const vsRender = (items, keyword) => {
       source.enum.forEach(function (em) {
         //check if there are any matches in local synonyms
         let exist = false;
+        if (source.cde && source.cde.id in dict_cde_id) { // Check if the searched term is CDE ID
+          exist = true;
+        }
         let tmp_s = [];
-        let t_s = [];
         if (em.s) {
-          //remove depulicates in local synonyms
-          let cache = {};
           em.s.forEach(function (s) {
-            let lc = s.trim().toLowerCase();
-            if (!(lc in cache)) {
-              cache[lc] = [];
-            }
-            cache[lc].push(s);
-          });
-          for (let idx in cache) {
-            //find the term with the first character capitalized
-            let word = findWord(cache[idx]);
-            t_s.push(word);
-          }
-          t_s.forEach(function (s) {
-            if (s in dict_enum_s) {
+            if (s.termName in dict_enum_s) {
               exist = true;
-              tmp_s.push(dict_enum_s[s])
+              tmp_s.push({termName: dict_enum_s[s.termName], termGroup: s.termGroup, termSource: s.termSource})
             } else {
               tmp_s.push(s);
             }
@@ -265,6 +287,13 @@ export const vsRender = (items, keyword) => {
             v.n = dict_enum_n[em.n];
             v.ref = row.ref;
             v.n_c = em.n_c;
+            v.s = tmp_s;
+          }
+          // If the searched term matches with NCIt Code
+          if (em.n_c in dict_enum_n_c) {
+            v.n = em.n;
+            v.ref = row.ref;
+            v.n_c = dict_enum_n_c[em.n_c];
             v.s = tmp_s;
           }
         }
@@ -311,7 +340,6 @@ export const vsRender = (items, keyword) => {
               }
             }
           }
-
         }
 
         let lc = em.n.toLowerCase();
@@ -367,10 +395,13 @@ export const vsRender = (items, keyword) => {
           }
           let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          let tt = item.term_type !== undefined ? item.term_type : "";
+          let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "";
           let term_type = "";
           if (tt !== "") {
             term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+          }
+          else if(tt === ""){
+            term_type = "(*)"; // Asterisk foot note
           }
           if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
             if (item_n_clr !== item_i_c) {
@@ -378,15 +409,17 @@ export const vsRender = (items, keyword) => {
                 temp_i_c[item_i_c].n.unshift(item.n + " " + term_type);
               } else {
                 temp_i_c[item_i_c].n.push(item.n + " " + term_type);
+                if(term_type === "(*)") term_type_not_official = true; // Asterisk foot note
               }
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
             }
-            if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c) == -1) {
-              temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
-              temp_i_c[item_i_c].checker_n_c.push(item.n_c);
+            if (temp_i_c[item_i_c].checker_n_c.indexOf(item.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1) {
+              if (item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
+              temp_i_c[item_i_c].checker_n_c.push(item.n_c.replace(/<b>/g, "").replace(/<\/b>/g, ""));
             }
           } else {
-            temp_i_c[item_i_c] = { i_c: item.i_c, n: [], n_clr: [], n_syn: [{ n_c: item.n_c, s: item.s }], checker_n_c: [item.n_c] };
+            temp_i_c[item_i_c] = { i_c: item.i_c, n: [], n_clr: [], n_syn: [], checker_n_c: [item.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")] };
+            if (item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
             if (item_n_clr !== item_i_c) {
               if (tt === 'PT') {
                 temp_i_c[item_i_c].n.unshift(item.n + " " + term_type);
@@ -400,52 +433,40 @@ export const vsRender = (items, keyword) => {
         for (let index_i_c in temp_i_c) {
           source.enum.forEach(function (em) {
             if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
-              let tt = em.term_type !== undefined ? em.term_type : "";
+              let tt = em.term_type !== undefined && em.term_type !== "" ? em.term_type : "";
               let term_type = "";
               if (tt !== "") {
                 term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
+              }else if(tt === ""){
+                term_type = "(*)"; // Asterisk foot note
               }
               if (em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")) {
                 if (tt === 'PT') {
                   temp_i_c[index_i_c].n.unshift(em.n + " " + term_type);
                 } else {
                   temp_i_c[index_i_c].n.push(em.n + " " + term_type);
+                  if(term_type === "(*)") term_type_not_official = true; // Asterisk foot note
                 }
               }
-              if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c) == -1) {
+              if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1) {
                 //remove depulicates in local synonyms
                 let tmp_s = [];
-                let t_s = [];
                 if (em.s) {
-                  let cache = {};
                   em.s.forEach(function (s) {
-                    let lc = s.trim().toLowerCase();
-                    if (!(lc in cache)) {
-                      cache[lc] = [];
-                    }
-                    cache[lc].push(s);
-                  });
-                  for (let idx in cache) {
-                    //find the term with the first character capitalized
-                    let word = findWord(cache[idx]);
-                    t_s.push(word);
-                  }
-                  t_s.forEach(function (s) {
-                    if (s in dict_enum_s) {
+                    if (s.termName in dict_enum_s) {
                       exist = true;
-                      tmp_s.push(dict_enum_s[s])
+                      tmp_s.push({termName: dict_enum_s[s.termName], termGroup: s.termGroup, termSource: s.termSource})
                     } else {
                       tmp_s.push(s);
                     }
                   });
                 }
-                temp_i_c[index_i_c].checker_n_c.push(em.n_c);
-                temp_i_c[index_i_c].n_syn.push({ n_c: em.n_c, s: tmp_s });
+                temp_i_c[index_i_c].checker_n_c.push(em.n_c.replace(/<b>/g, "").replace(/<\/b>/g, ""));
+                if (em.n_c !== "") temp_i_c[index_i_c].n_syn.push({ n_c: em.n_c, s: tmp_s });
               }
             }
           });
         }
-
         let check_n = [];
         row.vs.forEach(function (item) {
           //remove if it's not gdc value
@@ -480,7 +501,6 @@ export const vsRender = (items, keyword) => {
         row.vs = new_vs;
       }
       len += row.vs.length;
-
     } else {
       // if it doesn't have any enums and matches with cde_ss
       if (!_.isEmpty(matched_pv)) {
@@ -507,10 +527,15 @@ export const vsRender = (items, keyword) => {
   });
   let html = "";
   let searched_keyword = $("#keywords").val();
+  if (term_type_not_official === true) 
+    $("#unofficial-term").html('(*) Term type not assigned.');
+  else
+    $("#unofficial-term").html('');
+  
   if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
     html =
-      '<div class="indicator">Sorry, no results found for keyword: <span class="indicator__term">' +
-      searched_keyword + '</span></div>';
+      '<div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' +
+      searched_keyword + '</span></div></div>';
   } else {
     let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 310;
@@ -546,9 +571,5 @@ export const vsEvents = ($root) => {
 
   $root.on('click', '.show-more-less', (event) => {
     showMoreToggleHandle(event);
-  });
-
-  $root.tooltip({
-    selector: '[data-toggle="tooltip"]'
   });
 }

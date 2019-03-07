@@ -1,0 +1,207 @@
+<HeaderTemplate>
+  <div class="dialog__header">
+    <div class="dialog__titlebar">
+      <span id="ui-id-4" class="ui-dialog-title">GDC Values</span>
+      <button type="button" id="close_gdc_terms_data" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
+      <span class="ui-label">{{:items_length}}</span>
+      <div class="checkbox ui-checkbox">
+        <!-- <label class="checkbox__label checkbox__label--height">
+          <input id="gdc-data-invariant" class="checkbox__input" type="checkbox" value="">
+          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Duplicates
+        </label> -->
+        {{if targets.length !== 0}}
+        <label class="checkbox__label checkbox__label--height">
+          <input id="show_all_gdc_syn" class="checkbox__input" type="checkbox" value="">
+          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values
+        </label>
+        {{/if}}
+      </div>
+      <div class="input-group dialog__input-group">
+        <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+        <input id="gdc-values-input"  type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+      </div>
+    </div>
+    <div class="table__container">
+      <div class="table__thead row">
+        {{if icdo}}
+          <div class="table__th col-xs-2">GDC Value</div>
+          <div class="table__th col-xs-2">ICD-O-3 Code</div>
+          <div class="table__th col-xs-3">ICD-O-3 Term</div>
+          <div class="col-xs-5">
+            <div class="row">
+              <div class="table__th col-xs-4">NCIt Code</div>
+              <div class="table__th col-xs-8">NCIt Terms</div>
+            </div>
+          </div>
+        {{else}}
+          <div class="table__th col-xs-5">GDC Value</div>
+          <div class="col-xs-7">
+            <div class="row">
+              <div class="table__th col-xs-4">NCIt Code</div>
+              <div class="table__th col-xs-8">NCIt Terms</div>
+            </div>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</HeaderTemplate>
+<BodyTemplate>
+  <div id="gdc_terms_data">
+    <div id="gdc-syn-data-list" class="table__container">
+      <div class="table__body row">
+        <div class="col-xs-12">
+
+          {{for items}}
+            {{if e === true || ~root.targets.length == 0}}
+              <div id="gdc_term_item" class="table__row row gdc-term__item--show">
+
+                {{if ~root.icdo}}
+
+                  <div class="table__td col-xs-2">{{:n}}</div>
+                  <div class="table__td col-xs-2">{{if i_c}}{{:i_c.c}}{{/if}}</div>
+                  <div class="table__td col-xs-3">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
+                  <div class="col-xs-5">
+                    {{if i_c !== undefined}}
+                      {{for i_c.n_syn}}
+                        <div class="row">
+                          <div class="table__td col-xs-4">
+                            {{if n_c !== undefined && n_c !== ""}}
+                              <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                            {{/if}}
+                          </div>
+                          <div name="syn_area" class="table__td col-xs-8">
+                            {{for s_r}}{{:}}<br>{{/for}}
+                          </div>
+                          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                        </div>
+                      {{/for}}
+                    {{else}}
+                      <div class="row">
+                        <div class="table__td col-xs-4">
+                          {{if n_c !== undefined && n_c !== ""}}
+                            <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                          {{/if}}
+                        </div>
+                        <div name="syn_area" class="table__td col-xs-8">{{for s_r}}{{:}}<br>{{/for}}</div>
+                        <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                      </div>
+                    {{/if}}
+                  </div>
+
+                {{else}}
+
+                  <div class="table__td col-xs-5">{{:n}}</div>
+                  <div class="col-xs-7">
+                    {{if i_c !== undefined}}
+                      {{for i_c.n_syn}}
+                        <div class="row">
+                          <div class="table__td col-xs-4">
+                            {{if n_c !== undefined && n_c !== ""}}
+                              <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                            {{/if}}
+                          </div>
+                          <div name="syn_area" class="table__td col-xs-8">
+                            {{for s_r}}{{:}}<br>{{/for}}
+                          </div>
+                          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                        </div>
+                      {{/for}}
+                    {{else}}
+                      <div class="row">
+                        <div class="table__td col-xs-4">
+                          {{if n_c !== undefined && n_c !== ""}}
+                          <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                          {{/if}}
+                        </div>
+                        <div name="syn_area" class="table__td col-xs-8">{{for s_r}}{{:}}<br>{{/for}}</div>
+                        <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                      </div>
+                    {{/if}}
+                  </div>
+
+                {{/if}}
+
+              </div>
+
+            {{else}}
+
+              <div class="table__row row gdc-term__item--hide">
+
+                {{if ~root.icdo}}
+
+                  <div class="table__td col-xs-2">{{:n}}</div>
+                  <div class="table__td col-xs-2">{{if i_c}}{{:i_c.c}}{{/if}}</div>
+                  <div class="table__td col-xs-3">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
+                  <div class="col-xs-5">
+                    {{if i_c !== undefined}}
+                      {{for i_c.n_syn}}
+                        <div class="row">
+                          <div class="table__td col-xs-4">
+                            {{if n_c !== undefined && n_c !== ""}}
+                              <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                            {{/if}}
+                          </div>
+                          <div name="syn_area" class="table__td col-xs-8">{{for s_r}}{{:}}<br>{{/for}}</div>
+                          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                        </div>
+                      {{/for}}
+                    {{else}}
+                      <div class="row">
+                        <div class="table__td col-xs-4">
+                          {{if n_c !== undefined && n_c !== ""}}
+                            <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                          {{/if}}
+                        </div>
+                        <div name="syn_area" class="table__td col-xs-8">{{for s_r}}{{:}}<br>{{/for}}</div>
+                        <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                      </div>
+                    {{/if}}
+                  </div>
+
+                {{else}}
+
+                  <div class="table__td col-xs-5">{{:n}}</div>
+                  <div class="col-xs-7">
+                    {{if i_c !== undefined}}
+                      {{for i_c.n_syn}}
+                        <div class="row">
+                          <div class="table__td col-xs-4">
+                            {{if n_c !== undefined && n_c !== ""}}
+                              <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                            {{/if}}
+                          </div>
+                          <div name="syn_area" class="table__td col-xs-8">{{for s_r}}{{:}}<br>{{/for}}</div>
+                          <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                        </div>
+                      {{/for}}
+                    {{else}}
+                      <div class="row">
+                        <div class="table__td col-xs-4">
+                          {{if n_c !== undefined && n_c !== ""}}
+                            <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
+                          {{/if}}
+                        </div>
+                        <div name="syn_area" class="table__td col-xs-8">{{for s_r}}{{:}}<br>{{/for}}</div>
+                        <div name="syn_invariant" class="table__td col-xs-8" style="display: none;">{{for s}}{{:}}<br>{{/for}}</div>
+                      </div>
+                    {{/if}}
+                  </div>
+
+                {{/if}}
+
+              </div>
+
+            {{/if}}
+          {{/for}}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</BodyTemplate>
+<FooterTemplate>
+  <div class="dialog__footer">
+    <div id="pagination-container" class="dialog__pagination"></div>
+  </div>
+</FooterTemplate>

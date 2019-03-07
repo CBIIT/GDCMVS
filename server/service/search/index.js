@@ -1,12 +1,15 @@
 'use strict';
 
-var express = require('express');
-var controller = require('./search.controller');
-var report = require('./report');
-var router = express.Router();
+const express = require('express');
+const controller = require('./search.controller');
+const report = require('./report');
+const sheet = require('./googleSheets')
+const router = express.Router();
 
 router.get('/buildIndex', controller.indexing);
 router.get('/suggest', controller.suggestion);
+router.get('/suggestMisSpelled', controller.suggestionMisSpelled);
+router.get('/gdcDictionaryVersion', controller.gdcDictionaryVersion);
 router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
 router.get('/loadNcitSynonymsContinue', controller.loadSynonyms_continue);
 router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
@@ -34,6 +37,7 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // router.get('/addTermType', report.addTermType);
 // router.get('/icdoMapping', report.icdoMapping);
 // router.get('/releaseNote', report.releaseNote);
+// router.get('/compareDataType', report.compareDataType);
 
 //property based api
 router.get('/all/data', controller.searchICDO3Data);
@@ -41,5 +45,7 @@ router.get('/all/p', controller.searchP);
 router.get('/p/local/vs', controller.getGDCData);
 router.get('/p/cde/vs', controller.getCDEData);
 router.get('/p/both/vs', controller.getGDCandCDEData);
+
+router.get('/manageSheet', sheet.manageSheets);
 
 module.exports = router;

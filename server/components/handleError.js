@@ -1,3 +1,3 @@
-exports.error = function(res, err){
-	return res.send(500, err);
+exports.error = (res, err) => {
+	return res.status(500).send(err);
 };
