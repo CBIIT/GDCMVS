@@ -1,20 +1,22 @@
 'use strict';
 
-var elastic = require('../../components/elasticsearch');
-var handleError = require('../../components/handleError');
-var logger = require('../../components/logger');
-var config = require('../../config');
-var https = require('https');
-var fs = require('fs');
-var path = require('path');
-var yaml = require('yamljs');
-var xlsx = require('node-xlsx');
-var _ = require('lodash');
-// var git = require('nodegit');
+const elastic = require('../../components/elasticsearch');
+const handleError = require('../../components/handleError');
+const logger = require('../../components/logger');
+const config = require('../../config');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
+const yaml = require('yamljs');
+const xlsx = require('node-xlsx');
+const _ = require('lodash');
+const shared = require('./shared');
+const folderPath = path.join(__dirname, '..', '..', 'data');
+// const git = require('nodegit');
 var cdeData = {};
 var gdcData = {};
 
-var suggestion = function (req, res) {
+const suggestion = (req, res) => {
 	let term = req.query.keyword;
 	let suggest = {
 		"term_suggest": {
@@ -25,20 +27,47 @@ var suggestion = function (req, res) {
 			}
 		}
 	};
-	elastic.suggest(config.suggestionName, suggest, function (result) {
+	elastic.suggest(config.suggestionName, suggest, result => {
 		if (result.suggest === undefined) {
 			return handleError.error(res, result);
 		}
 		let dt = result.suggest.term_suggest;
 		let data = [];
-		dt[0].options.forEach(function (opt) {
+		dt[0].options.forEach(opt => {
 			data.push(opt._source);
 		});
 		res.json(data);
 	})
 };
 
-var searchICDO3Data = function (req, res) {
+const suggestionMisSpelled = (req, res) => {
+	let term = req.query.keyword.replace(/[ _-]+/g, " ");
+	let suggest = {
+		"term_suggest": {
+			"prefix": term,
+			"completion": {
+				"field": "id",
+				"size": 3,
+				"fuzzy": {
+					"fuzziness": "AUTO"
+				}
+			}
+		}
+	};
+	elastic.suggest(config.suggestionName, suggest, result => {
+		if (result.suggest === undefined) {
+			return handleError.error(res, result);
+		}
+		let dt = result.suggest.term_suggest;
+		let data = [];
+		dt[0].options.forEach(opt => {
+			data.push(opt._source);
+		});
+		res.json(data);
+	})
+};
+
+const searchICDO3Data = (req, res) => {
 	var icdo3_code = req.query.icdo3.trim();
 	let query = {};
 
@@ -46,17 +75,17 @@ var searchICDO3Data = function (req, res) {
 		query.match_phrase_prefix = {};
 		query.match_phrase_prefix["enum.i_c.have"] = {};
 		query.match_phrase_prefix["enum.i_c.have"].query = icdo3_code;
-		query.match_phrase_prefix["enum.i_c.have"].analyzer = "case_insensitive";
+		query.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
 		//query.analyzer = "keyword";
 		let highlight;
 
-		elastic.query(config.index_p, query, highlight, function (result) {
+		elastic.query(config.index_p, query, highlight, result => {
 			let mainData = [];
 			if (result.hits === undefined) {
 				res.send('No data found!');
 			}
 			let data = result.hits.hits;
-			data.forEach(function (entry) {
+			data.forEach(entry => {
 				delete entry.sort;
 				delete entry._index;
 				delete entry._score;
@@ -74,7 +103,7 @@ var searchICDO3Data = function (req, res) {
 				for (let e in enums) {
 					if (enums[e].i_c) {
 						let value = enums[e].i_c.have;
-						value.map(function (x) {
+						value.map(x => {
 							return x.toString().toUpperCase()
 						})
 
@@ -83,11 +112,11 @@ var searchICDO3Data = function (req, res) {
 						}
 					}
 				}
-				if(ICDO3Data.enums.length > 0){
+				if (ICDO3Data.enums.length > 0) {
 					mainData.push(ICDO3Data);
 				}
 			}
-			if(mainData.length > 0) res.json(mainData);
+			if (mainData.length > 0) res.json(mainData);
 			else res.send("No data found!");
 		});
 	} else {
@@ -96,37 +125,166 @@ var searchICDO3Data = function (req, res) {
 }
 
 
-var searchP = function (req, res) {
-	let keyword = req.query.keyword.trim();
+const searchP = (req, res) => {
+	let isBoolSearch = {
+		value: false,
+		type: "" 
+	};
+	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
+	let original_keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
+		if (keyword.indexOf('AND') !== -1 || keyword.indexOf('OR') !== -1 || keyword.indexOf('NOT') !== -1) {
+			if(keyword.indexOf(' AND ') !== -1) isBoolSearch.type = "AND";
+			if(keyword.indexOf(' OR ') !== -1) isBoolSearch.type = "OR";
+			if(keyword.indexOf(' NOT ') !== -1) isBoolSearch.type = "NOT";
+			if (keyword.indexOf('NOT') !== -1) keyword = keyword.replace(new RegExp('NOT', 'g'), 'OR');
+			isBoolSearch.value = true;
+		}
 		let option = JSON.parse(req.query.option);
-		let words = [];
-		let query = {};
-		let highlight;
+		let query = generateQuery(keyword, option, isBoolSearch);
+		let highlight = generateHighlight(keyword, option, isBoolSearch);
+		elastic.query(config.index_p, query, highlight, result => {
+			if (result.hits === undefined) {
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			data.forEach(entry => {
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
+			});
+			res.json(data);
+		});
+	}
+};
+
+const generateQuery = (keyword, option, isBoolSearch) => {
+	if (keyword.indexOf("/") !== -1 && option.match !== "exact") keyword = keyword.replace(/\//g, "\\/");
+	let query = {};
+	if (isBoolSearch.value === true && option.match !== "exact") {
+		query.query_string = {};
+		query.query_string.fields = [];
+		query.query_string.fields.push("name.have");
+		if (option.desc) {
+			query.query_string.fields.push("desc");
+		}
+		if (option.syn) {
+			query.query_string.fields.push("enum.s.termName.have");
+			// query.query_string.fields.push("enum.all_syn.have");
+		}
+		query.query_string.fields.push("enum.n_c");
+		query.query_string.fields.push("enum.all_n_c");
+		query.query_string.fields.push("cde.id");
+		query.query_string.fields.push("enum.n.have");
+		query.query_string.fields.push("enum.i_c.have");
+		query.query_string.query = keyword;
+	}
+	else if(isBoolSearch.value === true && option.match === "exact"){
+		if(isBoolSearch.type === "AND") {
+			keyword = keyword.replace(new RegExp(' AND ', 'g'), ' ');
+			query.bool = {};
+			query.bool.should = [];
+			let m = {};
+			m.multi_match = {};
+			m.multi_match.query = keyword;
+			m.multi_match.analyzer = "case_insensitive";
+			m.multi_match.fields = ["name"];
+			if (option.desc) {
+				m.multi_match.fields.push("desc");
+			}
+			if (option.syn) {
+				m.multi_match.fields.push("enum.s.termName");
+				// m.multi_match.fields.push("enum.all_syn");
+			}
+			m.multi_match.fields.push("enum.n");
+			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("enum.all_n_c");
+			m.multi_match.fields.push("cde.id");
+			m.multi_match.fields.push("enum.i_c.c");
+			query.bool.should.push(m);
+		}
+		if(isBoolSearch.type === "OR"){
+			query.bool = {};
+			query.bool.should = [];
+			let temp_keyword = keyword.split(' OR ');
+			temp_keyword.forEach(value => {
+				let m = {};
+				m.multi_match = {};
+				m.multi_match.query = value;
+				m.multi_match.analyzer = "case_insensitive";
+				m.multi_match.fields = ["name"];
+				if (option.desc) {
+					m.multi_match.fields.push("desc");
+				}
+				if (option.syn) {
+					m.multi_match.fields.push("enum.s.termName");
+					// m.multi_match.fields.push("enum.all_syn");
+				}
+				m.multi_match.fields.push("enum.n");
+				m.multi_match.fields.push("enum.n_c");
+				m.multi_match.fields.push("enum.all_n_c");
+				m.multi_match.fields.push("cde.id");
+				m.multi_match.fields.push("enum.i_c.c");
+				query.bool.should.push(m);
+			});
+		}
+		if(isBoolSearch.type === "NOT"){
+			query.bool = {};
+			query.bool.should = [];
+			query.bool.must_not = [];
+			let temp_keyword = keyword.split(' OR ');
+			temp_keyword.forEach((value, index) => {
+				if(index === 0){
+					let m = {};
+					m.multi_match = {};
+					m.multi_match.query = value;
+					m.multi_match.analyzer = "case_insensitive";
+					m.multi_match.fields = ["name"];
+					if (option.desc) {
+						m.multi_match.fields.push("desc");
+					}
+					if (option.syn) {
+						m.multi_match.fields.push("enum.s.termName");
+						// m.multi_match.fields.push("enum.all_syn");
+					}
+					m.multi_match.fields.push("enum.n");
+					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("enum.all_n_c");
+					m.multi_match.fields.push("cde.id");
+					m.multi_match.fields.push("enum.i_c.c");
+					query.bool.should.push(m);
+				}
+				else{
+					let m = {};
+					m.multi_match = {};
+					m.multi_match.query = value;
+					m.multi_match.analyzer = "case_insensitive";
+					m.multi_match.fields = ["name"];
+					if (option.desc) {
+						m.multi_match.fields.push("desc");
+					}
+					if (option.syn) {
+						m.multi_match.fields.push("enum.s.termName");
+						// m.multi_match.fields.push("enum.all_syn");
+					}
+					m.multi_match.fields.push("enum.n");
+					m.multi_match.fields.push("enum.n_c");
+					m.multi_match.fields.push("enum.all_n_c");
+					m.multi_match.fields.push("cde.id");
+					m.multi_match.fields.push("enum.i_c.c");
+					query.bool.must_not.push(m);
+				}
+			});
+		}
+	} 
+	else {
 		query.bool = {};
 		query.bool.should = [];
 		if (option.match !== "exact") {
-			// let m = {};
-			// m.multi_match = {};
-			// m.multi_match.query = keyword;
-			// m.multi_match.analyzer = "my_standard";
-			// m.multi_match.fields = ["name.have"];
-			// m.multi_match.fuzziness = "AUTO";
-			// m.multi_match.prefix_length = "2";
-			// // m.multi_match.type = "phrase_prefix";
-			// if (option.desc) {
-			// 	m.multi_match.fields.push("desc");
-			// }
-			// if(option.syn){
-			// 	m.multi_match.fields.push("enum.s.have");
-			// 	m.multi_match.fields.push("cde_pv.n.have");
-			// 	m.multi_match.fields.push("cde_pv.ss.s.have");
-			// }
-			// m.multi_match.fields.push("enum.n.have");
-			// m.multi_match.fields.push("enum.i_c.have");
-			// query.bool.should.push(m);
 			let m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["name.have"] = keyword;
@@ -140,17 +298,25 @@ var searchP = function (req, res) {
 			if (option.syn) {
 				m = {};
 				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["enum.s.have"] = keyword;
+				m.match_phrase_prefix["enum.s.termName.have"] = keyword;
 				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.n.have"] = keyword;
-				query.bool.should.push(m);
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["cde_pv.ss.s.have"] = keyword;
-				query.bool.should.push(m);
+				// m = {};
+				// m.match_phrase_prefix = {};
+				// m.match_phrase_prefix["enum.all_syn.have"] = keyword;
+				// query.bool.should.push(m);
 			}
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.n_c"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["enum.all_n_c"] = keyword;
+			query.bool.should.push(m);
+			m = {};
+			m.match_phrase_prefix = {};
+			m.match_phrase_prefix["cde.id"] = keyword;
+			query.bool.should.push(m);
 			m = {};
 			m.match_phrase_prefix = {};
 			m.match_phrase_prefix["enum.n.have"] = keyword;
@@ -161,6 +327,118 @@ var searchP = function (req, res) {
 			m.match_phrase_prefix["enum.i_c.have"].query = keyword;
 			m.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
 			query.bool.should.push(m);
+		} else {
+			let m = {};
+			m.multi_match = {};
+			m.multi_match.query = keyword;
+			m.multi_match.analyzer = "case_insensitive";
+			m.multi_match.fields = ["name"];
+			if (option.desc) {
+				m.multi_match.fields.push("desc");
+			}
+			if (option.syn) {
+				m.multi_match.fields.push("enum.s.termName");
+				// m.multi_match.fields.push("enum.all_syn");
+			}
+			m.multi_match.fields.push("enum.n");
+			m.multi_match.fields.push("enum.n_c");
+			m.multi_match.fields.push("enum.all_n_c");
+			m.multi_match.fields.push("cde.id");
+			m.multi_match.fields.push("enum.i_c.c");
+			query.bool.should.push(m);
+		}
+	}
+	return query;
+}
+
+const generateHighlight = (keyword, option, isBoolSearch) => {
+	if (keyword.indexOf("/") !== -1 && option.match !== "exact") keyword = keyword.replace(/\//g, "\\/");
+	let highlight;
+	if (isBoolSearch.value === true && option.match !== "exact") {
+		highlight = {
+			"pre_tags": ["<b>"],
+			"post_tags": ["</b>"],
+			"highlight_query": {
+				"query_string": {
+					"fields": [],
+					"query": keyword
+				}
+			},
+			"fields": {
+				"name.have": {
+					"number_of_fragments": 0
+				},
+				"enum.n.have": {
+					"number_of_fragments": 0
+				},
+				"enum.i_c.have": {
+					"number_of_fragments": 0
+				},
+				"enum.n_c": {
+					"number_of_fragments": 0
+				},
+				"enum.all_n_c": {
+					"number_of_fragments": 0
+				},
+				"cde.id": {
+					"number_of_fragments": 0
+				}
+			}
+		};
+		highlight.highlight_query.query_string.fields.push("name.have");
+		if (option.desc) {
+			highlight.highlight_query.query_string.fields.push("desc");
+		}
+		if (option.syn) {
+			highlight.highlight_query.query_string.fields.push("enum.s.termName.have");
+			// highlight.highlight_query.query_string.fields.push("enum.all_syn.have");
+
+		}
+		highlight.highlight_query.query_string.fields.push("enum.n_c");
+		highlight.highlight_query.query_string.fields.push("enum.all_n_c");
+		highlight.highlight_query.query_string.fields.push("cde.id");
+		highlight.highlight_query.query_string.fields.push("enum.n.have");
+		highlight.highlight_query.query_string.fields.push("enum.i_c.have");
+		if (option.desc) {
+			highlight.fields["desc"] = {
+				"number_of_fragments": 0
+			};
+		}
+		if (option.syn) {
+			highlight.fields["enum.s.termName.have"] = {
+				"number_of_fragments": 0
+			};
+			// highlight.fields["enum.all_syn.have"] = {
+			// 	"number_of_fragments": 0
+			// };
+		}
+	}
+	else if(isBoolSearch.value === true && option.match === "exact"){
+		highlight = {
+			"pre_tags": ["<b>"],
+			"post_tags": ["</b>"],
+			"fields": {
+				"name": {},
+				"enum.n": {},
+				"enum.i_c.c": {},
+				"enum.n_c": {},
+				"enum.all_n_c": {},
+				"cde.id": {}
+			}
+		};
+		if (option.desc) {
+			highlight.fields["desc"] = {
+				"number_of_fragments": 0
+			};
+		}
+		if (option.syn) {
+			highlight.fields["enum.s.termName"] = {};
+			// highlight.fields["enum.all_syn"] = {};
+		}
+
+	} 
+	else {
+		if (option.match !== "exact") {
 			highlight = {
 				"pre_tags": ["<b>"],
 				"post_tags": ["</b>"],
@@ -173,6 +451,15 @@ var searchP = function (req, res) {
 					},
 					"enum.i_c.have": {
 						"number_of_fragments": 0
+					},
+					"enum.n_c": {
+						"number_of_fragments": 0
+					},
+					"enum.all_n_c": {
+						"number_of_fragments": 0
+					},
+					"cde.id": {
+						"number_of_fragments": 0
 					}
 				}
 			};
@@ -182,41 +469,24 @@ var searchP = function (req, res) {
 				};
 			}
 			if (option.syn) {
-				highlight.fields["enum.s.have"] = {
+				highlight.fields["enum.s.termName.have"] = {
 					"number_of_fragments": 0
 				};
-				highlight.fields["cde_pv.n.have"] = {
-					"number_of_fragments": 0
-				};
-				highlight.fields["cde_pv.ss.s.have"] = {
-					"number_of_fragments": 0
-				};
+				// highlight.fields["enum.all_syn.have"] = {
+				// 	"number_of_fragments": 0
+				// };
 			}
 		} else {
-			let m = {};
-			m.multi_match = {};
-			m.multi_match.query = keyword;
-			m.multi_match.analyzer = "keyword";
-			m.multi_match.fields = ["name"];
-			// m.multi_match.fuzziness = "2";
-			if (option.desc) {
-				m.multi_match.fields.push("desc");
-			}
-			if (option.syn) {
-				m.multi_match.fields.push("enum.s");
-				m.multi_match.fields.push("cde_pv.n");
-				m.multi_match.fields.push("cde_pv.ss.s");
-			}
-			m.multi_match.fields.push("enum.n");
-			m.multi_match.fields.push("enum.i_c.c");
-			query.bool.should.push(m);
 			highlight = {
 				"pre_tags": ["<b>"],
 				"post_tags": ["</b>"],
 				"fields": {
 					"name": {},
 					"enum.n": {},
-					"enum.i_c.c": {}
+					"enum.i_c.c": {},
+					"enum.n_c": {},
+					"enum.all_n_c": {},
+					"cde.id": {}
 				}
 			};
 			if (option.desc) {
@@ -225,29 +495,15 @@ var searchP = function (req, res) {
 				};
 			}
 			if (option.syn) {
-				highlight.fields["enum.s"] = {};
-				highlight.fields["cde_pv.n"] = {};
-				highlight.fields["cde_pv.ss.s"] = {};
+				highlight.fields["enum.s.termName"] = {};
+				// highlight.fields["enum.all_syn"] = {};
 			}
 		}
-		elastic.query(config.index_p, query, highlight, function (result) {
-			if (result.hits === undefined) {
-				return handleError.error(res, result);
-			}
-			let data = result.hits.hits;
-			data.forEach(function (entry) {
-				delete entry.sort;
-				delete entry._index;
-				delete entry._score;
-				delete entry._type;
-				delete entry._id;
-			});
-			res.json(data);
-		});
 	}
-};
+	return highlight;
+}
 
-var indexing = function (req, res) {
+const indexing = (req, res) => {
 	let configs = [];
 	//config property index
 	let config_property = {};
@@ -259,7 +515,7 @@ var indexing = function (req, res) {
 					"case_insensitive": {
 						"tokenizer": "keyword",
 						"filter": [
-							"lowercase"
+							"lowercase", "whitespace_remove"
 						]
 					},
 					"my_standard": {
@@ -272,6 +528,13 @@ var indexing = function (req, res) {
 					"my_filter": {
 						"type": "mapping",
 						"mappings": ["_=>-"]
+					}
+				},
+				"filter": {
+					"whitespace_remove": {
+						"type": "pattern_replace",
+						"pattern": "[_-]",
+						"replacement": " "
 					}
 				}
 			}
@@ -307,7 +570,7 @@ var indexing = function (req, res) {
 						},
 						"analyzer": "case_insensitive"
 					},
-					"enum.s": {
+					"enum.s.termName": {
 						"type": "text",
 						"fields": {
 							"have": {
@@ -316,22 +579,25 @@ var indexing = function (req, res) {
 						},
 						"analyzer": "case_insensitive"
 					},
-					"cde_pv.n": {
+					// "enum.all_syn.termName": {
+					// 	"type": "text",
+					// 	"fields": {
+					// 		"have": {
+					// 			"type": "text"
+					// 		}
+					// 	},
+					// 	"analyzer": "case_insensitive"
+					// },
+					"enum.n_c": {
 						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
-							}
-						},
 						"analyzer": "case_insensitive"
 					},
-					"cde_pv.ss.s": {
+					"enum.all_n_c": {
 						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
-							}
-						},
+						"analyzer": "case_insensitive"
+					},
+					"cde.id": {
+						"type": "text",
 						"analyzer": "case_insensitive"
 					},
 					"enum.i_c.c": {
@@ -355,45 +621,70 @@ var indexing = function (req, res) {
 				"properties": {
 					"id": {
 						"type": "completion",
-						"max_input_length": 100
+						"max_input_length": 100,
+						"analyzer": "standard",
+						"search_analyzer": "standard",
+						"preserve_separators": false
 					}
 				}
 			}
 		}
 	};
 	configs.push(config_suggestion);
-	elastic.createIndexes(configs, function (result) {
-		if (result.acknowledged === undefined) {
-			return res.status(500).send(result);
+	let config_ncitDetails = {};
+	config_ncitDetails.index = config.ncitDetails;
+	config_ncitDetails.body = {
+		"mappings": {
+			"props": {
+				"properties": {
+					"id": {
+						"type": "keyword"
+					},
+					"preferred_name": {
+						"type": "text"
+					},
+					"code": {
+						"type": "text"
+					},
+					"synonyms": {
+						"type": "text"
+					},
+					"definitions": {
+						"type": "text"
+					}
+				}
+			}
 		}
-		elastic.bulkIndex(function (data) {
+	};
+	configs.push(config_ncitDetails);
+	elastic.createIndexes(configs, result => {
+		if (result.acknowledged === undefined) {
+			return handleError.error(res, result);
+		}
+		elastic.bulkIndex(data => {
 			if (data.property_indexed === undefined) {
-				return res.status(500).send(data);
+				return handleError.error(res, data);
 			}
 			return res.status(200).json(data);
 		});
 	});
 };
 
-var getDataFromCDE = function (req, res) {
+const getDataFromCDE = (req, res) => {
 	if (cdeData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-		content_1 = content_1.replace(/}{/g, ",");
-		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-		content_2 = content_2.replace(/}{/g, ",");
-		cdeData = JSON.parse(content_1);
-		let syns = JSON.parse(content_2);
+		cdeData = shared.readCDEData();
+		let syns = shared.readSynonyms();
 		for (var c in cdeData) {
 			let pvs = cdeData[c];
-			pvs.forEach(function (pv) {
+			pvs.forEach(pv => {
 				if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
 					pv.syn = syns[pv.pvc];
 				}
 				if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
 					let cs = pv.pvc.split(":");
 					let synonyms = [];
-					cs.forEach(function (s) {
+					cs.forEach(s => {
 						if (!(s in syns)) {
 							return;
 						}
@@ -411,7 +702,7 @@ var getDataFromCDE = function (req, res) {
 	res.json(cdeData[uid]);
 };
 
-var getCDEData = function (req, res) {
+const getCDEData = (req, res) => {
 	let uid = req.query.id;
 	if (cdeData[uid] == undefined) {
 		//load data file to memory
@@ -419,7 +710,7 @@ var getCDEData = function (req, res) {
 		let query = {};
 		query.term = {};
 		query.term["cde.id"] = uid;
-		elastic.query(config.index_p, query, null, function (result) {
+		elastic.query(config.index_p, query, null, result => {
 			if (result.hits === undefined) {
 				return handleError.error(res, result);
 			}
@@ -441,21 +732,17 @@ var getCDEData = function (req, res) {
 	}
 };
 
-var getDataFromGDC = function (req, res) {
+const getDataFromGDC = (req, res) => {
 	if (gdcData === '') {
 		//load data file to memory
-		let content_1 = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-		let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-		let content_3 = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-		content_2 = content_2.replace(/}{/g, ",");
-		let cc = JSON.parse(content_1);
-		let syns = JSON.parse(content_2);
-		let gv = JSON.parse(content_3);
+		let cc = shared.readConceptCode();
+		let syns = shared.readSynonyms();
+		let gv = shared.readGDCValues();
 		gdcData = {};
 		//load data from gdc_values.js to memory
 		for (var c in gv) {
 			gdcData[c] = [];
-			gv[c].forEach(function (ss) {
+			gv[c].forEach(ss => {
 				let tmp = {};
 				tmp.pv = ss.nm;
 				tmp.pvc = ss.n_c;
@@ -481,7 +768,7 @@ var getDataFromGDC = function (req, res) {
 	res.json(gdcData[uid]);
 };
 
-var getGDCData = function (req, res) {
+const getGDCData = (req, res) => {
 	let uid = req.query.id;
 	if (gdcData[uid] == undefined) {
 		//load data file to memory
@@ -490,7 +777,7 @@ var getGDCData = function (req, res) {
 		query.terms = {};
 		query.terms._id = [];
 		query.terms._id.push(uid);
-		elastic.query(config.index_p, query, null, function (result) {
+		elastic.query(config.index_p, query, null, result => {
 			if (result.hits === undefined) {
 				return handleError.error(res, result);
 			}
@@ -513,7 +800,7 @@ var getGDCData = function (req, res) {
 	}
 };
 
-var getGDCandCDEData = function (req, res) {
+const getGDCandCDEData = (req, res) => {
 	let uid = req.query.local;
 	let cdeId = req.query.cde;
 	if (gdcData[uid] == undefined) {
@@ -523,7 +810,7 @@ var getGDCandCDEData = function (req, res) {
 		query.terms = {};
 		query.terms._id = [];
 		query.terms._id.push(uid);
-		elastic.query(config.index_p, query, null, function (result) {
+		elastic.query(config.index_p, query, null, result => {
 			if (result.hits === undefined) {
 				return handleError.error(res, result);
 			}
@@ -553,8 +840,8 @@ var getGDCandCDEData = function (req, res) {
 
 };
 
-var preloadCadsrData = function (req, res) {
-	elastic.preloadDataFromCaDSR(function (result) {
+const preloadCadsrData = (req, res) => {
+	elastic.preloadDataFromCaDSR(result => {
 		if (result === "CDE data Refreshed!!") {
 			res.end('Success!!');
 		} else {
@@ -563,8 +850,8 @@ var preloadCadsrData = function (req, res) {
 	});
 }
 
-var preloadDataTypeFromCaDSR = function (req, res) {
-	elastic.preloadDataTypeFromCaDSR(function (result) {
+const preloadDataTypeFromCaDSR = (req, res) => {
+	elastic.preloadDataTypeFromCaDSR(result => {
 		if (result === "CDE data Refreshed!!") {
 			res.end('Success!!');
 		} else {
@@ -573,8 +860,25 @@ var preloadDataTypeFromCaDSR = function (req, res) {
 	});
 }
 
-var preloadSynonumsNcit = function (req, res) {
-	elastic.loadSynonyms(function (result) {
+const preloadSynonumsNcit = (req, res) => {
+	let arr = [];
+	elastic.loadSynonyms(result => {
+		if (result === "Success") {
+			res.end('Success!!');
+		} else {
+			if (arr.length === 50) {
+				res.write(arr.toString());
+				arr = [];
+				arr.push(result);
+			}else{
+				arr.push(result);
+			}
+		}
+	});
+};
+
+const loadSynonyms_continue = (req, res) => {
+	elastic.loadSynonyms_continue(result => {
 		if (result === "Success") {
 			copyToSynonymsJS();
 			res.end('Success!!');
@@ -584,19 +888,26 @@ var preloadSynonumsNcit = function (req, res) {
 	});
 };
 
-var loadSynonyms_continue = function (req, res) {
-	elastic.loadSynonyms_continue(function (result) {
+const preloadSynonumsCtcae = (req, res) => {
+	let arr = [];
+	elastic.loadSynonymsCtcae(result => {
 		if (result === "Success") {
-			copyToSynonymsJS();			
+			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
-			res.write(result);
+			if (arr.length === 5) {
+				res.write(arr.toString());
+				arr = [];
+				arr.push(result);
+			}else{
+				arr.push(result);
+			}
 		}
-	});
+	})
 };
 
-var preloadSynonumsCtcae = function (req, res) {
-	elastic.loadSynonymsCtcae(function (result) {
+const loadCtcaeSynonyms_continue = (req, res) => {
+	elastic.loadCtcaeSynonyms_continue(result => {
 		if (result === "Success") {
 			copyToSynonymsJS();
 			res.end('Success!!');
@@ -606,64 +917,50 @@ var preloadSynonumsCtcae = function (req, res) {
 	})
 };
 
-var loadCtcaeSynonyms_continue = function (req, res) {
-	elastic.loadCtcaeSynonyms_continue(function (result) {
-		if (result === "Success") {
-			copyToSynonymsJS();
-			res.end('Success!!');
-		} else {
-			res.write(result);
-		}
-	})
-};
-
-function copyToSynonymsJS(){
-	let content_1 = fs.readFileSync("./server/data_files/synonyms_ctcae.js").toString();
-	let content_2 = fs.readFileSync("./server/data_files/synonyms_ncit.js").toString();
-	fs.writeFileSync("./server/data_files/synonyms.js", content_2+content_1, function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+const copyToSynonymsJS = () => {
+	let content_1 = shared.readSynonymsCtcae();
+	let content_2 = shared.readSynonymsNcit();
+	fs.writeFileSync("./server/data_files/synonyms.js", content_2 + content_1, function (err) {
+		if (err) return logger.error(err);
 	});
 }
 
-var getPV = function (req, res) {
+const getPV = (req, res) => {
 	let query = {
 		"match_all": {}
 	};
 
-	elastic.query(config.index_p, query, null, function (result) {
+	elastic.query(config.index_p, query, null, result => {
 		if (result.hits === undefined) {
 			return handleError.error(res, result);
 		}
 		let data = result.hits.hits;
 		let cc = [];
-		data.forEach(function (entry) {
+		data.forEach(entry => {
 			let vs = entry._source.enum;
 			if (vs) {
-				vs.forEach(function (v) {
+				vs.forEach(v => {
 					if (v.n_c && cc.indexOf(v.n_c) == -1) {
 						cc.push(v.n_c);
 
 					}
-
-				})
+				});
 			}
-		})
-		fs.truncate('./server/data_files/ncit_details.js', 0, function () {
+		});
+		fs.truncate('./server/data_files/ncit_details.js', 0, () => {
 			console.log('ncit_details.js truncated')
 		});
-		getPVFunc(cc, 0, function (data) {
+		getPVFunc(cc, 0, data => {
 			if (data === "Success") {
 				res.end(data);
 			} else {
 				res.write(data);
 			}
 		});
-	})
+	});
 }
 
-var getPVFunc = function (ncitids, idx, next) {
+const getPVFunc = (ncitids, idx, next) => {
 	if (idx >= ncitids.length) {
 		return;
 	}
@@ -672,7 +969,7 @@ var getPVFunc = function (ncitids, idx, next) {
 		rsp.on('data', (dt) => {
 			html += dt;
 		});
-		rsp.on('end', function () {
+		rsp.on('end', () => {
 			if (html.trim() !== '') {
 				let d = JSON.parse(html);
 				if (d.preferredName !== undefined) {
@@ -681,12 +978,20 @@ var getPVFunc = function (ncitids, idx, next) {
 					tmp[ncitids[idx]].preferredName = d.preferredName;
 					tmp[ncitids[idx]].code = d.code;
 					tmp[ncitids[idx]].definitions = d.definitions;
-					tmp[ncitids[idx]].synonyms = d.synonyms;
+					tmp[ncitids[idx]].synonyms = [];
+					let checker_arr = [];
+					d.synonyms.forEach(data => {
+						if(checker_arr.indexOf((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase()) !== -1) return;
+						let obj = {};
+						obj.termName = data.termName;
+						obj.termGroup = data.termGroup;
+						obj.termSource = data.termSource;
+						tmp[ncitids[idx]].synonyms.push(obj);
+						checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
+					});
 
-					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), function (err) {
-						if (err) {
-							return logger.error(err);
-						}
+					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), err => {
+						if (err) return logger.error(err);
 					});
 				}
 			}
@@ -703,10 +1008,9 @@ var getPVFunc = function (ncitids, idx, next) {
 	});
 };
 
-function removeDeprecated() {
+const removeDeprecated = () => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
-	var folderPath = path.join(__dirname, '..', '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -714,7 +1018,7 @@ function removeDeprecated() {
 			let node = fileJson.id;
 
 			if (fileJson.deprecated) {
-				fileJson.deprecated.forEach(function (d_p) {
+				fileJson.deprecated.forEach(d_p => {
 					let tmp_d_p = category + "." + node + "." + d_p;
 					deprecated_properties.push(tmp_d_p);
 				})
@@ -722,7 +1026,7 @@ function removeDeprecated() {
 
 			for (let keys in fileJson.properties) {
 				if (fileJson.properties[keys].deprecated_enum) {
-					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+					fileJson.properties[keys].deprecated_enum.forEach(d_e => {
 						let tmp_d_e = category + "." + node + "." + keys + ".#" + d_e;
 						deprecated_enum.push(tmp_d_e);
 					});
@@ -730,14 +1034,13 @@ function removeDeprecated() {
 			}
 		}
 	});
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
-	deprecated_properties.forEach(function (d_p) {
+	let concept = shared.readConceptCode();
+	deprecated_properties.forEach(d_p => {
 		if (concept[d_p]) {
 			delete concept[d_p];
 		}
 	});
-	deprecated_enum.forEach(function (d_e) {
+	deprecated_enum.forEach(d_e => {
 		let cnp = d_e.split(".#")[0];
 		let cnp_key = d_e.split(".#")[1];
 		if (concept[cnp]) {
@@ -749,50 +1052,36 @@ function removeDeprecated() {
 			}
 		}
 	});
-	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
+		if (err) return logger.error(err);
 	});
 }
 
-var getNCItInfo = function (req, res) {
+const getNCItInfo = (req, res) => {
 	let code = req.query.code;
-	let pv = fs.readFileSync("./server/data_files/ncit_details.js").toString();
-	pv = pv.replace(/}{/g, ",");
-	let ncit_pv = JSON.parse(pv);
-	if (ncit_pv[code]) {
-		res.json(ncit_pv[code]);
-	} else {
-		let url = config.NCIt_url[4] + code;
-		https.get(url, (rsp) => {
-			let html = '';
-			rsp.on('data', (dt) => {
-				html += dt;
-			});
-			rsp.on('end', function () {
-				if (html.trim() !== '') {
-					let data = JSON.parse(html);
-					res.json(data);
-				}
-			});
-		}).on('error', (e) => {
-			logger.debug(e);
-		});
-	}
+	let query = {
+		"match": {
+			"id": code
+		}
+	};
+	elastic.ncitDetails(config.ncitDetails, query, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		res.json(data[0]._source.data);
+	});
 };
 
-var parseExcel = function (req, res) {
-	var folderPath = path.join(__dirname, '..', '..', 'excel_mapping');
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let all_gdc_values = JSON.parse(gdcValues);
-	fs.readdirSync(folderPath).forEach(file => {
+const parseExcel = (req, res) => {
+	var folderPathMapping = path.join(__dirname, '..', '..', 'excel_mapping');
+	let concept = shared.readConceptCode();
+	let all_gdc_values = shared.readGDCValues();
+	fs.readdirSync(folderPathMapping).forEach(file => {
 		if (file.indexOf('.xlsx') !== -1) {
 			var dataParsed = [];
-			var obj = xlsx.parse(folderPath + '/' + file);
-			obj.forEach(function (sheet) {
+			var obj = xlsx.parse(folderPathMapping + '/' + file);
+			obj.forEach(sheet => {
 				var worksheet = sheet.data;
 
 				for (var n = 1; n < worksheet.length; n++) {
@@ -831,6 +1120,11 @@ var parseExcel = function (req, res) {
 							} else {
 								temp_data.icdo3_term = "";
 							}
+							if(row[8]){
+								temp_data.term_type = row[8];
+							} else {
+								temp_data.term_type = "";
+							}
 						}
 						dataParsed.push(temp_data);
 					}
@@ -840,15 +1134,15 @@ var parseExcel = function (req, res) {
 			for (let dp in dataParsed) {
 				if (dataParsed[dp].icdo3_code) {
 					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-					let icdo = JSON.parse(gdcValues);
+					let icdo = shared.readGDCValues();
 					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
 					if (icdo[category_node_property]) {
 						//If some of the mapping exists for this category.node.property
 						var temp_obj = {
 							nm: dataParsed[dp].icdo3_term,
 							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code
+							n_c: dataParsed[dp].ncit_code,
+							term_type: dataParsed[dp].term_type
 						};
 						if (!mappingExists(icdo[category_node_property], temp_obj)) {
 							logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
@@ -861,15 +1155,14 @@ var parseExcel = function (req, res) {
 						var temp_obj = {
 							nm: dataParsed[dp].icdo3_term,
 							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code
+							n_c: dataParsed[dp].ncit_code,
+							term_type: dataParsed[dp].term_type
 						};
 						icdo[category_node_property].push(temp_obj);
 					}
 					//write changes to file
-					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), function (err) {
-						if (err) {
-							return logger.error(err);
-						}
+					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
+						if (err) return logger.error(err);
 					});
 
 				} else {
@@ -878,7 +1171,7 @@ var parseExcel = function (req, res) {
 					delete all_gdc_values[category_node_property];
 					if (c_n_p) {
 						all_gdc_values[category_node_property] = [];
-						c_n_p.forEach(function (prop_values) {
+						c_n_p.forEach(prop_values => {
 							if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
 								prop_values.n_c = dataParsed[dp].ncit_code;
 							}
@@ -929,10 +1222,8 @@ var parseExcel = function (req, res) {
 						cc = helper_cc;
 					}
 					Object.assign(concept, cc);
-					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
-						if (err) {
-							return logger.error(err);
-						}
+					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
+						if (err) return logger.error(err);
 						logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
 					});
 				}
@@ -940,19 +1231,17 @@ var parseExcel = function (req, res) {
 
 		}
 	});
-	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
+		if (err) return logger.error(err);
 	});
-	removeDeprecated();
+	// removeDeprecated();
 	res.json({
 		"status": "success",
 		"message": "Done"
 	});
 }
 
-function mappingExists(arr, obj) {
+const mappingExists = (arr, obj) => {
 	for (let a in arr) {
 		var checker = JSON.stringify(arr[a]) == JSON.stringify(obj);
 		if (checker) {
@@ -962,11 +1251,8 @@ function mappingExists(arr, obj) {
 	return false;
 }
 
-var Unmapped = function (req, res) {
-	let conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let concept = JSON.parse(conceptCode);
-	var folderPath = path.join(__dirname, '..', '..', 'data');
-
+const Unmapped = (req, res) => {
+	let concept = shared.readConceptCode();
 	for (let keys in concept) {
 		let node = keys.split('.')[1];
 		let property = keys.split('.')[2];
@@ -983,7 +1269,7 @@ var Unmapped = function (req, res) {
 						local_values.push(file_values);
 					}
 					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
-					value_not_found.forEach(function (new_val) {
+					value_not_found.forEach(new_val => {
 						let local_obj = concept[keys];
 						local_obj[new_val] = "";
 					});
@@ -994,7 +1280,7 @@ var Unmapped = function (req, res) {
 						local_values.push(file_values);
 					}
 					let value_not_found = _.differenceWith(final_enum, local_values, _.isEqual);
-					value_not_found.forEach(function (new_val) {
+					value_not_found.forEach(new_val => {
 						let local_obj = concept[keys];
 						local_obj[new_val] = "";
 					});
@@ -1002,12 +1288,11 @@ var Unmapped = function (req, res) {
 			}
 		}
 	}
-	let gdcValues = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	let icdo = JSON.parse(gdcValues);
+	let icdo = shared.readGDCValues();
 	for (let keys in icdo) {
 		if (concept[keys]) {
 			let cc_values = concept[keys];
-			icdo[keys].forEach(function (value) {
+			icdo[keys].forEach(value => {
 				//if the "value" in conceptCode.js is similar to "icdo3" code in gdc_values.js, remove that value from conceptCode.js
 				for (let val in cc_values) {
 					if (val === value.i_c) {
@@ -1025,27 +1310,20 @@ var Unmapped = function (req, res) {
 				}
 			});
 		}
-
 	}
-	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
+		if (err) return logger.error(err);
 	});
-	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
+		if (err) return logger.error(err);
 	});
 
 	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
-	let folderPath_gdcdata = path.join(__dirname, '..', '..', 'data');
 	let gdc_data = {};
-	fs.readdirSync(folderPath_gdcdata).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
+	fs.readdirSync(folderPath).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
 	});
-	let tmp_conceptCode = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let tmp_concept = JSON.parse(tmp_conceptCode);
+	let tmp_concept = shared.readConceptCode();
 	for (let keys in tmp_concept) {
 		let category = keys.split(".")[0];
 		let node = keys.split(".")[1];
@@ -1063,31 +1341,34 @@ var Unmapped = function (req, res) {
 			}
 		}
 	}
-	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(tmp_concept), function (err) {
-		if (err) {
-			return logger.error(err);
-		}
+	fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(tmp_concept), err => {
+		if (err) return logger.error(err);
 	});
 	res.send("Success");
 }
 
-var gitClone = function (req, res){
+const gitClone = (req, res) => {
 	let url = 'https://github.com/NCI-GDC/gdcdictionary.git';
 	let directory = 'tmp_data';
 	let clone = git.Clone.clone;
 	let branch = 'develop';
-	var cloneOptions = new git.CloneOptions(); 
+	var cloneOptions = new git.CloneOptions();
 
 	cloneOptions.checkoutBranch = branch;
 	clone(url, directory, cloneOptions)
-        .then(function(repository){
-            
-        });
+		.then(repository => {
+
+		});
 	res.send('Success');
+}
+
+const gdcDictionaryVersion = (req, res) => {
+	res.json(shared.readGdcDictionaryVersion());
 }
 
 module.exports = {
 	suggestion,
+	suggestionMisSpelled,
 	searchP,
 	getPV,
 	getDataFromCDE,
@@ -1106,5 +1387,6 @@ module.exports = {
 	parseExcel,
 	preloadDataTypeFromCaDSR,
 	Unmapped,
-	gitClone
+	gitClone,
+	gdcDictionaryVersion
 };
