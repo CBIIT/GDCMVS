@@ -574,6 +574,7 @@ var indexing = function (req, res) {
 	config_property.index = config.index_p;
 	config_property.body = {
 		"settings": {
+			"index.mapping.total_fields.limit": 30000,
 			"analysis": {
 				"analyzer": {
 					"case_insensitive": {
