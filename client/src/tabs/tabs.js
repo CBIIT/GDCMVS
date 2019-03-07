@@ -36,4 +36,11 @@ export const tabsEvents = ($root) => {
   $root.on('click', '#tab-dictionary', () => {
     storageTabHandle(2);
   });
+
+  $root.tooltip({
+    selector: '[data-toggle="tooltip"]',
+    delay: {'show': 100, 'hide': 50},
+    placement: 'bottom',
+    trigger: 'hover'
+  });
 }
