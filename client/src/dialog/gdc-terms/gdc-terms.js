@@ -24,13 +24,6 @@ const GDCTerms = (uid, tgts) => {
 
     items.forEach(function (item) {
       let tt = item.term_type !== undefined && item.term_type !== ""? item.term_type : "";
-      let term_type = "";
-      if (tt !== "") {
-        term_type = '(' + tt + ')';
-      }
-      else if(tt === ""){
-        term_type = "(*)";
-      }
       if (item.i_c !== undefined) {
         if (item.i_c.c in tmp_obj) {
           if (tmp_obj[item.i_c.c].checker_n_c.indexOf(item.n_c) == -1) {
@@ -44,9 +37,9 @@ const GDCTerms = (uid, tgts) => {
           }
           if (item.n !== item.i_c.c) {
             if (tt === 'PT') {
-              tmp_obj[item.i_c.c].n.unshift(item.n + " " + term_type);
+              tmp_obj[item.i_c.c].n.unshift({n: item.n, term_type: tt});
             } else {
-              tmp_obj[item.i_c.c].n.push(item.n + " " + term_type);
+              tmp_obj[item.i_c.c].n.push({n: item.n, term_type: tt});
             }
           }
         } else {
@@ -62,9 +55,9 @@ const GDCTerms = (uid, tgts) => {
           };
           if (item.n !== item.i_c.c) {
             if (tt === 'PT') {
-              tmp_obj[item.i_c.c].n.unshift(item.n + " " + term_type);
+              tmp_obj[item.i_c.c].n.unshift({n: item.n, term_type: tt});
             } else {
-              tmp_obj[item.i_c.c].n.push(item.n + " " + term_type);
+              tmp_obj[item.i_c.c].n.push({n: item.n, term_type: tt});
             }
           }
         }
@@ -288,7 +281,24 @@ const templateList = (items, icdo, keywordCase) => {
           ${icdo ? `
             <div class="table__td col-xs-2">${item.n}</div>
             <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
-            <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `${item.i_c.n.map((n) =>`${n}</br>`.trim()).join('')}`:`${item.i_c.n}`}`:``}</div>
+            <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                ${item.i_c.n.map((n) =>`
+                  <tr>
+                    <td><p class="table_td-term">${n.n}</p></td>
+                    <td>ICD-O-3</td>
+                    <td>${n.term_type}</td>
+                  </tr>
+                `.trim()).join('')}`:``}`:``}
+              </table>
+            </div>
             <div class="col-xs-5">
             ${item.i_c ? `
               ${item.i_c.n_syn.map((n_syn) =>`

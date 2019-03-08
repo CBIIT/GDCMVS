@@ -22,29 +22,22 @@ const gdcData = (prop, tgt, keyword) => {
 
     items.forEach(function (item) {
       let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "";
-      let term_type = "";
-      if(tt !== ""){
-        term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' :'(' + tt + ')';
-      }
-      else if(tt === ""){
-        term_type = "(*)";
-      }
       if (item.i_c !== undefined) {
         if(item.i_c.c in tmp_obj){
           if(item.n !== item.i_c.c){
             if(tt === 'PT'){
-              tmp_obj[item.i_c.c].n.unshift(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+              tmp_obj[item.i_c.c].n.unshift({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
             }else{
-              tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+              tmp_obj[item.i_c.c].n.push({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
             }
           }
         }else{
           tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: []};
           if(item.n !== item.i_c.c){
             if(tt === 'PT'){
-              tmp_obj[item.i_c.c].n.unshift(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+              tmp_obj[item.i_c.c].n.unshift({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
             }else{
-              tmp_obj[item.i_c.c].n.push(item.n.replace(reg_key, "<b>$&</b>")+" "+term_type);
+              tmp_obj[item.i_c.c].n.push({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
             }
           }
         }
