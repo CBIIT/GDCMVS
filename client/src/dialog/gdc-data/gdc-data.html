@@ -36,13 +36,51 @@
                   <div class="table__row row gdc-data__item--show" id="gdc_data_match">
                     <div class="table__td table__td--slim col-xs-4">{{:n}}</div>
                     <div class="table__td table__td--slim col-xs-3">{{if i_c}}{{:i_c.c}}{{/if}}</div>
-                    <div class="table__td table__td--slim col-xs-5">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}<b>{{:n}}</b>{{/if}}{{/if}}</div>
+                    <div class="table__td table__td--slim col-xs-5">
+                      {{if i_c}}{{if i_c.n}}
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Term</th>
+                              <th>Source</th>
+                              <th>Type</th>
+                            </tr>
+                          </thead>
+                          {{for i_c.n}}
+                          <tr>
+                            <td>{{:n}}</td>
+                            <td>ICD-O-3</td>
+                            <td>{{:term_type}}</td>
+                          </tr>
+                          {{/for}}
+                        </table>
+                      {{else}}<b>{{:n}}</b>{{/if}}{{/if}}
+                    </div>
                   </div>
                 {{else}}
                   <div class="table__row row gdc-data__item--hide">
                     <div class="table__td table__td--slim col-xs-4">{{:n}}</div>
                     <div class="table__td table__td--slim col-xs-3">{{if i_c}}{{:i_c.c}}{{/if}}</div>
-                    <div class="table__td table__td--slim col-xs-5">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
+                    <div class="table__td table__td--slim col-xs-5">
+                      {{if i_c}}{{if i_c.n}}
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Term</th>
+                              <th>Source</th>
+                              <th>Type</th>
+                            </tr>
+                          </thead>
+                          {{for i_c.n}}
+                          <tr>
+                            <td>{{:n}}</td>
+                            <td>ICD-O-3</td>
+                            <td>{{:term_type}}</td>
+                          </tr>
+                          {{/for}}
+                        </table>
+                      {{else}}<b>{{:n}}</b>{{/if}}{{/if}}
+                    </div>
                   </div>
                 {{/if}}
               {{/for}}

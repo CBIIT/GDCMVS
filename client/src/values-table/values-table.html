@@ -101,7 +101,24 @@
                   {{if term_i_c !== undefined }}
                   <div class="row table__td">
                     <div class="col-xs-4">{{:term_i_c.i_c}} (ICD-O-3)</div>
-                    <div class="col-xs-8">{{for term_i_c.n}}{{:}}</br>{{/for}}</div>
+                    <div class="col-xs-8">
+                      <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Term</th>
+                              <th>Source</th>
+                              <th>Type</th>
+                            </tr>
+                          </thead>
+                          {{for term_i_c.n}}
+                          <tr>
+                            <td>{{:n}}</td>
+                            <td>ICD-O-3</td>
+                            <td>{{:term_type}}</td>
+                          </tr>
+                          {{/for}}
+                        </table>
+                    </div>
                   </div>
                   {{if term_i_c.n_syn.length}}
                     {{for term_i_c.n_syn}}

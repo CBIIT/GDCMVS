@@ -295,7 +295,22 @@ export const showCompareResult = (items, option, keywordCase) => {
                       <div class="row table__td">
                         <div class="col-xs-3">${item.i_c.c} (ICD-O-3)</div>
                         <div class="col-xs-9">
-                          ${item.ic_enum.map((ic_e)=>`${ic_e}</br>`.trim()).join('')}
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Term</th>
+                                <th>Source</th>
+                                <th>Type</th>
+                              </tr>
+                            </thead>
+                            ${item.ic_enum.map((ic_enum) =>`
+                              <tr>
+                                <td>${ic_enum.n}</td>
+                                <td>ICD-O-3</td>
+                                <td>${ic_enum.term_type}</td>
+                              </tr>
+                            `.trim()).join('')}
+                          </table>
                         </div>
                       </div>
                     `:``}
@@ -565,7 +580,7 @@ const downloadCompareCVS = (items) => {
     csv += item.i_c !== undefined ? '"' + item.i_c.c + '",': '"",';
     if(item.ic_enum){
       item.ic_enum.forEach((icenum, i) => {
-        csv += i === 0 ? '"","' + icenum + '",':'"' + icenum + '",';
+        csv += i === 0 ? '"","' + icenum.n + '",':'"' + icenum.n + '",';
       })
     }
 
