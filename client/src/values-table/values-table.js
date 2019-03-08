@@ -395,21 +395,15 @@ export const vsRender = (items, keyword, search_option) => {
           }
           let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "";
-          let term_type = "";
-          if (tt !== "") {
-            term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
-          }
-          else if(tt === ""){
-            term_type = "(*)"; // Asterisk foot note
-          }
-          if (item_i_c in temp_i_c && temp_i_c[item_i_c].n.indexOf(item.n) == -1) {
+          let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "*";
+          
+          if (item_i_c in temp_i_c && !_.some(temp_i_c[item_i_c], {n: item.n, term_type: tt})) {
             if (item_n_clr !== item_i_c) {
               if (tt === 'PT') {
-                temp_i_c[item_i_c].n.unshift(item.n + " " + term_type);
+                temp_i_c[item_i_c].n.unshift({n: item.n, term_type: tt});
               } else {
-                temp_i_c[item_i_c].n.push(item.n + " " + term_type);
-                if(term_type === "(*)") term_type_not_official = true; // Asterisk foot note
+                temp_i_c[item_i_c].n.push({n: item.n, term_type: tt});
+                if(tt === "*") term_type_not_official = true; // Asterisk foot note
               }
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
             }
@@ -422,9 +416,9 @@ export const vsRender = (items, keyword, search_option) => {
             if (item.n_c !== "") temp_i_c[item_i_c].n_syn.push({ n_c: item.n_c, s: item.s });
             if (item_n_clr !== item_i_c) {
               if (tt === 'PT') {
-                temp_i_c[item_i_c].n.unshift(item.n + " " + term_type);
+                temp_i_c[item_i_c].n.unshift({n: item.n, term_type: tt});
               } else {
-                temp_i_c[item_i_c].n.push(item.n + " " + term_type);
+                temp_i_c[item_i_c].n.push({n: item.n, term_type: tt});
               }
               temp_i_c[item_i_c].n_clr.push(item_n_clr);
             }
@@ -433,19 +427,13 @@ export const vsRender = (items, keyword, search_option) => {
         for (let index_i_c in temp_i_c) {
           source.enum.forEach(function (em) {
             if (em.i_c && em.i_c.c == index_i_c && temp_i_c[index_i_c].n_clr.indexOf(em.n) === -1) {
-              let tt = em.term_type !== undefined && em.term_type !== "" ? em.term_type : "";
-              let term_type = "";
-              if (tt !== "") {
-                term_type = tt === 'PT' ? '<b>(' + tt + ')</b>' : '(' + tt + ')';
-              }else if(tt === ""){
-                term_type = "(*)"; // Asterisk foot note
-              }
+              let tt = em.term_type !== undefined && em.term_type !== "" ? em.term_type : "*";
               if (em.n.replace(/<b>/g, "").replace(/<\/b>/g, "") !== em.i_c.c.replace(/<b>/g, "").replace(/<\/b>/g, "")) {
                 if (tt === 'PT') {
-                  temp_i_c[index_i_c].n.unshift(em.n + " " + term_type);
+                  temp_i_c[index_i_c].n.unshift({n: em.n, term_type: tt});
                 } else {
-                  temp_i_c[index_i_c].n.push(em.n + " " + term_type);
-                  if(term_type === "(*)") term_type_not_official = true; // Asterisk foot note
+                  temp_i_c[index_i_c].n.push({n: em.n, term_type: tt});
+                  if(tt === "*") term_type_not_official = true; // Asterisk foot note
                 }
               }
               if (temp_i_c[index_i_c].checker_n_c.indexOf(em.n_c.replace(/<b>/g, "").replace(/<\/b>/g, "")) == -1) {

@@ -209,7 +209,24 @@ const templateList = (items, keywordCase) => {
         ${item.i_c !== undefined ? `
           <div class="compare-form__i_c">
             <div class="compare-form__ic_c">${item.i_c.c} (ICD-O-3)</div>
-            <div class="compare-form__ic_enum">${item.ic_enum.map((ic_enum) => `${ic_enum}</br>`.trim()).join('')}</div>
+            <div class="compare-form__ic_enum">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                ${item.ic_enum.map((ic_enum) =>`
+                  <tr>
+                    <td>${ic_enum.n}</td>
+                    <td>ICD-O-3</td>
+                    <td>${ic_enum.term_type}</td>
+                  </tr>
+                `.trim()).join('')}
+              </table>
+            </div>
           </div>
         `:``}
         ${item.n_syn.map((n_syn) => `
