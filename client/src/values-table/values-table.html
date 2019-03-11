@@ -47,7 +47,7 @@
             <!-- <a class="getGDCData" href="#" data-ref="{{:ref}}">See All Values</a> -->
             <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a></br>
             {{/if}}
-            
+
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
             <a href="{{:cdeUrl}}" target="_blank">CDE</a>
@@ -106,8 +106,12 @@
                           <thead>
                             <tr>
                               <th>Term</th>
-                              <th>Source</th>
-                              <th>Type</th>
+                              <th>
+                                Source <a href="#" class="source-question" tabindex="-1"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                              </th>
+                              <th>
+                                Type <a href="#" class="type-question" tabindex="-1"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                              </th>
                             </tr>
                           </thead>
                           {{for term_i_c.n}}
@@ -131,8 +135,12 @@
                           <thead>
                             <tr>
                               <th>Term</th>
-                              <th>Source</th>
-                              <th>Type</th>
+                              <th>
+                                  Source <a href="#" class="source-question" tabindex="-1"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                                </th>
+                                <th>
+                                  Type <a href="#" class="type-question" tabindex="-1"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                                </th>
                             </tr>
                           </thead>
                           {{for s}}
@@ -157,11 +165,15 @@
                         <thead>
                           <tr>
                             <th>Term</th>
-                            <th>Source</th>
-                            <th>Type</th>
+                            <th>
+                              Source <a href="#" class="source-question" tabindex="-1"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            </th>
+                            <th>
+                              Type <a href="#" class="type-question" tabindex="-1"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            </th>
                           </tr>
                         </thead>
-                
+
                         {{for s}}
                         <tr>
                           <td>{{:termName}}</td>
@@ -207,7 +219,7 @@
                             <th>Type</th>
                           </tr>
                         </thead>
-                
+
                         {{for s}}
                         <tr>
                           <td>{{:termName}}</td>
