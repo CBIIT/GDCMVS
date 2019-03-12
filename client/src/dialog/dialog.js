@@ -4,6 +4,7 @@ import toCompare from './to-compare/to-compare';
 import compareGDC from './compare-gdc/compare-gdc';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
+import { renderSource, renderType } from './abbrevation/abbrevation'
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getCDEData', (event) => {
@@ -44,6 +45,16 @@ export const dialogEvents = ($root, $body) => {
     event.preventDefault();
     let data = event.currentTarget.dataset;
     getNCITDetails(data.uid);
+  });
+
+  $body.on('click', '.getSourceDetails', (event) => {
+    event.preventDefault();
+    renderSource();
+  });
+
+  $body.on('click', '.getTypeDetails', (event) => {
+    event.preventDefault();
+    renderType();
   });
 
   $body.on('click', '.compare-form__toggle', (event) => {
@@ -269,8 +280,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                                 <thead>
                                   <tr>
                                     <th>Term</th>
-                                    <th>Source</th>
-                                    <th>Type</th>
+                                    <th><a class="getSourceDetails" href="#">Source</a></th>
+                                    <th><a class="getTypeDetails" href="#">Type</a></th>
                                   </tr>
                                 </thead>
 
@@ -299,8 +310,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                             <thead>
                               <tr>
                                 <th>Term</th>
-                                <th>Source</th>
-                                <th>Type</th>
+                                <th><a class="getSourceDetails" href="#">Source</a></th>
+                                <th><a class="getTypeDetails" href="#">Type</a></th>
                               </tr>
                             </thead>
                             ${item.ic_enum.map((ic_enum) =>`
@@ -326,8 +337,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                                   <thead>
                                     <tr>
                                       <th>Term</th>
-                                      <th>Source</th>
-                                      <th>Type</th>
+                                      <th><a class="getSourceDetails" href="#">Source</a></th>
+                                      <th><a class="getTypeDetails" href="#">Type</a></th>
                                     </tr>
                                   </thead>
 
@@ -395,8 +406,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                                 <thead>
                                   <tr>
                                     <th>Term</th>
-                                    <th>Source</th>
-                                    <th>Type</th>
+                                    <th><a class="getSourceDetails" href="#">Source</a></th>
+                                    <th><a class="getTypeDetails" href="#">Type</a></th>
                                   </tr>
                                 </thead>
 
@@ -427,8 +438,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                                 <thead>
                                   <tr>
                                     <th>Term</th>
-                                    <th>Source</th>
-                                    <th>Type</th>
+                                    <th><a class="getSourceDetails" href="#">Source</a></th>
+                                    <th><a class="getTypeDetails" href="#">Type</a></th>
                                   </tr>
                                 </thead>
 
