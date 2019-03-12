@@ -15,16 +15,16 @@ export const renderSource = () => {
         position: { my: "center top+" + tp, at: "center top", of: $('#docs-container') },
         width: 600,
         height: 'auto',
-        minWidth: 420,
+        minWidth: 500,
         maxWidth: 800,
-        minHeight: 350,
+        minHeight: 400,
         maxHeight: 650,
         open: function () {
             //add new custom header
             $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.5em').html(header);
 
             $('#close_source_details').bind('click', function () {
-            $("#source_details").dialog('close');
+              $("#source_details").dialog('close');
             });
         },
         close: function () {
@@ -47,17 +47,16 @@ export const renderType = () => {
         position: { my: "center top+" + tp, at: "center top", of: $('#docs-container') },
         width: 600,
         height: 'auto',
-        minWidth: 420,
+        minWidth: 500,
         maxWidth: 800,
-        minHeight: 350,
+        minHeight: 400,
         maxHeight: 650,
-        title: 'Source',
         open: function () {
             //add new custom header
             $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.5em').html(header);
 
             $('#close_type_details').bind('click', function () {
-            $("#type_details").dialog('close');
+              $("#type_details").dialog('close');
             });
         },
         close: function () {
