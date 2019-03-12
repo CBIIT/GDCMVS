@@ -310,8 +310,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                             <thead>
                               <tr>
                                 <th>Term</th>
-                                <th><a class="getSourceDetails" href="#">Source</a></th>
-                                <th><a class="getTypeDetails" href="#">Type</a></th>
+                                <th>Source</th>
+                                <th>Type</th>
                               </tr>
                             </thead>
                             ${item.ic_enum.map((ic_enum) =>`
