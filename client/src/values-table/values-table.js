@@ -57,16 +57,6 @@ const showMoreToggleHandle = (event) => {
   }
 }
 
-const sourcePopup = (event) => {
-  event.preventDefault();
-  window.open('https://ncit.nci.nih.gov/ncitbrowser/pages/source_help_info.jsf?dictionary=NCI_Thesaurus', '_blank','top=100, left=100, height=740, width=680, status=no, menubar=no, resizable=yes, scrollbars=yes, toolbar=no, location=no, directories=no');
-}
-
-const typePopup = (event) => {
-  event.preventDefault();
-  window.open('https://ncit.nci.nih.gov/ncitbrowser/pages/term_type_help_info.jsf?dictionary=NCI_Thesaurus', '_blank','top=100, left=100, height=740, width=680, status=no, menubar=no, resizable=yes, scrollbars=yes, toolbar=no, location=no, directories=no');
-}
-
 export const vsRender = (items, keyword, search_option) => {
   //data preprocessing
   let values = [];
@@ -569,13 +559,5 @@ export const vsEvents = ($root) => {
 
   $root.on('click', '.show-more-less', (event) => {
     showMoreToggleHandle(event);
-  });
-
-  $root.on('click', '.source-question', (event) => {
-    sourcePopup(event);
-  });
-
-  $root.on('click', '.type-question', (event) => {
-    typePopup(event);
   });
 }
