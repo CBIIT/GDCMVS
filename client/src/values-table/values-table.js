@@ -57,6 +57,16 @@ const showMoreToggleHandle = (event) => {
   }
 }
 
+const sourcePopup = (event) => {
+  event.preventDefault();
+  window.open('https://ncit.nci.nih.gov/ncitbrowser/pages/source_help_info.jsf?dictionary=NCI_Thesaurus', '_blank','top=100, left=100, height=740, width=680, status=no, menubar=no, resizable=yes, scrollbars=yes, toolbar=no, location=no, directories=no');
+}
+
+const typePopup = (event) => {
+  event.preventDefault();
+  window.open('https://ncit.nci.nih.gov/ncitbrowser/pages/term_type_help_info.jsf?dictionary=NCI_Thesaurus', '_blank','top=100, left=100, height=740, width=680, status=no, menubar=no, resizable=yes, scrollbars=yes, toolbar=no, location=no, directories=no');
+}
+
 export const vsRender = (items, keyword, search_option) => {
   //data preprocessing
   let values = [];
@@ -396,7 +406,7 @@ export const vsRender = (items, keyword, search_option) => {
           let item_i_c = item.i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let item_n_clr = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "");
           let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "*";
-          
+
           if (item_i_c in temp_i_c && !_.some(temp_i_c[item_i_c], {n: item.n, term_type: tt})) {
             if (item_n_clr !== item_i_c) {
               if (tt === 'PT') {
@@ -515,11 +525,11 @@ export const vsRender = (items, keyword, search_option) => {
   });
   let html = "";
   let searched_keyword = $("#keywords").val();
-  if (term_type_not_official === true) 
+  if (term_type_not_official === true)
     $("#unofficial-term").html('(*) Term type not assigned.');
   else
     $("#unofficial-term").html('');
-  
+
   if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
     html =
       '<div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' +
@@ -559,5 +569,13 @@ export const vsEvents = ($root) => {
 
   $root.on('click', '.show-more-less', (event) => {
     showMoreToggleHandle(event);
+  });
+
+  $root.on('click', '.source-question', (event) => {
+    sourcePopup(event);
+  });
+
+  $root.on('click', '.type-question', (event) => {
+    typePopup(event);
   });
 }
