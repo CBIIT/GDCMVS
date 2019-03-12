@@ -25,22 +25,11 @@
       <div class="table__thead row">
         {{if icdo}}
           <div class="table__th col-xs-2">GDC Value</div>
-          <div class="table__th col-xs-2">ICD-O-3 Code</div>
-          <div class="table__th col-xs-3">ICD-O-3 Term</div>
-          <div class="col-xs-5">
-            <div class="row">
-              <div class="table__th col-xs-4">NCIt Code</div>
-              <div class="table__th col-xs-8">NCIt Terms</div>
-            </div>
-          </div>
+          <div class="table__th col-xs-5">ICD-O-3 Data</div>
+          <div class="table__th col-xs-5">NCIt Data</div>
         {{else}}
           <div class="table__th col-xs-5">GDC Value</div>
-          <div class="col-xs-7">
-            <div class="row">
-              <div class="table__th col-xs-4">NCIt Code</div>
-              <div class="table__th col-xs-8">NCIt Terms</div>
-            </div>
-          </div>
+          <div class="table__th col-xs-7">NCIt Data</div>
         {{/if}}
       </div>
     </div>
@@ -59,8 +48,8 @@
                 {{if ~root.icdo}}
 
                   <div class="table__td col-xs-2">{{:n}}</div>
-                  <div class="table__td col-xs-2">{{if i_c}}{{:i_c.c}}{{/if}}</div>
-                  <div class="table__td col-xs-3">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
+                  <div class="table__td col-xs-1">{{if i_c}}{{:i_c.c}}{{/if}}</div>
+                  <div class="table__td col-xs-4">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
                   <div class="col-xs-5">
                     {{if i_c !== undefined}}
                       {{for i_c.n_syn}}
@@ -131,8 +120,8 @@
                 {{if ~root.icdo}}
 
                   <div class="table__td col-xs-2">{{:n}}</div>
-                  <div class="table__td col-xs-2">{{if i_c}}{{:i_c.c}}{{/if}}</div>
-                  <div class="table__td col-xs-3">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
+                  <div class="table__td col-xs-1">{{if i_c}}{{:i_c.c}}{{/if}}</div>
+                  <div class="table__td col-xs-4">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
                   <div class="col-xs-5">
                     {{if i_c !== undefined}}
                       {{for i_c.n_syn}}

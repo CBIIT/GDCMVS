@@ -280,8 +280,8 @@ const templateList = (items, icdo, keywordCase) => {
           <div id="gdc_term_item" class="table__row row gdc-term__item--show">
           ${icdo ? `
             <div class="table__td col-xs-2">${item.n}</div>
-            <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
-            <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `
+            <div class="table__td col-xs-1">${item.i_c ? `${item.i_c.c}`:``}</div>
+            <div class="table__td col-xs-4">${item.i_c ? `${item.i_c.n ? `
               <table class="table table-striped">
                 <thead>
                   <tr>
