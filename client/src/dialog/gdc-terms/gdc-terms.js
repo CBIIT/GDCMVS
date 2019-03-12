@@ -286,8 +286,8 @@ const templateList = (items, icdo, keywordCase) => {
                 <thead>
                   <tr>
                     <th>Term</th>
-                    <th>Source</th>
-                    <th>Type</th>
+                    <th><a class="getSourceDetails" href="#">Source</a></th>
+                    <th><a class="getTypeDetails" href="#">Type</a></th>
                   </tr>
                 </thead>
                 ${item.i_c.n.map((n) =>`
@@ -312,8 +312,8 @@ const templateList = (items, icdo, keywordCase) => {
                     <thead>
                       <tr>
                         <th>Term</th>
-                        <th>Source</th>
-                        <th>Type</th>
+                        <th><a class="getSourceDetails" href="#">Source</a></th>
+                        <th><a class="getTypeDetails" href="#">Type</a></th>
                       </tr>
                     </thead>
                     ${n_syn.s.map((s) =>`
@@ -339,8 +339,8 @@ const templateList = (items, icdo, keywordCase) => {
                       <thead>
                         <tr>
                           <th>Term</th>
-                          <th>Source</th>
-                          <th>Type</th>
+                          <th><a class="getSourceDetails" href="#">Source</a></th>
+                          <th><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${item.s.map((s) =>`
@@ -371,8 +371,8 @@ const templateList = (items, icdo, keywordCase) => {
                       <thead>
                         <tr>
                           <th>Term</th>
-                          <th>Source</th>
-                          <th>Type</th>
+                          <th><a class="getSourceDetails" href="#">Source</a></th>
+                          <th><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${n_syn.s.map((s) =>`
@@ -398,8 +398,8 @@ const templateList = (items, icdo, keywordCase) => {
                       <thead>
                         <tr>
                           <th>Term</th>
-                          <th>Source</th>
-                          <th>Type</th>
+                          <th><a class="getSourceDetails" href="#">Source</a></th>
+                          <th><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${item.s.map((s) =>`

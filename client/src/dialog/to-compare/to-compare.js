@@ -214,8 +214,8 @@ const templateList = (items, keywordCase) => {
                 <thead>
                   <tr>
                     <th>Term</th>
-                    <th>Source</th>
-                    <th>Type</th>
+                    <th><a class="getSourceDetails" href="#">Source</a></th>
+                    <th><a class="getTypeDetails" href="#">Type</a></th>
                   </tr>
                 </thead>
                 ${item.ic_enum.map((ic_enum) =>`
@@ -239,8 +239,8 @@ const templateList = (items, keywordCase) => {
                     <thead>
                       <tr>
                         <th>Term</th>
-                        <th>Source</th>
-                        <th>Type</th>
+                        <th><a class="getSourceDetails" href="#">Source</a></th>
+                        <th><a class="getTypeDetails" href="#">Type</a></th>
                       </tr>
                     </thead>
                     ${n_syn.s.map((s_r) =>`
@@ -275,8 +275,8 @@ const templateList = (items, keywordCase) => {
                       <thead>
                         <tr>
                           <th>Term</th>
-                          <th>Source</th>
-                          <th>Type</th>
+                          <th><a class="getSourceDetails" href="#">Source</a></th>
+                          <th><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${item.s.map((s_r) =>`

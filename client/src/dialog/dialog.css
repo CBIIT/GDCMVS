@@ -157,6 +157,14 @@
   margin: 1em;
 }
 
+.source__content {
+  margin: 1em;
+}
+
+.type__content {
+  margin: 1em;
+}
+
 .compare-form {
   margin: 0.5em 1em;
   height: 97%;
