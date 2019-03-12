@@ -321,3 +321,10 @@
 .paginationjs .paginationjs-pages li.active>a {
   background: #6A7676;
 }
+
+.getTypeDetails:hover,
+.getTypeDetails:focus,
+.getSourceDetails:hover,
+.getSourceDetails:focus {
+  text-decoration: underline !important;
+}
