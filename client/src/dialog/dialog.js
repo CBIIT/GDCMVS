@@ -117,11 +117,13 @@ const compareGDCvalues = (fromV, toV, option) => {
             }
           }
           if (em.s) {
-            if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-              text.push(toV[i]);
-              checker_n.push(toV[i].n);
-              v_matched.push(i);
-            }
+            em.s.forEach(s => {
+              if (s.termName.trim().toLowerCase() === tmp && checker_n.indexOf(toV[i].n) === -1) {
+                text.push(toV[i]);
+                checker_n.push(toV[i].n);
+                v_matched.push(i);
+              }
+            });
           }
         });
         let checker_n_c = getMatchedSynonyms(text, tmp, option);
@@ -625,7 +627,7 @@ const downloadCompareCVS = (items) => {
     }
   });
 
-  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' }); 
+  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' });
   let csvUrl = URL.createObjectURL(csvData);
   let link  = document.createElement('a');
   link.href = csvUrl;
