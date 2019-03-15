@@ -20,7 +20,6 @@ const toCompare = (uid) => {
 
     // Collecting all synonyms and ncit code in one array for particular ICDO3 code
     let all_icdo3_syn = getAllSyn(items);
-
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         icdo = true;
@@ -38,7 +37,7 @@ const toCompare = (uid) => {
         }
         icdo_items.push(tmp_item);
         item_checker[item.n] = item;
-      }else{
+      }else if(item.i_c === undefined){
         icdo_items.push(item);
       }
     });
