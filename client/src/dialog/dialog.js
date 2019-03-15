@@ -263,7 +263,9 @@ export const showCompareResult = (items, option, keywordCase) => {
               ${item.n_syn !== undefined ? `
                 <div class="table__td table__gdc-match table__td--slim col-xs-6">
                   <div class="row">
-                    <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                  <div class="col-xs-10">${item.n !== '' && option.synonyms === true && option.partial === true ? item.n.replace(reg_key, '<b>$&</b>') :
+                    `${item.n !== '' && option.synonyms === true && item.n.trim().toLowerCase === (item.match !== undefined ? item.match.trim().toLowerCase() : ``) ?  `<b>${item.n}</b>`  : `${item.n === '' ? `<span style="color:red;">--</span>` : `${item.n}`}`}` }
+                  </div>
                     <div class="col-xs-2 table__right">
                       ${item.n_syn.length !== 0 ? `
                         <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
@@ -389,7 +391,9 @@ export const showCompareResult = (items, option, keywordCase) => {
               ${item.s !== undefined ? `
                 <div class="table__td table__gdc-match table__td--slim col-xs-6">
                   <div class="row">
-                    <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                  <div class="col-xs-10">${item.n !== '' && option.synonyms === true && option.partial === true ? item.n.replace(reg_key, '<b>$&</b>') :
+                    `${item.n !== '' && option.synonyms === true && item.n.trim().toLowerCase === (item.match !== undefined ? item.match.trim().toLowerCase() : ``) ?  `<b>${item.n}</b>`  : `${item.n === '' ? `<span style="color:red;">--</span>` : `${item.n}`}`}` }
+                  </div>
                     <div class="col-xs-2 table__right">
                       ${item.s.length !== 0 ? `
                       <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
