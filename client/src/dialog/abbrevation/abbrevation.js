@@ -14,7 +14,7 @@ export const renderSource = () => {
         modal: false,
         position: { my: "center top+" + tp, at: "center top", of: $('#docs-container') },
         width: 600,
-        height: 'auto',
+        height: 600,
         minWidth: 500,
         maxWidth: 800,
         minHeight: 400,
