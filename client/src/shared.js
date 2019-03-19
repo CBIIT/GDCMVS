@@ -5,6 +5,8 @@ let notificationOn = false;
 
 export const getHeaderOffset = () => headerOffset;
 
+export const getScrollTop = () => prevScrollOffset
+
 export const onScroll = ($window) => {
   const currentScrollOffset = $window.scrollTop();
   const delta = currentScrollOffset - prevScrollOffset;
@@ -88,9 +90,18 @@ export const getAllSyn = (items) => {
   items.forEach(item => {
     if(item.i_c === undefined) return;
     if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
-      all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-      if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-      if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
+      if(item.i_c.n_syn){
+        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
+        all_icdo3_syn[item.i_c.c].n_syn = item.i_c.n_syn;
+        item.i_c.n_syn.forEach(syn => {
+          if(syn.s === undefined) return;
+          all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(syn.s.map(function(x){ return x.termName}));
+        });
+      }else{
+        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
+        if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+        if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
+      }
     }else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
       if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
       if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
@@ -101,7 +112,7 @@ export const getAllSyn = (items) => {
 }
 
 export const searchFilter = (items, keyword) => {
-  let all_icdo3_syn = all_icdo3_syn = getAllSyn(items);
+  let all_icdo3_syn = getAllSyn(items);
   let new_item = [];
   JSON.parse(JSON.stringify(items)).forEach(item =>{
     let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
