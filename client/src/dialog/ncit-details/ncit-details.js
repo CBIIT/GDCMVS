@@ -46,7 +46,7 @@ export default function ncitDetails(uid){
       modal: false,
       position: { my: "center top+" + tp, at: "center top", of: $('#docs-container') },
       width: 600,
-      height: 450,
+      height: 600,
       minWidth: 420,
       maxWidth: 800,
       minHeight: 350,
