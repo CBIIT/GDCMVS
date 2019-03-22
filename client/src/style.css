@@ -266,6 +266,10 @@ a:hover, a:focus {
   width: 15%;
 }
 
+.table-striped > tbody > tr {
+  background-color: #fff;
+}
+
 .thead__row {
   display: flex;
   align-items: center;
