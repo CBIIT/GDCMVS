@@ -252,6 +252,20 @@ a:hover, a:focus {
   background-color: #3598db !important;
 }
 
+.table__th--term,
+.table__td--term {
+  width: 65%;
+}
+.table__th--source,
+.table__td--source {
+  width: 20%;
+}
+
+.table__th--type,
+.table__td--type {
+  width: 15%;
+}
+
 .thead__row {
   display: flex;
   align-items: center;
