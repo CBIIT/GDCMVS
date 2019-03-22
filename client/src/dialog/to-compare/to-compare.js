@@ -282,9 +282,9 @@ const templateList = (items, keywordCase) => {
                       </thead>
                       ${item.s.map((s_r) =>`
                         <tr>
-                          <td class="table__td--term>${s_r.termName}</td>
-                          <td class="table__td--source>${s_r.termSource !== undefined && s_r.termSource !== null ? `${s_r.termSource}`: ``}</td>
-                          <td class="table__td--type>${s_r.termGroup !== undefined && s_r.termGroup !== null? `${s_r.termGroup}`: ``}</td>
+                          <td class="table__td--term">${s_r.termName}</td>
+                          <td class="table__td--source">${s_r.termSource !== undefined && s_r.termSource !== null ? `${s_r.termSource}`: ``}</td>
+                          <td class="table__td--type">${s_r.termGroup !== undefined && s_r.termGroup !== null? `${s_r.termGroup}`: ``}</td>
                         </tr>
                       `.trim()).join('')}
                       </table>
