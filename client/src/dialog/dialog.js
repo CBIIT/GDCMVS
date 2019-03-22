@@ -411,9 +411,9 @@ export const showCompareResult = (items, option, keywordCase) => {
                               <table class="table table-striped">
                                 <thead>
                                   <tr>
-                                    <th class="table__th--term>Term</th>
-                                    <th class="table__th--source><a class="getSourceDetails" href="#">Source</a></th>
-                                    <th class="table__th--type><a class="getTypeDetails" href="#">Type</a></th>
+                                    <th class="table__th--term">Term</th>
+                                    <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                                    <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                                   </tr>
                                 </thead>
 
