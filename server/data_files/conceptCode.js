@@ -650,12 +650,9 @@
         "Pathologic Review": "C125006"
     },
     "clinical.diagnosis.site_of_resection_or_biopsy": {
-        "Acoustic nerve": "C12996",
         "Connective, subcutaneous and other soft tissues of trunk, NOS": "",
         "Overlapping lesions of oropharynx": "",
         "Peripheral nerves and autonomic nervous system of lower limb and hip": "",
-        "Prepuce": "C12323",
-        "Round ligament": "C12319",
         "Not Reported": "C43234",
         "Unknown": "C17998"
     },
