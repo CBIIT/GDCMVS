@@ -129,8 +129,8 @@ const GDCTerms = (uid, tgts) => {
 
       if (icdo) {
         dialog_width.width = 1000;
-        dialog_width.minWidth = 900;
-        dialog_width.maxWidth = 1100;
+        dialog_width.minWidth = 1050;
+        dialog_width.maxWidth = 1150;
       }
 
       $("#gdc_terms_data").dialog({
