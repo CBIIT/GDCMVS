@@ -304,7 +304,7 @@ const templateList = (items, icdo, keywordCase) => {
               ${item.i_c.n_syn.map((n_syn) =>`
               <div class="row">
                 <div class="table__td col-xs-4">
-                  ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+                  ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a>`:``}
                 </div>
                 <div name="syn_area" class="table__td col-xs-8">
                 ${n_syn.s !== undefined ? `
@@ -331,7 +331,7 @@ const templateList = (items, icdo, keywordCase) => {
             `:`
               <div class="row">
                 <div class="table__td col-xs-4">
-                  ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+                  ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a>`:``}
                 </div>
                 <div name="syn_area" class="table__td col-xs-8">
                   ${item.s !== undefined ? `
@@ -363,7 +363,7 @@ const templateList = (items, icdo, keywordCase) => {
               ${item.i_c.n_syn.map((n_syn) =>`
                 <div class="row">
                   <div class="table__td col-xs-4">
-                    ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a> (NCIt)`:``}
+                    ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a>`:``}
                   </div>
                   <div name="syn_area" class="table__td col-xs-8">
                   ${n_syn.s !== undefined ? `
@@ -390,7 +390,7 @@ const templateList = (items, icdo, keywordCase) => {
             `:`
               <div class="row">
                 <div class="table__td col-xs-4">
-                  ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a> (NCIt)`:``}
+                  ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a>`:``}
                 </div>
                 <div name="syn_area" class="table__td col-xs-8">
                   ${item.s !== undefined ? `
