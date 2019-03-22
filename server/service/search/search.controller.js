@@ -702,36 +702,6 @@ const getDataFromCDE = (req, res) => {
 	res.json(cdeData[uid]);
 };
 
-const getCDEData = (req, res) => {
-	let uid = req.query.id;
-	if (cdeData[uid] == undefined) {
-		//load data file to memory
-
-		let query = {};
-		query.term = {};
-		query.term["cde.id"] = uid;
-		elastic.query(config.index_p, query, null, result => {
-			if (result.hits === undefined) {
-				return handleError.error(res, result);
-			}
-			let data = result.hits.hits;
-			//cache the data and response
-			if (data.length > 0) {
-				let p = data[0];
-				cdeData[uid] = p._source.cde_pv;
-				let pid = p._source.category + "." + p._source.node + "." + p._source.name;
-				if (!(pid in gdcData)) {
-					gdcData[pid] = p._source.enum;
-				}
-			}
-
-			res.json(cdeData[uid]);
-		});
-	} else {
-		res.json(cdeData[uid]);
-	}
-};
-
 const getDataFromGDC = (req, res) => {
 	if (gdcData === '') {
 		//load data file to memory
@@ -798,46 +768,6 @@ const getGDCData = (req, res) => {
 	} else {
 		res.json(gdcData[uid]);
 	}
-};
-
-const getGDCandCDEData = (req, res) => {
-	let uid = req.query.local;
-	let cdeId = req.query.cde;
-	if (gdcData[uid] == undefined) {
-		//load data file to memory
-
-		let query = {};
-		query.terms = {};
-		query.terms._id = [];
-		query.terms._id.push(uid);
-		elastic.query(config.index_p, query, null, result => {
-			if (result.hits === undefined) {
-				return handleError.error(res, result);
-			}
-			let data = result.hits.hits;
-			//cache the data and response
-
-			if (data.length > 0) {
-				let p = data[0];
-				gdcData[uid] = p._source.enum;
-				let cde = p._source.cde;
-				if (cde !== undefined && !(cde.id in cdeData)) {
-					cdeData[cde.id] = p._source.cde_pv;
-				}
-			}
-
-			let tmp = {};
-			tmp.to = cdeData[cdeId];
-			tmp.from = gdcData[uid];
-			res.json(tmp);
-		});
-	} else {
-		let result = {};
-		result.to = cdeData[cdeId];
-		result.from = gdcData[uid];
-		res.json(result);
-	}
-
 };
 
 const preloadCadsrData = (req, res) => {
@@ -1372,10 +1302,8 @@ module.exports = {
 	searchP,
 	getPV,
 	getDataFromCDE,
-	getCDEData,
 	getDataFromGDC,
 	getGDCData,
-	getGDCandCDEData,
 	searchICDO3Data,
 	preloadSynonumsNcit,
 	loadSynonyms_continue,
