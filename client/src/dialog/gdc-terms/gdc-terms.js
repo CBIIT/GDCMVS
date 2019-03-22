@@ -285,16 +285,16 @@ const templateList = (items, icdo, keywordCase) => {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Term</th>
-                    <th>Source</th>
-                    <th>Type</th>
+                    <th class="table__th--term">Term</th>
+                    <th class="table__th--source">Source</th>
+                    <th class="table__th--type">Type</th>
                   </tr>
                 </thead>
                 ${item.i_c.n.map((n) =>`
                   <tr>
-                    <td><p class="table_td-term">${n.n}</p></td>
-                    <td>ICD-O-3</td>
-                    <td>${n.term_type}</td>
+                    <td class="table__td--term"><p class="table_td-term">${n.n}</p></td>
+                    <td class="table__td--source">ICD-O-3</td>
+                    <td class="table__td--type">${n.term_type}</td>
                   </tr>
                 `.trim()).join('')}`:``}`:``}
               </table>
@@ -311,16 +311,16 @@ const templateList = (items, icdo, keywordCase) => {
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Term</th>
-                        <th><a class="getSourceDetails" href="#">Source</a></th>
-                        <th><a class="getTypeDetails" href="#">Type</a></th>
+                        <th class="table__th--term">Term</th>
+                        <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                        <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                       </tr>
                     </thead>
                     ${n_syn.s.map((s) =>`
                       <tr>
-                        <td><p class="table_td-term">${s.termName}</p></td>
-                        <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                        <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                        <td class="table__td--term"><p class="table_td-term">${s.termName}</p></td>
+                        <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                        <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                       </tr>
                     `.trim()).join('')}
                     </table>
@@ -338,16 +338,16 @@ const templateList = (items, icdo, keywordCase) => {
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>Term</th>
-                          <th><a class="getSourceDetails" href="#">Source</a></th>
-                          <th><a class="getTypeDetails" href="#">Type</a></th>
+                          <th class="table__th--term">Term</th>
+                          <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                          <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${item.s.map((s) =>`
                         <tr>
-                          <td><p class="table_td-term">${s.termName}</p></td>
-                          <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                          <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                          <td class="table__td--term"><p class="table_td-term">${s.termName}</p></td>
+                          <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                          <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                         </tr>
                       `.trim()).join('')}
                     </table>
@@ -370,16 +370,16 @@ const templateList = (items, icdo, keywordCase) => {
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>Term</th>
-                          <th><a class="getSourceDetails" href="#">Source</a></th>
-                          <th><a class="getTypeDetails" href="#">Type</a></th>
+                          <th class="table__th--term">Term</th>
+                          <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                          <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${n_syn.s.map((s) =>`
                         <tr>
-                          <td><p class="table_td-term">${s.termName}</p></td>
-                          <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                          <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                          <td class="table__td--term"><p class="table_td-term">${s.termName}</p></td>
+                          <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                          <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                         </tr>
                     `.trim()).join('')}
                     </table>
@@ -397,16 +397,16 @@ const templateList = (items, icdo, keywordCase) => {
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>Term</th>
-                          <th><a class="getSourceDetails" href="#">Source</a></th>
-                          <th><a class="getTypeDetails" href="#">Type</a></th>
+                          <th class="table__th--term">Term</th>
+                          <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                          <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${item.s.map((s) =>`
                         <tr>
-                          <td><p class="table_td-term">${s.termName}</p></td>
-                          <td>${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                          <td>${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                          <td class="table__td--term"><p class="table_td-term">${s.termName}</p></td>
+                          <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                          <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                         </tr>
                       `.trim()).join('')}
                     </table>

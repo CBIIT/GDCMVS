@@ -214,16 +214,16 @@ const templateList = (items, keywordCase) => {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Term</th>
-                    <th>Source</th>
-                    <th>Type</th>
+                    <th class="table__th--term">Term</th>
+                    <th class="table__th--source">Source</th>
+                    <th class="table__th--type">Type</th>
                   </tr>
                 </thead>
                 ${item.ic_enum.map((ic_enum) =>`
                   <tr>
-                    <td>${ic_enum.n}</td>
-                    <td>ICD-O-3</td>
-                    <td>${ic_enum.term_type}</td>
+                    <td class="table__td--term">${ic_enum.n}</td>
+                    <td class="table__td--source">ICD-O-3</td>
+                    <td class="table__td--type">${ic_enum.term_type}</td>
                   </tr>
                 `.trim()).join('')}
               </table>
@@ -239,16 +239,16 @@ const templateList = (items, keywordCase) => {
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>Term</th>
-                        <th><a class="getSourceDetails" href="#">Source</a></th>
-                        <th><a class="getTypeDetails" href="#">Type</a></th>
+                        <th class="table__th--term">Term</th>
+                        <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                        <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                       </tr>
                     </thead>
                     ${n_syn.s.map((s_r) =>`
                       <tr>
-                        <td>${s_r.termName}</td>
-                        ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
-                        ${s_r.termGroup !== undefined && s_r.termGroup !== null? `<td>${s_r.termGroup}</td>`: ``}
+                        <td class="table__td--term">${s_r.termName}</td>
+                        <td class="table__td--source">${s_r.termSource !== undefined && s_r.termSource !== null ? `${s_r.termSource}`: ``}</td>
+                        <td class="table__td--type">${s_r.termGroup !== undefined && s_r.termGroup !== null? `${s_r.termGroup}`: ``}</td>
                       </tr>
                     `.trim()).join('')}
                     </table>
@@ -275,16 +275,16 @@ const templateList = (items, keywordCase) => {
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>Term</th>
-                          <th><a class="getSourceDetails" href="#">Source</a></th>
-                          <th><a class="getTypeDetails" href="#">Type</a></th>
+                          <th class="table__th--term">Term</th>
+                          <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                          <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                         </tr>
                       </thead>
                       ${item.s.map((s_r) =>`
                         <tr>
-                          <td>${s_r.termName}</td>
-                          ${s_r.termSource !== undefined && s_r.termSource !== null ? `<td>${s_r.termSource}</td>`: ``}
-                          ${s_r.termGroup !== undefined && s_r.termGroup !== null? `<td>${s_r.termGroup}</td>`: ``}
+                          <td class="table__td--term>${s_r.termName}</td>
+                          <td class="table__td--source>${s_r.termSource !== undefined && s_r.termSource !== null ? `${s_r.termSource}`: ``}</td>
+                          <td class="table__td--type>${s_r.termGroup !== undefined && s_r.termGroup !== null? `${s_r.termGroup}`: ``}</td>
                         </tr>
                       `.trim()).join('')}
                       </table>
