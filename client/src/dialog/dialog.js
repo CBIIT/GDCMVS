@@ -117,11 +117,13 @@ const compareGDCvalues = (fromV, toV, option) => {
             }
           }
           if (em.s) {
-            if (em.s.indexOf(tmp) !== -1 && checker_n.indexOf(toV[i].n) === -1) {
-              text.push(toV[i]);
-              checker_n.push(toV[i].n);
-              v_matched.push(i);
-            }
+            em.s.forEach(s => {
+              if (s.termName.trim().toLowerCase() === tmp && checker_n.indexOf(toV[i].n) === -1) {
+                text.push(toV[i]);
+                checker_n.push(toV[i].n);
+                v_matched.push(i);
+              }
+            });
           }
         });
         let checker_n_c = getMatchedSynonyms(text, tmp, option);
@@ -261,7 +263,9 @@ export const showCompareResult = (items, option, keywordCase) => {
               ${item.n_syn !== undefined ? `
                 <div class="table__td table__gdc-match table__td--slim col-xs-6">
                   <div class="row">
-                    <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                    <div class="col-xs-10">${item.n !== '' && option.partial === true ? item.n.replace(reg_key, '<b>$&</b>') :
+                      `${item.n !== '' && item.n.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : ``) ?  `<b>${item.n}</b>`  : `${item.n === '' ? `<span style="color:red;">--</span>` : `${item.n}`}`}` }
+                    </div>
                     <div class="col-xs-2 table__right">
                       ${item.n_syn.length !== 0 ? `
                         <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
@@ -387,7 +391,9 @@ export const showCompareResult = (items, option, keywordCase) => {
               ${item.s !== undefined ? `
                 <div class="table__td table__gdc-match table__td--slim col-xs-6">
                   <div class="row">
-                    <div class="col-xs-10">${item.n !== '' ? item.n.replace(reg_key, '<b>$&</b>') : `<span style="color:red;">--</span>`}</div>
+                    <div class="col-xs-10">${item.n !== '' && option.partial === true ? item.n.replace(reg_key, '<b>$&</b>') :
+                      `${item.n !== '' && item.n.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : ``) ?  `<b>${item.n}</b>`  : `${item.n === '' ? `<span style="color:red;">--</span>` : `${item.n}`}`}` }
+                    </div>
                     <div class="col-xs-2 table__right">
                       ${item.s.length !== 0 ? `
                       <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
@@ -625,7 +631,7 @@ const downloadCompareCVS = (items) => {
     }
   });
 
-  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' }); 
+  let csvData = new Blob([csv], { type: 'data:text/csv;charset=utf-8,' });
   let csvUrl = URL.createObjectURL(csvData);
   let link  = document.createElement('a');
   link.href = csvUrl;
