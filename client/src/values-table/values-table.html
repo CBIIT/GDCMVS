@@ -176,52 +176,6 @@
                 </div>
                 {{/if}}
               </div>
-
-              <!-- <div class="table__td table__cde-values col-xs-6">
-                {{if cde_s.length }}
-                <div class="row">
-                  <div class="col-xs-10">{{:cde_pv}}</div>
-                  <div class="col-xs-2 table__right">
-                    <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
-                      <i class="fa fa-plus"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="data-content" style="display: none;">
-                  <div class="row table__td">
-                    <div class="col-xs-12">PV Meaning (caDSR): {{:cde_pvm}}</div>
-                  </div>
-                  {{for cde_s}}
-                  <div class="row table__td">
-                    <div class="col-xs-4">
-                      {{* if(data.c.indexOf('E') === -1 && data.c.indexOf('C') !== -1) { }}
-                      <a class="getNCITDetails" href="#" data-uid="{{:c}}">{{:c}}</a> (NCIt) {{* } else { }} {{:c}} (CTCAE){{*
-                      } }}
-                    </div>
-                    <div class="col-xs-8">
-                      <table class="table table-striped">
-                        <thead>
-                          <tr>
-                            <th>Term</th>
-                            <th><a class="getSourceDetails" href="#">Source</a></th>
-                            <th><a class="getTypeDetails" href="#">Type</a></th>
-                          </tr>
-                        </thead>
-
-                        {{for s}}
-                        <tr>
-                          <td>{{:termName}}</td>
-                          <td>{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
-                          <td>{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
-                        </tr>
-                        {{/for}}
-                      </table>
-                    </div>
-                  </div>
-                  {{/for}}
-                </div>
-                {{/if}}
-              </div> -->
             </div>
           {{/for}}
           {{if vs.length > 5}}
