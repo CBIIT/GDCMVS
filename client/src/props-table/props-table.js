@@ -31,7 +31,6 @@ export default (items, keyword, search_option) => {
         if (prop.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl) {
           prop.desc[0] = prop.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         }
-        prop.local = source.enum == undefined ? false : true;
         prop.enum = source.enum == undefined ? false : true;
 
         prop.ref = source.name + "@" + source.node + "@" + source.category;
