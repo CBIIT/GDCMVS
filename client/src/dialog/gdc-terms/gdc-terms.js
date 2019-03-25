@@ -1,6 +1,6 @@
 import tmpl from './gdc-terms.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, searchFilter } from '../../shared';
+import { getHeaderOffset, htmlChildContent, searchFilter, getAllSyn } from '../../shared';
 
 const GDCTerms = (uid, tgts) => {
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -9,96 +9,40 @@ const GDCTerms = (uid, tgts) => {
     if ($('#gdc_terms_data').length) {
       $('#gdc_terms_data').remove();
     }
-
+    console.log(items.length);
     let targets = [];
     let icdo = false;
     let windowEl = $(window);
     let new_items = [];
     let new_item_checker = {};
-    let tmp_obj = {};
     if (tgts !== null && tgts !== undefined) {
       targets = tgts.split("#");
     }
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let footer_template = htmlChildContent('FooterTemplate', tmpl);
-
-    items.forEach(function (item) {
-      let tt = item.term_type !== undefined && item.term_type !== ""? item.term_type : "";
-      if (item.i_c !== undefined) {
-        if (item.i_c.c in tmp_obj) {
-          if (tmp_obj[item.i_c.c].checker_n_c.indexOf(item.n_c) == -1) {
-            if (item.n_c !== "" && item.s !== undefined && item.s.length !== 0) {
-              tmp_obj[item.i_c.c].n_syn.push({
-                n_c: item.n_c,
-                s: item.s.length > 0 ? item.s : undefined
-              });
-              tmp_obj[item.i_c.c].checker_n_c.push(item.n_c);
-            }
-          }
-          if (item.n !== item.i_c.c) {
-            if (tt === 'PT') {
-              tmp_obj[item.i_c.c].n.unshift({n: item.n, term_type: tt});
-            } else {
-              tmp_obj[item.i_c.c].n.push({n: item.n, term_type: tt});
-            }
-          }
-        } else {
-          tmp_obj[item.i_c.c] = {
-            c: item.i_c.c,
-            have: item.i_c.have,
-            n: [],
-            n_syn: [{
-              n_c: item.n_c,
-              s: item.s.length > 0 ? item.s : undefined
-            }],
-            checker_n_c: [item.n_c]
-          };
-          if (item.n !== item.i_c.c) {
-            if (tt === 'PT') {
-              tmp_obj[item.i_c.c].n.unshift({n: item.n, term_type: tt});
-            } else {
-              tmp_obj[item.i_c.c].n.push({n: item.n, term_type: tt});
-            }
-          }
-        }
-      }
-    });
-    items.forEach(function (item) {
+    let all_syns = getAllSyn(items);
+    items.forEach(item => {
+      if(new_item_checker[item.n]) return;
       if (item.i_c !== undefined) {
         icdo = true;
       }
       if (item.gdc_d === true) {
-        let tmp_data = {};
-        if (tmp_obj[item.n] !== undefined && !new_item_checker[item.n]) {
-          tmp_data.n = item.n;
-          tmp_data.i_c = tmp_obj[item.n];
-          tmp_data.n_c = item.n_c;
-          tmp_data.s = item.s.length > 0 ? item.s : undefined;
-          if (targets.indexOf(item.n) !== -1) {
-            tmp_data.e = true;
+        if(item.i_c !== undefined){
+          if(all_syns[item.i_c.c] !== undefined){
+            if(item.n_c) delete item.n_c;
+            if(item.s) delete item.s;
+            item.n_syn = all_syns[item.i_c.c].n_syn;
+            item.all_syn = all_syns[item.i_c.c].all_syn;
+            new_items.push(item);
           }
-          new_item_checker[item.n] = tmp_data;
-        } else if (!new_item_checker[item.n]) {
-          if (item.i_c !== undefined) {
-            tmp_data.i_c = tmp_obj[item.i_c.c];
-          }
-          tmp_data.n = item.n;
-          tmp_data.n_c = item.n_c;
-          tmp_data.s = item.s.length > 0 ? item.s : undefined;
-          if (targets.indexOf(item.n) !== -1) {
-            tmp_data.e = true;
-          }
-          new_item_checker[item.n] = tmp_data;
+        }else{
+          new_items.push(item);
         }
-        if (tmp_data.i_c !== undefined && tmp_data.i_c.checker_n_c) {
-          delete tmp_data.i_c.checker_n_c;
-        }
-        if (isEmpty(tmp_data) === false) new_items.push(tmp_data);
       }
+      new_item_checker[item.n] = item;
     });
-
     items = new_items;
-
+    console.log(items.length);
     //open loading animation
     if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
@@ -281,7 +225,7 @@ const templateList = (items, icdo, keywordCase) => {
           ${icdo ? `
             <div class="table__td col-xs-2">${item.n}</div>
             <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
-            <div class="table__td col-xs-3">${item.i_c ? `${item.i_c.n ? `
+            <div class="table__td col-xs-3">${item.i_c ? `${item.ic_enum ? `
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -290,7 +234,7 @@ const templateList = (items, icdo, keywordCase) => {
                     <th class="table__th--type">Type</th>
                   </tr>
                 </thead>
-                ${item.i_c.n.map((n) =>`
+                ${item.ic_enum.map((n) =>`
                   <tr>
                     <td class="table__td--term"><p class="table_td-term">${n.n}</p></td>
                     <td class="table__td--source">ICD-O-3</td>
@@ -300,8 +244,8 @@ const templateList = (items, icdo, keywordCase) => {
               </table>
             </div>
             <div class="col-xs-5">
-            ${item.i_c ? `
-              ${item.i_c.n_syn.map((n_syn) =>`
+            ${item.n_syn ? `
+              ${item.n_syn.map((n_syn) =>`
               <div class="row">
                 <div class="table__td col-xs-4">
                   ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a>`:``}
@@ -334,7 +278,7 @@ const templateList = (items, icdo, keywordCase) => {
                   ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a>`:``}
                 </div>
                 <div name="syn_area" class="table__td col-xs-8">
-                  ${item.s !== undefined ? `
+                  ${item.s !== undefined && item.n_c !== undefined && item.n_c !== "" ? `
                     <table class="table table-striped">
                       <thead>
                         <tr>
@@ -359,8 +303,8 @@ const templateList = (items, icdo, keywordCase) => {
           ` : `
             <div class="table__td col-xs-5">${item.n}</div>
             <div class="col-xs-7">
-            ${item.i_c ? `
-              ${item.i_c.n_syn.map((n_syn) =>`
+            ${item.n_syn ? `
+              ${item.n_syn.map((n_syn) =>`
                 <div class="row">
                   <div class="table__td col-xs-4">
                     ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a>`:``}
@@ -393,7 +337,7 @@ const templateList = (items, icdo, keywordCase) => {
                   ${item.n_c !== undefined && item.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${item.n_c}">${item.n_c}</a>`:``}
                 </div>
                 <div name="syn_area" class="table__td col-xs-8">
-                  ${item.s !== undefined ? `
+                  ${item.s !== undefined && item.n_c !== undefined && item.n_c !== "" ? `
                     <table class="table table-striped">
                       <thead>
                         <tr>
