@@ -9,7 +9,6 @@ const GDCTerms = (uid, tgts) => {
     if ($('#gdc_terms_data').length) {
       $('#gdc_terms_data').remove();
     }
-    console.log(items.length);
     let targets = [];
     let icdo = false;
     let windowEl = $(window);
@@ -42,7 +41,6 @@ const GDCTerms = (uid, tgts) => {
       new_item_checker[item.n] = item;
     });
     items = new_items;
-    console.log(items.length);
     //open loading animation
     if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
