@@ -32,17 +32,8 @@ export default (items, keyword, search_option) => {
           prop.desc[0] = prop.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
         }
         prop.local = source.enum == undefined ? false : true;
-        prop.syn = false;
-        if (source.enum !== undefined) {
-          //check if synonyms exists
-          source.enum.forEach(function (em) {
-            if (prop.syn) return;
+        prop.enum = source.enum == undefined ? false : true;
 
-            if (em.n_c !== undefined) {
-              prop.syn = true;
-            }
-          });
-        }
         prop.ref = source.name + "@" + source.node + "@" + source.category;
         prop.cdeId = source.cde !== undefined ? source.cde.id : "";
         if(prop.cdeId in dict_cde_id){
