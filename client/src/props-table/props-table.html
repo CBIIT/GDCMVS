@@ -29,27 +29,16 @@
         </div>
         <div class="table__td col-xs-4">{{:desc}}</div>
         <div class="table__td col-xs-2">
-        {{if local}}
-        <!-- <a class="getGDCData" href="#" data-ref="{{:ref}}">See All Values</a> -->
         {{if enum}}
-          <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a>
-          {{else}}
-        {{/if}}
-        <br>
-        <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a>
+          <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a><br>
+          <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a>
         {{else type != ""}}
-        type: {{:type}}
+          type: {{:type}}
         {{/if}}
         </div>
         <div class="table__td col-xs-2">
         {{if cdeId == ""}} {{else}}
-        <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE ID - {{:cdeId}}</a>
-          {{if local && cdeLen}}
-          <!-- <br><a class="compareGDC" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}" href="#"> Compare with GDC</a> -->
-          <!-- <br><a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a> -->
-          {{else cdeLen}}
-          <!-- <br><a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a> -->
-          {{else}} {{/if}}
+          <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE ID - {{:cdeId}}</a>
         {{/if}}
         </div>
       </div>
