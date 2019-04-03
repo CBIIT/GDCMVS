@@ -21,7 +21,7 @@ const gdcData = (prop, tgt, keyword) => {
     let reg_key = new RegExp(keyword.replace(/( NOT | AND | OR )/g, "|"), "ig");
 
     items.forEach(function (item) {
-      let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "";
+      let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "*";
       if (item.i_c !== undefined) {
         if(item.i_c.c in tmp_obj){
           if(item.n !== item.i_c.c){
