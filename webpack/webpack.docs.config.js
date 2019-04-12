@@ -44,7 +44,10 @@ module.exports = {
         use: {
           loader: 'html-loader',
           options: {
-            minimize: true
+            minimize: true,
+            removeAttributeQuotes: false,
+            caseSensitive: true,
+            ignoreCustomFragments: [/\{\{.*?}}/],
           }
         }
       }

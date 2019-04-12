@@ -7,6 +7,18 @@ export const apiSuggest = (value, callback) => {
     });
 }
 
+export const apiSuggestMisSpelled = (value, callback) => {
+  $.getJSON(`${baseUrl}/suggestMisSpelled?keyword=${value}`, (data) => {
+    callback(data);
+  });
+}
+
+export const apiGDCDictionaryVersion = (callback) => {
+  $.getJSON(`${baseUrl}/gdcDictionaryVersion`, (result) => {
+    callback(result);
+  });
+}
+
 export const apiSearchAll = (keyword, option, callback) => {
   $.getJSON(`${baseUrl}/all/p`, {keyword:keyword, option: JSON.stringify(option)}, function(result) {
       callback(keyword, option, result);

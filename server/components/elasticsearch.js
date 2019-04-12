@@ -4,20 +4,23 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var elasticsearch = require('elasticsearch');
-var yaml = require('yamljs');
-var config = require('../config');
-var config_dev = require('../config/dev');
-var logger = require('./logger');
-var caDSR = require('./caDSR');
-var extend = require('util')._extend;
-var _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const elasticsearch = require('elasticsearch');
+const yaml = require('yamljs');
+const config = require('../config');
+const config_dev = require('../config/dev');
+const logger = require('./logger');
+const caDSR = require('./caDSR');
+const extend = require('util')._extend;
+const _ = require('lodash');
+const report = require('../service/search/report');
+const searchable_nodes = require('../config').searchable_nodes;
+const shared = require('../service/search/shared');
+const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
 var cdeData = '';
 var cdeDataType = '';
-var report = require('../service/search/report');
 var gdc_values = {};
 var allProperties = [];
 
@@ -26,7 +29,7 @@ var esClient = new elasticsearch.Client({
 	log: config_dev.elasticsearch.log
 });
 
-function parseRef(ref, termsJson, defJson) {
+const parseRef = (ref, termsJson, defJson) => {
 	let idx = ref.indexOf('/');
 	let name = ref.substr(idx + 1);
 	if (ref.indexOf('_terms.yaml') === 0) {
@@ -40,10 +43,9 @@ function parseRef(ref, termsJson, defJson) {
 	}
 }
 
-function parseRefYaml(ref, termsJson, defJson) {
+const parseRefYaml = (ref, termsJson, defJson) => {
 	let data = {};
 	//return {"$ref":ref};
-	var folderPath = path.join(__dirname, '..', 'data');
 	let fileName = ref.split("#/")[0];
 	let remmainingRef = ref.split("#/")[1];
 	let title = remmainingRef.split('/')[0];
@@ -63,7 +65,7 @@ function parseRefYaml(ref, termsJson, defJson) {
 	}
 }
 
-function helper(fileJson, termsJson, defJson, conceptCode, syns) {
+const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 	let doc = {};
 	let propsRaw = fileJson.properties;
 	//correct properties format
@@ -105,28 +107,28 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 
 
 							//generate cde_pv for properties index
-							p.cde_pv = [];
-							entry.syns.forEach(function (sn) {
-								let tmp = {};
-								tmp.n = sn.pv;
-								tmp.m = sn.pvm;
-								tmp.d = sn.pvd;
-								tmp.ss = [];
-								if (sn.syn !== undefined) {
-									let v = {};
-									v.c = sn.pvc;
-									v.s = sn.syn;
-									tmp.ss.push(v);
-								} else if (sn.ss !== undefined) {
-									sn.ss.forEach(function (s) {
-										let v = {};
-										v.c = s.code;
-										v.s = s.syn;
-										tmp.ss.push(v);
-									});
-								}
-								p.cde_pv.push(tmp);
-							});
+							// p.cde_pv = [];
+							// entry.syns.forEach(sn => {
+							// 	let tmp = {};
+							// 	tmp.n = sn.pv;
+							// 	tmp.m = sn.pvm;
+							// 	tmp.d = sn.pvd;
+							// 	tmp.ss = [];
+							// 	if (sn.syn !== undefined) {
+							// 		let v = {};
+							// 		v.c = sn.pvc;
+							// 		v.s = sn.syn;
+							// 		tmp.ss.push(v);
+							// 	} else if (sn.ss !== undefined) {
+							// 		sn.ss.forEach(s => {
+							// 			let v = {};
+							// 			v.c = s.code;
+							// 			v.s = s.syn;
+							// 			tmp.ss.push(v);
+							// 		});
+							// 	}
+							// 	p.cde_pv.push(tmp);
+							// });
 						}
 					} else if (entry.term.termDef.source === 'NCIt') {
 						p.ncit = {};
@@ -137,7 +139,6 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			} else {
 				entry = extend(entry, entryRaw);
 			}
-
 		}
 		let prop_full_name = fileJson.category + "." + fileJson.id + "." + prop;
 		//add conceptcode
@@ -150,7 +151,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 				let tmp = {};
 				tmp.pv = s;
 				tmp.pvc = cc[s];
-				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
+				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc].synonyms : [];
 				entry.syns.push(tmp);
 			}
 			if (entry.enum === undefined) {
@@ -161,12 +162,12 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (prop_full_name in gdc_values) {
 			let enums = [];
 			let obj = gdc_values[prop_full_name];
-			obj.forEach(function (v) {
+			obj.forEach(v => {
 				let tmp = {};
 				tmp.pv = v.nm;
 				tmp.code = v.i_c;
 				tmp.pvc = v.n_c;
-				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc] : [];
+				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc].synonyms : [];
 				tmp.term_type = v.term_type;
 				entry.syns.push(tmp);
 				enums.push(v.nm);
@@ -180,12 +181,12 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (entry.name in allTerm) {
 			//if exist, then check if have the same type
 			let t = allTerm[entry.name];
-			if (t.indexOf("p") == -1) {
-				t.push("p");
+			if (t.indexOf("property") == -1) {
+				t.push("property");
 			}
 		} else {
 			let t = [];
-			t.push("p");
+			t.push("property");
 			allTerm[entry.name] = t;
 		}
 
@@ -193,27 +194,41 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (entry.enum !== undefined) {
 			enums = entry.enum;
 		} else if (entry.oneOf !== undefined && Array.isArray(entry.oneOf)) {
-			entry.oneOf.forEach(function (em) {
+			entry.oneOf.forEach(em => {
 				if (em.enum !== undefined) {
 					enums = enums.concat(em.enum);
 				}
 			});
 		}
-		enums.forEach(function (enm) {
-			let em = enm.toString().trim().toLowerCase();
+		// enums.forEach(enm => {
+		// 	let em = enm.toString().trim().toLowerCase();
+		// 	if (em in allTerm) {
+		// 		//if exist, then check if have the same type
+		// 		let t = allTerm[em];
+		// 		if (t.indexOf("v") == -1) {
+		// 			t.push("v");
+		// 		}
+		// 	} else {
+		// 		let t = [];
+		// 		t.push("v");
+		// 		allTerm[em] = t;
+		// 	}
+		// });
+		// build type ahead index for CDE ID
+		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
+			let em = entry.term.termDef.cde_id.toString().trim().toLowerCase();
 			if (em in allTerm) {
 				//if exist, then check if have the same type
 				let t = allTerm[em];
-				if (t.indexOf("v") == -1) {
-					t.push("v");
+				if (t.indexOf("cde id") == -1) {
+					t.push("cde id");
 				}
 			} else {
 				let t = [];
-				t.push("v");
+				t.push("cde id");
 				allTerm[em] = t;
 			}
-		});
-
+		}
 		//generate property index
 		p.name = entry.name;
 		p.node = fileJson.id;
@@ -241,7 +256,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			//simple enumeration
 			if (entry.enum !== undefined && entry.enum.length > 0) {
 				p.enum = [];
-				entry.enum.forEach(function (item) {
+				entry.enum.forEach(item => {
 					let tmp = {};
 					tmp.n = item;
 					p.enum.push(tmp);
@@ -251,9 +266,9 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			//has gdc synonyms
 			if ((prop_full_name in conceptCode) || (prop_full_name in gdc_values)) {
 				p.enum = [];
-				entry.syns.forEach(function (item) {
+				entry.syns.forEach(item => {
 					let tmp = {};
-					if(item.term_type){
+					if (item.term_type) {
 						tmp.term_type = item.term_type;
 					}
 					tmp.n = item.pv;
@@ -320,7 +335,7 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 			} else {
 				if (entry.enum !== undefined && entry.enum.length > 0) {
 					p.enum = [];
-					entry.enum.forEach(function (item) {
+					entry.enum.forEach(item => {
 						let tmp = {};
 						tmp.n = item;
 						p.enum.push(tmp);
@@ -333,15 +348,19 @@ function helper(fileJson, termsJson, defJson, conceptCode, syns) {
 		if (entry.enum !== undefined && entry.enum.length > 0) {
 			p.type = "enum";
 		} else {
-			let type = typeof entry.type;
-			p.type = type !== "undefined" && type !== "object" ? entry.type : "object";
+			let type = typeof (entry.type);
+			let isArray = Array.isArray(entry.type);
+			p.type = "";
+			if(type === "string") p.type = entry.type;
+			if(type === "object" && !isArray) p.type = entry.type.type;
+			if(type === "object" && isArray) p.type = entry.type;
 		}
 		allProperties.push(p);
 	}
 	return doc;
 }
 
-function extendDef(termsJson, defJson) {
+const extendDef = (termsJson, defJson) => {
 	for (var d in defJson) {
 		let df = defJson[d];
 		if (df.term !== undefined) {
@@ -352,10 +371,9 @@ function extendDef(termsJson, defJson) {
 	}
 }
 
-function bulkIndex(next) {
+const bulkIndex = next => {
 	let deprecated_properties = [];
 	let deprecated_enum = [];
-	var folderPath = path.join(__dirname, '..', 'data');
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -363,7 +381,7 @@ function bulkIndex(next) {
 			let node = fileJson.id;
 
 			if (fileJson.deprecated) {
-				fileJson.deprecated.forEach(function (d_p) {
+				fileJson.deprecated.forEach(d_p => {
 					let tmp_d_p = category + "." + node + "." + d_p;
 					deprecated_properties.push(tmp_d_p.trim().toLowerCase());
 				})
@@ -371,7 +389,7 @@ function bulkIndex(next) {
 
 			for (let keys in fileJson.properties) {
 				if (fileJson.properties[keys].deprecated_enum) {
-					fileJson.properties[keys].deprecated_enum.forEach(function (d_e) {
+					fileJson.properties[keys].deprecated_enum.forEach(d_e => {
 						let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
 						deprecated_enum.push(tmp_d_e.trim().toLowerCase());
 					});
@@ -379,54 +397,41 @@ function bulkIndex(next) {
 			}
 		}
 	});
-	let searchable_nodes = ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
-	];
-	//load synonyms data file to memory
-	let cc = fs.readFileSync("./server/data_files/conceptCode.js").toString();
-	let ccode = JSON.parse(cc);
-	//load suggestedTerm data file to memory
-	let gv = fs.readFileSync("./server/data_files/gdc_values.js").toString();
-	gdc_values = JSON.parse(gv);
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	cdeData = JSON.parse(content_1);
-	let content_2 = fs.readFileSync("./server/data_files/synonyms.js").toString();
-	content_2 = content_2.replace(/}{/g, ",");
-	let syns = JSON.parse(content_2);
-	let content_3 = fs.readFileSync("./server/data_files/cdeDataType.js").toString();
-	content_3 = content_3.replace(/}{/g, ",");
-	cdeDataType = JSON.parse(content_3);
-	for (var c in cdeData) {
-		let pvs = cdeData[c];
-		pvs.forEach(function (pv) {
-			if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
-				pv.syn = syns[pv.pvc];
-			}
-			if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
-				let cs = pv.pvc.split(":");
-				let synonyms = [];
-				cs.forEach(function (s) {
-					if (!(s in syns)) {
-						return;
-					}
-					let entry = {};
-					entry.code = s;
-					entry.syn = syns[s];
-					synonyms.push(entry);
-				});
-				pv.ss = synonyms;
-			}
-		});
-	}
-	var folderPath = path.join(__dirname, '..', 'data');
-	var count = 0,
-		total = 0;
+	
+	let ccode = shared.readConceptCode();
+	gdc_values = shared.readGDCValues();
+	let syns = shared.readNCItDetails();
+
+	cdeData = shared.readCDEData();
+	cdeDataType = shared.readCDEDataType();
+	// for (var c in cdeData) {
+	// 	let pvs = cdeData[c];
+	// 	pvs.forEach(pv => {
+	// 		if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
+	// 			pv.syn = syns[pv.pvc].synonyms;
+	// 		}
+	// 		if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
+	// 			let cs = pv.pvc.split(":");
+	// 			let synonyms = [];
+	// 			cs.forEach(s => {
+	// 				if (!(s in syns)) {
+	// 					return;
+	// 				}
+	// 				let entry = {};
+	// 				entry.code = s;
+	// 				entry.syn = syns[s].synonyms;
+	// 				synonyms.push(entry);
+	// 			});
+	// 			pv.ss = synonyms;
+	// 		}
+	// 	});
+	// }
+	// var count = 0,
+	// 	total = 0;
 	var termsJson = yaml.load(folderPath + '/_terms.yaml');
 	var defJson = yaml.load(folderPath + '/_definitions.yaml');
 	extendDef(termsJson, defJson);
-	let bulkBody = [];
+	// let bulkBody = [];
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
@@ -446,8 +451,116 @@ function bulkIndex(next) {
 		}
 
 	});
+	let gdc_data = {};
+	fs.readdirSync(folderPath).forEach(file => {
+		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+	});
+	gdc_data = report.preProcess(searchable_nodes, gdc_data);
 	//build suggestion index
 	let suggestionBody = [];
+
+	// Type ahead suggestions for GDC Values
+	for (let node in gdc_data) {
+		if (gdc_data[node].properties !== undefined) {
+			for (let propperty in gdc_data[node].properties) {
+				let prop_data = gdc_data[node].properties[propperty];
+				if (prop_data.enum) {
+					if (prop_data.new_enum) {
+						prop_data.new_enum.forEach(enm => {
+							let em = enm.toString().trim().toLowerCase();
+							if (em in allTerm) {
+								//if exist, then check if have the same type
+								let t = allTerm[em];
+								if (t.indexOf("value") == -1) {
+									t.push("value");
+								}
+							} else {
+								let t = [];
+								t.push("value");
+								allTerm[em] = t;
+							}
+						});
+					} else {
+						prop_data.enum.forEach(enm => {
+							let em = enm.toString().trim().toLowerCase();
+							if (em in allTerm) {
+								//if exist, then check if have the same type
+								let t = allTerm[em];
+								if (t.indexOf("value") == -1) {
+									t.push("value");
+								}
+							} else {
+								let t = [];
+								t.push("value");
+								allTerm[em] = t;
+							}
+						});
+					}
+				}
+			}
+		}
+	}
+
+	// type ahead suggestions for NCIt Codes.
+	if (ccode) {
+		for (let key in ccode) {
+			for (let ncit_value in ccode[key]) {
+				let ncit_code = ccode[key][ncit_value];
+				if (ncit_code !== "") {
+					let em = ncit_code.toString().trim().toLowerCase();
+					if (em in allTerm) {
+						//if exist, then check if have the same type
+						let t = allTerm[em];
+						if (t.indexOf("ncit code") == -1) {
+							t.push("ncit code");
+						}
+					} else {
+						let t = [];
+						t.push("ncit code");
+						allTerm[em] = t;
+					}
+				}
+			}
+		}
+	}
+	// type ahead for ICDO3 codes
+	if (gdc_values) {
+		for (let key in gdc_values) {
+			gdc_values[key].forEach(values => {
+				let icdo3_code = values.i_c;
+				let ncit_code = values.n_c;
+				if (icdo3_code !== "") {
+					let em = icdo3_code.toString().trim().toLowerCase();
+					if (em in allTerm) {
+						//if exist, then check if have the same type
+						let t = allTerm[em];
+						if (t.indexOf("icdo3 code") == -1) {
+							t.push("icdo3 code");
+						}
+					} else {
+						let t = [];
+						t.push("icdo3 code");
+						allTerm[em] = t;
+					}
+				}
+				if (ncit_code !== "") {
+					let em = ncit_code.toString().trim().toLowerCase();
+					if (em in allTerm) {
+						//if exist, then check if have the same type
+						let t = allTerm[em];
+						if (t.indexOf("ncit code") == -1) {
+							t.push("ncit code");
+						}
+					} else {
+						let t = [];
+						t.push("ncit code");
+						allTerm[em] = t;
+					}
+				}
+			});
+		}
+
+	}
 	for (var term in allTerm) {
 		let doc = {};
 		doc.id = term.toString();
@@ -461,32 +574,105 @@ function bulkIndex(next) {
 		});
 		suggestionBody.push(doc);
 	}
+
+	let ncitDetail = [];
+	for (let conceptCode in syns) {
+		let doc = {};
+		doc.id = conceptCode.toString();
+		doc.data = syns[conceptCode];
+		ncitDetail.push({
+			index: {
+				_index: config.ncitDetails,
+				_type: 'props',
+				_id: doc.id
+			}
+		});
+		ncitDetail.push(doc);
+	}
 	//build property index
 	let propertyBody = [];
-	let gdc_data = {};
-	let folderPath_gdcdata = path.join(__dirname, '..', 'data');
-	fs.readdirSync(folderPath_gdcdata).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath_gdcdata + '/' + file);
-	});
-	gdc_data = report.preProcess(searchable_nodes, gdc_data);
-	allProperties.forEach(function (p) {
+
+	allProperties.forEach(p => {
 		let node = p.node;
 		let property = p.name;
 		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
 			if (p.enum) {
-				p.enum.forEach(function (em) {
-					if (gdc_data[node].properties[property].enum.indexOf(em.n) !== -1) {
+				let checker_enum = JSON.parse(JSON.stringify(gdc_data[node].properties[property].enum)).map(ems => {return ems.trim().toLowerCase()});
+				p.enum.forEach(em => {
+					if (checker_enum.indexOf(em.n.trim().toLowerCase()) !== -1) {
 						em.gdc_d = true;
-					} /*else if(em.i_c && gdc_data[node].properties[property].enum.indexOf(em.i_c.c) !== -1 && gdc_data[node].properties[property].enum.indexOf(em.n) !== -1){
-						em.gdc_d = true;
-					}*/else {
+					} else {
 						em.gdc_d = false;
 					}
 				});
 			}
 		}
 	});
-	allProperties.forEach(function (ap) {
+	let all_icdo3_syn = {};
+	let all_icdo3_enums = {};
+	// Collecting all enums ICDO3 code
+    allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		result.enum.forEach(item => {
+			if(item.i_c === undefined) return;
+			if(item.i_c.c && all_icdo3_enums[item.i_c.c] === undefined && item.n !== item.i_c.c){
+				all_icdo3_enums[item.i_c.c] = { n: item.term_type !== undefined && item.term_type !== "" ? [item.n +" ("+item.term_type+")"] : [item.n +" (*)"], checker_n: [item.n] };
+				if(item.term_type !== undefined && item.term_type !== ""){
+					all_icdo3_enums[item.i_c.c].n = [{n: item.n, term_type: item.term_type}];
+				}else{
+					all_icdo3_enums[item.i_c.c].n = [{n: item.n, term_type: "*"}];
+				}
+			}
+			else if(item.i_c.c && all_icdo3_enums[item.i_c.c] !== undefined && item.n !== item.i_c.c && all_icdo3_enums[item.i_c.c].checker_n.indexOf(item.n) === -1){
+				if(item.term_type !== undefined && item.term_type !== ""){
+					if(item.term_type === "PT") all_icdo3_enums[item.i_c.c].n.unshift({n: item.n, term_type: item.term_type});
+					if(item.term_type !== "PT") all_icdo3_enums[item.i_c.c].n.push({n: item.n, term_type: item.term_type});
+				}
+				else {
+					all_icdo3_enums[item.i_c.c].n.push({n: item.n, term_type: "*"});
+				} 
+				all_icdo3_enums[item.i_c.c].checker_n.push(item.n);
+			}
+		});
+	});
+    // Collecting all synonyms and ncit in one array for particular ICDO3 code
+    allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		result.enum.forEach(item => {
+			if(item.i_c === undefined) return;
+			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
+				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
+			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
+				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+			}
+		});
+	});
+	allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		result.enum.forEach(item => {
+			if(item.i_c === undefined) return;
+			if(all_icdo3_syn[item.i_c.c]){
+				// item.all_syn = [];
+				// item.all_n_c = [];
+				item.n_syn = [];
+				item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
+				// item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
+				// item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
+			}
+			if(all_icdo3_enums[item.i_c.c]){
+				item.ic_enum = [];
+				item.ic_enum = all_icdo3_enums[item.i_c.c].n.length > 0 ? all_icdo3_enums[item.i_c.c].n : undefined;
+			}
+		});
+	});
+	allProperties.forEach(ap => {
+		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
+			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
+		}
 		let doc = extend(ap, {});
 		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
 		propertyBody.push({
@@ -498,9 +684,7 @@ function bulkIndex(next) {
 		});
 		propertyBody.push(doc);
 	});
-	esClient.bulk({
-		body: propertyBody
-	}, function (err_p, data_p) {
+	esClient.bulk({body: propertyBody}, (err_p, data_p) => {
 		if (err_p) {
 			return next(err_p);
 		}
@@ -510,9 +694,7 @@ function bulkIndex(next) {
 				logger.error(++errorCount_p, item.index.error);
 			}
 		});
-		esClient.bulk({
-			body: suggestionBody
-		}, function (err_s, data_s) {
+		esClient.bulk({body: suggestionBody}, (err_s, data_s) => {
 			if (err_s) {
 				return next(err_s);
 			}
@@ -522,20 +704,30 @@ function bulkIndex(next) {
 					logger.error(++errorCount_s, itm.index.error);
 				}
 			});
-			next({
-				property_indexed: (propertyBody.length - errorCount_p),
-				property_total: propertyBody.length,
-				suggestion_indexed: (suggestionBody.length - errorCount_s),
-				suggestion_total: suggestionBody.length
+			esClient.bulk({body: ncitDetail}, (err_s, data_s) => {
+				if (err_s) {
+					return next(err_s);
+				}
+				let errorCount_s = 0;
+				data_s.items.forEach(itm => {
+					if (itm.index && itm.index.error) {
+						logger.error(++errorCount_s, itm.index.error);
+					}
+				});
+				next({
+					property_indexed: (propertyBody.length - errorCount_p),
+					property_total: propertyBody.length,
+					suggestion_indexed: (suggestionBody.length - errorCount_s),
+					suggestion_total: suggestionBody.length,
+					ncit_details: ncitDetail.length
+				});
 			});
 		});
 	});
-
 }
-
 exports.bulkIndex = bulkIndex;
 
-function query(index, dsl, highlight, next) {
+const query = (index, dsl, highlight, next) => {
 	var body = {
 		size: 1000,
 		from: 0
@@ -549,10 +741,7 @@ function query(index, dsl, highlight, next) {
 	}, {
 		"node": "asc"
 	}];
-	esClient.search({
-		index: index,
-		body: body
-	}, function (err, data) {
+	esClient.search({index: index, body: body}, (err, data) => {
 		if (err) {
 			logger.error(err);
 			next(err);
@@ -564,15 +753,25 @@ function query(index, dsl, highlight, next) {
 
 exports.query = query;
 
+const ncitDetails = (index, dsl, next) => {
+	let body = {};
+	body.query = dsl;
+	esClient.search({index: index, "_source": true, body: body}, (err, data) => {
+		if (err) {
+			logger.error(err);
+			next(err);
+		} else {
+			next(data);
+		}
+	});
+}
 
-function suggest(index, suggest, next) {
+exports.ncitDetails = ncitDetails;
+
+const suggest = (index, suggest, next) => {
 	let body = {};
 	body.suggest = suggest;
-	esClient.search({
-		index: index,
-		"_source": true,
-		body: body
-	}, function (err, data) {
+	esClient.search({index: index, "_source": true, body: body}, (err, data) => {
 		if (err) {
 			logger.error(err);
 			next(err);
@@ -584,13 +783,13 @@ function suggest(index, suggest, next) {
 
 exports.suggest = suggest;
 
-function createIndexes(params, next) {
-	esClient.indices.create(params[0], function (err_2, result_2) {
+const createIndexes = (params, next) => {
+	esClient.indices.create(params[0], (err_2, result_2) => {
 		if (err_2) {
 			logger.error(err_2);
 			next(err_2);
 		} else {
-			esClient.indices.create(params[1], function (err_3, result_3) {
+			esClient.indices.create(params[1], (err_3, result_3) => {
 				if (err_3) {
 					logger.error(err_3);
 					next(err_3);
@@ -605,15 +804,9 @@ function createIndexes(params, next) {
 
 exports.createIndexes = createIndexes;
 
-function preloadDataFromCaDSR(next) {
-	let folderPath = path.join(__dirname, '..', 'data');
+const preloadDataFromCaDSR = next => {
 	let termsJson = yaml.load(folderPath + '/_terms.yaml');
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	let cdeDataJson;
-	if (content_1) {
-		cdeDataJson = JSON.parse(content_1);
-	}
+	let cdeDataJson = shared.readCDEData();
 
 	let ids = [];
 	for (var term in termsJson) {
@@ -627,23 +820,19 @@ function preloadDataFromCaDSR(next) {
 		}
 	}
 	logger.debug(ids);
-	if(ids.length > 0){
-		caDSR.loadData(ids, function (data) {
+	if (ids.length > 0) {
+		caDSR.loadData(ids, data => {
 			return next(data);
 		});
-	}else{
+	} else {
 		return next('CDE data Refreshed!!');
 	}
-	
-	// next(1);
 }
 
 exports.preloadDataFromCaDSR = preloadDataFromCaDSR;
 
-function preloadDataTypeFromCaDSR(next) {
-	let content_1 = fs.readFileSync("./server/data_files/cdeData.js").toString();
-	content_1 = content_1.replace(/}{/g, ",");
-	let cdeDataJson = JSON.parse(content_1);
+const preloadDataTypeFromCaDSR = next => {
+	let cdeDataJson = shared.readCDEData();
 	let ids = [];
 	for (var term in cdeDataJson) {
 		let detail = cdeDataJson[term];
@@ -651,44 +840,46 @@ function preloadDataTypeFromCaDSR(next) {
 			ids.push(term);
 		}
 	}
-	if(ids.length > 0){
-		caDSR.loadDataType(ids, function(data){
+	if (ids.length > 0) {
+		fs.truncate('./server/data_files/cdeDataType.js', 0, () => {
+			console.log('cdeDataType.js truncated')
+		});
+		caDSR.loadDataType(ids, data => {
 			return next(data);
 		});
-	}
-	else{
+	} else {
 		return next('CDE data Refreshed!!');
 	}
 }
 
 exports.preloadDataTypeFromCaDSR = preloadDataTypeFromCaDSR;
 
-function loadSynonyms(next) {
-	caDSR.loadSynonyms(function (data) {
+const loadSynonyms = next => {
+	caDSR.loadSynonyms(data => {
 		return next(data);
 	});
 }
 
 exports.loadSynonyms = loadSynonyms;
 
-function loadSynonyms_continue(next) {
-	caDSR.loadNcitSynonyms_continue(function (data) {
+const loadSynonyms_continue = next => {
+	caDSR.loadNcitSynonyms_continue(data => {
 		return next(data);
 	});
 }
 
 exports.loadSynonyms_continue = loadSynonyms_continue;
 
-function loadSynonymsCtcae(next) {
-	caDSR.loadSynonymsCtcae(function (data) {
+const loadSynonymsCtcae = next => {
+	caDSR.loadSynonymsCtcae(data => {
 		return next(data);
 	});
 }
 
 exports.loadSynonymsCtcae = loadSynonymsCtcae;
 
-function loadCtcaeSynonyms_continue(next) {
-	caDSR.loadCtcaeSynonyms_continue(function (data) {
+const loadCtcaeSynonyms_continue = next => {
+	caDSR.loadCtcaeSynonyms_continue(data => {
 		return next(data);
 	});
 }
