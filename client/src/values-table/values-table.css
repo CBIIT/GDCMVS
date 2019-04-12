@@ -20,8 +20,8 @@
   align-items: stretch;
 }
 
-.table__center{
-  text-align: center;
+.table__right{
+  text-align: right;
 }
 
 .table__gdc-values {
@@ -63,19 +63,4 @@
 
 .table__row--toggle {
   display: none;
-}
-
-.dropdown-menu__gdc-links > li > a {
-  font-size: 1.3rem;
-  color: #3a3a3a;
-}
-
-.dropdown-menu__gdc-links > li > a:hover, .dropdown-menu > li > a:focus {
-  background-color: #2079BB;
-}
-
-.dropdown-header__gdc-links {
-  font-weight: bold;
-  color: #888888;
-  font-size: 13px;
 }

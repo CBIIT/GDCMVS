@@ -753,7 +753,7 @@ table {
 .table-striped > tbody > tr > td {
   line-height: inherit;
   text-align: left;
-  padding: .2rem .4rem;
+  padding: .2rem .8rem;
   border-left: 1px solid #e6e6e6;
 }
 

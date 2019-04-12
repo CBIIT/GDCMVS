@@ -1,9 +1,9 @@
 'use strict';
 
-var path = require('path');
-var _ = require('lodash');
+const path = require('path');
+const _ = require('lodash');
 
-var all = {
+const all = {
 	// Root path of server
     root: path.normalize(__dirname + '/../..'),
 
@@ -22,11 +22,20 @@ var all = {
 	//suggestion index name for typeahead
 	suggestionName: 'gdc-suggestion',
 
+	//NCIT details index name;
+	ncitDetails: 'ncit-details',
+
 	//index name for properties
 	index_p: 'gdc-p',
 
 	//index name for values
 	index_v: 'gdc-v',
+
+	// GDC searchable nodes
+	searchable_nodes : ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
+		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	],
 
 	//get data from caDSR
 	caDSR_url:[
@@ -40,7 +49,8 @@ var all = {
 		'https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&type=synonym&code=',
 		'http://nciws-d790.nci.nih.gov:15080/evsrestapi2/api/v1/ctrp/concept/',
 		'https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=CTCAE&type=synonym&code=',
-		'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/'
+		'https://evsrestapi.nci.nih.gov/evsrestapi/api/v1/ctrp/concept/',
+		'https://evsrestapi-stage.nci.nih.gov/evsrestapi/api/v1/conceptList?db=weekly&properties=Code,Preferred_Name,FULL_SYN,DEFINITION&concepts='
 	]
 };
 
