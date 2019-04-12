@@ -5,18 +5,18 @@
     </div>
     <div class="col-xs-9">
       <div class="table__thead row">
-        <div class="table__th col-xs-6">Matched GDC Values
+        <div class="table__th col-xs-12">Matched GDC Values
           <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
             title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property.">
             <i class="fa fa-info-circle"></i>
           </a>
         </div>
-        <div class="table__th col-xs-6">CDE Permissible Values
+        <!-- <div class="table__th col-xs-6">CDE Permissible Values
           <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
             title="For GDC dictionary properties that have a corresponding caDSR clinical data element (CDE), these values are part of that CDE\s value domain in the caDSR. They may not currently be available in the GDC dictionary.">
             <i class="fa fa-info-circle"></i>
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -35,21 +35,36 @@
           <a href="#" class="gdc-details" aria-expanded="false">
             <i class="fa fa-caret-down"></i> detail</a>
           <div class="gdc-links" style="display: none;">
-            {{if local}}
-            <a href="javascript:getGDCData('{{:ref}}', null, '{{:~root.options.keyword}}');">See All Values</a></br>
-            <a href="javascript:toCompare('{{:ref}}');"> Compare with User List</a></br>
-            {{/if}}
             {{if syn}}
-            <a href="javascript:getGDCTerms('{{:ref}}', {{if tgts_enum_n === ''}}null{{else}}'{{:tgts_enum_n}}'{{/if}});">See All Terms</a></br>
+              {{if tgts_enum_n === ""}}
+                <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a></br>
+              {{else}}
+                <!-- <a class="getGDCTerms" href="#" data-ref="{{:ref}}" data-targets="{{:tgts_enum_n}}">See All Terms</a></br> -->
+                <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a></br>
+              {{/if}}
             {{/if}}
+            {{if local}}
+            <!-- <a class="getGDCData" href="#" data-ref="{{:ref}}">See All Values</a> -->
+            <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a></br>
+            {{/if}}
+
             {{if cdeId == ""}}{{else}}
             <span>caDSR:</span>
-            <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE</a>
-            {{if local && cdeLen}} ,
-            <a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}', '{{:tgts_cde_n}}');">Values</a>,
-            <a class="table-td-link" href="javascript:compareGDC('{{:ref}}', '{{:cdeId}}');"> Compare with GDC</a>
-            {{else cdeLen}} ,
-            <a class="table-td-link" href="javascript:getCDEData('{{:cdeId}}', '{{:tgts_cde_n}}');">Values</a>
+            <a href="{{:cdeUrl}}" target="_blank">CDE</a>
+            {{if local && cdeLen}}
+            <!-- , -->
+              {{if tgts_cde_n !== ""}}
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
+              {{else}}
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>, -->
+              {{/if}}
+              <!-- <a class="compareGDC" href="#" data-ref="{{:ref}}" data-cdeid="{{:cdeId}}"> Compare with GDC</a> -->
+            {{else cdeLen}},
+              {{if tgts_cde_n !== ""}}
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}">Values</a>, -->
+              {{else}}
+                <!-- <a class="getCDEData" href="#" data-cdeid="{{:cdeId}}" data-targets="{{:tgts_cde_n}}">Values</a>, -->
+              {{/if}}
             {{else}}{{/if}}
             {{/if}}
           </div>
@@ -61,7 +76,7 @@
             {{/if}}
             <div class="row table__row--flex">
 
-              <div class="table__td table__gdc-values col-xs-6">
+              <div class="table__td table__gdc-values col-xs-12">
                 {{if n == "no match" || gdc_d == false}}
                 <div class="row">
                   <div class="col-xs-8">no match</div>
@@ -72,9 +87,9 @@
                 {{else}}
                 <div class="row">
                   <div class="col-xs-10">
-                    <a href="javascript:getGDCData('{{:ref}}','{{:n}}','{{:~root.options.keyword}}');">{{:n}}</a>
+                    <a class="getGDCData" href="#" data-ref="{{:ref}}" data-tgt="{{:n}}" data-keyword="{{:~root.options.keyword}}">{{:n}}</a>
                   </div>
-                  <div class="col-xs-2 table__center">
+                  <div class="col-xs-2 table__right">
                     {{if s.length || term_i_c !== undefined}}
                     <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
                       <i class="fa fa-plus"></i>
@@ -85,59 +100,79 @@
                 <div class="data-content" style="display: none;">
                   {{if term_i_c !== undefined }}
                   <div class="row table__td">
-                    <div class="col-xs-4">{{:term_i_c.i_c}}<br>(ICD-O-3)</div>
-                    <div class="col-xs-8">{{for term_i_c.n}}{{:}}</br>{{/for}}</div>
+                    <div class="col-xs-4">{{:term_i_c.i_c}} (ICD-O-3)</div>
+                    <div class="col-xs-8">
+                      <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th class="table__th--term">Term</th>
+                              <th class="table__th--source">Source</th>
+                              <th class="table__th--type">Type</th>
+                            </tr>
+                          </thead>
+                          {{for term_i_c.n}}
+                          <tr>
+                            <td class="table__td--term">{{:n}}</td>
+                            <td class="table__td--source">ICD-O-3</td>
+                            <td class="table__td--type">{{:term_type}}</td>
+                          </tr>
+                          {{/for}}
+                        </table>
+                    </div>
                   </div>
                   {{if term_i_c.n_syn.length}}
                     {{for term_i_c.n_syn}}
                     <div class="row table__td">
                       <div class="col-xs-4">
-                        {{* if((/^C[1-9]/g).test(data.n_c)) { }}
-                        <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
-                        {{* } }}
+                        <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
                       </div>
-                      <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
+                      <div class="col-xs-8">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th class="table__th--term">Term</th>
+                              <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                              <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
+                            </tr>
+                          </thead>
+                          {{for s}}
+                          <tr>
+                            <td class="table__td--term">{{:termName}}</td>
+                            <td class="table__td--source">{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
+                            <td class="table__td--type">{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
+                          </tr>
+                          {{/for}}
+                        </table>
+                      </div>
                     </div>
                     {{/for}}
                   {{/if}}
                   {{else s.length}}
                   <div class="row table__td">
                     <div class="col-xs-4">
-                      {{* if((/^C[1-9]/g).test(data.n_c)) { }}
-                      <a class="table-td-link" href="javascript:getNCITDetails('{{:n_c}}');">{{:n_c}}</a> (NCIt)
-                      {{* } }}
+                      <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
                     </div>
-                    <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
+                    <div class="col-xs-8">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th class="table__th--term">Term</th>
+                            <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                            <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
+                          </tr>
+                        </thead>
+
+                        {{for s}}
+                        <tr>
+                          <td class="table__td--term">{{:termName}}</td>
+                          <td class="table__td--source">{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
+                          <td class="table__td--type">{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
+                        </tr>
+                        {{/for}}
+                      </table>
+                    </div>
                   </div>
                   {{/if}}
-                </div>
-                {{/if}}
-              </div>
-
-              <div class="table__td table__cde-values col-xs-6">
-                {{if cde_s.length }}
-                <div class="row">
-                  <div class="col-xs-10">{{:cde_pv}}</div>
-                  <div class="col-xs-2 table__center">
-                    <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
-                      <i class="fa fa-plus"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="data-content" style="display: none;">
-                  <div class="row table__td">
-                    <div class="col-xs-12">PV Meaning (caDSR): {{:cde_pvm}}</div>
-                  </div>
-                  {{for cde_s}}
-                  <div class="row table__td">
-                    <div class="col-xs-4">
-                      {{* if((/^C[1-9]/g).test(data.c)) { }}
-                      <a class="table-td-link" href="javascript:getNCITDetails('{{:c}}');">{{:c}}</a> (NCIt) {{* } else { }} {{:c}} {{*: (/^[E]/g).test(data.c) ? "(CTCAE)" : "(NCIt)" }} {{*
-                      } }}
-                    </div>
-                    <div class="col-xs-8">{{for s}}{{:}}</br>{{/for}}</div>
-                  </div>
-                  {{/for}}
                 </div>
                 {{/if}}
               </div>

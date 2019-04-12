@@ -63,7 +63,7 @@ const treeviewToggleAllHandle = (event) => {
   }
 }
 
-export const dtRender = (items, keyword) => {
+export const dtRender = (items, keyword, search_option) => {
   //data preprocessing
   //current category
   let c_c = "";
@@ -90,11 +90,11 @@ export const dtRender = (items, keyword) => {
 
   items.forEach(function (item) {
     let hl = item.highlight;
+    if(_.isEmpty(hl)) return;
     let source = item._source;
-    let enum_s = ("enum.s" in hl) || ("enum.s.have" in hl) ? hl[
-      'enum.s'] || hl["enum.s.have"] : [];
-    let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl[
-      "enum.n"] || hl["enum.n.have"] : [];
+    let enum_s = ("enum.s.termName" in hl) || ("enum.s.termName.have" in hl) ? hl['enum.s.termName'] || hl["enum.s.termName.have"] : [];
+    let enum_n = ("enum.n" in hl) || ("enum.n.have" in hl) ? hl["enum.n"] || hl["enum.n.have"] : [];
+    let enum_n_c = ("enum.n_c" in hl) ? hl["enum.n_c"] : [];
     let enum_gdc_n = [];
     enum_n.forEach(function (n) {
       let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -106,22 +106,24 @@ export const dtRender = (items, keyword) => {
     });
     let prop = ("name" in hl) || ("name.have" in hl) ? hl["name"] || hl["name.have"] : [];
     let desc = ("desc" in hl) ? hl["desc"] : [];
-    let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ?
-      hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
+    let enum_i_c = ("enum.i_c.c" in hl) || ("enum.i_c.have" in hl) ? hl["enum.i_c.c"] || hl["enum.i_c.have"] : [];
     let enum_s_icdo3 = [];
     if (enum_s.length === 0 && enum_gdc_n.length === 0) {
       enum_s_icdo3 = ("enum" in item._source) ? item._source["enum"] : [];
     }
-    let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl[
-      "cde_pv.n"] || hl["cde_pv.n.have"] : [];
-    let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ?
-      hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+    let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
+    let cde_n = ("cde_pv.n" in hl) || ("cde_pv.n.have" in hl) ? hl["cde_pv.n"] || hl["cde_pv.n.have"] : [];
+    let cde_s = ("cde_pv.ss.s" in hl) || ("cde_pv.ss.s.have" in hl) ? hl["cde_pv.ss.s"] || hl["cde_pv.ss.s.have"] : [];
+    let cde_n_c = ("cde_pv.ss.c" in hl) ? hl["cde_pv.ss.c"] : [];
     let arr_enum_s = [];
     let arr_enum_i_c = [];
     let arr_enum_s_icdo3 = [];
     let arr_enum_n = [];
+    let arr_enum_n_c = [];
+    let arr_cde_id = [];
     let arr_cde_n = [];
     let arr_cde_s = [];
+    let arr_cde_n_c = [];
     let matched_pv = [];
     let gdc_desc = {};
 
@@ -147,11 +149,19 @@ export const dtRender = (items, keyword) => {
       let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
       arr_enum_n.push(tmp);
     });
+    enum_n_c.forEach(function (n) {
+      let tmp = n.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      arr_enum_n_c.push(tmp);
+    });
     enum_i_c.forEach(function (i_c) {
       let tmp = i_c.replace(/<b>/g, "").replace(/<\/b>/g, "");
       if (arr_enum_n.indexOf(tmp) === -1) {
         arr_enum_i_c.push(tmp);
       }
+    });
+    cde_id.forEach(function (pn) {
+      let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      arr_cde_id.push(tmp);
     });
     cde_n.forEach(function (pn) {
       let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -161,9 +171,16 @@ export const dtRender = (items, keyword) => {
       let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
       arr_cde_s.push(tmp);
     });
+    cde_n_c.forEach(function (ps) {
+      let tmp = ps.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      arr_cde_n_c.push(tmp);
+    });
     if (source.cde_pv !== undefined && source.cde_pv.length > 0) {
       source.cde_pv.forEach(function (pv) {
         let exist = false;
+        if(source.cde && arr_cde_id.indexOf(source.cde.id) !== -1 && search_option.syn){ // If the searched term is CDE ID
+          exist = true;
+        }
         if (pv.ss !== undefined && pv.ss.length > 0) {
           pv.ss.forEach(function (ss) {
             ss.s.forEach(function (s) {
@@ -171,6 +188,9 @@ export const dtRender = (items, keyword) => {
                 exist = true;
               }
             })
+            if(arr_cde_n_c.indexOf(ss.c) !== -1){
+              exist = true;
+            }
           });
         }
         exist = exist || (arr_cde_n.indexOf(pv.n) >= 0);
@@ -228,14 +248,12 @@ export const dtRender = (items, keyword) => {
     p.l_id = source.name;
     p.parent_l_id = n.l_id;
     //may have highlighted terms in p.title and p.desc
-    p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl[
-      "name.have"]) : [source.name];
+    p.title = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : [source.name];
     p.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
     if (p.title[0] !== undefined && keyword.indexOf(' ') === -1) {
       p.title[0] = p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
-
     }
-    if (p.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl) {
+    if(p.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl){
       p.desc[0] = p.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
     }
     p.data_tt_id = p.id;
@@ -250,27 +268,28 @@ export const dtRender = (items, keyword) => {
       if (enum_gdc_n.length == 0 &&
         enum_i_c.length == 0 &&
         matched_pv.length == 0 &&
-        arr_enum_s.length == 0) {
+        arr_enum_s.length == 0 &&
+        arr_enum_n_c == 0 && arr_cde_id.length == 0) {
         //if no values show in the values tab
         p.node = "branch";
         if (p.title && gdc_p.indexOf(p.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) !== -1) {
           trs.push(p);
         }
         // if (arr_enum_s_icdo3.length > 0) {
-        arr_enum_s_icdo3.sort();
-        source.enum.forEach(function (s_i) {
-          if (s_i.gdc_d === false) return;
-          let tmp_e = {};
-          //count++;
-          tmp_e.title = s_i.n;
-          tmp_e.desc = "";
-          tmp_e.data_tt_id = count + "_" + s_i.n;
-          tmp_e.data_tt_parent_id = p.id;
-          tmp_e.type = "value";
-          tmp_e.node = "leaf";
-          tmp_e.exist = false;
-          trs.push(tmp_e);
-        });
+          arr_enum_s_icdo3.sort();
+          source.enum.forEach(function (s_i) {
+            if (s_i.gdc_d === false) return;
+            let tmp_e = {};
+            //count++;
+            tmp_e.title = s_i.n;
+            tmp_e.desc = "";
+            tmp_e.data_tt_id = count + "_" + s_i.n;
+            tmp_e.data_tt_parent_id = p.id;
+            tmp_e.type = "value";
+            tmp_e.node = "leaf";
+            tmp_e.exist = false;
+            trs.push(tmp_e);
+          });
         // }
       } else {
         p.node = "branch";
@@ -300,21 +319,24 @@ export const dtRender = (items, keyword) => {
           let e = {};
           e.id = count + "_" + v.n;
           e.exist = false;
+          if(source.cde && arr_cde_id.indexOf(source.cde.id) !== -1){ //If the searched term is CDE ID
+            e.exist = true;
+          }
 
           let idx = matched_pv.indexOf(v.n.toLowerCase());
           if (idx !== -1) {
             count_s--;
             e.exist = true;
           } else {
-
             if (arr_enum_n.indexOf(v.n) !== -1) {
+              e.exist = true;
+            } else if (arr_enum_n_c.indexOf(v.n_c) !== -1) { // check if the searched term is NCIt code
               e.exist = true;
             }
 
             if (v.i_c !== undefined && e.exist !== true) {
               v.i_c.have.forEach(function (v_i_c_have) {
-                if (arr_enum_i_c.indexOf(v_i_c_have) !== -1 &&
-                  arr_enum_n.length === 0) {
+                if (arr_enum_i_c.indexOf(v_i_c_have) !== -1) {
                   e.exist = true;
                 }
               });
@@ -322,7 +344,7 @@ export const dtRender = (items, keyword) => {
 
             if (v.s !== undefined && e.exist !== true) {
               v.s.forEach(function (syn) {
-                if (arr_enum_s.indexOf(syn) !== -1) {
+                if (arr_enum_s.indexOf(syn.termName) !== -1) {
                   e.exist = true;
                 }
               });
@@ -396,9 +418,11 @@ export const dtRender = (items, keyword) => {
         trs.push(p);
       }
     }
-
     //save and calculate the count of matched element in this property
     p.len = count_v + count_s;
+    if (search_option.desc === false && source.cde && arr_cde_id.indexOf(source.cde.id) !== -1) { //If the searched term is CDE ID, increment property count by 1.
+      count_p++;
+    }
     c.len += p.len + count_p;
     n.len += p.len + count_p;
     result.len += p.len + count_p;
@@ -460,9 +484,9 @@ export const dtRender = (items, keyword) => {
                   temp_prop.link_values.push(temp_value);
                 }
               });
-              // if (gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0) {
-              //   return;
-              // }
+                // if (gdc_p.indexOf(temp_prop.title[0].replace(/<b>/g, "").replace(/<\/b>/g, "")) === -1 && temp_prop.hl_values.length === 0 && temp_prop.link_values.length === 0) {
+                //   return;
+                // }
               temp_node.properties.push(temp_prop);
             }
           });
@@ -475,10 +499,6 @@ export const dtRender = (items, keyword) => {
   let offset = $('#root').offset().top;
   let h = window.innerHeight - offset - 313;
   options.height = (h < 430) ? 430 : h;
-  options.redirect = false;
-  if (window.location.href.indexOf('https://docs.gdc.cancer.gov/') < 0) {
-    options.redirect = true;
-  }
   let html = $.templates(tmpl).render({
     options: options,
     newtrs: newtrs
