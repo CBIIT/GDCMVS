@@ -8,7 +8,6 @@ export default (items, keyword, search_option) => {
     // RegExp Keyword
     keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
-    console.log(items);
 
     items.forEach(item => {
       if(item.highlight === undefined) return;
