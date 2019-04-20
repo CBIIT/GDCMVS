@@ -29,7 +29,6 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // router.get('/exportMapping', report.exportMapping);
 // router.get('/exportDifference', report.exportDifference);
 // router.get('/exportMorphology', report.exportMorphology);
-router.get('/export_common', report.export_common);
 // router.get('/addTermType', report.addTermType);
 // router.get('/icdoMapping', report.icdoMapping);
 // router.get('/releaseNote', report.releaseNote);
