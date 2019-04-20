@@ -18,7 +18,7 @@
 .treeview__category .treeview__indenter {
   padding-left: 25px;
 }
-.treeview__folder .treeview__indenter {
+.treeview__node .treeview__indenter {
   padding-left: 40px;
 }
 
