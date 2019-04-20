@@ -28,7 +28,7 @@
           <ul class="table__ul">
             <li class="table__li table__td--word-break">{{:node}}
               <ul class="table__ul">
-                <li class="table__li table__td--word-break">{{:name}}</li>
+                <li class="table__li table__td--word-break">{{:property}}</li>
               </ul>
             </li>
           </ul>
@@ -87,10 +87,10 @@
                 {{else}}
                 <div class="row">
                   <div class="col-xs-10">
-                    <a class="getGDCData" href="#" data-ref="{{:ref}}" data-tgt="{{:n}}" data-keyword="{{:~root.options.keyword}}">{{:n}}</a>
+                    <a class="getGDCData" href="#" data-ref="{{:ref}}" data-tgt="{{:value}}" data-keyword="{{:~root.options.keyword}}">{{:value}}</a>
                   </div>
                   <div class="col-xs-2 table__right">
-                    {{if s.length || term_i_c !== undefined}}
+                    {{if syn !== undefined || ic_enum !== undefined}}
                     <a href="#" class="table__toggle" aria-label="expand" title="expand" aria-expanded="false">
                       <i class="fa fa-plus"></i>
                     </a>
@@ -98,11 +98,11 @@
                   </div>
                 </div>
                 <div class="data-content" style="display: none;">
-                  {{if term_i_c !== undefined }}
-                  <div class="row table__td">
-                    <div class="col-xs-4">{{:term_i_c.i_c}} (ICD-O-3)</div>
-                    <div class="col-xs-8">
-                      <table class="table table-striped">
+                  {{if ic_enum !== undefined}}
+                    <div class="row table__td">
+                      <div class="col-xs-4">{{:i_c}} (ICD-O-3)</div>
+                      <div class="col-xs-8">
+                        <table class="table table-striped">
                           <thead>
                             <tr>
                               <th class="table__th--term">Term</th>
@@ -110,7 +110,7 @@
                               <th class="table__th--type">Type</th>
                             </tr>
                           </thead>
-                          {{for term_i_c.n}}
+                          {{for ic_enum}}
                           <tr>
                             <td class="table__td--term">{{:n}}</td>
                             <td class="table__td--source">ICD-O-3</td>
@@ -118,10 +118,11 @@
                           </tr>
                           {{/for}}
                         </table>
+                      </div>
                     </div>
-                  </div>
-                  {{if term_i_c.n_syn.length}}
-                    {{for term_i_c.n_syn}}
+                  {{/if}}
+                  {{if syn !== undefined}}
+                    {{for syn}}
                     <div class="row table__td">
                       <div class="col-xs-4">
                         <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
@@ -147,32 +148,7 @@
                     </div>
                     {{/for}}
                   {{/if}}
-                  {{else s.length}}
-                  <div class="row table__td">
-                    <div class="col-xs-4">
-                      <a class="getNCITDetails" href="#" data-uid="{{:n_c}}">{{:n_c}}</a> (NCIt)
-                    </div>
-                    <div class="col-xs-8">
-                      <table class="table table-striped">
-                        <thead>
-                          <tr>
-                            <th class="table__th--term">Term</th>
-                            <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
-                            <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
-                          </tr>
-                        </thead>
 
-                        {{for s}}
-                        <tr>
-                          <td class="table__td--term">{{:termName}}</td>
-                          <td class="table__td--source">{{if termSource !== undefined && termSource !== null}}{{:termSource}}{{/if}}</td>
-                          <td class="table__td--type">{{if termGroup !== undefined && termGroup !== null}}{{:termGroup}}{{/if}}</td>
-                        </tr>
-                        {{/for}}
-                      </table>
-                    </div>
-                  </div>
-                  {{/if}}
                 </div>
                 {{/if}}
               </div>
