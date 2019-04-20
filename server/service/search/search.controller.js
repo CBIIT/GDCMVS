@@ -195,7 +195,9 @@ const generateQuery = (keyword, option, isBoolean) => {
 		query.bool.should = [];
 		let m = {};
 		m.query_string = {};
+		m.query_string.default_operator = "AND";
 		m.query_string.query = keyword;
+		// m.query_string.analyzer = "keyword";
 		m.query_string.fields = [];
 		m.query_string.fields.push("cde.id");
 		m.query_string.fields.push("property.have");
@@ -210,6 +212,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		m.nested.query = {};
 		m.nested.query.query_string = {};
 		m.nested.query.query_string.fields = [];
+		m.nested.query.query_string.default_operator = "AND";
 
 		if (option.syn) {
 			m.nested.query.query_string.fields.push("enum.n_syn.s.termName.have");
@@ -218,6 +221,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		m.nested.query.query_string.fields.push("enum.n.have");
 		m.nested.query.query_string.fields.push("enum.i_c.have");
 		m.nested.query.query_string.query = keyword;
+		// m.nested.query.query_string.analyzer = "keyword";
 
 		m.nested.inner_hits = {};
 		m.nested.inner_hits.from = 0;
@@ -326,8 +330,9 @@ const indexing = (req, res) => {
 	config_property.index = config.index_p;
 	config_property.body = {
 		"settings": {
-			"max_inner_result_window": 1000000,
-			"max_result_window": 1000000,
+			"number_of_shards": 1, 
+			"max_inner_result_window": 10000000,
+			"max_result_window": 10000000,
 			"analysis": {
 				"analyzer": {
 					"case_insensitive": {
