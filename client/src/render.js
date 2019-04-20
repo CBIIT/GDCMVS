@@ -13,12 +13,12 @@ export default function render($root, keyword, option, items) {
     let data2 = JSON.parse(JSON.stringify(items));
     let data3 = JSON.parse(JSON.stringify(items));
     //render each tab
-    let dtHtml = dtRender(data1, keyword, option);
-    dtHtml.active = false;
-    let psHtml = psRender(data2, keyword, option);
-    psHtml.active = false;
     let vsHtml = vsRender(data3, keyword, option);
     vsHtml.active = false;
+    let psHtml = psRender(data2, keyword, option);
+    psHtml.active = false;
+    let dtHtml = dtRender(data1, keyword, option);
+    dtHtml.active = false;
     if (vsHtml.len === 0 && psHtml.len === 0) {
       dtHtml.len = 0;
     }

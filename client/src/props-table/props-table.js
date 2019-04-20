@@ -8,48 +8,46 @@ export default (items, keyword, search_option) => {
     // RegExp Keyword
     keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword, "ig");
+    console.log(items);
 
-    items.forEach(function (item) {
-      let hl = item.highlight;
+    items.forEach(item => {
+      if(item.highlight === undefined) return;
       let source = item._source;
-      if (("name" in hl) || ("name.have" in hl) || ("desc" in hl) || ("cde.id" in hl)) {
-        let prop = {};
-        prop.nm = ("name" in hl) || ("name.have" in hl) ? (hl["name"] || hl["name.have"]) : [source.name];
-        let cde_id = ("cde.id" in hl) ? hl["cde.id"] : [];
-        let dict_cde_id = {};
-        cde_id.forEach(function (pn) {
-          let tmp = pn.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          dict_cde_id[tmp] = pn;
-        });
-        prop.nm_link = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "");
-        if (keyword.indexOf(' ') === -1) {
-          prop.nm[0] = prop.nm[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
-        }
-        prop.nd = source.node;
-        prop.ct = source.category;
-        prop.desc = ("desc" in hl) ? hl["desc"] : [source.desc];
-        if (prop.desc[0] !== undefined && keyword.indexOf(' ') === -1 && "desc" in hl) {
-          prop.desc[0] = prop.desc[0].replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
-        }
-        prop.enum = source.enum == undefined ? false : true;
+      let highlight = item.highlight;
 
-        prop.ref = source.name + "@" + source.node + "@" + source.category;
-        prop.cdeId = source.cde !== undefined ? source.cde.id : "";
-        if(prop.cdeId in dict_cde_id){
-          prop.cdeId = prop.cdeId.replace(reg_key, "<b>$&</b>");
-        }
-        prop.cdeUrl = source.cde !== undefined ? source.cde.url : "";
-        prop.cdeLen = source.cde_pv == undefined || source.cde_pv.length == 0 ? false : true;
-        prop.type = Array.isArray(source.type) ? source.type[0] : source.type;
-        // if (source.cde !== undefined && source.cde.dt !== undefined) {
-        //   prop.type = source.cde.dt;
-        // }
-        if (prop.type) {
-          prop.type = prop.type.toLowerCase();
-        }
-        props.push(prop);
+      let highlight_property = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
+      let highlight_property_obj = {};
+      if(highlight_property !== undefined){
+        highlight_property.forEach(val => {
+          let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
+          if(highlight_property_obj[tmp] === undefined) highlight_property_obj[tmp] = val;
+        });
       }
+
+      let highlight_property_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
+      let highlight_property_desc_obj = {};
+      if(highlight_property_desc !== undefined){
+        highlight_property_desc.forEach(val => {
+          if(highlight_property_desc_obj[source.property] === undefined) highlight_property_desc_obj[source.property] = val;
+        });
+      }
+
+      let prop_obj = {};
+      prop_obj.category = source.category;
+      prop_obj.node = source.node;
+      prop_obj.property = highlight_property_obj[source.property] ? highlight_property_obj[source.property] : source.property;
+      prop_obj.property_desc = highlight_property_desc_obj[source.property] ? highlight_property_desc_obj[source.property] : source.property_desc;
+      if(source.type !== undefined && source.type !== "enum") prop_obj.type = source.type;
+      if(source.enum !== undefined) prop_obj.enum = source.enum;
+      if(source.cde !== undefined){
+        prop_obj.cdeId = source.cde.id;
+        prop_obj.cdeUrl = source.cde.url;
+      }
+      props.push(prop_obj);
     });
+
+
+
     let html = "";
     if (props.length == 0) {
       let searched_keyword = $("#keywords").val();

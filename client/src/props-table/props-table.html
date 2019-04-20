@@ -11,33 +11,33 @@
       {{for props}}
       <div class="table__row row">
         <div class="table__td col-xs-2">
-          <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-entity-list&anchor={{if ct == 'data_file' || ct == 'metadata_file'}}submittable_data_file{{else}}{{:ct}}{{/if}}" target="_blank">
-            {{:ct}}
+          <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-entity-list&anchor={{if category == 'data_file' || category == 'metadata_file'}}submittable_data_file{{else}}{{:category}}{{/if}}" target="_blank">
+            {{:category}}
           </a>
           <ul class="table__ul">
             <li class="table__li table__td--word-break">
-              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}" target="_blank">
-                {{:nd}}
+              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:node}}" target="_blank">
+                {{:node}}
               </a>
             </li>
           </ul>
         </div>
         <div class="table__td col-xs-2 table__td--word-break">
           <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id={{:nd}}&anchor={{:nm_link}}" target="_blank">
-            {{:nm}}
+            {{:property}}
           </a>
         </div>
-        <div class="table__td col-xs-4">{{:desc}}</div>
+        <div class="table__td col-xs-4">{{:property_desc}}</div>
         <div class="table__td col-xs-2">
         {{if enum}}
-          <a class="getGDCTerms" href="#" data-ref="{{:ref}}">See All Values</a><br>
-          <a class="toCompare" href="#" data-ref="{{:ref}}"> Compare with User List</a>
-        {{else type != ""}}
+          <a class="getGDCTerms" href="#" data-enum="{{:enum}}">See All Values</a><br>
+          <a class="toCompare" href="#" data-enum="{{:enum}}"> Compare with User List</a>
+        {{else type !== undefined}}
           type: {{:type}}
         {{/if}}
         </div>
         <div class="table__td col-xs-2">
-        {{if cdeId == ""}} {{else}}
+        {{if cdeId !== undefined }}
           <a class="table-td-link" href="{{:cdeUrl}}" target="_blank">CDE ID - {{:cdeId}}</a>
         {{/if}}
         </div>

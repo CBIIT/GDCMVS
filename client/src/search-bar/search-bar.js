@@ -28,31 +28,6 @@ const getOption = (activeTab) => {
   return option;
 }
 
-const getBooleanKeyword = (keywordCase) => {
-  let booleanKeyword = (/^(NOT|AND|OR)|(NOT|AND|OR)$/g).test(keywordCase);
-  let booleanArray = keywordCase.match(/(NOT|AND|OR)/g);
-
-  //multi boolean error
-  let keywordArray = keywordCase.replace(/\s\s+/g, ' ').split(' ');
-  keywordArray.forEach(function (e, i) {
-    if (keywordArray[i - 1] === e) {
-      booleanKeyword = true;
-    }
-  });
-
-  //multi boolean options
-  if (booleanArray !== null) {
-    booleanArray.forEach(function (e, i) {
-      if (i === 0) return;
-      if (booleanArray[0] !== e) {
-        booleanKeyword = true;
-      }
-    });
-  }
-
-  return booleanKeyword
-}
-
 const getFinalSuggestion = (suggest_value, entered_value) => {
   let final_keyword = suggest_value;
   if (entered_value.indexOf(' OR') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('OR')) + 'OR ' + suggest_value;
@@ -94,9 +69,8 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keyword = keywordCase.toLowerCase();
   let activeTab = getActiveTap();
   let option = getOption(activeTab);
-  let booleanKeyword = getBooleanKeyword(keywordCase)
 
-  if (keywordCase == '' || booleanKeyword) {
+  if (keywordCase == '') {
     option.error = true;
     $keywords.addClass('search-bar__input--has-error');
     render($root, keywordCase, option, []);
@@ -110,7 +84,6 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   $gdcLoadingIcon.fadeIn(100);
 
   apiSearchAll(keywordCase, option, (keyword, option, items) => {
-    if (keywordCase.indexOf(' AND ') !== -1 || keywordCase.indexOf(' OR ') !== -1 || keywordCase.indexOf(' NOT ') !== -1) items = removeExtraHighlighting(keywordCase, items);
     // Clear the data in localStorage
     localStorage.clear();
     // Save the data in localStorage
@@ -126,159 +99,6 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   });
 }
 
-const removeExtraHighlighting = (original_keyword, data) => {
-  if (original_keyword.indexOf(" AND ") !== -1) {
-    let check_arr = original_keyword.split(" AND ");
-    data.forEach(value => {
-      if (value.highlight === undefined) return;
-      let new_value = {};
-      for (let key in value.highlight) {
-        let local_value = value.highlight[key];
-        local_value.forEach(val => {
-          const isSimilar = element => {
-            if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(element.toString().trim().toLowerCase()) == -1) return false;
-            return true;
-          }
-          if (check_arr.every(isSimilar)) {
-            if (new_value[key] === undefined) {
-              new_value[key] = [];
-              new_value[key].push(val);
-            } else {
-              new_value[key].push(val);
-            }
-          }
-        });
-      }
-      if (!_.isEmpty(new_value)) {
-        value.highlight = new_value;
-      } else {
-        value.highlight = {};
-      }
-    });
-    return data;
-  } else if (original_keyword.indexOf(" OR ") !== -1) {
-    let check_arr = original_keyword.split(" OR ");
-    data.forEach(value => {
-      if (value.highlight === undefined) return;
-      let new_value = {};
-      for (let key in value.highlight) {
-        let local_value = value.highlight[key];
-        local_value.forEach(val => {
-          check_arr.forEach(checker => {
-            if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(checker.toString().trim().toLowerCase()) !== -1) {
-              if (new_value[key] === undefined) {
-                new_value[key] = [];
-                if (new_value[key].indexOf(val) == -1) {
-                  if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
-                    new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-                  } else {
-                    new_value[key].push(val);
-                  }
-                }
-              } else {
-                if (new_value[key].indexOf(val) == -1) {
-                  if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
-                    new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-                  } else {
-                    new_value[key].push(val);
-                  }
-                }
-              }
-            }
-          })
-        });
-      }
-      if (!_.isEmpty(new_value)) {
-        value.highlight = new_value;
-      } else {
-        value.highlight = {};
-      }
-    });
-    return data;
-  } else if (original_keyword.indexOf(" NOT ") !== -1) {
-    let check_arr = original_keyword.split(" NOT ");
-    // Add All highlights that matches with 1st word in the query
-    data.forEach(value => {
-      if (value.highlight === undefined) return;
-      let new_value = {};
-      for (let key in value.highlight) {
-        let local_value = value.highlight[key];
-        local_value.forEach(val => {
-          check_arr.forEach((checker, index) => {
-            if (index === 0 && val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(checker.toString().trim().toLowerCase()) !== -1) {
-              if (new_value[key] === undefined) {
-                new_value[key] = [];
-                if (new_value[key].indexOf(val) == -1) {
-                  if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
-                    new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-                  } else {
-                    new_value[key].push(val);
-                  }
-                }
-              } else {
-                if (new_value[key].indexOf(val) == -1) {
-                  if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
-                    new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-                  } else {
-                    new_value[key].push(val);
-                  }
-                }
-              }
-            }
-          })
-        });
-      }
-      if (!_.isEmpty(new_value)) {
-        value.highlight = new_value;
-      } else {
-        value.highlight = {};
-      }
-    });
-    // Remove all remaining highlights that matches with NOT keyword.
-    check_arr.splice(0, 1);
-    data.forEach(value => {
-      if (value.highlight === undefined) return;
-      let new_value = {};
-      for (let key in value.highlight) {
-        let local_value = value.highlight[key];
-        local_value.forEach(val => {
-          check_arr.forEach((checker, index) => {
-            const isSimilar = element => {
-              if (val.toString().trim().toLowerCase().replace(/<b>/g, "").replace(/<\/b>/g, "").indexOf(element.toString().trim().toLowerCase()) == -1) return true;
-              return false;
-            }
-            if (check_arr.every(isSimilar)) {
-              if (new_value[key] === undefined) {
-                new_value[key] = [];
-                if (new_value[key].indexOf(val) == -1) {
-                  if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
-                    new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-                  } else {
-                    new_value[key].push(val);
-                  }
-                }
-              } else {
-                if (new_value[key].indexOf(val) == -1) {
-                  if ((/[8]{1}[0-9]{3}[\/]{1}[0-9]{1}/).test(val.replace(/<b>/g, "").replace(/<\/b>/g, ""))) {
-                    new_value[key].push(val.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(checker, "<b>$&</b>"));
-                  } else {
-                    new_value[key].push(val);
-                  }
-                }
-              }
-            }
-          })
-        });
-      }
-      if (!_.isEmpty(new_value)) {
-        value.highlight = new_value;
-      } else {
-        value.highlight = {};
-      }
-    });
-    return data;
-  }
-}
 
 export const enterSearch = (event, $keywords, $search) => {
   const $selectedSuggest = $('#suggestBox .selected');
