@@ -80,10 +80,10 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		let entryRaw = propsRaw[prop];
 		if (prop === '$ref') {
 			let idx = entryRaw.indexOf('/');
-			entry.name = entryRaw.substr(idx + 1);
+			entry.property = entryRaw.substr(idx + 1);
 			entry = extend(entry, parseRef(entryRaw, termsJson, defJson));
 		} else {
-			entry.name = prop;
+			entry.property = prop;
 			if (entryRaw['$ref'] !== undefined) {
 				if (entryRaw['$ref'].indexOf("_terms.yaml") == -1 && entryRaw['$ref'].indexOf("_definitions.yaml") == -1) {
 					entry = extend(entry, parseRefYaml(entryRaw['$ref'], termsJson, defJson));
@@ -178,16 +178,16 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 
 
 		//building typeahead index
-		if (entry.name in allTerm) {
+		if (entry.property in allTerm) {
 			//if exist, then check if have the same type
-			let t = allTerm[entry.name];
+			let t = allTerm[entry.property];
 			if (t.indexOf("property") == -1) {
 				t.push("property");
 			}
 		} else {
 			let t = [];
 			t.push("property");
-			allTerm[entry.name] = t;
+			allTerm[entry.property] = t;
 		}
 
 		let enums = [];
@@ -230,17 +230,16 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 			}
 		}
 		//generate property index
-		p.name = entry.name;
+		p.property = entry.property;
 		p.node = fileJson.id;
-		p.n_desc = fileJson.description;
-		p.n_title = fileJson.title;
+		p.node_desc = fileJson.description;
 		p.category = fileJson.category;
 		if (entry.description === undefined) {
 			if (entry.term !== undefined && entry.term.description !== undefined) {
-				p.desc = entry.term.description;
+				p.property_desc = entry.term.description;
 			}
 		} else {
-			p.desc = entry.description;
+			p.property_desc = entry.description;
 		}
 		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
 			p.cde = {};
@@ -594,7 +593,7 @@ const bulkIndex = next => {
 
 	allProperties.forEach(p => {
 		let node = p.node;
-		let property = p.name;
+		let property = p.property;
 		if (gdc_data[node] && gdc_data[node].properties && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum) {
 			if (p.enum) {
 				let checker_enum = JSON.parse(JSON.stringify(gdc_data[node].properties[property].enum)).map(ems => {return ems.trim().toLowerCase()});
@@ -639,15 +638,28 @@ const bulkIndex = next => {
     allProperties.forEach(result => {
 		if(result.enum === undefined) return;
 		result.enum.forEach(item => {
-			if(item.i_c === undefined) return;
-			if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
-				all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
-			}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-				if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
-				if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+			if(item.i_c !== undefined) { // If it has icdo3 code.
+				if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
+					all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
+					if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+					if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
+				}else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
+					if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
+					if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
+					if(item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+				}
+			}
+			else{ // If it doesn't have icdo3 code
+				if(item.n_c !== undefined && item.n_c !== ""){
+					item.n_syn = [];
+					item.n_syn.push({n_c: item.n_c, s: item.s});
+					delete item.n_c;
+					delete item.s;
+				}
+				else if(item.n_c !== undefined && item.n_c === ""){
+					delete item.n_c;
+					delete item.s;
+				}
 			}
 		});
 	});
@@ -656,12 +668,10 @@ const bulkIndex = next => {
 		result.enum.forEach(item => {
 			if(item.i_c === undefined) return;
 			if(all_icdo3_syn[item.i_c.c]){
-				// item.all_syn = [];
-				// item.all_n_c = [];
 				item.n_syn = [];
 				item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
-				// item.all_syn = all_icdo3_syn[item.i_c.c].all_syn.length > 0 ? all_icdo3_syn[item.i_c.c].all_syn : undefined;
-				// item.all_n_c = all_icdo3_syn[item.i_c.c].checker_n_c.length > 0 ? all_icdo3_syn[item.i_c.c].checker_n_c : undefined;
+				delete item.n_c;
+				delete item.s;
 			}
 			if(all_icdo3_enums[item.i_c.c]){
 				item.ic_enum = [];
@@ -669,12 +679,43 @@ const bulkIndex = next => {
 			}
 		});
 	});
+
+	// Removing redundant values
+	let check_enums = {};
+	allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		let id = result.property+"@"+result.node+"@"+result.category;
+		let new_enum = [];
+		result.enum.forEach(item => {
+			if(check_enums[id] === undefined){
+				check_enums[id] = [];
+				check_enums[id].push(item.n);
+				new_enum.push(item);
+			}
+			else if(check_enums[id] !== undefined && check_enums[id].indexOf(item.n) === -1){
+				check_enums[id].push(item.n);
+				new_enum.push(item);
+			}	
+		});
+		result.enum = new_enum;
+	});
+
+	// Remove non-gdc values
+	allProperties.forEach(result => {
+		if(result.enum === undefined) return;
+		let new_enum = [];
+		result.enum.forEach(item => {
+			if(item.gdc_d === true) new_enum.push(item);
+		});
+		result.enum = new_enum;
+	});
+
 	allProperties.forEach(ap => {
-		if (ap.cde && ap.desc) { // ADD CDE ID to all property description.
-			ap.desc = ap.desc + " (CDE ID - " + ap.cde.id + ")"
+		if (ap.cde && ap.property_desc) { // ADD CDE ID to all property description.
+			ap.property_desc = ap.property_desc + " (CDE ID - " + ap.cde.id + ")"
 		}
 		let doc = extend(ap, {});
-		doc.id = ap.name + "/" + ap.node + "/" + ap.category;
+		doc.id = ap.property + "/" + ap.node + "/" + ap.category;
 		propertyBody.push({
 			index: {
 				_index: config.index_p,
@@ -729,7 +770,7 @@ exports.bulkIndex = bulkIndex;
 
 const query = (index, dsl, highlight, next) => {
 	var body = {
-		size: 1000,
+		size: 1000000,
 		from: 0
 	};
 	body.query = dsl;
