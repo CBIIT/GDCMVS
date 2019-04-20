@@ -4132,8 +4132,6 @@
     {"nm":"9542/3","i_c":"9542/3","n_c":"C6561"}
     ],
     "clinical.diagnosis.site_of_resection_or_biopsy":[
-    {"i_c":"C00-C14","nm":"LIP, ORAL CAVITY AND PHARYNX","n_c":"","term_type":"HT"},
-    {"i_c":"C00","nm":"LIP","n_c":"C12220","term_type":"HT"},
     {"i_c":"C00.0","nm":"External upper lip","n_c":"C12221","term_type":"PT"},
     {"i_c":"C00.0","nm":"Upper lip, NOS","n_c":"","term_type":"RT"},
     {"i_c":"C00.0","nm":"Vermilion border of upper lip","n_c":"","term_type":"RT"},
