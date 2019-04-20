@@ -190,7 +190,8 @@
     },
     "case.case.lost_to_followup": {
         "No": "C49487",
-        "Yes": "C49488"
+        "Yes": "C49488",
+        "Unknown": ""
     },
     "case.case.primary_site": {
         "Accessory sinuses": "C12763",
@@ -2611,7 +2612,9 @@
         "Unknown": "C17998",
         "Not Reported": "C43234",
         "Abnormal, NOS": "C26683",
-        "Normal": "C14165"
+        "Normal": "C14165",
+        "Copy Number Reported": "",
+        "Intermediate": ""
     },
     "clinical.molecular_test.gene_symbol": {
         "A1CF": "C143031",
@@ -4285,7 +4288,10 @@
         "Custom Personalis ACEcp VAREPOP-APOLLO Panel v2": "",
         "SureSelect Human All Exon v5 + UTR": "",
         "xGen Exome Research Panel v1.0": "",
-        "SureSelect Human All Exon v4": ""
+        "SureSelect Human All Exon v4": "",
+        "Custom SureSelect CGCI-HTMCP-CC Panel - 19.7 Mb": "",
+        "Custom SureSelect Human All Exon v1.1 Plus 3 Boosters": "",
+        "SeqCap EZ Human Exome v2.0": ""
     },
     "biospecimen.sample.biospecimen_laterality": {
         "Not Reported": "C43234",
@@ -4457,7 +4463,12 @@
         "Solid Tissue Normal": "",
         "Total RNA": "",
         "Tumor Adjacent Normal - Post Neo-adjuvant Therapy": "",
-        "Xenograft Tissue": ""
+        "Xenograft Tissue": "",
+        "Benign Neoplasms": "",
+        "Blood Derived Cancer - Bone Marrow": "",
+        "Blood Derived Cancer - Peripheral Blood": "",
+        "In Situ Neoplasms": "",
+        "Neoplasms of Uncertain and Unknown Behavior": ""
     },
     "biospecimen.sample.tissue_type": {
         "Not Reported": "C43234",
