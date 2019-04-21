@@ -75,11 +75,11 @@
                     <div class="treeview__col col-xs-8">{{:property_desc}}</div>
                   </div>
                   <ul class="treeview__ul treeview__ul--hl">
-                  {{if hl_values.length}}
+                  {{if hl_values.length !== 0}}
                     {{for hl_values}}
-                    <li class="treeview__{{:type}}">
+                    <li class="treeview__value">
                       <div class="treeview__row row">
-                        <div class="treeview__col col-xs-4">{{:value}}</div>
+                        <div class="treeview__col col-xs-4">{{:}}</div>
                         <div class="treeview__col col-xs-8"></div>
                       </div>
                     </li>

@@ -3,6 +3,9 @@ import { apiGetGDCDataById } from '../../api';
 import { getHeaderOffset, htmlChildContent} from '../../shared';
 
 const gdcData = (prop, tgt, keyword) => {
+  console.log(prop);
+  console.log(tgt);
+  console.log(keyword);
   apiGetGDCDataById(prop, function (id, items) {
     if ($('#gdc_data').length) {
       $('#gdc_data').remove();
@@ -19,30 +22,7 @@ const gdcData = (prop, tgt, keyword) => {
     // Don't replace with anything, if keyword is null
     keyword = keyword === null || keyword === undefined ? '@#$%^' : keyword.trim().replace(/[\ ,:_-]+/g, " ");
     let reg_key = new RegExp(keyword.replace(/( NOT | AND | OR )/g, "|"), "ig");
-
-    items.forEach(function (item) {
-      let tt = item.term_type !== undefined && item.term_type !== "" ? item.term_type : "*";
-      if (item.i_c !== undefined) {
-        if(item.i_c.c in tmp_obj){
-          if(item.n !== item.i_c.c){
-            if(tt === 'PT'){
-              tmp_obj[item.i_c.c].n.unshift({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
-            }else{
-              tmp_obj[item.i_c.c].n.push({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
-            }
-          }
-        }else{
-          tmp_obj[item.i_c.c] = {c: item.i_c.c, have: item.i_c.have, n: []};
-          if(item.n !== item.i_c.c){
-            if(tt === 'PT'){
-              tmp_obj[item.i_c.c].n.unshift({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
-            }else{
-              tmp_obj[item.i_c.c].n.push({n: item.n.replace(reg_key, "<b>$&</b>"), term_type: tt});
-            }
-          }
-        }
-      }
-    });
+    console.log(items);
     items.forEach(function (item) {
       if (item.i_c !== undefined) {
         icdo = true;

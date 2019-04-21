@@ -19,6 +19,7 @@ export default function render($root, keyword, option, items) {
     psHtml.active = false;
     let dtHtml = dtRender(data1, keyword, option);
     dtHtml.active = false;
+    // let dtHtml = [];
     if (vsHtml.len === 0 && psHtml.len === 0) {
       dtHtml.len = 0;
     }

@@ -30,8 +30,8 @@
         <div class="table__td col-xs-4">{{:property_desc}}</div>
         <div class="table__td col-xs-2">
         {{if enum}}
-          <a class="getGDCTerms" href="#" data-enum="{{:enum}}">See All Values</a><br>
-          <a class="toCompare" href="#" data-enum="{{:enum}}"> Compare with User List</a>
+          <a class="getGDCTerms" href="#" data-ref="{{:id}}">See All Values</a><br>
+          <a class="toCompare" href="#" data-ref="{{:id}}"> Compare with User List</a>
         {{else type !== undefined}}
           type: {{:type}}
         {{/if}}
