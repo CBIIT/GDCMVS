@@ -43,6 +43,7 @@ export default (items, keyword, search_option) => {
       let prop_obj = {};
       prop_obj.category = source.category;
       prop_obj.node = source.node;
+      prop_obj.id = source.id;
       prop_obj.property = highlight_property_obj[source.property] ? highlight_property_obj[source.property] : source.property;
       prop_obj.property_desc = highlight_property_desc_obj[source.property] ? highlight_property_desc_obj[source.property] : source.property_desc;
       if(source.type !== undefined && source.type !== "" && source.type !== "enum") prop_obj.type = source.type;

@@ -197,7 +197,6 @@ const generateQuery = (keyword, option, isBoolean) => {
 		m.query_string = {};
 		m.query_string.default_operator = "AND";
 		m.query_string.query = keyword;
-		// m.query_string.analyzer = "keyword";
 		m.query_string.fields = [];
 		m.query_string.fields.push("cde.id");
 		m.query_string.fields.push("property.have");
@@ -221,11 +220,10 @@ const generateQuery = (keyword, option, isBoolean) => {
 		m.nested.query.query_string.fields.push("enum.n.have");
 		m.nested.query.query_string.fields.push("enum.i_c.have");
 		m.nested.query.query_string.query = keyword;
-		// m.nested.query.query_string.analyzer = "keyword";
 
 		m.nested.inner_hits = {};
 		m.nested.inner_hits.from = 0;
-		m.nested.inner_hits.size = 1000000;
+		m.nested.inner_hits.size = 10000000;
 		m.nested.inner_hits.highlight = generateHighlightInnerHits();
 		query.bool.should.push(m);
 	}
@@ -330,7 +328,7 @@ const indexing = (req, res) => {
 	config_property.index = config.index_p;
 	config_property.body = {
 		"settings": {
-			"number_of_shards": 1, 
+			"number_of_shards": 10, 
 			"max_inner_result_window": 10000000,
 			"max_result_window": 10000000,
 			"analysis": {
@@ -590,7 +588,6 @@ const getGDCData = (req, res) => {
 		let data = result.hits.hits;
 		res.json(data);
 	});
-	
 };
 
 const preloadCadsrData = (req, res) => {

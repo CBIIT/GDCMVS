@@ -145,8 +145,6 @@ export const vsRender = (items, keyword, search_option) => {
             if(ic_n.term_type === "*") term_type_not_assigned = true;
           })
         }
-
-
         obj.vs.push(value_obj);
       });
       obj.syn = synExists;

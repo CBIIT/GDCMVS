@@ -12,35 +12,23 @@ const GDCTerms = (uid, tgts) => {
     let targets = [];
     let icdo = false;
     let windowEl = $(window);
-    let new_items = [];
-    let new_item_checker = {};
     if (tgts !== null && tgts !== undefined) {
       targets = tgts.split("#");
     }
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let footer_template = htmlChildContent('FooterTemplate', tmpl);
-    let all_syns = getAllSyn(items);
-    items.forEach(item => {
-      if(new_item_checker[item.n]) return;
-      if (item.i_c !== undefined) {
-        icdo = true;
-      }
-      if (item.gdc_d === true) {
-        if(item.i_c !== undefined){
-          if(all_syns[item.i_c.c] !== undefined){
-            if(item.n_c) delete item.n_c;
-            if(item.s) delete item.s;
-            item.n_syn = all_syns[item.i_c.c].n_syn;
-            item.all_syn = all_syns[item.i_c.c].all_syn;
-            new_items.push(item);
-          }
-        }else{
-          new_items.push(item);
+
+    if(items[0]._source.enum !== undefined){
+      items[0]._source.enum.forEach(value => {
+        if(icdo === true) return;
+        if(value.i_c !== undefined){
+          icdo = true;
+          return;
         }
-      }
-      new_item_checker[item.n] = item;
-    });
-    items = new_items;
+      });
+      items = getAllSyn(items[0]._source.enum);
+    }
+
     //open loading animation
     if (items.length > 500 ) {
       $('#gdc-loading-icon').show()

@@ -770,7 +770,7 @@ exports.bulkIndex = bulkIndex;
 
 const query = (index, dsl, highlight, next) => {
 	var body = {
-		size: 1000000,
+		size: 10000000,
 		from: 0
 	};
 	body.query = dsl;

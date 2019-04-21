@@ -16,28 +16,21 @@ export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getGDCData', (event) => {
     event.preventDefault();
     let data = event.currentTarget.dataset;
-    let uid = data.ref.replace(/@/g, '/');
+    let uid = data.ref;
     gdcData(uid, data.tgt, data.keyword);
   });
 
   $root.on('click', '.toCompare', (event) => {
     event.preventDefault();
     let data = event.currentTarget.dataset;
-    let uid = data.ref.replace(/@/g, '/');
+    let uid = data.ref;
     toCompare(uid);
-  });
-
-  $root.on('click', '.compareGDC', (event) => {
-    event.preventDefault();
-    let data = event.currentTarget.dataset;
-    let uid = data.ref.replace(/@/g, '/');
-    compareGDC(uid, data.cdeid);
   });
 
   $root.on('click', '.getGDCTerms', (event) => {
     event.preventDefault();
     let data = event.currentTarget.dataset;
-    let uid = data.ref.replace(/@/g, '/');
+    let uid = data.ref;
     GDCTerms(uid, data.targets);
   });
 
