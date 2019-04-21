@@ -86,29 +86,15 @@ export const htmlChildContent = (tag, tmpl) =>{
 }
 
 export const getAllSyn = (items) => {
-  let all_icdo3_syn = {};
-  items.forEach(item => {
-    if(item.i_c === undefined) return;
-    if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
-      if(item.i_c.n_syn){
-        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-        all_icdo3_syn[item.i_c.c].n_syn = item.i_c.n_syn;
-        item.i_c.n_syn.forEach(syn => {
-          if(syn.s === undefined) return;
-          all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(syn.s.map(function(x){ return x.termName}));
-        });
-      }else{
-        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-        if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-        if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
-      }
-    }else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
-      if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-      if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
-      all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+  items.forEach(em => {
+    if(em.n_syn !== undefined){
+      em.all_syn = [];
+      em.n_syn.forEach(syn => {
+        em.all_syn = em.all_syn.concat(syn.s.map(function(x){ return x.termName}));
+      });
     }
   });
-  return  all_icdo3_syn;
+  return items;
 }
 
 export const searchFilter = (items, keyword) => {

@@ -11,38 +11,13 @@ const toCompare = (uid) => {
     }
 
     let windowEl = $(window);
-    let icdo = false;
-    let icdo_items = [];
-    let item_checker = {};
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let body_template = htmlChildContent('BodyTemplate', tmpl);
     let bottom_template = htmlChildContent('BottomTemplate', tmpl);
 
     // Collecting all synonyms and ncit code in one array for particular ICDO3 code
-    let all_icdo3_syn = getAllSyn(items);
-    items.forEach(function (item) {
-      if (item.i_c !== undefined) {
-        icdo = true;
-      }
-      if (item.gdc_d === false) {
-        return;
-      }
-      if (item_checker[item.n] === undefined && item.i_c) {
-        let tmp_item = {
-          n: item.n,
-          i_c: item.i_c ? item.i_c : undefined,
-          n_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].n_syn : item.n_c ? [{n_c: item.n_c, s: item.s}] : [],
-          ic_enum: item.i_c && item.ic_enum ? item.ic_enum : undefined,
-          all_syn: item.i_c && all_icdo3_syn[item.i_c.c] ? all_icdo3_syn[item.i_c.c].all_syn : undefined,
-        }
-        icdo_items.push(tmp_item);
-        item_checker[item.n] = item;
-      }else if(item.i_c === undefined){
-        icdo_items.push(item);
-      }
-    });
-    if (icdo) {
-      items = icdo_items;
+    if(items[0]._source.enum !== undefined){
+      items = getAllSyn(items[0]._source.enum);
     }
 
     //open loading animation
