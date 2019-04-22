@@ -1,6 +1,8 @@
 import template from './values-table-view';
 import { getHeaderOffset, getHighlightObj } from '../shared'
 
+let term_type_not_assigned = false;
+
 const tableToggleHandle = (event) => {
   event.preventDefault();
   const $this = $(event.currentTarget);
@@ -57,7 +59,8 @@ const showMoreToggleHandle = (event) => {
   }
 }
 
-export const vsRender = (items, keyword, search_option) => {
+export const vsRender = (items, keyword) => {
+  term_type_not_assigned = false;
   //data preprocessing
   let values = [];
   let values_count = 0;
@@ -65,7 +68,6 @@ export const vsRender = (items, keyword, search_option) => {
   let options = {};
   // RegExp Keyword
   keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
-  let term_type_not_assigned = false;
   items.forEach(data => {
     let enums = data.inner_hits.enum;
     if(enums.hits.total !== 0) { // If the searched term is cde id.
@@ -96,8 +98,8 @@ export const vsRender = (items, keyword, search_option) => {
 
         let highlight_cdeId = data.highlight !== undefined && ("cde.id" in data.highlight) ? data.highlight["cde.id"] : undefined;
 
-        if(highlight_cdeId !== undefined && data._source.enum !== undefined){
-          obj.vs = data._source.enum;
+        if(highlight_cdeId !== undefined){
+          if(data._source.enum !== undefined) obj.vs = getAllValues(data);
         }
         else {
           let value_obj = {};
@@ -142,16 +144,7 @@ export const vsRender = (items, keyword, search_option) => {
       obj.id = data._source.id;
       obj.cdeId = data._source.cde ? data._source.cde.id : undefined;
       obj.cdeUrl = data._source.cde ? data._source.cde.url : undefined;
-      obj.vs = [];
-      data._source.enum.forEach(val => {
-        let value_obj = {};
-        value_obj.n = val.n;
-        value_obj.i_c = {};
-        if(val.i_c !== undefined) value_obj.i_c.c = val.i_c.c;
-        if(val.n_syn !== undefined) value_obj.n_syn = val.n_syn;
-        if(val.ic_enum !== undefined) value_obj.ic_enum = val.ic_enum;
-        obj.vs.push(value_obj);
-      });
+      obj.vs = getAllValues(data);
       values_count += obj.vs.length;
       values.push(obj);
     }
@@ -179,6 +172,26 @@ export const vsRender = (items, keyword, search_option) => {
   result.len = values_count;
   result.html = html;
   return result;
+}
+
+const getAllValues = (data) => {
+  term_type_not_assigned = false;
+  let values = [];
+  data._source.enum.forEach(val => {
+    let value_obj = {};
+    value_obj.n = val.n;
+    value_obj.i_c = {};
+    if(val.i_c !== undefined) value_obj.i_c.c = val.i_c.c;
+    if(val.n_syn !== undefined) value_obj.n_syn = val.n_syn;
+    if(val.ic_enum !== undefined) {
+      val.ic_enum.forEach(ic_n => {
+        if(ic_n.term_type === "*") term_type_not_assigned = true;
+      });
+      value_obj.ic_enum = val.ic_enum;
+    }
+    values.push(value_obj);
+  });
+  return values;
 }
 
 export const vsEvents = ($root) => {
