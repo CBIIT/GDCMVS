@@ -1,4 +1,5 @@
 import template from './props-table-view';
+import { getHighlightObj } from '../shared';
 
 export default (items, keyword, search_option) => {
     //data preprocessing
@@ -15,13 +16,7 @@ export default (items, keyword, search_option) => {
       let highlight = item.highlight;
 
       let highlight_property = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
-      let highlight_property_obj = {};
-      if(highlight_property !== undefined){
-        highlight_property.forEach(val => {
-          let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          if(highlight_property_obj[tmp] === undefined) highlight_property_obj[tmp] = val;
-        });
-      }
+      let highlight_property_obj = getHighlightObj(highlight_property);
 
       let highlight_property_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
       let highlight_property_desc_obj = {};
@@ -32,13 +27,7 @@ export default (items, keyword, search_option) => {
       }
 
       let highlight_cdeId = ("cde.id" in highlight) ? highlight["cde.id"] : undefined;
-      let highlight_cdeId_obj = {};
-      if(highlight_cdeId !== undefined){
-        highlight_cdeId.forEach(val => {
-          let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-          if(highlight_cdeId_obj[tmp] === undefined) highlight_cdeId_obj[tmp] = val;
-        });
-      }
+      let highlight_cdeId_obj = getHighlightObj(highlight_cdeId);
 
       let prop_obj = {};
       prop_obj.category = source.category;
