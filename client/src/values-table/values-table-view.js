@@ -48,7 +48,7 @@ const template = (values, options) => {
                 <div class="table__td table__gdc-values col-xs-12">
                   <div class="row">
                     <div class="col-xs-10">
-                      <a class="getGDCData" href="#" data-ref="{{:id}}" data-tgt="${value.value}" data-keyword="${options.keyword}">${value.value}</a>
+                      <a class="getGDCData" href="#" data-ref="${item.id}" data-tgt="${value.n}" data-keyword="${options.keyword}">${value.n}</a>
                     </div>
                     <div class="col-xs-2 table__right">
                       ${value.n_syn !== undefined || value.ic_enum !== undefined ? `
@@ -61,7 +61,7 @@ const template = (values, options) => {
                   <div class="data-content" style="display: none;">
                     ${value.ic_enum !== undefined ? `
                       <div class="row table__td">
-                        <div class="col-xs-4">${value.i_c} (ICD-O-3)</div>
+                        <div class="col-xs-4">${value.i_c.c} (ICD-O-3)</div>
                         <div class="col-xs-8">
                           ${tableIcdo3(value)}
                         </div>
