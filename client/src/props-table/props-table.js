@@ -1,4 +1,4 @@
-import tmpl from './props-table.html';
+import template from './props-table-view';
 
 export default (items, keyword, search_option) => {
     //data preprocessing
@@ -66,7 +66,7 @@ export default (items, keyword, search_option) => {
       let offset = $('#root').offset().top;
       let h = window.innerHeight - offset - 310;
       options.height = (h < 430) ? 430 : h;
-      html = $.templates(tmpl).render({ options: options, props: props });
+      html = template(props, options);
     }
 
     let result = {};

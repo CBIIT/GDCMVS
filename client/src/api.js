@@ -35,14 +35,6 @@ export const apiGetGDCDataById = (id, callback) => {
     });
 }
 
-export const apiGetCDEDataById = (id, callback) => {
-  $.getJSON(`${baseUrl}/p/cde/vs`, {id:id}, function(result){
-      callback(id,result);
-    }).fail(function(xhr, textStatus, errorThrown){
-      errorNotification(xhr.status, errorThrown);
-    });
-}
-
 export const apiGetGDCandCDEDataById = (ids, callback) => {
   $.getJSON(`${baseUrl}/p/both/vs`, {local:ids.local, cde: ids.cde}, function(result){
       callback(ids,result);
