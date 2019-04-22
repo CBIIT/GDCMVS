@@ -65,26 +65,6 @@ export const htmlChildContent = (tag, tmpl) =>{
   return re.exec(tmpl)[1];
 }
 
-// Remove duplicate synonyms case insensitive
- export const removeDuplicateSynonyms = (it) => {
-    if (it.s == undefined) return;
-    let cache = {};
-    let tmp_s = [];
-    it.s.forEach(function (s) {
-      let lc = s.trim().toLowerCase();
-      if (!(lc in cache)) {
-        cache[lc] = [];
-      }
-      cache[lc].push(s);
-    });
-    for (let idx in cache) {
-      //find the term with the first character capitalized
-      let word = findWord(cache[idx]);
-      tmp_s.push(word);
-    }
-    return tmp_s;
-}
-
 export const getAllSyn = (items) => {
   items.forEach(em => {
     if(em.n_syn !== undefined){
@@ -191,70 +171,16 @@ export const searchFilterCR = (items, keyword) => {
     }
    });
 
-  // Highlight matched values and synonyms
-  // new_item.forEach(item =>{
-  //   item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
-  //   if(item.s !== undefined){
-  //    item.s = item.s.map(function(s) {return {termName: s.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: s.termGroup, termSource: s.termSource}});
-  //   }
-  //   if(item.i_c !== undefined && item.i_c.n_syn !== undefined){
-  //     item.i_c.n_syn.forEach(syn => {
-  //       if(syn.s === undefined) return;
-  //       syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
-  //     })
-  //   }
-  //   if(item.n_syn !== undefined){
-  //     item.n_syn.forEach(syn => {
-  //       if(syn.s === undefined) return;
-  //       syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
-  //     })
-  //   }
-  // });
   return new_item;
 }
 
-export const findWord = (words) => {
-  let word = "";
-  if (words.length == 1) {
-    return words[0];
+export const getHighlightObj = (highlight) => {
+  let highlightObj = {};
+  if(highlight !== undefined){
+    highlight.forEach(val => {
+      let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
+      if(highlightObj[tmp] === undefined) highlightObj[tmp] = val;
+    });
   }
-  words.forEach(function (w) {
-    if (word !== "") {
-      return;
-    }
-    let idx_space = w.indexOf(" ");
-    let idx_comma = w.indexOf(",");
-    if (idx_space == -1 && idx_comma == -1) {
-      if (/^[A-Z][a-z0-9]{0,}$/.test(w)) {
-        word = w;
-      }
-    }
-    else if (idx_space !== -1 && idx_comma == -1) {
-      if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
-        word = w;
-      }
-    }
-    else if (idx_space == -1 && idx_comma !== -1) {
-      if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
-        word = w;
-      }
-    }
-    else {
-      if (idx_comma > idx_space) {
-        if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
-          word = w;
-        }
-      }
-      else {
-        if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
-          word = w;
-        }
-      }
-    }
-
-  });
-  if (word == "") {
-    word = words[0];
-  }
-  return word;
-};
+  return highlightObj;
+}
