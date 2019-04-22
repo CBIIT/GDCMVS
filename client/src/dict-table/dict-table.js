@@ -111,7 +111,6 @@ export const dtRender = (items, keyword, search_option) => {
         let highlight_prop = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
         let highlight_prop_obj = getHighlightObj(highlight_prop);
 
-        if(source.property === "sample_type") debugger;
         highlight_cdeId = ("cde.id" in highlight) ? highlight["cde.id"] : undefined;
 
         let highlight_prop_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
@@ -132,21 +131,25 @@ export const dtRender = (items, keyword, search_option) => {
 
       property_obj.all_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
       property_obj.all_values.sort();
-      if(highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
-        property_obj.hl_values.sort();
-      }
+
       if(enum_hits.total !== 0 && highlight_cdeId === undefined){
         enum_hits.hits.forEach(hl_em => {
           let em_source = hl_em._source;
-
-          // Add highlight to values
           let em_highlight = hl_em.highlight;
           let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
           let highlight_value_obj = getHighlightObj(highlight_value);
           let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
           if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
         });
+      }
+      else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
+        let highlight_value_obj = getAllValueHighlight(enum_hits);
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
+        property_obj.hl_values.sort();
+      }
+      else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
+        property_obj.hl_values.sort();
       }
       property_obj.length += property_obj.hl_values.length;
       if(node_obj.properties_obj[source.property] === undefined){
@@ -204,21 +207,25 @@ export const dtRender = (items, keyword, search_option) => {
 
       property_obj.all_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
       property_obj.all_values.sort();
-      if(highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
-        property_obj.hl_values.sort();
-      }
+
       if(enum_hits.total !== 0 && highlight_cdeId === undefined){
         enum_hits.hits.forEach(hl_em => {
           let em_source = hl_em._source;
-
-          // Add highlight to values
           let em_highlight = hl_em.highlight;
           let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
           let highlight_value_obj = getHighlightObj(highlight_value);
           let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
           if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
         });
+      }
+      else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
+        let highlight_value_obj = getAllValueHighlight(enum_hits);
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
+        property_obj.hl_values.sort();
+      }
+      else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
+        property_obj.hl_values.sort();
       }
       property_obj.length += property_obj.hl_values.length;
       if(main_obj[source.category].nodes_obj[source.node] !== undefined){ // If node already exists add new properties_obj to it.
@@ -253,13 +260,27 @@ export const dtRender = (items, keyword, search_option) => {
     dictionary.push(category_obj);
     result.len += category_obj.length;
   }
-
   let offset = $('#root').offset().top;
   let h = window.innerHeight - offset - 313;
   options.height = (h < 430) ? 430 : h;
   let html = template(dictionary, options);
   result.html = html;
   return result;
+}
+
+const getAllValueHighlight = (enum_hits) => {
+  let highlight_value_obj = {};
+  enum_hits.hits.forEach(hl_em => {
+    let em_highlight = hl_em.highlight;
+    let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
+    if(highlight_value !== undefined){
+      highlight_value.forEach(val => {
+        let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        if(highlight_value_obj[tmp] === undefined) highlight_value_obj[tmp] = val;
+      });
+    }
+  });
+  return highlight_value_obj;
 }
 
 export const dtEvents = ($root) => {
