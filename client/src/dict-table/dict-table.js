@@ -1,4 +1,5 @@
 import template from './dict-table-view';
+import { getHighlightObj } from '../shared';
 
 const treeviewToggleHandle = (event) => {
   event.preventDefault();
@@ -74,12 +75,11 @@ export const dtRender = (items, keyword, search_option) => {
   // RegExp Keyword
   keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
   let reg_key = new RegExp(keyword, "ig");
-
   let main_obj = {};
   items.forEach(item => {
     let source = item._source;
     let enum_hits = item.inner_hits.enum.hits;
-    let highlight =item.highlight ? item.highlight : undefined;
+    let highlight = item.highlight ? item.highlight : undefined;
 
     if(main_obj[source.category] === undefined) { // category doesn't exists, add it
       let category_obj = {
@@ -109,14 +109,10 @@ export const dtRender = (items, keyword, search_option) => {
       // Add highlight to property
       if(highlight !== undefined){
         let highlight_prop = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
-        let highlight_prop_obj = {};
-        if(highlight_prop !== undefined){
-          highlight_prop.forEach(val => {
-            let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            if(highlight_prop_obj[tmp] === undefined) highlight_prop_obj[tmp] = val;
-          });
-        }
+        let highlight_prop_obj = getHighlightObj(highlight_prop);
+
         highlight_cdeId = ("cde.id" in highlight) ? highlight["cde.id"] : undefined;
+
         let highlight_prop_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
         let highlight_prop_desc_obj = {};
         if(highlight_prop_desc !== undefined){
@@ -135,27 +131,25 @@ export const dtRender = (items, keyword, search_option) => {
 
       property_obj.all_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
       property_obj.all_values.sort();
-      if(highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
-        property_obj.hl_values.sort();
-      }
-      if(enum_hits.total !== 0){
+
+      if(enum_hits.total !== 0 && highlight_cdeId === undefined){
         enum_hits.hits.forEach(hl_em => {
           let em_source = hl_em._source;
-
-          // Add highlight to values
           let em_highlight = hl_em.highlight;
           let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
-          let highlight_value_obj = {};
-          if(highlight_value !== undefined){
-            highlight_value.forEach(val => {
-              let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-              if(highlight_value_obj[tmp] === undefined) highlight_value_obj[tmp] = val;
-            });
-          }
+          let highlight_value_obj = getHighlightObj(highlight_value);
           let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
           if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
         });
+      }
+      else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
+        let highlight_value_obj = getAllValueHighlight(enum_hits);
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
+        property_obj.hl_values.sort();
+      }
+      else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
+        property_obj.hl_values.sort();
       }
       property_obj.length += property_obj.hl_values.length;
       if(node_obj.properties_obj[source.property] === undefined){
@@ -191,14 +185,10 @@ export const dtRender = (items, keyword, search_option) => {
       // Add highlight to property
       if(highlight !== undefined){
         let highlight_prop = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
-        let highlight_prop_obj = {};
-        if(highlight_prop !== undefined){
-          highlight_prop.forEach(val => {
-            let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-            if(highlight_prop_obj[tmp] === undefined) highlight_prop_obj[tmp] = val;
-          });
-        }
+        let highlight_prop_obj = getHighlightObj(highlight_prop);
+
         highlight_cdeId = ("cde.id" in highlight) ? highlight["cde.id"] : undefined;
+
         let highlight_prop_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
         let highlight_prop_desc_obj = {};
         if(highlight_prop_desc !== undefined){
@@ -217,27 +207,25 @@ export const dtRender = (items, keyword, search_option) => {
 
       property_obj.all_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
       property_obj.all_values.sort();
-      if(highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
-        property_obj.hl_values.sort();
-      }
-      if(enum_hits.total !== 0 ){
+
+      if(enum_hits.total !== 0 && highlight_cdeId === undefined){
         enum_hits.hits.forEach(hl_em => {
           let em_source = hl_em._source;
-
-          // Add highlight to values
           let em_highlight = hl_em.highlight;
           let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
-          let highlight_value_obj = {};
-          if(highlight_value !== undefined){
-            highlight_value.forEach(val => {
-              let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-              if(highlight_value_obj[tmp] === undefined) highlight_value_obj[tmp] = val;
-            });
-          }
+          let highlight_value_obj = getHighlightObj(highlight_value);
           let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
           if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
         });
+      }
+      else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
+        let highlight_value_obj = getAllValueHighlight(enum_hits);
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
+        property_obj.hl_values.sort();
+      }
+      else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
+        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
+        property_obj.hl_values.sort();
       }
       property_obj.length += property_obj.hl_values.length;
       if(main_obj[source.category].nodes_obj[source.node] !== undefined){ // If node already exists add new properties_obj to it.
@@ -272,13 +260,27 @@ export const dtRender = (items, keyword, search_option) => {
     dictionary.push(category_obj);
     result.len += category_obj.length;
   }
-
   let offset = $('#root').offset().top;
   let h = window.innerHeight - offset - 313;
   options.height = (h < 430) ? 430 : h;
   let html = template(dictionary, options);
   result.html = html;
   return result;
+}
+
+const getAllValueHighlight = (enum_hits) => {
+  let highlight_value_obj = {};
+  enum_hits.hits.forEach(hl_em => {
+    let em_highlight = hl_em.highlight;
+    let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
+    if(highlight_value !== undefined){
+      highlight_value.forEach(val => {
+        let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
+        if(highlight_value_obj[tmp] === undefined) highlight_value_obj[tmp] = val;
+      });
+    }
+  });
+  return highlight_value_obj;
 }
 
 export const dtEvents = ($root) => {
