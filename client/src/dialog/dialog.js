@@ -1,18 +1,10 @@
-import getCDEData from './cde-data/cde-data';
 import gdcData from './gdc-data/gdc-data';
 import toCompare from './to-compare/to-compare';
-import compareGDC from './compare-gdc/compare-gdc';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
 import { renderSource, renderType } from './abbrevation/abbrevation'
 
 export const dialogEvents = ($root, $body) => {
-  $root.on('click', '.getCDEData', (event) => {
-    event.preventDefault();
-    let data = event.currentTarget.dataset;
-    getCDEData(data.cdeid, data.targets);
-  });
-
   $root.on('click', '.getGDCData', (event) => {
     event.preventDefault();
     let data = event.currentTarget.dataset;

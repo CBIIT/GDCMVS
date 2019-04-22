@@ -1,4 +1,4 @@
-import tmpl from './values-table.html';
+import template from './values-table-view';
 import { getHeaderOffset, findWord } from '../shared'
 
 const tableToggleHandle = (event) => {
@@ -135,7 +135,7 @@ export const vsRender = (items, keyword, search_option) => {
             data.n_c = highlight_nc_obj[data.n_c] ? highlight_nc_obj[data.n_c] : data.n_c;
             data.s = new_syn;
           });
-          value_obj.syn = source.n_syn;
+          value_obj.n_syn = source.n_syn;
         }
 
         value_obj.i_c = source.i_c ? highlight_ic_obj[source.i_c.c] ? highlight_ic_obj[source.i_c.c] : source.i_c.c : undefined;
@@ -147,7 +147,7 @@ export const vsRender = (items, keyword, search_option) => {
         }
         obj.vs.push(value_obj);
       });
-      obj.syn = synExists;
+      obj.n_syn = synExists;
       values.push(obj);
     }
     else if(data.highlight["cde.id"] && data._source.enum !== undefined){
@@ -163,7 +163,7 @@ export const vsRender = (items, keyword, search_option) => {
         let value_obj = {};
         value_obj.value = val.n;
         if(val.i_c !== undefined) value_obj.i_c = val.i_c.c;
-        if(val.n_syn !== undefined) value_obj.syn = val.n_syn;
+        if(val.n_syn !== undefined) value_obj.n_syn = val.n_syn;
         if(val.ic_enum !== undefined) value_obj.ic_enum = val.ic_enum;
         obj.vs.push(value_obj);
       });
@@ -188,13 +188,7 @@ export const vsRender = (items, keyword, search_option) => {
     let h = window.innerHeight - offset - 310;
     options.height = (h < 430) ? 430 : h;
     options.keyword = searched_keyword;
-    html = $.templates({
-      markup: tmpl,
-      allowCode: true
-    }).render({
-      options: options,
-      values: values
-    });
+    html = template(values, options);
   }
   let result = {};
   result.len = values_count;

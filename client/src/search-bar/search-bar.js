@@ -1,8 +1,8 @@
 import { apiSuggest, apiSearchAll, apiGDCDictionaryVersion } from '../api';
 import render from '../render';
-import tmpl from './search-bar.html';
 import { getHeaderOffset } from '../shared';
 import { removePopUps } from '../dialog/dialog';
+import template from './search-bar-view';
 
 let displayBoxIndex = -1;
 
@@ -183,7 +183,7 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
       $suggestBox.css({ left: '', width: '' });
     }
 
-    let html = $.templates(tmpl).render({ results: results });;
+    let html = template(results);
     displayBoxIndex = -1;
 
     $suggestBox.show().html(html);

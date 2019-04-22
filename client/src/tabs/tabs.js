@@ -1,4 +1,4 @@
-import tmpl from './tabs.html';
+import template from './tabs-view';
 
 const storageTabHandle = (valueTab) => {
   const option = JSON.parse(localStorage.getItem('option'));
@@ -7,8 +7,7 @@ const storageTabHandle = (valueTab) => {
 }
 
 export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
-
-  let html = $.templates(tmpl).render({
+  let options = {
     trs_active: trsHtml.active,
     trs_len: trsHtml.len,
     trsHtml: trsHtml.html,
@@ -19,7 +18,8 @@ export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
     vs_len: vsHtml.len,
     vsHtml: vsHtml.html,
     keyword: keyword
-  });
+  };
+  let html = template(options);
 
   return html;
 }
