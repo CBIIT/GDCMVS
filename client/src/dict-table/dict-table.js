@@ -1,4 +1,4 @@
-import tmpl from './dict-table.html';
+import template from './dict-table-view';
 
 const treeviewToggleHandle = (event) => {
   event.preventDefault();
@@ -65,7 +65,7 @@ const treeviewToggleAllHandle = (event) => {
 
 export const dtRender = (items, keyword, search_option) => {
   // Final data
-  let trs = [];
+  let dictionary = [];
   // final result
   let result = {};
   result.len = 0;
@@ -269,17 +269,14 @@ export const dtRender = (items, keyword, search_option) => {
       category_obj.nodes.push(node_obj);
       category_obj.length += node_obj.length;
     }
-    trs.push(category_obj);
+    dictionary.push(category_obj);
     result.len += category_obj.length;
   }
 
   let offset = $('#root').offset().top;
   let h = window.innerHeight - offset - 313;
   options.height = (h < 430) ? 430 : h;
-  let html = $.templates(tmpl).render({
-    options: options,
-    trs: trs
-  });
+  let html = template(dictionary, options);
   result.html = html;
   return result;
 }
