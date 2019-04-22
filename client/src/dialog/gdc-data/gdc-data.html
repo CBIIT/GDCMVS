@@ -37,7 +37,7 @@
                     <div class="table__td table__td--slim col-xs-4">{{:n}}</div>
                     <div class="table__td table__td--slim col-xs-3">{{if i_c}}{{:i_c.c}}{{/if}}</div>
                     <div class="table__td table__td--slim col-xs-5">
-                      {{if i_c}}{{if i_c.n}}
+                      {{if ic_enum}}
                         <table class="table table-striped">
                           <thead>
                             <tr>
@@ -46,7 +46,7 @@
                               <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                             </tr>
                           </thead>
-                          {{for i_c.n}}
+                          {{for ic_enum}}
                           <tr>
                             <td class="table__td--term">{{:n}}</td>
                             <td class="table__td--source">ICD-O-3</td>
@@ -54,7 +54,7 @@
                           </tr>
                           {{/for}}
                         </table>
-                      {{else}}<b>{{:n}}</b>{{/if}}{{/if}}
+                      {{/if}}
                     </div>
                   </div>
                 {{else}}
@@ -62,7 +62,7 @@
                     <div class="table__td table__td--slim col-xs-4">{{:n}}</div>
                     <div class="table__td table__td--slim col-xs-3">{{if i_c}}{{:i_c.c}}{{/if}}</div>
                     <div class="table__td table__td--slim col-xs-5">
-                      {{if i_c}}{{if i_c.n}}
+                      {{if ic_enum}}
                         <table class="table table-striped">
                           <thead>
                             <tr>
@@ -71,7 +71,7 @@
                               <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
                             </tr>
                           </thead>
-                          {{for i_c.n}}
+                          {{for ic_enum}}
                           <tr>
                             <td class="table__td--term">{{:n}}</td>
                             <td class="table__td--source">ICD-O-3</td>
@@ -79,7 +79,7 @@
                           </tr>
                           {{/for}}
                         </table>
-                      {{else}}<b>{{:n}}</b>{{/if}}{{/if}}
+                      {{/if}}
                     </div>
                   </div>
                 {{/if}}
@@ -89,7 +89,7 @@
                 <div class="table__row row">
                   <div class="table__td table__td--slim col-xs-4">{{:n}}</div>
                   <div class="table__td table__td--slim col-xs-3">{{if i_c}}{{:i_c.c}}{{/if}}</div>
-                  <div class="table__td table__td--slim col-xs-5">{{if i_c}}{{if i_c.n}}{{for i_c.n}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}{{/if}}</div>
+                  <div class="table__td table__td--slim col-xs-5">{{if ic_enum}}{{for ic_enum}}{{:}}</br>{{/for}}{{else}}{{:n}}{{/if}}</div>
                 </div>
               {{/for}}
             {{/if}}

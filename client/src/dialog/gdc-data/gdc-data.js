@@ -3,9 +3,6 @@ import { apiGetGDCDataById } from '../../api';
 import { getHeaderOffset, htmlChildContent} from '../../shared';
 
 const gdcData = (prop, tgt, keyword) => {
-  console.log(prop);
-  console.log(tgt);
-  console.log(keyword);
   apiGetGDCDataById(prop, function (id, items) {
     if ($('#gdc_data').length) {
       $('#gdc_data').remove();
@@ -14,45 +11,23 @@ const gdcData = (prop, tgt, keyword) => {
     let windowEl = $(window);
     let icdo = false;
     let new_items = [];
-    let new_item_checker = {};
-    let tmp_obj = {};
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let body_template = htmlChildContent('BodyTemplate', tmpl);
-    // RegExp Keyword
-    // Don't replace with anything, if keyword is null
-    keyword = keyword === null || keyword === undefined ? '@#$%^' : keyword.trim().replace(/[\ ,:_-]+/g, " ");
-    let reg_key = new RegExp(keyword.replace(/( NOT | AND | OR )/g, "|"), "ig");
-    console.log(items);
+
+    let reg_key = new RegExp(tgt.replace(/<b>/g, "").replace(/<\/b>/g, ""), "ig");
     items.forEach(function (item) {
-      if (item.i_c !== undefined) {
-        icdo = true;
-      }
-      if (item.gdc_d === true) {
-        if(tmp_obj[item.n] !== undefined && !new_item_checker[item.n]){
-          let tmp_data = {};
-          tmp_data.n = tgt !== null && tgt !== undefined && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
-          tmp_data.i_c = tmp_obj[item.n];
-          tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
-          tmp_data.n_c = item.n_c;
-          tmp_data.s = item.s;
-          new_items.push(tmp_data);
-          new_item_checker[item.n] = tmp_data;
-        } else if(!new_item_checker[item.n]){
-          let tmp_data = {};
-          if (item.i_c !== undefined) {
-            tmp_data.i_c = tmp_obj[item.i_c.c];
-            tmp_data.i_c.c = tmp_data.i_c.c.replace(reg_key, "<b>$&</b>");
-          }
-          tmp_data.n = tgt !== null && tgt !== undefined && item.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : item.n;
-          tmp_data.n_c = item.n_c;
-          tmp_data.s = item.s;
-          new_items.push(tmp_data);
-          new_item_checker[item.n] = tmp_data;
-        }
-      }
+      let source = item._source;
+      source.enum.forEach(value => {
+        let value_obj = {};
+        value_obj.n = tgt !== null && tgt !== undefined && value.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : value.n;
+        if(value.i_c !== undefined) icdo = true;
+        if(value.i_c !== undefined) value_obj.i_c = {};
+        if(value.i_c !== undefined) value_obj.i_c.c = value.i_c.c;
+        if(value.ic_enum !== undefined) value_obj.ic_enum = value.ic_enum;
+        new_items.push(value_obj);
+      });
     });
     items = new_items;
-
     //open loading animation
     if (items.length > 500 ) {
       $('#gdc-loading-icon').show()
