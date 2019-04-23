@@ -128,8 +128,9 @@ export const dtRender = (items, keyword, search_option) => {
         property_obj.property = source.property;
         property_obj.property_desc = source.property_desc;
       }
-
-      property_obj.all_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
+      let highlight_value_obj = {};
+      if(enum_hits.total !== 0) highlight_value_obj = getAllValueHighlight(enum_hits);
+      property_obj.all_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n;}) : [];
       property_obj.all_values.sort();
 
       if(enum_hits.total !== 0 && highlight_cdeId === undefined){
@@ -140,15 +141,16 @@ export const dtRender = (items, keyword, search_option) => {
           let highlight_value_obj = getHighlightObj(highlight_value);
           let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
           if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
+          property_obj.hl_values.sort();
         });
       }
       else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
         let highlight_value_obj = getAllValueHighlight(enum_hits);
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
+        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
         property_obj.hl_values.sort();
       }
       else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
+        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return x.n;})  : [];
         property_obj.hl_values.sort();
       }
       property_obj.length += property_obj.hl_values.length;
@@ -204,8 +206,9 @@ export const dtRender = (items, keyword, search_option) => {
         property_obj.property = source.property;
         property_obj.property_desc = source.property_desc;
       }
-
-      property_obj.all_values = source.enum ? source.enum.map(function(x){ return x.n;}) : [];
+      let highlight_value_obj = {};
+      if(enum_hits.total !== 0) highlight_value_obj = getAllValueHighlight(enum_hits);
+      property_obj.all_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n;}) : [];
       property_obj.all_values.sort();
 
       if(enum_hits.total !== 0 && highlight_cdeId === undefined){
@@ -216,15 +219,16 @@ export const dtRender = (items, keyword, search_option) => {
           let highlight_value_obj = getHighlightObj(highlight_value);
           let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
           if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
+          property_obj.hl_values.sort();
         });
       }
       else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
         let highlight_value_obj = getAllValueHighlight(enum_hits);
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
+        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
         property_obj.hl_values.sort();
       }
       else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum ? source.enum.map(function(x){ return x.n;})  : [];
+        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return x.n;})  : [];
         property_obj.hl_values.sort();
       }
       property_obj.length += property_obj.hl_values.length;

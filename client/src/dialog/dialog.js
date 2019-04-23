@@ -4,6 +4,7 @@ import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
 import sourceDetails from './source-details/source-details';
 import typeDetails from './type-details/type-details';
+import { sortAlphabetically } from '../shared';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getGDCData', (event) => {
@@ -219,7 +220,7 @@ const compareGDCvalues = (fromV, toV, option) => {
         }
       })
     }
-    if(text.length > 0) text.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+    if(text.length > 0) text = sortAlphabetically(text);
     if(text.length === 0) text.push({n: '', n_c: '', match: caseSensitiveV, s: []});
     items = items.concat(JSON.parse(JSON.stringify(text)));
   });
