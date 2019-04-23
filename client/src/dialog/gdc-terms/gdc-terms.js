@@ -1,6 +1,6 @@
 import tmpl from './gdc-terms.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, searchFilter, getAllSyn } from '../../shared';
+import { getHeaderOffset, htmlChildContent, searchFilter, getAllSyn, sortAlphabetically } from '../../shared';
 
 const GDCTerms = (uid, tgts) => {
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
@@ -35,7 +35,7 @@ const GDCTerms = (uid, tgts) => {
     }
 
     // Sort the list alphabetical order.
-    items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+    items = sortAlphabetically(items);
 
     let header = $.templates(header_template).render({
       targets: targets,
