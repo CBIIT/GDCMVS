@@ -13,25 +13,8 @@ export default function ncitDetails(uid){
     let tmp = {};
     tmp.code = item.code;
     tmp.name = item.preferredName
-    tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI' }).description : undefined;
+    tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI' }) !== undefined ? item.definitions.find(function (defs) { return defs.defSource === 'NCI' }).description : "" : undefined;
     tmp.synonyms = item.synonyms;
-
-    // //remove the duplicate
-    // let cache = {};
-    // if (tmp_s.length > 0) {
-    //   tmp_s.forEach(function (s) {
-    //     let lc = s.termName.trim().toLowerCase();
-    //     if(cache[lc] === undefined){
-    //       cache[lc] = [];
-    //     }
-    //     cache[lc].push(s);
-    //   });
-    //   for (let idx in cache) {
-    //     //find the term with the first character capitalized
-    //     let word = findCapitalWord(cache[idx]);
-    //     tmp.synonyms.push(word);
-    //   }
-    // }
 
     let windowEl = $(window);
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
