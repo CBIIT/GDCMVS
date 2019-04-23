@@ -2,7 +2,8 @@ import gdcData from './gdc-data/gdc-data';
 import toCompare from './to-compare/to-compare';
 import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
-import { renderSource, renderType } from './abbrevation/abbrevation'
+import sourceDetails from './source-details/source-details';
+import typeDetails from './type-details/type-details';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getGDCData', (event) => {
@@ -34,12 +35,12 @@ export const dialogEvents = ($root, $body) => {
 
   $body.on('click', '.getSourceDetails', (event) => {
     event.preventDefault();
-    renderSource();
+    sourceDetails();
   });
 
   $body.on('click', '.getTypeDetails', (event) => {
     event.preventDefault();
-    renderType();
+    typeDetails();
   });
 
   $body.on('click', '.compare-form__toggle', (event) => {
