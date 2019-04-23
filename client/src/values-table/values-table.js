@@ -1,5 +1,5 @@
 import template from './values-table-view';
-import { getHeaderOffset, getHighlightObj } from '../shared'
+import { getHeaderOffset, getHighlightObj, sortAlphabetically } from '../shared'
 
 let term_type_not_assigned = false;
 
@@ -132,6 +132,7 @@ export const vsRender = (items, keyword) => {
         }
       });
       obj.n_syn = synExists;
+      obj.vs = sortAlphabetically(obj.vs);
       values_count += obj.vs.length;
       values.push(obj);
     }
@@ -246,6 +247,7 @@ const getAllValues = (data) => {
     }
     values.push(value_obj);
   });
+  values = sortAlphabetically(values);
   return values;
 }
 
