@@ -17,9 +17,6 @@ export default function ncitDetails(uid){
     tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI' }).description : undefined;
     tmp.s = item.synonyms;
 
-    //let header_template = htmlChildContent('HeaderTemplate', tmpl);
-    //let body_template = htmlChildContent('BodyTemplate', tmpl);
-
     let header = header_template;
     let html = body_template(tmp);
 
