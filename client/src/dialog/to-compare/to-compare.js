@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare, showCompareResult } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, searchFilter,searchFilterCR , getAllSyn } from '../../shared';
+import { getHeaderOffset, getScrollTop, htmlChildContent, searchFilter,searchFilterCR , getAllSyn } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -10,7 +10,6 @@ const toCompare = (uid) => {
       $('#compare_dialog').remove();
     }
 
-    let windowEl = $(window);
     let header_template = htmlChildContent('HeaderTemplate', tmpl);
     let body_template = htmlChildContent('BodyTemplate', tmpl);
     let bottom_template = htmlChildContent('BottomTemplate', tmpl);
@@ -21,9 +20,9 @@ const toCompare = (uid) => {
     }
 
     //open loading animation
-    if (items.length > 500 ) {
-      $('#gdc-loading-icon').show()
-    }
+    let isAnimated = false;
+    if (items.length > 1000 ) isAnimated = true;
+    if (isAnimated) $('#gdc-loading-icon').show();
 
     // Sort the list alphabetical order.
     items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
@@ -31,19 +30,12 @@ const toCompare = (uid) => {
     let html = $.templates(body_template).render({ items: items });
     let bottom = $.templates(bottom_template).render();
 
-    let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 : window.innerHeight * 0.2;
-
     setTimeout(() => {
       //display result in a table
       $(document.body).append(html);
 
       $("#compare_dialog").dialog({
         modal: false,
-        position: {
-          my: "center top+" + tp,
-          at: "center top",
-          of: $('#docs-container')
-        },
         width: 1200,
         height: 590,
         minWidth: 1200,
@@ -55,14 +47,12 @@ const toCompare = (uid) => {
 
           let previous_keyword = '';
 
-          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.5em').html(header);
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.8em').html(header);
           $(this).after(bottom);
 
-          var target = $(this).parent();
-          if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
-            target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
-          } else {
-            target.css('top', (target.offset().top - 50) + 'px');
+          let target = $(this).parent();
+          if ((target.offset().top - getScrollTop()) < getHeaderOffset()) {
+            target.css('top', (getScrollTop() + getHeaderOffset() + 10) + 'px');
           }
 
           $('#cp_result').css("display", "none");
@@ -77,7 +67,6 @@ const toCompare = (uid) => {
             dataSource: items,
             pageSize: 50,
             callback: function(data, pagination) {
-              //let invariant = $('#gdc-data-invariant').prop("checked");
               let html = templateList(data);
               $('#cp_right').html(html);
             }
@@ -95,19 +84,23 @@ const toCompare = (uid) => {
           // Add Search Filter functionality
           $('#compare-input').on('input', () => {
             let keyword = $('#compare-input').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
-            if(previous_keyword === keyword) return;
+            if (previous_keyword === keyword) return;
             previous_keyword = keyword;
             let keywordCase = $('#compare-input').val().trim().replace(/[\ ]+/g, " ");
-            if(keyword.length >= 3) {
-              let new_item = searchFilter(items, keyword);
-              $('#pagination-compare').pagination({
-                dataSource: new_item,
-                pageSize: 50,
-                callback: function(data, pagination) {
-                  let html = templateList(data, keywordCase);
-                  $('#cp_right').html(html);
-                }
-              });
+            if (keyword.length >= 3) {
+              if (isAnimated) $('#compare-input-icon').html('<i class="fa fa-spinner fa-pulse"></i>');
+              setTimeout(() => {
+                let new_item = searchFilter(items, keyword);
+                $('#pagination-compare').pagination({
+                  dataSource: new_item,
+                  pageSize: 50,
+                  callback: function(data, pagination) {
+                    let html = templateList(data, keywordCase);
+                    $('#cp_right').html(html);
+                    if (isAnimated) $('#compare-input-icon').html('<i class="fa fa-search"></i>');
+                  }
+                });
+              }, 100);
             } else {
               $('#pagination-compare').pagination({
                 dataSource: items,
@@ -123,23 +116,29 @@ const toCompare = (uid) => {
           let prev_keyword = "";
           $('#compare-matched').on('input', () => {
             let keyword = $('#compare-matched').val().trim().replace(/[\ ]+/g, " ").toLowerCase();
-            if(prev_keyword === keyword) return;
+            if (prev_keyword === keyword) return;
             prev_keyword = keyword;
             let keywordCase = $('#compare-matched').val().trim().replace(/[\ ]+/g, " ");
-            if(keyword.length >= 3) {
+            let isAnimatedMatch = false;
+            if (keyword.length >= 3) {
               const items = $('#compare-matched').data('compareResult');
               const options = $('#compare-matched').data('options');
-              const new_item = searchFilterCR(items, keyword);
 
-              $('#pagination-matched').pagination({
-                dataSource: new_item,
-                pageSize: 50,
-                callback: function(data, pagination) {
-                  const html = showCompareResult(data, options, keywordCase);
-                  $('#compare_result').html(html);
-                }
-              });
+              if (items.length > 1000 ) isAnimatedMatch = true;
+              if (isAnimatedMatch) $('#compare-input-icon').html('<i class="fa fa-spinner fa-pulse"></i>');
 
+              setTimeout(() => {
+                const new_item = searchFilterCR(items, keyword);
+                $('#pagination-matched').pagination({
+                  dataSource: new_item,
+                  pageSize: 50,
+                  callback: function(data, pagination) {
+                    const html = showCompareResult(data, options, keywordCase);
+                    $('#compare_result').html(html);
+                    if (isAnimatedMatch) $('#compare-input-icon').html('<i class="fa fa-search"></i>');
+                  }
+                });
+              }, 100);
             } else {
               const items = $('#compare-matched').data('compareResult');
               const options = $('#compare-matched').data('options');
@@ -156,9 +155,7 @@ const toCompare = (uid) => {
           });
 
           //remove loading animation
-          if (items.length > 500) {
-            $('#gdc-loading-icon').hide()
-          }
+          if (isAnimated) $('#gdc-loading-icon').hide()
         },
         close: function () {
           $(this).remove();
