@@ -174,6 +174,11 @@ export const searchFilterCR = (items, keyword) => {
   return new_item;
 }
 
+export const sortAlphabetically = (values) => {
+  values.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+  return values;
+}
+
 export const getHighlightObj = (highlight) => {
   let highlightObj = {};
   if(highlight !== undefined){

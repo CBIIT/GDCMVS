@@ -153,9 +153,9 @@ const searchP = (req, res) => {
 };
 
 const generateQuery = (keyword, option, isBoolean) => {
-	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 	let query = {};
 	if(option.match === "exact"){ // Perform exact search
+		if (/[^\w\d\s]/g.test(keyword) === true) keyword = keyword.replace(/[^\w\d\s]/g, '\\$&') // Escape special characters
 		query.bool = {};
 		query.bool.should = [];
 		let m = {};
@@ -191,6 +191,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		query.bool.should.push(m);
 	}
 	else if(option.match !== "exact" && isBoolean === true){ // Perform boolean search
+		if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 		query.bool = {};
 		query.bool.should = [];
 		let m = {};
@@ -228,6 +229,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		query.bool.should.push(m);
 	}
 	else{ // If it's partial and not a boolean search
+	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
 		query.bool = {};
 		query.bool.should = [];
 

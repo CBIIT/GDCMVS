@@ -1,6 +1,6 @@
 import tmpl from './gdc-data.html';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent} from '../../shared';
+import { getHeaderOffset, htmlChildContent, sortAlphabetically} from '../../shared';
 
 const gdcData = (prop, tgt, keyword) => {
   apiGetGDCDataById(prop, function (id, items) {
@@ -34,7 +34,7 @@ const gdcData = (prop, tgt, keyword) => {
     }
 
     // Sort the list alphabetical order.
-    items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+    items = sortAlphabetically(items);
 
     let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
 
