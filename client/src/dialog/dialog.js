@@ -47,8 +47,6 @@ export const dialogEvents = ($root, $body) => {
     event.preventDefault();
     const $this = $(event.currentTarget);
     const $target = $this.closest('.compare-form__values, .table__gdc-match').find('.compare-form__synm');
-    const $matched = $this.closest('.compare-form__values, .table__gdc-match').find('.compare-form__matched');
-    $matched.slideToggle(350);
     $target.slideToggle(350, () => {
       if ($target.is(":visible")) {
         $this.attr('title', 'collapse');
@@ -810,10 +808,6 @@ export const removePopUps = () => {
     $('#gdc_data').remove();
   }
 
-  if ($('#caDSR_data').length) {
-    $('#caDSR_data').remove();
-  }
-
   if ($('#gdc_terms_data').length) {
     $('#gdc_terms_data').remove();
   }
@@ -826,7 +820,11 @@ export const removePopUps = () => {
     $('#compare_dialog').remove();
   }
 
-  if ($('#compareGDC_dialog').length) {
-    $('#compareGDC_dialog').remove();
+  if ($('#type_details').length) {
+    $('#type_details').remove();
+  }
+
+  if ($('#source_details').length) {
+    $('#source_details').remove();
   }
 }
