@@ -1,7 +1,7 @@
 import tmpl from './to-compare.html';
 import { compare, showCompareResult } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, getScrollTop, htmlChildContent, searchFilter,searchFilterCR , getAllSyn } from '../../shared';
+import { getHeaderOffset, getScrollTop, htmlChildContent, searchFilter, searchFilterCR, getAllSyn, sortAlphabetically } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -25,7 +25,7 @@ const toCompare = (uid) => {
     if (isAnimated) $('#gdc-loading-icon').show();
 
     // Sort the list alphabetical order.
-    items.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+    items = sortAlphabetically(items);
     let header = $.templates(header_template).render();
     let html = $.templates(body_template).render({ items: items });
     let bottom = $.templates(bottom_template).render();
