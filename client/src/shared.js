@@ -48,7 +48,7 @@ export const errorNotification = (status, errorThrown) => {
 };
 
 export const dialogsOnResize = ($window) => {
-  const dialogs = $('#gdc_data, #gdc_terms_data, #compare_dialog, #ncit_details, #caDSR_data, #compareGDC_dialog, #source_details, #type_details');
+  const dialogs = $('#gdc_data, #gdc_terms_data, #ncit_details, #compare_dialog, #source_details, #type_details');
   if (dialogs.length == 0) return;
   dialogs.each((index, element) => {
     const $target = $(element).parent();
