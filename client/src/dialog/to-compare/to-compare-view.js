@@ -1,4 +1,4 @@
-<HeaderTemplate>
+export const header_template = `
   <div class="dialog__header">
     <div class="dialog__titlebar">
       <span id="ui-id-4" class="ui-dialog-title">Compare Your Values with GDC Values</span>
@@ -36,8 +36,8 @@
       </div>
     </div>
   </div>
-</HeaderTemplate>
-<BodyTemplate>
+`
+export const body_template = `
   <div id="compare_dialog" class="compare_dialog">
     <div id="compare_form" class="compare-form">
       <div id="cp_top" class="compare-form__top">
@@ -56,8 +56,9 @@
     </div>
     <div id="compare_result" class="compare_result" style="display: none;"></div>
   </div>
-</BodyTemplate>
-<BottomTemplate>
+`
+
+export const footer_template = `
   <div id="cp_bottom" class="compare-form__bottom">
     <button id="compare" class="btn btn-default compare-form__button">Compare</button>
     <button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>
@@ -69,4 +70,5 @@
         <div id="pagination-matched" class="dialog__pagination"></div>
       </div>
     </div>
-</BottomTemplate>
+  </div>
+`

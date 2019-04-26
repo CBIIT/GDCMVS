@@ -1,7 +1,7 @@
-import tmpl from './to-compare.html';
+import { header_template, body_template, footer_template } from './to-compare-view'
 import { compare, showCompareResult } from '../dialog'
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, getScrollTop, htmlChildContent, searchFilter, searchFilterCR, getAllSyn, sortAlphabetically } from '../../shared';
+import { getHeaderOffset, getScrollTop, searchFilter, searchFilterCR, getAllSyn, sortAlphabetically } from '../../shared';
 
 const toCompare = (uid) => {
   uid = uid.replace(/@/g, '/');
@@ -9,10 +9,6 @@ const toCompare = (uid) => {
     if ($('#compare_dialog').length) {
       $('#compare_dialog').remove();
     }
-
-    let header_template = htmlChildContent('HeaderTemplate', tmpl);
-    let body_template = htmlChildContent('BodyTemplate', tmpl);
-    let bottom_template = htmlChildContent('BottomTemplate', tmpl);
 
     // Collecting all synonyms and ncit code in one array for particular ICDO3 code
     if(items[0]._source.enum !== undefined){
@@ -26,9 +22,9 @@ const toCompare = (uid) => {
 
     // Sort the list alphabetical order.
     items = sortAlphabetically(items);
-    let header = $.templates(header_template).render();
-    let html = $.templates(body_template).render({ items: items });
-    let bottom = $.templates(bottom_template).render();
+    let header = header_template;
+    let html = body_template;
+    let bottom = footer_template;
 
     setTimeout(() => {
       //display result in a table
