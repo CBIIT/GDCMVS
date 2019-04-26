@@ -1,4 +1,3 @@
-// import tmpl from './ncit-details.html';
 import { header_template, body_template } from './ncit-details-view';
 import { apiEVSRest } from '../../api';
 import { getHeaderOffset, getScrollTop, htmlChildContent } from '../../shared';
