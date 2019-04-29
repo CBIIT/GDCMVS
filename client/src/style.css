@@ -254,11 +254,12 @@ a:hover, a:focus {
 
 .table__th--term,
 .table__td--term {
-  width: 65%;
+  width: 63%;
 }
+
 .table__th--source,
 .table__td--source {
-  width: 20%;
+  width: 22%;
 }
 
 .table__th--type,
