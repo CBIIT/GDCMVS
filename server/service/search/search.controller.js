@@ -155,7 +155,7 @@ const searchP = (req, res) => {
 const generateQuery = (keyword, option, isBoolean) => {
 	let query = {};
 	if(option.match === "exact"){ // Perform exact search
-		if (/[^\w\d\s]/g.test(keyword) === true) keyword = keyword.replace(/[^\w\d\s]/g, '\\$&') // Escape special characters
+		if (/[^\w\d\s]/g.test(keyword) === true && isBoolean === false) keyword = keyword.replace(/[^\w\d\s]/g, '\\$&') // Escape special characters
 		query.bool = {};
 		query.bool.should = [];
 		let m = {};
