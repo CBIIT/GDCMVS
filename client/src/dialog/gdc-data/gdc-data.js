@@ -1,6 +1,6 @@
-import tmpl from './gdc-data.html';
+import { header_template, body_template } from './gdc-data-view';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, htmlChildContent, sortAlphabetically} from '../../shared';
+import { getHeaderOffset, getScrollTop, sortAlphabetically} from '../../shared';
 
 const gdcData = (prop, tgt, keyword) => {
   apiGetGDCDataById(prop, function (id, items) {
@@ -8,13 +8,10 @@ const gdcData = (prop, tgt, keyword) => {
       $('#gdc_data').remove();
     }
 
-    let windowEl = $(window);
     let icdo = false;
     let new_items = [];
-    let header_template = htmlChildContent('HeaderTemplate', tmpl);
-    let body_template = htmlChildContent('BodyTemplate', tmpl);
-
     let reg_key = new RegExp(tgt.replace(/<b>/g, "").replace(/<\/b>/g, ""), "ig");
+
     items.forEach(function (item) {
       let source = item._source;
       source.enum.forEach(value => {
@@ -28,30 +25,19 @@ const gdcData = (prop, tgt, keyword) => {
       });
     });
     items = new_items;
+
     //open loading animation
-    if (items.length > 500 ) {
-      $('#gdc-loading-icon').show()
-    }
+    let isAnimated = false;
+    if (items.length > 1000 ) isAnimated = true;
+    if (isAnimated) $('#gdc-loading-icon').show();
 
     // Sort the list alphabetical order.
     items = sortAlphabetically(items);
 
     let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
 
-    let header = $.templates(header_template).render({
-      target: target,
-      icdo: icdo,
-      items_length: items.length
-    }).trim();
-    let html = $.templates(body_template).render({
-      target: target,
-      keyword: keyword,
-      icdo: icdo,
-      items: items
-    }).trim();
-
-    let tp = (window.innerHeight * 0.2 < getHeaderOffset()) ? 20 :
-      window.innerHeight * 0.2;
+    let header = header_template(target, icdo, items.length);
+    let html = body_template(target, icdo, items);
 
     setTimeout(() => {
       //display result in a table
@@ -71,11 +57,6 @@ const gdcData = (prop, tgt, keyword) => {
 
       $('#gdc_data').dialog({
         modal: false,
-        position: {
-          my: 'center top+' + tp,
-          at: 'center top',
-          of: $('#docs-container')
-        },
         width: dialog_width.width,
         minWidth: dialog_width.minWidth,
         maxWidth: dialog_width.maxWidth,
@@ -85,25 +66,22 @@ const gdcData = (prop, tgt, keyword) => {
         open: function () {
           //add new custom header
           if (icdo) {
-            $(this).prev('.ui-dialog-titlebar').css('padding-top',
-              '7.5em').html(header);
+            $(this).prev('.ui-dialog-titlebar').css('padding-top','7.8em').html(header);
           } else {
-            $(this).prev('.ui-dialog-titlebar').css('padding-top',
-              '3.8em').html(header);
+            $(this).prev('.ui-dialog-titlebar').css('padding-top','3.8em').html(header);
           }
 
-          var target = $(this).parent();
-          if ((target.offset().top - windowEl.scrollTop()) < getHeaderOffset()) {
-            target.css('top', (windowEl.scrollTop() + getHeaderOffset() + 20) + 'px');
+          let target = $(this).parent();
+          if ((target.offset().top - getScrollTop()) < getHeaderOffset()) {
+            target.css('top', (getScrollTop() + getHeaderOffset() + 10) + 'px');
           }
 
           $('#close_gdc_data').bind('click', function () {
             $("#gdc_data").dialog('close');
           });
 
-          if (items.length > 500 ) {
-            $('#gdc-loading-icon').hide()
-          }
+          //remove loading animation
+          if (isAnimated) $('#gdc-loading-icon').hide();
         },
         close: function () {
           $(this).remove();
