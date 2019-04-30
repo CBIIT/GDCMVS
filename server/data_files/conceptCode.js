@@ -961,16 +961,7 @@
     },
     "clinical.diagnosis.primary_diagnosis": {
         "Not Reported": "C43234",
-        "Unknown": "C17998",
-        "Adamantinoma, NOS": "C7644",
-        "B lymphoblastic leukemia/lymphoma with hypodiploidy (Hypodiploid ALL)": "C80345",
-        "Endocrine tumor, functioning, NOS": "C94759",
-        "Esophageal squamous intraepithelial neoplasia (dysplasia), high grade": "C27426",
-        "Melanotic psammomatous MPNST": "C6910",
-        "Primary cutaneous DLBCL, leg type": "C45194",
-        "RAEB I": "C7167",
-        "RAEB II": "C7168",
-        "Schmincke tumor": "C4107"
+        "Unknown": "C17998"
     },
     "biospecimen.sample.biospecimen_anatomic_site": {
         "Abdomen": "C12664",
