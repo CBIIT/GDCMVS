@@ -124,7 +124,7 @@ const exportMapping = (req, res) => {
 	let merges = [];
 	let data = [];
 	let heading = [
-		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID','ICDO3 Code', 'ICDO3 Strings','Term Type']
+		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','ICDO3 Code', 'ICDO3 Strings','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
 	];
 	let specification = {
 		c: {
@@ -145,15 +145,6 @@ const exportMapping = (req, res) => {
 		ncit_c: {
 			width: 200
 		},
-		cde_v: {
-			width: 200
-		},
-		cde_c: {
-			width: 200
-		},
-		cde_id: {
-			width: 200
-		},
 		i_c:{
 			width: 200
 		},
@@ -161,6 +152,15 @@ const exportMapping = (req, res) => {
 			width: 200
 		},
 		t_t:{
+			width: 200
+		},
+		cde_v: {
+			width: 200
+		},
+		cde_c: {
+			width: 200
+		},
+		cde_id: {
 			width: 200
 		}
 	};
