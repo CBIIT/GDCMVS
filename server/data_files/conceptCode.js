@@ -2572,7 +2572,7 @@
         "Downstream Gene Variant": "C63431",
         "Feature Elongation": "C148640",
         "Feature Truncation": "C148641",
-        "Frameshift Variant": "C17345",
+        "Frameshift Variant": "C17354",
         "Incomplete Terminal Codon Variant": "",
         "Inframe Deletion": "",
         "Inframe Insertion": "",
