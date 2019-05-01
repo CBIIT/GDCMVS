@@ -151,7 +151,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				let tmp = {};
 				tmp.pv = s;
 				tmp.pvc = cc[s];
-				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc].synonyms : [];
+				tmp.syn = tmp.pvc !== "" && syns[tmp.pvc] ? syns[tmp.pvc].synonyms : [];
 				entry.syns.push(tmp);
 			}
 			if (entry.enum === undefined) {
@@ -167,7 +167,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				tmp.pv = v.nm;
 				tmp.code = v.i_c;
 				tmp.pvc = v.n_c;
-				tmp.syn = tmp.pvc !== "" ? syns[tmp.pvc].synonyms : [];
+				tmp.syn = tmp.pvc !== "" && syns[tmp.pvc] ? syns[tmp.pvc].synonyms : [];
 				tmp.term_type = v.term_type;
 				entry.syns.push(tmp);
 				enums.push(v.nm);
