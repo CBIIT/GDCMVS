@@ -20,7 +20,6 @@ const shared = require('../service/search/shared');
 const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
 var cdeData = '';
-var cdeDataType = '';
 var gdc_values = {};
 var allProperties = [];
 
@@ -104,31 +103,6 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 						entry.syns = cdeData[entry.term.termDef.cde_id];
 						if (entry.syns !== undefined && entry.syns.length > 0) {
 							entry.cde_len = entry.syns.length;
-
-
-							//generate cde_pv for properties index
-							// p.cde_pv = [];
-							// entry.syns.forEach(sn => {
-							// 	let tmp = {};
-							// 	tmp.n = sn.pv;
-							// 	tmp.m = sn.pvm;
-							// 	tmp.d = sn.pvd;
-							// 	tmp.ss = [];
-							// 	if (sn.syn !== undefined) {
-							// 		let v = {};
-							// 		v.c = sn.pvc;
-							// 		v.s = sn.syn;
-							// 		tmp.ss.push(v);
-							// 	} else if (sn.ss !== undefined) {
-							// 		sn.ss.forEach(s => {
-							// 			let v = {};
-							// 			v.c = s.code;
-							// 			v.s = s.syn;
-							// 			tmp.ss.push(v);
-							// 		});
-							// 	}
-							// 	p.cde_pv.push(tmp);
-							// });
 						}
 					} else if (entry.term.termDef.source === 'NCIt') {
 						p.ncit = {};
@@ -140,6 +114,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				entry = extend(entry, entryRaw);
 			}
 		}
+		if(fileJson.category === 'administrative') fileJson.category = 'case';
 		let prop_full_name = fileJson.category + "." + fileJson.id + "." + prop;
 		//add conceptcode
 		if (prop_full_name in conceptCode) {
@@ -200,20 +175,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				}
 			});
 		}
-		// enums.forEach(enm => {
-		// 	let em = enm.toString().trim().toLowerCase();
-		// 	if (em in allTerm) {
-		// 		//if exist, then check if have the same type
-		// 		let t = allTerm[em];
-		// 		if (t.indexOf("v") == -1) {
-		// 			t.push("v");
-		// 		}
-		// 	} else {
-		// 		let t = [];
-		// 		t.push("v");
-		// 		allTerm[em] = t;
-		// 	}
-		// });
+		
 		// build type ahead index for CDE ID
 		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
 			let em = entry.term.termDef.cde_id.toString().trim().toLowerCase();
@@ -246,9 +208,6 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 			p.cde.id = entry.term.termDef.cde_id;
 			p.cde.v = entry.term.termDef.cde_version;
 			p.cde.url = entry.term.termDef.term_url;
-			if (p.cde.id in cdeDataType) {
-				p.cde.dt = cdeDataType[p.cde.id];
-			}
 		}
 		//generate enum
 		if (entry.syns == undefined) {
@@ -376,6 +335,7 @@ const bulkIndex = next => {
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
+			if(fileJson.category === 'administrative') fileJson.category = 'case';
 			let category = fileJson.category;
 			let node = fileJson.id;
 
@@ -402,31 +362,6 @@ const bulkIndex = next => {
 	let syns = shared.readNCItDetails();
 
 	cdeData = shared.readCDEData();
-	cdeDataType = shared.readCDEDataType();
-	// for (var c in cdeData) {
-	// 	let pvs = cdeData[c];
-	// 	pvs.forEach(pv => {
-	// 		if (pv.pvc !== null && pv.pvc.indexOf(':') === -1) {
-	// 			pv.syn = syns[pv.pvc].synonyms;
-	// 		}
-	// 		if (pv.pvc !== null && pv.pvc.indexOf(':') >= 0) {
-	// 			let cs = pv.pvc.split(":");
-	// 			let synonyms = [];
-	// 			cs.forEach(s => {
-	// 				if (!(s in syns)) {
-	// 					return;
-	// 				}
-	// 				let entry = {};
-	// 				entry.code = s;
-	// 				entry.syn = syns[s].synonyms;
-	// 				synonyms.push(entry);
-	// 			});
-	// 			pv.ss = synonyms;
-	// 		}
-	// 	});
-	// }
-	// var count = 0,
-	// 	total = 0;
 	var termsJson = yaml.load(folderPath + '/_terms.yaml');
 	var defJson = yaml.load(folderPath + '/_definitions.yaml');
 	extendDef(termsJson, defJson);
@@ -434,6 +369,7 @@ const bulkIndex = next => {
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			let fileJson = yaml.load(folderPath + '/' + file);
+			if(fileJson.category === 'administrative') fileJson.category = 'case';
 			if (fileJson.category !== "TBD" && fileJson.id !== "metaschema" && searchable_nodes.indexOf(fileJson.id) !== -1) {
 				logger.debug(folderPath + '/' + file);
 				for (let keys in fileJson.properties) {
