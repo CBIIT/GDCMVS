@@ -378,7 +378,7 @@ const preProcess = (searchable_nodes, data) => {
 	return data;
 }
 
-const exportDifference = (req, res) => {
+const exportDelta = (req, res) => {
 	let icdo3_prop = ["primary_diagnosis", "site_of_resection_or_biopsy", "tissue_or_organ_of_origin", "progression_or_recurrence_anatomic_site"];
 	let data = [];
 	let folderPath_old = path.join(__dirname, '../..', 'data_old');
@@ -1314,7 +1314,7 @@ const compareDataType = (req, res) => {
 module.exports = {
 	releaseNote,
 	exportAllValues,
-	exportDifference,
+	exportDelta,
 	exportMapping,
 	preProcess,
 	addTermType,
