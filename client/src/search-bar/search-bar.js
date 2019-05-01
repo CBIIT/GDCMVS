@@ -224,47 +224,45 @@ export const removeExternalLinkIcons = () => {
   });
 }
 
-export const renderLocalStorach = ($keywords, $root, $searchOptionsBox, $gdcLoadingIcon) => {
+export const renderLocalStorage = ($keywords, $root, $searchOptionsBox, $gdcLoadingIcon) => {
+
+  //remove previus local items
+  if(!localStorage.hasOwnProperty('items')){
+    localStorage.removeItem('items');
+  }
 
   if (localStorage.hasOwnProperty('keyword') &&
     localStorage.hasOwnProperty('option')) {
 
     $gdcLoadingIcon.show();
 
-    setTimeout(() => {
+    let keyword = localStorage.getItem('keyword');
+    let option = JSON.parse(localStorage.getItem('option'));
 
-      let keyword = localStorage.getItem('keyword');
-      let option = JSON.parse(localStorage.getItem('option'));
+    $keywords.val(keyword);
 
-      if (keyword != null || option != null || items != null) {
+    if (option.match != 'partial') {
+      $('#i_ematch').prop('checked', true);
+    }
+    if (option.desc != false) {
+      $('#i_desc').prop('checked', true);
+    }
+    if (option.syn != false) {
+      $('#i_syn').prop('checked', true);
+    }
 
-        $keywords.val(keyword);
+    $searchOptionsBox.show();
 
-        if (option.match != 'partial') {
-          $('#i_ematch').prop('checked', true);
-        }
-        if (option.desc != false) {
-          $('#i_desc').prop('checked', true);
-        }
-        if (option.syn != false) {
-          $('#i_syn').prop('checked', true);
-        }
-
-        $searchOptionsBox.show();
-        apiSearchAll(keyword, option, (keyword, option, items) => {
-          render($root, keyword, option, items);
-          //close progress bar
-          $gdcLoadingIcon.fadeOut('fast');
-        });
-      }
-
-    }, 100);
+    apiSearchAll(keyword, option, (keyword, option, items) => {
+      render($root, keyword, option, items);
+      //close progress bar
+      $gdcLoadingIcon.fadeOut('fast');
+    });
   }
 }
 
-
-export const gdcDictionaryVersion = ($gdcVersionContent) => {
+export const gdcDictionaryVersion = ($gdcVersionContent, callback) => {
   apiGDCDictionaryVersion((result) => {
-    $gdcVersionContent.html(`GDC Dictionary Version - ${result}`);
+    $gdcVersionContent.html(`GDC Dictionary Version - ${result}`)
   });
-}
+};
