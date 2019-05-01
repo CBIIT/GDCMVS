@@ -31,7 +31,7 @@ window.onload = () => {
 
     search.removeExternalLinkIcons();
 
-    search.renderLocalStorach($keywords, $root, $searchOptionsBox, $gdcLoadingIcon);
+    search.renderLocalStorage($keywords, $root, $searchOptionsBox, $gdcLoadingIcon);
 
     search.gdcDictionaryVersion($gdcVersionContent);
 
