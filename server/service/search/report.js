@@ -41,7 +41,7 @@ const exportAllValues = (req, res) => {
 	});
 	new_data = preProcess(searchable_nodes, new_data);
 	for (let key in new_data) {
-		let category = new_data[key].category;
+		let category = new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 		let node = new_data[key].id;
 		if (new_data[key].properties) {
 			let properties = new_data[key].properties
@@ -172,7 +172,7 @@ const exportMapping = (req, res) => {
 	});
 	new_data = preProcess(searchable_nodes, new_data);
 	for (let key in new_data) {
-		let category = new_data[key].category;
+		let category = new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 		let node = new_data[key].id;
 		if (new_data[key].properties) {
 			let properties = new_data[key].properties
@@ -378,7 +378,7 @@ const preProcess = (searchable_nodes, data) => {
 	return data;
 }
 
-const exportDifference = (req, res) => {
+const exportDelta = (req, res) => {
 	let icdo3_prop = ["primary_diagnosis", "site_of_resection_or_biopsy", "tissue_or_organ_of_origin", "progression_or_recurrence_anatomic_site"];
 	let data = [];
 	let folderPath_old = path.join(__dirname, '../..', 'data_old');
@@ -434,7 +434,7 @@ const exportDifference = (req, res) => {
 			console.log(key + " Doesn't exists in new Data");
 			let new_p_array = new_data[key].properties;
 			for (let key_p in new_p_array) {
-				let category = new_data[key].category;
+				let category = new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
 				if (new_p_array[key_p].enum && !new_p_array[key_p].deprecated_enum) {
@@ -478,7 +478,7 @@ const exportDifference = (req, res) => {
 
 			//checking properties in new data
 			for (let key_p in new_p_array) {
-				let category = new_data[key].category;
+				let category =  new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
 
@@ -787,7 +787,7 @@ const exportDifference = (req, res) => {
 			}
 			// checking properties in old data
 			for (let key_p in old_p_array) {
-				let category = new_data[key].category;
+				let category =  new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
 				if (!new_p_array[property]) {
@@ -1098,7 +1098,7 @@ const releaseNote = (req, res) => {
 		}
 	}
 	for(let node in new_data){
-		let category = new_data[node].category;
+		let category =  new_data[node].category && new_data[node].category === 'administrative' ? 'case' : new_data[node].category;
 		let n = new_data[node].id;
 		if(new_data[node].properties){
 			let p = new_data[node].properties;
@@ -1314,7 +1314,7 @@ const compareDataType = (req, res) => {
 module.exports = {
 	releaseNote,
 	exportAllValues,
-	exportDifference,
+	exportDelta,
 	exportMapping,
 	preProcess,
 	addTermType,
