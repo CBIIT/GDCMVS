@@ -158,9 +158,9 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
   }
 
   let keyword = PrevWord(event.currentTarget);
-  if (keyword.indexOf(' OR') !== -1 && keyword.indexOf(' AND') === -1 && keyword.indexOf(' NOT') === -1) keyword = keyword.substring(keyword.lastIndexOf(' OR') + 4);
-  if (keyword.indexOf(' AND') !== -1 && keyword.indexOf(' OR') === -1 && keyword.indexOf(' NOT') === -1) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
-  if (keyword.indexOf(' NOT') !== -1 && keyword.indexOf(' AND') === -1 && keyword.indexOf(' OR') === -1) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
+  if (keyword.indexOf(' OR') !== -1) keyword = keyword.substring(keyword.lastIndexOf(' OR') + 4);
+  if (keyword.indexOf(' AND') !== -1) keyword = keyword.substring(keyword.lastIndexOf(' AND') + 5);
+  if (keyword.indexOf(' NOT') !== -1) keyword = keyword.substring(keyword.lastIndexOf(' NOT') + 5);
 
   let partialKeyword = PrevWord(event.currentTarget);
   if ((/.+(NOT|AND|OR)/g).test(partialKeyword)) {
