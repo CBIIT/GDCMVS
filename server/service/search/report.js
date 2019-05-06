@@ -1307,8 +1307,85 @@ const compareDataType = (req, res) => {
 		res.attachment('datatype-comparison.xlsx'); // This is sails.js specific (in general you need to set headers) 
 		res.send(report);
 	});
-	
-	// res.send('Success');
+}
+
+const ttNotAssigned = (req, res) => {
+	let report_data = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'Value', 'ICD-O-3', 'ICD-O-3 string with no term types']
+	];
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		v: {
+			width: 200
+		},
+		ic: {
+			width: 200
+		},
+		ics: {
+			width: 200
+		}
+	};
+	const icdo3_property = [
+		'morphology', 
+		'primary_diagnosis', 
+		'tissue_or_organ_of_origin', 
+		'progression_or_recurrence_anatomic_site', 
+		'site_of_resection_or_biopsy'];
+
+	let query = {
+		"match_all": {}
+	}
+	elastic.query(config.index_p, query, null, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		data.forEach(hit => {
+			let source = hit._source;
+			let category = source.category;
+			let node = source.node;
+			let property = source.property;
+			if(icdo3_property.indexOf(property) !== -1){
+				let enums = source.enum;
+				enums.forEach(em => {
+					if(em.ic_enum === undefined) return;
+					em.ic_enum.forEach(ic => {
+						if(ic.term_type === '*'){
+							let result_obj = {};
+							result_obj.c = category;
+							result_obj.n = node;
+							result_obj.p = property;
+							result_obj.v = em.n;
+							result_obj.ic = em.i_c.c;
+							result_obj.ics = ic.n;
+							report_data.push(result_obj);
+						}
+					});
+				});
+			}
+		});
+		const report = excel.buildExport(
+			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+				{
+					name: 'Report', // <- Specify sheet name (optional) 
+					heading: heading, // <- Raw heading array (optional) 
+					specification: specification, // <- Report specification 
+					data: report_data // <-- Report data 
+				}
+			]
+		);
+		res.attachment('tt_not_assigned.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.send(report);
+	});
 }
 
 module.exports = {
@@ -1320,5 +1397,6 @@ module.exports = {
 	addTermType,
 	icdoMapping,
 	exportMorphology,
-	compareDataType
+	compareDataType,
+	ttNotAssigned
 }
