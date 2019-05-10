@@ -1050,93 +1050,68 @@ const icdoMapping = (req, res) => {
 
 const releaseNote = (req, res) => {
 	let merges = [];
-	let data = [];
+	let result_data = [];
 	let heading = [
-		['Category | Node | Property', 'Total values','Total Values Mapped to ICDO','Total Values Mapped to EVS']
+		['Category | Node | Property', 'Total GDC Values','# Values Mapped to ICD-O-3','# Values Mapped to NCIt']
 	];
 	let specification = {
 	
-		p: {
+		cnp: {
 			width: 200
 		},
-		t:{
+		v:{
 			width: 200
 		},
-		ti:{
+		i:{
 			width: 200
 		},
-		te:{
+		s:{
 			width: 200
 		}
 	};
-	let all_gdc_values = shared.readGDCValues();
-	let cc = shared.readConceptCode();
-	
-	let tmp_array = ["clinical.diagnosis.morphology","clinical.diagnosis.site_of_resection_or_biopsy","clinical.diagnosis.tissue_or_organ_of_origin","clinical.follow_up.progression_or_recurrence_anatomic_site","clinical.diagnosis.primary_diagnosis"];
-
-	let new_data = {};
-	fs.readdirSync(folderPath).forEach(file => {
-		if (file.indexOf('_') !== 0) {
-			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+	let query = {
+		"match_all": {}
+	};
+	elastic.query(config.index_p, query, null, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
 		}
-	});
-	new_data = preProcess(searchable_nodes, new_data);
-	for(let key in cc){
-		let n = key.split(".")[1];
-		if(tmp_array.indexOf(key) === -1 && searchable_nodes.indexOf(n) !== -1){
-			let tmp_data = {};
-			tmp_data.p = key;
-			tmp_data.t = Object.keys(cc[key]).length;
-			tmp_data.ti = 0;
-			tmp_data.te = 0;
-			for(let value in cc[key]){
-				if(cc[key][value]){
-					tmp_data.te++;
+		let data = result.hits.hits;
+		data.forEach(hit => {
+			let source = hit._source;
+			if(source.enum === undefined) return;
+			let category = source.category;
+			let node = source.node;
+			let property = source.property;
+			let enums = source.enum;
+			let values_counter = enums.length;
+			let ic_counter = 0;
+			let syn_counter = 0;
+			enums.forEach(em => {
+				if(em.n_syn !== undefined) syn_counter++;
+				if(em.i_c !== undefined) ic_counter++;
+			});
+			let result_obj = {};
+			result_obj.cnp = category+"."+node+"."+property;
+			result_obj.v = values_counter;
+			result_obj.i = ic_counter;
+			result_obj.s = syn_counter;
+			result_data.push(result_obj);
+		});
+		const report = excel.buildExport(
+			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+				{
+					name: 'Report', // <- Specify sheet name (optional) 
+					heading: heading, // <- Raw heading array (optional) 
+					merges: merges, // <- Merge cell ranges 
+					specification: specification, // <- Report specification 
+					data: result_data // <-- Report data 
 				}
-			}
-			data.push(tmp_data);
-		}
-	}
-	for(let node in new_data){
-		let category =  new_data[node].category && new_data[node].category === 'administrative' ? 'case' : new_data[node].category;
-		let n = new_data[node].id;
-		if(new_data[node].properties){
-			let p = new_data[node].properties;
-			for(let val in p){
-				if(p === '$ref') return;
-				if(cc[category+"."+n+"."+val] === undefined && tmp_array.indexOf(val) == -1 && p[val].enum){
-					let tmp_data = {};
-					tmp_data.p = category+"."+n+"."+val;
-					tmp_data.t = 0;
-					tmp_data.ti = 0;
-					tmp_data.te = 0;
-					if(!p[val].new_enum){
-						tmp_data.t = p[val].enum.length;
-					}else{
-						tmp_data.t = p[val].new_enum.length;
-					}
-					data.push(tmp_data);
-				}
-			}
-
-		}
-	}
-	
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	);
-
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
-	// res.send("Success");
+			]
+		);
+		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.send(report);
+	});	
 }
 
 const exportMorphology = (req, res) => {
@@ -1307,8 +1282,85 @@ const compareDataType = (req, res) => {
 		res.attachment('datatype-comparison.xlsx'); // This is sails.js specific (in general you need to set headers) 
 		res.send(report);
 	});
-	
-	// res.send('Success');
+}
+
+const ttNotAssigned = (req, res) => {
+	let report_data = [];
+	let heading = [
+		['Category', 'Node', 'Property', 'Value', 'ICD-O-3', 'ICD-O-3 string with no term types']
+	];
+	let specification = {
+		c: {
+			width: 200
+		},
+		n: {
+			width: 200
+		},
+		p: {
+			width: 200
+		},
+		v: {
+			width: 200
+		},
+		ic: {
+			width: 200
+		},
+		ics: {
+			width: 200
+		}
+	};
+	const icdo3_property = [
+		'morphology', 
+		'primary_diagnosis', 
+		'tissue_or_organ_of_origin', 
+		'progression_or_recurrence_anatomic_site', 
+		'site_of_resection_or_biopsy'];
+
+	let query = {
+		"match_all": {}
+	}
+	elastic.query(config.index_p, query, null, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		data.forEach(hit => {
+			let source = hit._source;
+			let category = source.category;
+			let node = source.node;
+			let property = source.property;
+			if(icdo3_property.indexOf(property) !== -1){
+				let enums = source.enum;
+				enums.forEach(em => {
+					if(em.ic_enum === undefined) return;
+					em.ic_enum.forEach(ic => {
+						if(ic.term_type === '*'){
+							let result_obj = {};
+							result_obj.c = category;
+							result_obj.n = node;
+							result_obj.p = property;
+							result_obj.v = em.n;
+							result_obj.ic = em.i_c.c;
+							result_obj.ics = ic.n;
+							report_data.push(result_obj);
+						}
+					});
+				});
+			}
+		});
+		const report = excel.buildExport(
+			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+				{
+					name: 'Report', // <- Specify sheet name (optional) 
+					heading: heading, // <- Raw heading array (optional) 
+					specification: specification, // <- Report specification 
+					data: report_data // <-- Report data 
+				}
+			]
+		);
+		res.attachment('tt_not_assigned.xlsx'); // This is sails.js specific (in general you need to set headers) 
+		res.send(report);
+	});
 }
 
 module.exports = {
@@ -1320,5 +1372,6 @@ module.exports = {
 	addTermType,
 	icdoMapping,
 	exportMorphology,
-	compareDataType
+	compareDataType,
+	ttNotAssigned
 }
