@@ -342,7 +342,7 @@ const indexing = (req, res) => {
 						]
 					},
 					"my_standard": {
-						"tokenizer": "standard",
+						"tokenizer": "ngram_tokenizer",
 						"char_filter": ["my_filter"],
 						"filter": ["standard", "lowercase"]
 					}
@@ -361,16 +361,12 @@ const indexing = (req, res) => {
 					}
 				},
 				"tokenizer": {
-					"my_tokenizer": {
-					  "type": "edge_ngram",
-					  "min_gram": 3,
-					  "max_gram": 50,
-					  "token_chars": [
-						"letter",
-						"digit"
-					  ]
+					"ngram_tokenizer": {
+						"type": "nGram",
+						"min_gram": "2",
+						"token_chars": [ "letter", "digit" ]
 					}
-				  }
+				}
 			}
 		},
 		"mappings": {
