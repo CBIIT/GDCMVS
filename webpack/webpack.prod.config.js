@@ -2,7 +2,6 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -32,21 +31,12 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           { loader: "css-loader" },
         ]
-      }
+      },
     ]
   },
   plugins: [
     new MiniCssExtractPlugin({filename: "styles.css"}),
     new OptimizeCssAssetsPlugin(),
     new CleanWebpackPlugin(),
-    new FileManagerPlugin({
-    onEnd: [{
-        copy: [
-            { source: './client/views/body.html', destination: path.resolve(__dirname, '../gdc-docs/docs/Data_Dictionary/gdcmvs.md') },
-            { source: './client/static/dist/*.{js,css}', destination: path.resolve(__dirname, '../gdc-docs/theme/apps/gdcmvs/dist') },
-            { source: './client/static/lib/**/*', destination: path.resolve(__dirname, '../gdc-docs/theme/apps/gdcmvs/lib') }
-        ]
-        }]
-    })
   ]
 }
