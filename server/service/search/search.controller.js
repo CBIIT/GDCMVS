@@ -363,7 +363,7 @@ const indexing = (req, res) => {
 				"tokenizer": {
 					"ngram_tokenizer": {
 						"type": "nGram",
-						"min_gram": "2",
+						"min_gram": "3",
 						"token_chars": [ "letter", "digit" ]
 					}
 				}
