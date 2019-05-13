@@ -4,7 +4,6 @@ import GDCTerms from './gdc-terms/gdc-terms';
 import getNCITDetails from './ncit-details/ncit-details'
 import sourceDetails from './source-details/source-details';
 import typeDetails from './type-details/type-details';
-import { sortAlphabetically } from '../shared';
 
 export const dialogEvents = ($root, $body) => {
   $root.on('click', '.getGDCData', (event) => {

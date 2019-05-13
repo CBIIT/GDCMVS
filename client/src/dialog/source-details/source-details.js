@@ -1,6 +1,5 @@
 import { header_template, body_template } from './source-details-view';
 import { getHeaderOffset, getScrollTop } from '../../shared';
-import template from '../../props-table/props-table-view';
 
 const sourceDetails = () => {
 

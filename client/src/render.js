@@ -3,7 +3,6 @@ import { dtRender} from './dict-table/dict-table';
 import psRender from './props-table/props-table';
 import { vsRender } from './values-table/values-table';
 import { tabsRender } from './tabs/tabs';
-import { getHeaderOffset } from './shared';
 
 export default function render($root, keyword, option, items) {
   let html = "";
@@ -19,7 +18,6 @@ export default function render($root, keyword, option, items) {
     psHtml.active = false;
     let dtHtml = dtRender(data1, keyword, option);
     dtHtml.active = false;
-    // let dtHtml = [];
     if (vsHtml.len === 0 && psHtml.len === 0) {
       dtHtml.len = 0;
     }
@@ -40,16 +38,16 @@ export default function render($root, keyword, option, items) {
         </div>
       </div>`
     } else {
-      if (option.activeTab == 0) {
+      if (option.activeTab === 0) {
         vsHtml.active = true;
-      } else if (option.activeTab == 1) {
+      } else if (option.activeTab === 1) {
         psHtml.active = true;
       } else {
         dtHtml.active = true;
       }
       html = tabsRender(dtHtml, psHtml, vsHtml, keyword);
     }
-  } else if (option.error == true) {
+  } else if (option.error === true) {
     html = `<div class="indicator">
       <div class="indicator__content indicator--has-error">
         <p>Please, enter a valid keyword!</p>

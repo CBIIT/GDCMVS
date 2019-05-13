@@ -11,8 +11,15 @@ module.exports = {
     },
     module: {
         rules: [
-    
-          // JS 
+
+          // eslint
+          { test: /\.js$/,
+            enforce: "pre",
+            exclude: /node_modules/,
+            loader: "eslint-loader"
+          },
+        
+          // JS
           { test: /\.js$/,
             exclude: /node_modules/,
             use: {
@@ -26,6 +33,7 @@ module.exports = {
           // CSS
           { test: /\.css$/,
             use: [
+              { loader: "style-loader" },
               MiniCssExtractPlugin.loader,
               { loader: "css-loader" },
             ]
