@@ -1,5 +1,4 @@
 import * as search from './search-bar/search-bar';
-import render from './render';
 import { onResize, onScroll, setHeight, dialogsOnResize } from './shared';
 import { dtEvents } from './dict-table/dict-table';
 import { vsEvents } from './values-table/values-table';

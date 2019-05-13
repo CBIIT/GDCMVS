@@ -73,8 +73,8 @@ export const dtRender = (items, keyword, search_option) => {
   // options render
   let options = {};
   // RegExp Keyword
-  keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
-  let reg_key = new RegExp(keyword, "ig");
+  // keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
+  // let reg_key = new RegExp(keyword, "ig");
   let main_obj = {};
   items.forEach(item => {
     let source = item._source;

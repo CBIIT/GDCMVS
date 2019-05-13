@@ -351,7 +351,7 @@ const compareGDCvalues = (fromV, toV, option) => {
   fromV.forEach(function (v) {
     let caseSensitiveV = v.trim().replace(/[\ ]+/g, " ");
     v = v.trim().toLowerCase().replace(/[\ ]+/g, " ");
-    let reg_key = new RegExp(v, "ig");
+    //let reg_key = new RegExp(v, "ig");
     let tmp = v;
     if (tmp === '') {
       return;
@@ -621,7 +621,7 @@ const downloadCompareCVS = (items) => {
         new_line = false;
       }
     }
-    if (new_line == true){
+    if (new_line === true){
       csv += '\n';
     }
   });

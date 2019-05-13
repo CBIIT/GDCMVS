@@ -1,6 +1,6 @@
 import { header_template, body_template } from './ncit-details-view';
 import { apiEVSRest } from '../../api';
-import { getHeaderOffset, getScrollTop, htmlChildContent } from '../../shared';
+import { getHeaderOffset, getScrollTop } from '../../shared';
 
 export default function ncitDetails(uid){
   uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
