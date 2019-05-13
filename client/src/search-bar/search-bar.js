@@ -1,6 +1,5 @@
 import { apiSuggest, apiSearchAll, apiGDCDictionaryVersion } from '../api';
 import render from '../render';
-import { getHeaderOffset } from '../shared';
 import { removePopUps } from '../dialog/dialog';
 import template from './search-bar-view';
 
@@ -37,7 +36,6 @@ const getFinalSuggestion = (suggest_value, entered_value) => {
 }
 
 const ReturnWord = (text, caretPos) => {
-  var index = text.indexOf(caretPos);
   var preText = text.substring(0, caretPos);
   return preText;
 }
@@ -45,7 +43,7 @@ const ReturnWord = (text, caretPos) => {
 const PrevWord = (text) => {
   var caretPos = GetCaretPosition(text)
   var word = ReturnWord(text.value, caretPos);
-  if (word != null) {
+  if (word !== null) {
     return word;
   }
 }
@@ -59,18 +57,17 @@ const GetCaretPosition = (ctrl) => {
     CaretPos = Sel.text.length;
   }
   // Firefox support
-  else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+  else if (ctrl.selectionStart || ctrl.selectionStart === '0')
     CaretPos = ctrl.selectionStart;
   return (CaretPos);
 }
 
 export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val().trim();
-  let keyword = keywordCase.toLowerCase();
   let activeTab = getActiveTap();
   let option = getOption(activeTab);
 
-  if (keywordCase == '') {
+  if (keywordCase === '') {
     option.error = true;
     $keywords.addClass('search-bar__input--has-error');
     render($root, keywordCase, option, []);
@@ -102,15 +99,14 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
 
 export const enterSearch = (event, $keywords, $search) => {
   const $selectedSuggest = $('#suggestBox .selected');
-  const selectedTerm = $selectedSuggest.children('.suggest__name').text();;
-  if (event.keyCode == 13) {
+  if (event.keyCode === 13) {
     event.preventDefault();
   }
-  if (event.keyCode == 13 && $selectedSuggest.length !== 0) {
+  if (event.keyCode === 13 && $selectedSuggest.length !== 0) {
     $keywords.val(PrevWord(event.currentTarget));
     $search.trigger('click');
   }
-  else if (event.keyCode == 13) {
+  else if (event.keyCode === 13) {
     $search.trigger('click');
   }
 }
@@ -118,13 +114,13 @@ export const enterSearch = (event, $keywords, $search) => {
 export const selectSuggestion = (event, $suggestBox) => {
   let $this = $(event.currentTarget);
 
-  if ((event.keyCode == 40 || event.keyCode == 38) &&
+  if ((event.keyCode === 40 || event.keyCode === 38) &&
     $this.val().trim() !== '' &&
-    $suggestBox.css('display') != 'none') {
+    $suggestBox.css('display') !== 'none') {
 
     event.preventDefault();
     //focus to the first element
-    displayBoxIndex += (event.keyCode == 40 ? 1 : -1);
+    displayBoxIndex += (event.keyCode === 40 ? 1 : -1);
     let $boxCollection = $suggestBox.find('div');
     if (displayBoxIndex >= $boxCollection.length) {
       displayBoxIndex = 0;
@@ -177,7 +173,7 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
     }
 
     let suggestWidth = $('#suggestWidth').width();
-    if (suggestWidth != 0) {
+    if (suggestWidth !== 0) {
       $suggestBox.css({ left: suggestWidth + 'px', width: 'auto' });
     } else {
       $suggestBox.css({ left: '', width: '' });
@@ -198,7 +194,7 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
 }
 
 export const removeBox = (event, $suggestBox) => {
-  if ($(event.currentTarget) != $suggestBox) {
+  if ($(event.currentTarget) !== $suggestBox) {
     $suggestBox.hide();
     displayBoxIndex = -1;
   }
@@ -241,13 +237,13 @@ export const renderLocalStorage = ($keywords, $root, $searchOptionsBox, $gdcLoad
 
     $keywords.val(keyword);
 
-    if (option.match != 'partial') {
+    if (option.match !== 'partial') {
       $('#i_ematch').prop('checked', true);
     }
-    if (option.desc != false) {
+    if (option.desc !== false) {
       $('#i_desc').prop('checked', true);
     }
-    if (option.syn != false) {
+    if (option.syn !== false) {
       $('#i_syn').prop('checked', true);
     }
 

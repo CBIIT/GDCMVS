@@ -1,4 +1,4 @@
-import { tableSynonyms, tableIcdo3 } from '../../components/table';
+import { tableIcdo3 } from '../../components/table';
 
 export const header_template = (target, icdo, items_length) => `
   <div class="dialog__header">

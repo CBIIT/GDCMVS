@@ -67,7 +67,7 @@ export const vsRender = (items, keyword) => {
   //options render
   let options = {};
   // RegExp Keyword
-  keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
+  //keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
   items.forEach(data => {
     let enums = data.inner_hits.enum;
     if(enums.hits.total !== 0) { // If the searched term is cde id.
@@ -157,7 +157,7 @@ export const vsRender = (items, keyword) => {
   else
     $("#unofficial-term").html('');
 
-  if (values.length == 0 || (values.length === 1 && values[0].vs.length === 0)) {
+  if (values.length === 0 || (values.length === 1 && values[0].vs.length === 0)) {
     html =
       '<div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' +
       searched_keyword + '</span></div></div>';
