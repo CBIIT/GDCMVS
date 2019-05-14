@@ -76,7 +76,6 @@ const searchICDO3Data = (req, res) => {
 		query.match_phrase_prefix["enum.i_c.have"] = {};
 		query.match_phrase_prefix["enum.i_c.have"].query = icdo3_code;
 		query.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
-		//query.analyzer = "keyword";
 		let highlight;
 
 		elastic.query(config.index_p, query, highlight, result => {
@@ -337,14 +336,17 @@ const indexing = (req, res) => {
 				"analyzer": {
 					"case_insensitive": {
 						"tokenizer": "keyword",
-						"filter": [
-							"lowercase", "whitespace_remove"
-						]
+						"filter": ["lowercase", "whitespace_remove"]
 					},
 					"my_standard": {
+						"tokenizer": "standard",
+						"char_filter": ["my_filter"],
+						"filter": ["lowercase","whitespace_remove"]
+					},
+					"my_ngram": {
 						"tokenizer": "ngram_tokenizer",
 						"char_filter": ["my_filter"],
-						"filter": ["standard", "lowercase"]
+						"filter": ["lowercase","whitespace_remove"]
 					}
 				},
 				"char_filter": {
@@ -364,7 +366,7 @@ const indexing = (req, res) => {
 					"ngram_tokenizer": {
 						"type": "nGram",
 						"min_gram": "2",
-						"token_chars": [ "letter", "digit" ]
+						"token_chars": ["letter", "digit", "symbol"]
 					}
 				}
 			}
