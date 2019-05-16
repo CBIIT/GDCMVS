@@ -2,13 +2,11 @@ import * as search from './search-bar/search-bar';
 import { onResize, onScroll, setHeight, dialogsOnResize } from './shared';
 import { dtEvents } from './dict-table/dict-table';
 import { vsEvents } from './values-table/values-table';
-import { tabsEvents } from './tabs/tabs'
-import { dialogEvents } from './dialog/dialog'
+import { tabsEvents } from './tabs/tabs';
+import { dialogEvents } from './dialog/dialog';
 
 window.onload = () => {
-
   const init = () => {
-
     const $window = $(window);
     const $document = $(document);
     const $body = $(document.body);
@@ -39,7 +37,7 @@ window.onload = () => {
     });
 
     $search.click(() => {
-      search.clickSearch($keywords, $root, $suggestBox, $gdcLoadingIcon)
+      search.clickSearch($keywords, $root, $suggestBox, $gdcLoadingIcon);
     });
 
     $keywords.keypress((event) => {
@@ -47,7 +45,7 @@ window.onload = () => {
     });
 
     $keywords.keydown((event) => {
-      search.selectSuggestion(event, $suggestBox)
+      search.selectSuggestion(event, $suggestBox);
     });
 
     $keywords.bind('input', (event) => {
@@ -55,7 +53,7 @@ window.onload = () => {
     });
 
     $document.click((event) => {
-      search.removeBox(event, $suggestBox)
+      search.removeBox(event, $suggestBox);
     });
 
     $searchClear.click((event) => {
@@ -77,12 +75,12 @@ window.onload = () => {
       dialogsOnResize($window);
     });
 
-    //Add the handles events
+    // Add the handles events
     dtEvents($root);
     tabsEvents($root);
     vsEvents($root);
     dialogEvents($root, $body);
-  }
+  };
 
   init();
-}
+};

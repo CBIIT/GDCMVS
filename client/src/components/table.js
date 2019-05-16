@@ -1,5 +1,5 @@
-const headerNcit = "NCIt";
-const headerIcdo = "ICD-O-3";
+const headerNcit = 'NCIt';
+const headerIcdo = 'ICD-O-3';
 
 export const tableSynonyms = (syn) => {
   return `
@@ -14,22 +14,22 @@ export const tableSynonyms = (syn) => {
       `.trim()).join('')}
     </table>
   `;
-}
+};
 
 export const tableIcdo3 = (value) => {
- return `
-  <table class="table table-striped">
-    ${tHead(headerIcdo)}
-    ${value.ic_enum.map((i_c) => `
-      <tr>
-        <td class="table__td--term">${i_c.n}</td>
-        <td class="table__td--source">ICD-O-3</td>
-        <td class="table__td--type">${i_c.term_type}</td>
-      </tr>
-    `.trim()).join('')}
+  return `
+    <table class="table table-striped">
+      ${tHead(headerIcdo)}
+      ${value.ic_enum.map((ic) => `
+        <tr>
+          <td class="table__td--term">${ic.n}</td>
+          <td class="table__td--source">ICD-O-3</td>
+          <td class="table__td--type">${ic.term_type}</td>
+        </tr>
+      `.trim()).join('')}
     </table>
- `;
-}
+  `;
+};
 
 const tHead = (header) => {
   return `
@@ -39,11 +39,11 @@ const tHead = (header) => {
         ${header === headerNcit ? `
             <th><a class="getSourceDetails" href="#">Source</a></th>
             <th><a class="getTypeDetails" href="#">Type</a></th>
-          `:`
+          ` : `
             <th>Source</th>
             <th>Type</th>
         `}
       </tr>
     </thead>
   `;
-}
+};

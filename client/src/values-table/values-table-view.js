@@ -1,4 +1,4 @@
-import {tableSynonyms, tableIcdo3} from "../components/table"
+import { tableSynonyms, tableIcdo3 } from '../components/table';
 
 const template = (values, options) => {
   return `
@@ -35,7 +35,7 @@ const template = (values, options) => {
             <div class="gdc-links" style="display: none;">
               <a class="getGDCTerms" href="#" data-ref="${item.id}">See All Values</a></br>
               <a class="toCompare" href="#" data-ref="${item.id}"> Compare with User List</a></br>
-              ${item.cdeId !== "" ? `
+              ${item.cdeId !== '' ? `
                 <span>caDSR:</span>
                 <a href="${item.cdeUrl}" target="_blank">CDE</a>
               ` : ``}
@@ -43,7 +43,7 @@ const template = (values, options) => {
           </div>
           <div class="table__values col-xs-9">
             ${item.vs.map((value, index) => `
-              ${index === 5 ? `<div class="table__row--toggle">`:``}
+              ${index === 5 ? `<div class="table__row--toggle">` : ``}
               <div class="row table__row--flex">
                 <div class="table__td table__gdc-values col-xs-12">
                   <div class="row">
@@ -100,6 +100,6 @@ const template = (values, options) => {
     </div>
   </div>
   `;
-}
+};
 
 export default template;

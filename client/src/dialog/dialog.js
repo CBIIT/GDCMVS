@@ -1,7 +1,7 @@
 import gdcData from './gdc-data/gdc-data';
 import toCompare from './to-compare/to-compare';
 import GDCTerms from './gdc-terms/gdc-terms';
-import getNCITDetails from './ncit-details/ncit-details'
+import getNCITDetails from './ncit-details/ncit-details';
 import sourceDetails from './source-details/source-details';
 import typeDetails from './type-details/type-details';
 
@@ -50,7 +50,7 @@ export const dialogEvents = ($root, $body) => {
     const $matched = $this.closest('.compare-form__values, .table__gdc-match').find('.compare-form__matched');
     $matched.slideToggle(350);
     $target.slideToggle(350, () => {
-      if ($target.is(":visible")) {
+      if ($target.is(':visible')) {
         $this.attr('title', 'collapse');
         $this.attr('aria-label', 'collapse');
         $this.attr('aria-expanded', 'true');
@@ -63,7 +63,7 @@ export const dialogEvents = ($root, $body) => {
       }
     });
   });
-}
+};
 
 export const removePopUps = () => {
   if ($('#gdc_data').length) {
@@ -89,4 +89,4 @@ export const removePopUps = () => {
   if ($('#source_details').length) {
     $('#source_details').remove();
   }
-}
+};

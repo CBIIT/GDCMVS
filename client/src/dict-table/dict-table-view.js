@@ -68,9 +68,9 @@ const template = (dictionary, options) => {
                                   <a href="#" class="treeview__toggle" aria-label="expand">
                                     <i class="fa fa-angle-down"></i>
                                   </a>
-                                `: ``}
+                                ` : ``}
                               </span>
-                              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=${node.node}&anchor=${property.property.replace(/<b>/g, "").replace(/<\/b>/g, "")}" target="_blank">
+                              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=${node.node}&anchor=${property.property.replace(/<b>/g, '').replace(/<\/b>/g, '')}" target="_blank">
                                 ${property.property} ${property.length !== undefined ? `(${property.length})` : ``}
                               </a>
                             </div>
@@ -113,6 +113,6 @@ const template = (dictionary, options) => {
       </div>
     </div>
   `;
-}
+};
 
 export default template;

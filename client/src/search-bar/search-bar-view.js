@@ -11,6 +11,6 @@ const template = (results) => {
       </div>
     `.trim()).join('')}
   `;
-}
+};
 
 export default template;
