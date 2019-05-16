@@ -1,6 +1,6 @@
-import { header_template, body_template } from './gdc-data-view';
+import { headerTemplate, bodyTemplate } from './gdc-data-view';
 import { apiGetGDCDataById } from '../../api';
-import { getHeaderOffset, getScrollTop, sortAlphabetically} from '../../shared';
+import { getHeaderOffset, getScrollTop, sortAlphabetically } from '../../shared';
 
 const gdcData = (prop, tgt, keyword) => {
   apiGetGDCDataById(prop, function (id, items) {
@@ -9,66 +9,66 @@ const gdcData = (prop, tgt, keyword) => {
     }
 
     let icdo = false;
-    let new_items = [];
-    let reg_key = new RegExp(tgt.replace(/<b>/g, "").replace(/<\/b>/g, ""), "ig");
+    let newItems = [];
+    let regKey = new RegExp(tgt.replace(/<b>/g, '').replace(/<\/b>/g, ''), 'ig');
 
     items.forEach(function (item) {
       let source = item._source;
       source.enum.forEach(value => {
-        let value_obj = {};
-        value_obj.n = tgt !== null && tgt !== undefined && value.n === tgt.replace(/<b>/g, "").replace(/<\/b>/g, "") ? tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>") : value.n;
-        if(value.i_c !== undefined) icdo = true;
-        if(value.i_c !== undefined) value_obj.i_c = {};
-        if(value.i_c !== undefined) value_obj.i_c.c = value.i_c.c;
-        if(value.ic_enum !== undefined) value_obj.ic_enum = value.ic_enum;
-        new_items.push(value_obj);
+        let valueObj = {};
+        valueObj.n = tgt !== null && tgt !== undefined && value.n === tgt.replace(/<b>/g, '').replace(/<\/b>/g, '') ? tgt.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(regKey, '<b>$&</b>') : value.n;
+        if (value.i_c !== undefined) icdo = true;
+        if (value.i_c !== undefined) valueObj.i_c = {};
+        if (value.i_c !== undefined) valueObj.i_c.c = value.i_c.c;
+        if (value.ic_enum !== undefined) valueObj.ic_enum = value.ic_enum;
+        newItems.push(valueObj);
       });
     });
-    items = new_items;
+    items = newItems;
 
-    //open loading animation
+    // open loading animation
     let isAnimated = false;
-    if (items.length > 1000 ) isAnimated = true;
+    if (items.length > 1000) isAnimated = true;
     if (isAnimated) $('#gdc-loading-icon').show();
 
     // Sort the list alphabetical order.
     items = sortAlphabetically(items);
 
-    let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(reg_key, "<b>$&</b>");
+    let target = tgt === null || tgt === undefined ? tgt : tgt.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(regKey, '<b>$&</b>');
 
-    let header = header_template(target, icdo, items.length);
-    let html = body_template(target, icdo, items);
+    let header = headerTemplate(target, icdo, items.length);
+    let html = bodyTemplate(target, icdo, items);
 
     setTimeout(() => {
-      //display result in a table
+      // display result in a table
       $(document.body).append(html);
 
-      let dialog_width = {
+      let dialogWidth = {
         width: 450,
         minWidth: 400,
         maxWidth: 700
-      }
+      };
 
       if (icdo) {
-        dialog_width.width = 700;
-        dialog_width.minWidth = 600;
-        dialog_width.maxWidth = 900;
+        dialogWidth.width = 700;
+        dialogWidth.minWidth = 600;
+        dialogWidth.maxWidth = 900;
       }
 
       $('#gdc_data').dialog({
         modal: false,
-        width: dialog_width.width,
-        minWidth: dialog_width.minWidth,
-        maxWidth: dialog_width.maxWidth,
+        width: dialogWidth.width,
+        minWidth: dialogWidth.minWidth,
+        maxWidth: dialogWidth.maxWidth,
         height: 550,
         minHeight: 350,
         maxHeight: 650,
         open: function () {
-          //add new custom header
+          // add new custom header
           if (icdo) {
-            $(this).prev('.ui-dialog-titlebar').css('padding-top','7.8em').html(header);
+            $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.8em').html(header);
           } else {
-            $(this).prev('.ui-dialog-titlebar').css('padding-top','3.8em').html(header);
+            $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.8em').html(header);
           }
 
           let target = $(this).parent();
@@ -77,10 +77,10 @@ const gdcData = (prop, tgt, keyword) => {
           }
 
           $('#close_gdc_data').bind('click', function () {
-            $("#gdc_data").dialog('close');
+            $('#gdc_data').dialog('close');
           });
 
-          //remove loading animation
+          // remove loading animation
           if (isAnimated) $('#gdc-loading-icon').hide();
         },
         close: function () {
@@ -92,7 +92,7 @@ const gdcData = (prop, tgt, keyword) => {
 
       if ($('#show_all_gdc_data') !== undefined) {
         $('#show_all_gdc_data').bind('click', function () {
-          let v = $(this).prop("checked");
+          let v = $(this).prop('checked');
           if (v) {
             $('#gdc-data-list .gdc-data__item--hide').each(function () {
               $(this).removeClass('gdc-data__item--hide').addClass('gdc-data__item--show');
@@ -101,15 +101,15 @@ const gdcData = (prop, tgt, keyword) => {
             $('#gdc_data').scrollTop(setScroll - 120);
           } else {
             $('#gdc-data-list .gdc-data__item--show').each(function () {
-              if(!$(this).is('#gdc_data_match')){
+              if (!$(this).is('#gdc_data_match')) {
                 $(this).removeClass('gdc-data__item--show').addClass('gdc-data__item--hide');
               }
-              });
+            });
           }
         });
       }
     }, 100);
   });
-}
+};
 
 export default gdcData;

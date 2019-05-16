@@ -6,7 +6,7 @@ import template from './search-bar-view';
 let displayBoxIndex = -1;
 
 const getActiveTap = () => {
-  let value = 0
+  let value = 0;
   let count = 0;
   $('.tab-nav__li').each((index, element) => {
     if ($(element).hasClass('active')) {
@@ -15,52 +15,53 @@ const getActiveTap = () => {
     count++;
   });
   return value;
-}
+};
 
 const getOption = (activeTab) => {
-  let option = {}
-  //get options values
+  let option = {};
+  // get options values
   option.desc = $('#i_desc').prop('checked');
   option.syn = $('#i_syn').prop('checked');
   option.match = $('#i_ematch').prop('checked') ? 'exact' : 'partial';
   option.activeTab = option.desc ? 1 : activeTab;
   return option;
-}
+};
 
-const getFinalSuggestion = (suggest_value, entered_value) => {
-  let final_keyword = suggest_value;
-  if (entered_value.indexOf(' OR') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('OR')) + 'OR ' + suggest_value;
-  if (entered_value.indexOf(' AND') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('AND')) + 'AND ' + suggest_value;
-  if (entered_value.indexOf(' NOT') !== -1) final_keyword = entered_value.substring(0, entered_value.lastIndexOf('NOT')) + 'NOT ' + suggest_value;
-  return final_keyword;
-}
+const getFinalSuggestion = (suggestValue, enteredValue) => {
+  let finalKeyword = suggestValue;
+  if (enteredValue.indexOf(' OR') !== -1) finalKeyword = enteredValue.substring(0, enteredValue.lastIndexOf('OR')) + 'OR ' + suggestValue;
+  if (enteredValue.indexOf(' AND') !== -1) finalKeyword = enteredValue.substring(0, enteredValue.lastIndexOf('AND')) + 'AND ' + suggestValue;
+  if (enteredValue.indexOf(' NOT') !== -1) finalKeyword = enteredValue.substring(0, enteredValue.lastIndexOf('NOT')) + 'NOT ' + suggestValue;
+  return finalKeyword;
+};
 
 const ReturnWord = (text, caretPos) => {
   var preText = text.substring(0, caretPos);
   return preText;
-}
+};
 
 const PrevWord = (text) => {
-  var caretPos = GetCaretPosition(text)
+  var caretPos = GetCaretPosition(text);
   var word = ReturnWord(text.value, caretPos);
   if (word !== null) {
     return word;
   }
-}
+};
 
 const GetCaretPosition = (ctrl) => {
-  var CaretPos = 0;   // IE Support
+  var CaretPos = 0;
+  // IE Support
   if (document.selection) {
     ctrl.focus();
     var Sel = document.selection.createRange();
     Sel.moveStart('character', -ctrl.value.length);
     CaretPos = Sel.text.length;
-  }
   // Firefox support
-  else if (ctrl.selectionStart || ctrl.selectionStart === '0')
+  } else if (ctrl.selectionStart || ctrl.selectionStart === '0') {
     CaretPos = ctrl.selectionStart;
+  }
   return (CaretPos);
-}
+};
 
 export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val().trim();
@@ -73,11 +74,11 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
     render($root, keywordCase, option, []);
     return;
   }
-  //hide suggestBox
+  // hide suggestBox
   $suggestBox.hide();
   displayBoxIndex = -1;
 
-  //show progress bar
+  // show progress bar
   $gdcLoadingIcon.fadeIn(100);
 
   apiSearchAll(keywordCase, option, (keyword, option, items) => {
@@ -88,14 +89,13 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
     localStorage.setItem('option', JSON.stringify(option));
 
     render($root, keywordCase, option, items);
-    //close progress bar
+    // close progress bar
     $gdcLoadingIcon.fadeOut('fast');
 
-    //remove pop-ups
+    // remove pop-ups
     removePopUps();
   });
-}
-
+};
 
 export const enterSearch = (event, $keywords, $search) => {
   const $selectedSuggest = $('#suggestBox .selected');
@@ -105,21 +105,17 @@ export const enterSearch = (event, $keywords, $search) => {
   if (event.keyCode === 13 && $selectedSuggest.length !== 0) {
     $keywords.val(PrevWord(event.currentTarget));
     $search.trigger('click');
-  }
-  else if (event.keyCode === 13) {
+  } else if (event.keyCode === 13) {
     $search.trigger('click');
   }
-}
+};
 
 export const selectSuggestion = (event, $suggestBox) => {
   let $this = $(event.currentTarget);
 
-  if ((event.keyCode === 40 || event.keyCode === 38) &&
-    $this.val().trim() !== '' &&
-    $suggestBox.css('display') !== 'none') {
-
+  if ((event.keyCode === 40 || event.keyCode === 38) && $this.val().trim() !== '' && $suggestBox.css('display') !== 'none') {
     event.preventDefault();
-    //focus to the first element
+    // focus to the first element
     displayBoxIndex += (event.keyCode === 40 ? 1 : -1);
     let $boxCollection = $suggestBox.find('div');
     if (displayBoxIndex >= $boxCollection.length) {
@@ -130,12 +126,12 @@ export const selectSuggestion = (event, $suggestBox) => {
     }
     $boxCollection.removeClass('selected').eq(displayBoxIndex).addClass('selected');
 
-    let suggest_value = $boxCollection.eq(displayBoxIndex).children('.suggest__name').text();
-    let entered_value = PrevWord(event.currentTarget);
+    let suggestValue = $boxCollection.eq(displayBoxIndex).children('.suggest__name').text();
+    let enteredValue = PrevWord(event.currentTarget);
 
-    $('#keywords').val(getFinalSuggestion(suggest_value, entered_value));
+    $('#keywords').val(getFinalSuggestion(suggestValue, enteredValue));
   }
-}
+};
 
 export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOptionsBox) => {
   let $this = $(event.currentTarget);
@@ -185,32 +181,32 @@ export const suggest = (event, $keywords, $searchClear, $suggestBox, $searchOpti
     $suggestBox.show().html(html);
 
     $suggestBox.click((event) => {
-      let $target = $(event.target)
+      let $target = $(event.target);
       let t = $target.hasClass('suggest__object') ? $target.children('.suggest__name').text() : $target.parent().children('.suggest__name').text();
-      let entered_value = PrevWord(document.getElementById('keywords'));
-      $keywords.val(getFinalSuggestion(t, entered_value)).focus();
+      let enteredValue = PrevWord(document.getElementById('keywords'));
+      $keywords.val(getFinalSuggestion(t, enteredValue)).focus();
     });
   });
-}
+};
 
 export const removeBox = (event, $suggestBox) => {
   if ($(event.currentTarget) !== $suggestBox) {
     $suggestBox.hide();
     displayBoxIndex = -1;
   }
-}
+};
 
 export const clearSearch = (event, $keywords, $searchOptionsBox) => {
   event.preventDefault();
   $searchOptionsBox.hide();
   $keywords.val('').focus();
-}
+};
 
 export const booleanOptions = (event, $keywords) => {
   event.preventDefault();
-  let boolean_value = $(event.currentTarget).data('boolean');
-  $keywords.val((index, value) => `${value} ${boolean_value} `).focus();
-}
+  let booleanValue = $(event.currentTarget).data('boolean');
+  $keywords.val((index, value) => `${value} ${booleanValue} `).focus();
+};
 
 export const removeExternalLinkIcons = () => {
   $('#body a[href^="http"]').each((index, element) => {
@@ -218,18 +214,16 @@ export const removeExternalLinkIcons = () => {
     $this.removeClass('external-link');
     $this.html($.trim($this[0].innerText));
   });
-}
+};
 
 export const renderLocalStorage = ($keywords, $root, $searchOptionsBox, $gdcLoadingIcon) => {
-
-  //remove previus local items
-  if(!localStorage.hasOwnProperty('items')){
+  // remove previus local items
+  if (!localStorage.hasOwnProperty('items')) {
     localStorage.removeItem('items');
   }
 
-  if (localStorage.hasOwnProperty('keyword') &&
-    localStorage.hasOwnProperty('option')) {
-
+  if (localStorage.hasOwnProperty('keyword') && localStorage.hasOwnProperty('option')) {
+    // show progress bar
     $gdcLoadingIcon.show();
 
     let keyword = localStorage.getItem('keyword');
@@ -251,14 +245,14 @@ export const renderLocalStorage = ($keywords, $root, $searchOptionsBox, $gdcLoad
 
     apiSearchAll(keyword, option, (keyword, option, items) => {
       render($root, keyword, option, items);
-      //close progress bar
+      // close progress bar
       $gdcLoadingIcon.fadeOut('fast');
     });
   }
-}
+};
 
 export const gdcDictionaryVersion = ($gdcVersionContent, callback) => {
   apiGDCDictionaryVersion((result) => {
-    $gdcVersionContent.html(`GDC Dictionary Version - ${result}`)
+    $gdcVersionContent.html(`GDC Dictionary Version - ${result}`);
   });
 };

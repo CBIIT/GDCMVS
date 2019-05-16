@@ -1,23 +1,22 @@
-import { header_template, body_template } from './ncit-details-view';
+import { headerTemplate, bodyTemplate } from './ncit-details-view';
 import { apiEVSRest } from '../../api';
 import { getHeaderOffset, getScrollTop } from '../../shared';
 
-export default function ncitDetails(uid){
-  uid = uid.replace(/<b>/g, "").replace(/<\/b>/g, "");
+const ncitDetails = (uid) => {
+  uid = uid.replace(/<b>/g, '').replace(/<\/b>/g, '');
   apiEVSRest(uid, function (id, item) {
-
     if ($('#ncit_details').length) {
       $('#ncit_details').remove();
     }
 
     let tmp = {};
     tmp.code = item.code;
-    tmp.name = item.preferredName
-    tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI' }).description : undefined;
+    tmp.name = item.preferredName;
+    tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI'; }).description : undefined;
     tmp.s = item.synonyms;
 
-    let header = header_template;
-    let html = body_template(tmp);
+    let header = headerTemplate;
+    let html = bodyTemplate(tmp);
 
     $(document.body).append(html);
 
@@ -30,7 +29,7 @@ export default function ncitDetails(uid){
       minHeight: 350,
       maxHeight: 650,
       open: function () {
-        //add new custom header
+        // add new custom header
         $(this).prev('.ui-dialog-titlebar').css('padding-top', '3.5em').html(header);
 
         let target = $(this).parent();
@@ -39,7 +38,7 @@ export default function ncitDetails(uid){
         }
 
         $('#close_ncit_details').bind('click', function () {
-          $("#ncit_details").dialog('close');
+          $('#ncit_details').dialog('close');
         });
       },
       close: function () {
@@ -49,4 +48,6 @@ export default function ncitDetails(uid){
       containment: '#docs-container'
     });
   });
-}
+};
+
+export default ncitDetails;

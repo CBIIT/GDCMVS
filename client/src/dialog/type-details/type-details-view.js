@@ -1,4 +1,4 @@
-export const header_template = () => `
+export const headerTemplate = () => `
   <div class="dialog__header">
     <div class="dialog__titlebar">
       <span id="ui-id-4" class="ui-dialog-title">Term Types</span>
@@ -6,8 +6,9 @@ export const header_template = () => `
         title="Close"></button>
     </div>
   </div>
-`
-export const body_template = () => `
+`;
+
+export const bodyTemplate = () => `
 <div id="type_details">
   <div class="type__content">
     <p>
@@ -103,4 +104,4 @@ export const body_template = () => `
     </p>
   </div>
 </div>
-`
+`;

@@ -25,11 +25,11 @@ const template = (props, options) => {
               </ul>
             </div>
             <div class="table__td col-xs-2 table__td--word-break">
-              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=${item.node}&anchor=${item.property.replace(/<b>/g, "").replace(/<\/b>/g, "")}" target="_blank">
+              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=${item.node}&anchor=${item.property.replace(/<b>/g, '').replace(/<\/b>/g, '')}" target="_blank">
                 ${item.property}
               </a>
             </div>
-            ${item.property_desc !== undefined ? `<div class="table__td col-xs-4">${item.property_desc}</div>`: ``}
+            ${item.property_desc !== undefined ? `<div class="table__td col-xs-4">${item.property_desc}</div>` : ``}
             <div class="table__td col-xs-2">
             ${item.enum !== undefined ? `
               <a class="getGDCTerms" href="#" data-ref="${item.id}">See All Values</a><br>
@@ -49,6 +49,6 @@ const template = (props, options) => {
       </div>
     </div>
   `;
-}
+};
 
 export default template;
