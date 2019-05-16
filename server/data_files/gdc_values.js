@@ -4527,7 +4527,6 @@
     {"i_c":"C39.9","nm":"Ill-defined sites within respiratory system","n_c":"C148338","term_type":"PT"},
     {"i_c":"C39.9","nm":"Respiratory tract, NOS","n_c":"","term_type":"SY"},
     {"i_c":"C40-C41","nm":"BONES, JOINTS and ARTICULAR CARTILAGE","n_c":"","term_type":"HT"},
-    {"i_c":"C40","nm":"BONES, JOINTS AND ARTICULAR CARTILAGE OF LIMBS","n_c":"","term_type":"HT"},
     {"i_c":"C40.0","nm":"Long bones of upper limb, scapula and associated joints","n_c":"","term_type":"PT"},
     {"i_c":"C40.0","nm":"Acromioclavicular joint","n_c":"C32047","term_type":"RT"},
     {"i_c":"C40.0","nm":"Bone of arm","n_c":"","term_type":"RT"},
