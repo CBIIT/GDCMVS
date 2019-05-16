@@ -1,4 +1,4 @@
-export const header_template = () => `
+export const headerTemplate = () => `
   <div class="dialog__header">
     <div class="dialog__titlebar">
       <span id="ui-id-4" class="ui-dialog-title">Sources</span>
@@ -6,8 +6,9 @@ export const header_template = () => `
         title="Close"></button>
     </div>
   </div>
-`
-export const body_template = () => `
+`;
+
+export const bodyTemplate = () => `
 <div id="source_details">
   <div class="source__content">
     NCIt includes some data, notably terms, codes, and definitions, tagged as coming from the sources listed below. The extent
@@ -178,4 +179,4 @@ export const body_template = () => `
     </table>
   </div>
 </div>
-`
+`;

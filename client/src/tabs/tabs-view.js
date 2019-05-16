@@ -35,6 +35,6 @@ const template = (options) => {
       </div>
     </div>
   `;
-}
+};
 
 export default template;

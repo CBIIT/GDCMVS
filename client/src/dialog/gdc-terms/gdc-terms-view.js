@@ -1,18 +1,18 @@
 import { tableSynonyms, tableIcdo3 } from '../../components/table';
 
-export const header_template = (targets_length, icdo, items_length) => `
+export const headerTemplate = (targetsLength, icdo, itemsLength) => `
 <div class="dialog__header">
   <div class="dialog__titlebar">
     <span id="ui-id-4" class="ui-dialog-title">GDC Values</span>
     <button type="button" id="close_gdc_terms_data" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
-    <span class="ui-label">${items_length}</span>
+    <span class="ui-label">${itemsLength}</span>
     <div class="checkbox ui-checkbox">
-      ${targets_length !== 0 ? `
+      ${targetsLength !== 0 ? `
         <label class="checkbox__label checkbox__label--height">
           <input id="show_all_gdc_syn" class="checkbox__input" type="checkbox" value="">
           <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values
         </label>
-      `:``}
+      ` : ``}
     </div>
     <div class="input-group dialog__input-group">
       <span id="gdc-values-icon" class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
@@ -31,7 +31,7 @@ export const header_template = (targets_length, icdo, items_length) => `
             <div class="table__th col-xs-8">NCIt Terms</div>
           </div>
         </div>
-      `:`
+      ` : `
         <div class="table__th col-xs-5">GDC Value</div>
         <div class="col-xs-7">
           <div class="row">
@@ -43,9 +43,9 @@ export const header_template = (targets_length, icdo, items_length) => `
     </div>
   </div>
 </div>
-`
+`;
 
-export const list_template = (items, icdo, keywordCase) => {
+export const listTemplate = (items, icdo, keywordCase) => {
   return `${items.length !== 0 ? `
     <div id="gdc-syn-data-list" class="table__container">
       <div class="table__body row">
@@ -54,42 +54,42 @@ export const list_template = (items, icdo, keywordCase) => {
           <div id="gdc_term_item" class="table__row row gdc-term__item--show">
             ${icdo ? `
               <div class="table__td col-xs-2">${item.n}</div>
-              <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}`:``}</div>
+              <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}` : ``}</div>
               <div class="table__td col-xs-3">
-                ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}`:``}
+                ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
               </div>
               <div class="col-xs-5">
 
-              ${item.n_syn !== undefined  ? `
-                ${item.n_syn.map((n_syn) =>`
+              ${item.n_syn !== undefined ? `
+                ${item.n_syn.map((nSyn) => `
                 <div class="row">
                   <div class="table__td col-xs-4">
-                    ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a>`:``}
+                    ${nSyn.n_c !== undefined && nSyn.n_c !== '' ? `<a class="getNCITDetails" href="#" data-uid="${nSyn.n_c}">${nSyn.n_c}</a>` : ``}
                   </div>
                   <div name="syn_area" class="table__td col-xs-8">
-                    ${tableSynonyms(n_syn)}
+                    ${tableSynonyms(nSyn)}
                   </div>
                 </div>
                 `.trim()).join('')}
-              `:``}
+              ` : ``}
 
               </div>
-            `:`
+            ` : `
               <div class="table__td col-xs-5">${item.n}</div>
               <div class="col-xs-7">
 
                 ${item.n_syn !== undefined ? `
-                  ${item.n_syn.map((n_syn) => `
+                  ${item.n_syn.map((nSyn) => `
                     <div class="row">
                       <div class="table__td col-xs-4">
-                        ${n_syn.n_c !== undefined && n_syn.n_c !== "" ? `<a class="getNCITDetails" href="#" data-uid="${n_syn.n_c}">${n_syn.n_c}</a>`:``}
+                        ${nSyn.n_c !== undefined && nSyn.n_c !== '' ? `<a class="getNCITDetails" href="#" data-uid="${nSyn.n_c}">${nSyn.n_c}</a>` : ``}
                       </div>
                       <div name="syn_area" class="table__td col-xs-8">
-                      ${tableSynonyms(n_syn)}
+                      ${tableSynonyms(nSyn)}
                       </div>
                     </div>
                   `.trim()).join('')}
-                `:``}
+                ` : ``}
 
               </div>
             `}
@@ -97,18 +97,17 @@ export const list_template = (items, icdo, keywordCase) => {
         </div>
       </div>
     </div>
-  `:`
+  ` : `
     <div  class="dialog__indicator">
       <div class="dialog__indicator-content">
         Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
       </div>
     </div>
-  `} `
-}
+  `} `;
+};
 
-
-export const footer_template = `
+export const footerTemplate = `
 <div class="dialog__footer">
   <div id="pagination-container" class="dialog__pagination"></div>
 </div>
-`
+`;

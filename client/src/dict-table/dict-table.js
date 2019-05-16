@@ -3,7 +3,7 @@ import { getHighlightObj } from '../shared';
 
 const treeviewToggleHandle = (event) => {
   event.preventDefault();
-  const  $this = $(event.currentTarget);
+  const $this = $(event.currentTarget);
   const $target = $this.closest('.treeview__parent');
   $target.find('>ul.treeview__ul').toggle();
   if ($target.hasClass('treeview__parent--open')) {
@@ -15,7 +15,7 @@ const treeviewToggleHandle = (event) => {
     $this.attr('aria-label', 'collapse');
     $this.html('<i class="fa fa-angle-up"></i>');
   }
-}
+};
 
 const treeviewShowAllValuesHandle = (event) => {
   const target = event.currentTarget;
@@ -42,29 +42,29 @@ const treeviewShowAllValuesHandle = (event) => {
     });
     $treeviewAll.removeClass('treeview__ul');
   }
-}
+};
 
 const treeviewToggleAllHandle = (event) => {
   const $this = $(event.currentTarget);
-  const $tview_ul = $('.treeview .treeview__ul');
-  const $tview_li = $('.treeview .treeview__parent');
-  const $tview_trigger = $('.treeview .treeview__toggle');
+  const $tviewUl = $('.treeview .treeview__ul');
+  const $tviewLi = $('.treeview .treeview__parent');
+  const $tviewTrigger = $('.treeview .treeview__toggle');
   if ($this.hasClass('active')) {
-    $tview_ul.hide();
-    $tview_li.removeClass('treeview__parent--open');
-    $tview_trigger.attr('aria-label', 'expand');
-    $tview_trigger.html('<i class="fa fa-angle-down"></i>');
+    $tviewUl.hide();
+    $tviewLi.removeClass('treeview__parent--open');
+    $tviewTrigger.attr('aria-label', 'expand');
+    $tviewTrigger.html('<i class="fa fa-angle-down"></i>');
     $this.html('<i class="fa fa-angle-down"></i> Expand All');
   } else {
-    $tview_ul.show();
-    $tview_li.addClass('treeview__parent--open');
-    $tview_trigger.attr('aria-label', 'collapse');
-    $tview_trigger.html('<i class="fa fa-angle-up"></i>');
+    $tviewUl.show();
+    $tviewLi.addClass('treeview__parent--open');
+    $tviewTrigger.attr('aria-label', 'collapse');
+    $tviewTrigger.html('<i class="fa fa-angle-up"></i>');
     $this.html('<i class="fa fa-angle-up"></i>  Collapse All');
   }
-}
+};
 
-export const dtRender = (items, keyword, search_option) => {
+export const dtRender = (items, keyword, searchOption) => {
   // Final data
   let dictionary = [];
   // final result
@@ -75,194 +75,188 @@ export const dtRender = (items, keyword, search_option) => {
   // RegExp Keyword
   // keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
   // let reg_key = new RegExp(keyword, "ig");
-  let main_obj = {};
+  let mainObj = {};
   items.forEach(item => {
     let source = item._source;
-    let enum_hits = item.inner_hits.enum.hits;
+    let enumHits = item.inner_hits.enum.hits;
     let highlight = item.highlight ? item.highlight : undefined;
 
-    if(main_obj[source.category] === undefined) { // category doesn't exists, add it
-      let category_obj = {
+    if (mainObj[source.category] === undefined) { // category doesn't exists, add it
+      let categoryObj = {
         category: source.category,
-        type: "category",
+        type: 'category',
         length: 0,
         nodes_obj: {},
         nodes: []
       };
 
-      let node_obj = {
+      let nodeObj = {
         node: source.node,
         node_desc: source.node_desc,
-        type: "node",
+        type: 'node',
         length: 0,
         properties_obj: {},
         properties: []
-      }
+      };
 
-      let property_obj = {
-        type: "property",
+      let propertyObj = {
+        type: 'property',
         length: 0,
         hl_values: [],
         all_values: []
-      }
-      let highlight_cdeId;
+      };
+
+      let highlightCdeId;
       // Add highlight to property
-      if(highlight !== undefined){
-        let highlight_prop = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
-        let highlight_prop_obj = getHighlightObj(highlight_prop);
+      if (highlight !== undefined) {
+        let highlightProp = ('property' in highlight) || ('property.have' in highlight) ? highlight['property'] || highlight['property.have'] : undefined;
+        let highlightPropObj = getHighlightObj(highlightProp);
 
-        highlight_cdeId = ("cde.id" in highlight) ? highlight["cde.id"] : undefined;
+        highlightCdeId = ('cde.id' in highlight) ? highlight['cde.id'] : undefined;
 
-        let highlight_prop_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
-        let highlight_prop_desc_obj = {};
-        if(highlight_prop_desc !== undefined){
-          highlight_prop_desc.forEach(val => {
-            if(highlight_prop_desc_obj[source.property] === undefined) highlight_prop_desc_obj[source.property] = val;
+        let highlightPropDesc = ('property_desc' in highlight) ? highlight['property_desc'] : undefined;
+        let highlightPropDescObj = {};
+        if (highlightPropDesc !== undefined) {
+          highlightPropDesc.forEach(val => {
+            if (highlightPropDescObj[source.property] === undefined) highlightPropDescObj[source.property] = val;
           });
         }
-        property_obj.property = highlight_prop_obj[source.property] ? highlight_prop_obj[source.property] : source.property;
-        property_obj.property_desc = highlight_prop_desc_obj[source.property] ? highlight_prop_desc_obj[source.property] : source.property_desc;
-        property_obj.length += highlight_prop_desc !== undefined || highlight_prop !== undefined || highlight_cdeId !== undefined ? 1 : 0;
+        propertyObj.property = highlightPropObj[source.property] ? highlightPropObj[source.property] : source.property;
+        propertyObj.property_desc = highlightPropDescObj[source.property] ? highlightPropDescObj[source.property] : source.property_desc;
+        propertyObj.length += highlightPropDesc !== undefined || highlightProp !== undefined || highlightCdeId !== undefined ? 1 : 0;
+      } else {
+        propertyObj.property = source.property;
+        propertyObj.property_desc = source.property_desc;
       }
-      else{
-        property_obj.property = source.property;
-        property_obj.property_desc = source.property_desc;
-      }
-      let highlight_value_obj = {};
-      if(enum_hits.total !== 0) highlight_value_obj = getAllValueHighlight(enum_hits);
-      property_obj.all_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n;}) : [];
-      property_obj.all_values.sort();
+      let highlightValueObj = {};
+      if (enumHits.total !== 0) highlightValueObj = getAllValueHighlight(enumHits);
+      propertyObj.all_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+      propertyObj.all_values.sort();
 
-      if(enum_hits.total !== 0 && highlight_cdeId === undefined){
-        enum_hits.hits.forEach(hl_em => {
-          let em_source = hl_em._source;
-          let em_highlight = hl_em.highlight;
-          let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
-          let highlight_value_obj = getHighlightObj(highlight_value);
-          let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
-          if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
-          property_obj.hl_values.sort();
+      if (enumHits.total !== 0 && highlightCdeId === undefined) {
+        enumHits.hits.forEach(emHit => {
+          let emSource = emHit._source;
+          let emHighlight = emHit.highlight;
+          let highlightValue = ('enum.n' in emHighlight) || ('enum.n.have' in emHighlight) ? emHighlight['enum.n'] || emHighlight['enum.n.have'] : undefined;
+          let highlightValueObj = getHighlightObj(highlightValue);
+          let valueObj = highlightValueObj[emSource.n] ? highlightValueObj[emSource.n] : emSource.n;
+          if (propertyObj.hl_values.indexOf(valueObj) === -1) propertyObj.hl_values.push(valueObj);
+          propertyObj.hl_values.sort();
         });
+      } else if (enumHits.total !== 0 && highlightCdeId !== undefined) {
+        let highlightValueObj = getAllValueHighlight(enumHits);
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+        propertyObj.hl_values.sort();
+      } else if (enumHits.total === 0 && highlightCdeId !== undefined) {
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return x.n; }) : [];
+        propertyObj.hl_values.sort();
       }
-      else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
-        let highlight_value_obj = getAllValueHighlight(enum_hits);
-        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
-        property_obj.hl_values.sort();
-      }
-      else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return x.n;})  : [];
-        property_obj.hl_values.sort();
-      }
-      property_obj.length += property_obj.hl_values.length;
-      if(node_obj.properties_obj[source.property] === undefined){
-        node_obj.properties_obj[source.property] = {};
-        node_obj.properties_obj[source.property] = property_obj;
-        node_obj.length += property_obj.length;
+      propertyObj.length += propertyObj.hl_values.length;
+      if (nodeObj.properties_obj[source.property] === undefined) {
+        nodeObj.properties_obj[source.property] = {};
+        nodeObj.properties_obj[source.property] = propertyObj;
+        nodeObj.length += propertyObj.length;
       }
 
-      if(category_obj.nodes_obj[source.node] === undefined){
-        category_obj.nodes_obj[source.node] = {};
-        category_obj.nodes_obj[source.node] = node_obj;
+      if (categoryObj.nodes_obj[source.node] === undefined) {
+        categoryObj.nodes_obj[source.node] = {};
+        categoryObj.nodes_obj[source.node] = nodeObj;
       }
 
-      main_obj[source.category] = category_obj;
-    }
-    else{ // category already exists
-      let node_obj = {
+      mainObj[source.category] = categoryObj;
+    } else { // category already exists
+      let nodeObj = {
         node: source.node,
         node_desc: source.node_desc,
-        type: "node",
+        type: 'node',
         length: 0,
         properties_obj: {},
         properties: []
-      }
+      };
 
-      let property_obj = {
-        type: "property",
+      let propertyObj = {
+        type: 'property',
         length: 0,
         hl_values: [],
         all_values: []
-      }
-      let highlight_cdeId;
+      };
+
+      let highlightCdeId;
       // Add highlight to property
-      if(highlight !== undefined){
-        let highlight_prop = ("property" in highlight) || ("property.have" in highlight) ? highlight["property"] || highlight["property.have"] : undefined;
-        let highlight_prop_obj = getHighlightObj(highlight_prop);
+      if (highlight !== undefined) {
+        let highlightProp = ('property' in highlight) || ('property.have' in highlight) ? highlight['property'] || highlight['property.have'] : undefined;
+        let highlightPropObj = getHighlightObj(highlightProp);
 
-        highlight_cdeId = ("cde.id" in highlight) ? highlight["cde.id"] : undefined;
+        highlightCdeId = ('cde.id' in highlight) ? highlight['cde.id'] : undefined;
 
-        let highlight_prop_desc = ("property_desc" in highlight) ? highlight["property_desc"] : undefined;
-        let highlight_prop_desc_obj = {};
-        if(highlight_prop_desc !== undefined){
-          highlight_prop_desc.forEach(val => {
-            if(highlight_prop_desc_obj[source.property] === undefined) highlight_prop_desc_obj[source.property] = val;
+        let highlightPropDesc = ('property_desc' in highlight) ? highlight['property_desc'] : undefined;
+        let highlightPropDescObj = {};
+        if (highlightPropDesc !== undefined) {
+          highlightPropDesc.forEach(val => {
+            if (highlightPropDescObj[source.property] === undefined) highlightPropDescObj[source.property] = val;
           });
         }
-        property_obj.property = highlight_prop_obj[source.property] ? highlight_prop_obj[source.property] : source.property;
-        property_obj.property_desc = highlight_prop_desc_obj[source.property] ? highlight_prop_desc_obj[source.property] : source.property_desc;
-        property_obj.length += highlight_prop_desc !== undefined || highlight_prop !== undefined || highlight_cdeId !== undefined ? 1 : 0;
+        propertyObj.property = highlightPropObj[source.property] ? highlightPropObj[source.property] : source.property;
+        propertyObj.property_desc = highlightPropDescObj[source.property] ? highlightPropDescObj[source.property] : source.property_desc;
+        propertyObj.length += highlightPropDesc !== undefined || highlightProp !== undefined || highlightCdeId !== undefined ? 1 : 0;
+      } else {
+        propertyObj.property = source.property;
+        propertyObj.property_desc = source.property_desc;
       }
-      else{
-        property_obj.property = source.property;
-        property_obj.property_desc = source.property_desc;
-      }
-      let highlight_value_obj = {};
-      if(enum_hits.total !== 0) highlight_value_obj = getAllValueHighlight(enum_hits);
-      property_obj.all_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n;}) : [];
-      property_obj.all_values.sort();
+      let highlightValueObj = {};
+      if (enumHits.total !== 0) highlightValueObj = getAllValueHighlight(enumHits);
+      propertyObj.all_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+      propertyObj.all_values.sort();
 
-      if(enum_hits.total !== 0 && highlight_cdeId === undefined){
-        enum_hits.hits.forEach(hl_em => {
-          let em_source = hl_em._source;
-          let em_highlight = hl_em.highlight;
-          let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
-          let highlight_value_obj = getHighlightObj(highlight_value);
-          let value_obj = highlight_value_obj[em_source.n] ? highlight_value_obj[em_source.n] : em_source.n;
-          if(property_obj.hl_values.indexOf(value_obj) === -1) property_obj.hl_values.push(value_obj);
-          property_obj.hl_values.sort();
+      if (enumHits.total !== 0 && highlightCdeId === undefined) {
+        enumHits.hits.forEach(emHit => {
+          let emSource = emHit._source;
+          let emHighlight = emHit.highlight;
+          let highlightValue = ('enum.n' in emHighlight) || ('enum.n.have' in emHighlight) ? emHighlight['enum.n'] || emHighlight['enum.n.have'] : undefined;
+          let highlightValueObj = getHighlightObj(highlightValue);
+          let valueObj = highlightValueObj[emSource.n] ? highlightValueObj[emSource.n] : emSource.n;
+          if (propertyObj.hl_values.indexOf(valueObj) === -1) propertyObj.hl_values.push(valueObj);
+          propertyObj.hl_values.sort();
         });
+      } else if (enumHits.total !== 0 && highlightCdeId !== undefined) {
+        let highlightValueObj = getAllValueHighlight(enumHits);
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+        propertyObj.hl_values.sort();
+      } else if (enumHits.total === 0 && highlightCdeId !== undefined) {
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return x.n; }) : [];
+        propertyObj.hl_values.sort();
       }
-      else if(enum_hits.total !== 0 && highlight_cdeId !== undefined){
-        let highlight_value_obj = getAllValueHighlight(enum_hits);
-        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return highlight_value_obj[x.n] ? highlight_value_obj[x.n] : x.n; })  : [];
-        property_obj.hl_values.sort();
-      }
-      else if(enum_hits.total === 0 && highlight_cdeId !== undefined){
-        property_obj.hl_values = source.enum !== undefined ? source.enum.map(function(x){ return x.n;})  : [];
-        property_obj.hl_values.sort();
-      }
-      property_obj.length += property_obj.hl_values.length;
-      if(main_obj[source.category].nodes_obj[source.node] !== undefined){ // If node already exists add new properties_obj to it.
-        if(main_obj[source.category].nodes_obj[source.node].properties_obj[source.property] === undefined){
-          main_obj[source.category].nodes_obj[source.node].properties_obj[source.property] = {};
-          main_obj[source.category].nodes_obj[source.node].properties_obj[source.property] = property_obj;
-          main_obj[source.category].nodes_obj[source.node].length += property_obj.length;
+      propertyObj.length += propertyObj.hl_values.length;
+      if (mainObj[source.category].nodes_obj[source.node] !== undefined) { // If node already exists add new properties_obj to it.
+        if (mainObj[source.category].nodes_obj[source.node].properties_obj[source.property] === undefined) {
+          mainObj[source.category].nodes_obj[source.node].properties_obj[source.property] = {};
+          mainObj[source.category].nodes_obj[source.node].properties_obj[source.property] = propertyObj;
+          mainObj[source.category].nodes_obj[source.node].length += propertyObj.length;
         }
-      }
-      else { // If node doesn't exists add new node and properties_obj.
-        if(node_obj.properties_obj[source.property] === undefined){
-          node_obj.properties_obj[source.property] = {};
-          node_obj.properties_obj[source.property] = property_obj;
-          node_obj.length += property_obj.length;
+      } else { // If node doesn't exists add new node and properties_obj.
+        if (nodeObj.properties_obj[source.property] === undefined) {
+          nodeObj.properties_obj[source.property] = {};
+          nodeObj.properties_obj[source.property] = propertyObj;
+          nodeObj.length += propertyObj.length;
         }
-        main_obj[source.category].nodes_obj[source.node] = {};
-        main_obj[source.category].nodes_obj[source.node] = node_obj;
+        mainObj[source.category].nodes_obj[source.node] = {};
+        mainObj[source.category].nodes_obj[source.node] = nodeObj;
       }
     };
   });
-  for(let category in main_obj){
-    let category_obj = main_obj[category];
-    for(let node in category_obj.nodes_obj){
-      let node_obj = category_obj.nodes_obj[node];
-      for(let property in node_obj.properties_obj){
-        let property_obj = node_obj.properties_obj[property];
-        node_obj.properties.push(property_obj);
+  for (let category in mainObj) {
+    let categoryObj = mainObj[category];
+    for (let node in categoryObj.nodes_obj) {
+      let nodeObj = categoryObj.nodes_obj[node];
+      for (let property in nodeObj.properties_obj) {
+        let propertyObj = nodeObj.properties_obj[property];
+        nodeObj.properties.push(propertyObj);
       }
-      category_obj.nodes.push(node_obj);
-      category_obj.length += node_obj.length;
+      categoryObj.nodes.push(nodeObj);
+      categoryObj.length += nodeObj.length;
     }
-    dictionary.push(category_obj);
-    result.len += category_obj.length;
+    dictionary.push(categoryObj);
+    result.len += categoryObj.length;
   }
   let offset = $('#root').offset().top;
   let h = window.innerHeight - offset - 313;
@@ -270,22 +264,22 @@ export const dtRender = (items, keyword, search_option) => {
   let html = template(dictionary, options);
   result.html = html;
   return result;
-}
+};
 
-const getAllValueHighlight = (enum_hits) => {
-  let highlight_value_obj = {};
-  enum_hits.hits.forEach(hl_em => {
-    let em_highlight = hl_em.highlight;
-    let highlight_value = ("enum.n" in em_highlight) || ("enum.n.have" in em_highlight) ? em_highlight["enum.n"] || em_highlight["enum.n.have"] : undefined;
-    if(highlight_value !== undefined){
-      highlight_value.forEach(val => {
-        let tmp = val.replace(/<b>/g, "").replace(/<\/b>/g, "");
-        if(highlight_value_obj[tmp] === undefined) highlight_value_obj[tmp] = val;
+const getAllValueHighlight = (enumHits) => {
+  let highlightValueObj = {};
+  enumHits.hits.forEach(emHit => {
+    let emHighlight = emHit.highlight;
+    let highlightValue = ('enum.n' in emHighlight) || ('enum.n.have' in emHighlight) ? emHighlight['enum.n'] || emHighlight['enum.n.have'] : undefined;
+    if (highlightValue !== undefined) {
+      highlightValue.forEach(val => {
+        let tmp = val.replace(/<b>/g, '').replace(/<\/b>/g, '');
+        if (highlightValueObj[tmp] === undefined) highlightValueObj[tmp] = val;
       });
     }
   });
-  return highlight_value_obj;
-}
+  return highlightValueObj;
+};
 
 export const dtEvents = ($root) => {
   $root.on('click', '.treeview__toggle', (event) => {
@@ -299,4 +293,4 @@ export const dtEvents = ($root) => {
   $root.on('click', '#trs_toggle', (event) => {
     treeviewToggleAllHandle(event);
   });
-}
+};
