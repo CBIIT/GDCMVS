@@ -131,7 +131,7 @@ const searchP = (req, res) => {
 	if(req.query.option){
 		option.match = JSON.parse(req.query.option).match ? JSON.parse(req.query.option).match : "partial";
 		option.syn = JSON.parse(req.query.option).syn ? JSON.parse(req.query.option).syn : false;
-		option.desc = JSON.parse(req.query.option).match ? JSON.parse(req.query.option).match : false;
+		option.desc = JSON.parse(req.query.option).desc ? JSON.parse(req.query.option).desc : false;
 	}
 	else{
 		option = {
