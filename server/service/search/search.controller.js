@@ -127,11 +127,23 @@ const searchICDO3Data = (req, res) => {
 const searchP = (req, res) => {
 	let isBoolean = false;
 	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
+	let option = {};
+	if(req.query.option){
+		option.match = JSON.parse(req.query.option).match ? JSON.parse(req.query.option).match : "partial";
+		option.syn = JSON.parse(req.query.option).syn ? JSON.parse(req.query.option).syn : false;
+		option.desc = JSON.parse(req.query.option).desc ? JSON.parse(req.query.option).desc : false;
+	}
+	else{
+		option = {
+			match: "partial",
+			syn: false,
+			desc: false
+		};
+	}
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
 		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
-		let option = JSON.parse(req.query.option);
 		let query = generateQuery(keyword, option, isBoolean);
 		let highlight = generateHighlight();
 		elastic.query(config.index_p, query, highlight, result => {
