@@ -1,7 +1,7 @@
 import template from './props-table-view';
 import { getHighlightObj } from '../shared';
 
-export default (items, keyword, searchOption) => {
+export default (items, keyword) => {
   // data preprocessing
   let props = [];
   // options render

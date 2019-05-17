@@ -66,12 +66,12 @@ const GetCaretPosition = (ctrl) => {
 export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   let keywordCase = $keywords.val().trim();
   let activeTab = getActiveTap();
-  let option = getOption(activeTab);
+  let options = getOption(activeTab);
 
   if (keywordCase === '') {
-    option.error = true;
+    options.error = true;
     $keywords.addClass('search-bar__input--has-error');
-    render($root, keywordCase, option, []);
+    render($root, keywordCase, options, []);
     return;
   }
   // hide suggestBox
@@ -81,14 +81,14 @@ export const clickSearch = ($keywords, $root, $suggestBox, $gdcLoadingIcon) => {
   // show progress bar
   $gdcLoadingIcon.fadeIn(100);
 
-  apiSearchAll(keywordCase, option, (keyword, option, items) => {
+  apiSearchAll(keywordCase, options, (keyword, options, items) => {
     // Clear the data in localStorage
     localStorage.clear();
     // Save the data in localStorage
     localStorage.setItem('keyword', keywordCase);
-    localStorage.setItem('option', JSON.stringify(option));
+    localStorage.setItem('option', JSON.stringify(options));
 
-    render($root, keywordCase, option, items);
+    render($root, keywordCase, options, items);
     // close progress bar
     $gdcLoadingIcon.fadeOut('fast');
 
