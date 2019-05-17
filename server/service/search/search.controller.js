@@ -128,10 +128,10 @@ const searchP = (req, res) => {
 	let isBoolean = false;
 	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
 	let option = {};
-	if(req.query.option){
-		option.match = JSON.parse(req.query.option).match ? JSON.parse(req.query.option).match : "partial";
-		option.syn = JSON.parse(req.query.option).syn ? JSON.parse(req.query.option).syn : false;
-		option.desc = JSON.parse(req.query.option).desc ? JSON.parse(req.query.option).desc : false;
+	if(req.query.options){
+		option.match = req.query.options.indexOf("exact") !== -1 ? "exact" : "partial";
+		option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
+		option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
 	}
 	else{
 		option = {
