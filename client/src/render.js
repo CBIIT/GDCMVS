@@ -4,7 +4,7 @@ import psRender from './props-table/props-table';
 import { vsRender } from './values-table/values-table';
 import { tabsRender } from './tabs/tabs';
 
-const render = ($root, keyword, option, items) => {
+const render = ($root, keyword, options, items) => {
   let html = '';
   if (items.length !== 0) {
     // deep copy for items array for each tab
@@ -12,11 +12,11 @@ const render = ($root, keyword, option, items) => {
     let data2 = JSON.parse(JSON.stringify(items));
     let data3 = JSON.parse(JSON.stringify(items));
     // render each tab
-    let vsHtml = vsRender(data3, keyword, option);
+    let vsHtml = vsRender(data3, keyword);
     vsHtml.active = false;
-    let psHtml = psRender(data2, keyword, option);
+    let psHtml = psRender(data2, keyword);
     psHtml.active = false;
-    let dtHtml = dtRender(data1, keyword, option);
+    let dtHtml = dtRender(data1, keyword);
     dtHtml.active = false;
     if (vsHtml.len === 0 && psHtml.len === 0) {
       dtHtml.len = 0;
@@ -38,16 +38,16 @@ const render = ($root, keyword, option, items) => {
         </div>
       </div>`;
     } else {
-      if (option.activeTab === 0) {
+      if (options.activeTab === 0) {
         vsHtml.active = true;
-      } else if (option.activeTab === 1) {
+      } else if (options.activeTab === 1) {
         psHtml.active = true;
       } else {
         dtHtml.active = true;
       }
       html = tabsRender(dtHtml, psHtml, vsHtml, keyword);
     }
-  } else if (option.error === true) {
+  } else if (options.error === true) {
     html = `<div class="indicator">
       <div class="indicator__content indicator--has-error">
         <p>Please, enter a valid keyword!</p>

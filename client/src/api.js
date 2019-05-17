@@ -19,9 +19,11 @@ export const apiGDCDictionaryVersion = (callback) => {
   });
 };
 
-export const apiSearchAll = (keyword, option, callback) => {
-  $.getJSON(`${baseUrl}/all/p`, { keyword: keyword, option: JSON.stringify(option) }, function (result) {
-    callback(keyword, option, result);
+export const apiSearchAll = (keyword, options, callback) => {
+  const opts = `${options.match}${options.syn === true ? `,syn` : ``}${options.desc === true ? `,desc` : ``}`;
+
+  $.getJSON(`${baseUrl}/all/p`, { keyword: keyword, options: opts }, function (result) {
+    callback(keyword, options, result);
   }).fail(function (xhr, textStatus, errorThrown) {
     errorNotification(xhr.status, errorThrown);
   });
