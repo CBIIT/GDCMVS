@@ -64,7 +64,7 @@ const treeviewToggleAllHandle = (event) => {
   }
 };
 
-export const dtRender = (items, keyword, searchOption) => {
+export const dtRender = (items, keyword) => {
   // Final data
   let dictionary = [];
   // final result
