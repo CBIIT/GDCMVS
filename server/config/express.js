@@ -33,7 +33,7 @@ module.exports = app => {
     app.use(express.static(path.join(config.root, 'client/static')));
     app.set('viewPath', 'client');
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     if ('dev' === env) {
         app.use(morgan('dev'));
