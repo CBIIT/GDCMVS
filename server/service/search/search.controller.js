@@ -123,7 +123,6 @@ const searchICDO3Data = (req, res) => {
 	}
 }
 
-
 const searchP = (req, res) => {
 	let isBoolean = false;
 	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
@@ -157,6 +156,58 @@ const searchP = (req, res) => {
 				delete entry._score;
 				delete entry._type;
 				delete entry._id;
+			});
+			res.json(data);
+		});
+	}
+};
+
+const searchAPI = (req, res) => {
+	let isBoolean = false;
+	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
+	let option = {};
+	if(req.query.options){
+		option.match = req.query.options.indexOf("exact") !== -1 ? "exact" : "partial";
+		option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
+		option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
+	}	else{
+		option = {
+			match: "partial",
+			syn: false,
+			desc: false
+		};
+	}
+	if (keyword.trim() === '') {
+		res.json([]);
+	} else {
+		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
+		let query = generateQuery(keyword, option, isBoolean);
+		let highlight = generateHighlight();
+		elastic.query(config.index_p, query, highlight, result => {
+			if (result.hits === undefined) {
+				return handleError.error(res, result);
+			}
+			let data = result.hits.hits;
+			data.forEach(entry => {
+				if (entry.inner_hits.enum.hits.hits.length === 0) {
+					delete entry.inner_hits;
+				} else {
+					entry.inner_hits.enum = entry.inner_hits.enum.hits.hits;
+					entry.inner_hits.enum.forEach(e => {
+						e.match = e._source;
+						delete e._index;
+						delete e._type;
+						delete e._nested;
+						delete e._score;
+						delete e._source;
+					});
+				}
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
+				delete entry._source.enum;
 			});
 			res.json(data);
 		});
@@ -1132,6 +1183,7 @@ module.exports = {
 	suggestion,
 	suggestionMisSpelled,
 	searchP,
+	searchAPI,
 	getPV,
 	getDataFromCDE,
 	getDataFromGDC,
