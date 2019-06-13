@@ -5,7 +5,7 @@ module.exports = {
     'title': 'GDCMVS Rest API',
     'description': 'https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1'
   },
-  'host': 'https://gdc-mvs-dev.nci.nih.gov/gdc',
+  'host': 'gdc-mvs-dev.nci.nih.gov/gdc',
   'basePath': '/api/v1',
   'tags': [
     {
