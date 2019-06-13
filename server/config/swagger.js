@@ -3,9 +3,9 @@ module.exports = {
   'info': {
     'version': '1.3.0',
     'title': 'GDCMVS Rest API',
-    'description': 'https://gdc-mvs.nci.nih.gov/gdc/api/v1'
+    'description': 'https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1'
   },
-  'host': 'https://gdc-mvs.nci.nih.gov/gdc',
+  'host': 'https://gdc-mvs-dev.nci.nih.gov/gdc',
   'basePath': '/api/v1',
   'tags': [
     {
@@ -37,11 +37,11 @@ module.exports = {
           'The **desc** is used for include the propertied descruption matches in the search. \n' +
           '| Example | URL |\n' +
           '|---|---|\n' +
-          '| will return concepts for the term melanoma. | [search?keyword=melanoma](https://gdc-mvs.nci.nih.gov/gdc/search/all/api?keyword=melanoma)|\n' +
-          '| will return concepts for the partial term melanoma. | [search?keyword=melanoma&options=partial](https://gdc-mvs.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial)|\n' +
-          '| will return concepts for the exact term melanoma.  | [search?keyword=melanoma&options=exact](https://gdc-mvs.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=exact)|\n' +
-          '| will return concepts for the partial term melanoma and synonyms. | [search?keyword=melanoma&options=partial,syn](https://gdc-mvs.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn)|\n' +
-          '| will return concepts for the partial term melanoma, synonyms and property description matches. | [search?keyword=melanoma&options=partial,syn,desc](https://gdc-mvs.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn,desc)|\n',
+          '| will return concepts for the term melanoma. | [search?keyword=melanoma](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma)|\n' +
+          '| will return concepts for the partial term melanoma. | [search?keyword=melanoma&options=partial](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial)|\n' +
+          '| will return concepts for the exact term melanoma.  | [search?keyword=melanoma&options=exact](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=exact)|\n' +
+          '| will return concepts for the partial term melanoma and synonyms. | [search?keyword=melanoma&options=partial,syn](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn)|\n' +
+          '| will return concepts for the partial term melanoma, synonyms and property description matches. | [search?keyword=melanoma&options=partial,syn,desc](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn,desc)|\n',
         'parameters': [
           {
             'name': 'keyword',
