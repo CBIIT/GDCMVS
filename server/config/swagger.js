@@ -28,20 +28,27 @@ module.exports = {
         'tags': ['Search endpoint'],
         'summary': 'Search Description Summary',
         'description': '# Keyword\n' +
-          'The **keyword** paramater is used to enter the term or phrase to use in the search.\n' +
+          'The **keyword** paramater is used to enter the term or phrase to in search.\n' +
           '# Options\n' +
-          'The options paramater is used to enter a custom search.\n' +
-          'Valid entries for options specifications are: partial or **exact**, **syn**, **desc**. \n' +
-          'The **partial** (default) or **exact** is used for search the partial o exact term specified in kerword. \n' +
-          'The **syn** is used for include the synomnyms matches in the search. \n' +
-          'The **desc** is used for include the propertied descruption matches in the search. \n' +
+          'The options paramater is used to perform a custom search.\n' +
+          'Valid entries for options specifications are: **partial** or **exact**, **syn**, **desc**. \n' +
+          '\n' +
+          'The **partial** is **default** search option, It is not necessary to specify it \n' +
+          'The **exact** is used to perform exact search for term or phrase specified in keyword. \n' +
+          'The **syn** is used to perform search in synonyms for term or phrase specified in keyword. \n' +
+          'The **desc** is used to perform search in property description for term or phrase specified in keyword. \n' +
           '| Example | URL |\n' +
           '|---|---|\n' +
-          '| will return concepts for the term melanoma. | [search?keyword=melanoma](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma)|\n' +
-          '| will return concepts for the partial term melanoma. | [search?keyword=melanoma&options=partial](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial)|\n' +
-          '| will return concepts for the exact term melanoma.  | [search?keyword=melanoma&options=exact](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=exact)|\n' +
-          '| will return concepts for the partial term melanoma and synonyms. | [search?keyword=melanoma&options=partial,syn](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn)|\n' +
-          '| will return concepts for the partial term melanoma, synonyms and property description matches. | [search?keyword=melanoma&options=partial,syn,desc](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn,desc)|\n',
+          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data that partially matches **melanoma**. | [search?keyword=melanoma](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data associated with ICDO-3 code **8000/6**. | [search?keyword=8000/6](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=8000/6)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data associated with NCIt concept code **C12434**. | [search?keyword=c12434](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=c12434)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data that partially matches **primary_diagnosis**. | [search?keyword=primary_diagnosis](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=primary_diagnosis)|\n' +
+          '| | |\n' +
+          
+          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data that partially matches melanoma.. | [search?keyword=melanoma&options=partial](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial)|\n' +
+          '| will perform exact search in enums, ICDO-3 code, NCIt code and property name and return data that exactly matches melanoma..  | [search?keyword=melanoma&options=exact](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=exact)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code, property name and Synonyms and return data that partially matches amelanoma.. | [search?keyword=melanoma&options=partial,syn](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code, property name and Synonyms and property description and return data that partially matches melanoma. property description matches. | [search?keyword=melanoma&options=partial,syn,desc](https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn,desc)|\n',
         'parameters': [
           {
             'name': 'keyword',
@@ -58,32 +65,32 @@ module.exports = {
         ],
         'responses': {
           '200': {
-            'description': 'Successfully got terms',
+            'description': 'Success',
             'schema': {
-              '$ref': '#/definitions/terms'
+              '$ref': '#/definitions/results'
             }
+          },
+          '404': {
+            'description': 'The resource you were trying to reach is not found'
           }
         }
       }
     }
   },
   'definitions': {
-    'terms': {
+    'results': {
       'type': 'array',
       'items': {
-        '$ref': '#/definitions/term'
-      }
-    },
-    'term': {
-      'properties': {
-        '_source': {
-          '$ref': '#/definitions/_source'
-        },
-        'highlight': {
-          '$ref': '#/definitions/highlight'
-        },
-        'inner_hits': {
-          '$ref': '#/definitions/inner_hits'
+        'properties': {
+          '_source': {
+            '$ref': '#/definitions/_source'
+          },
+          'highlight': {
+            '$ref': '#/definitions/_highlight'
+          },
+          'inner_hits': {
+            '$ref': '#/definitions/inner_hits'
+          }
         }
       }
     },
@@ -164,27 +171,24 @@ module.exports = {
     },
     'inner_hits': {
       'properties': {
-        'enums': {
-          '$ref': '#/definitions/enums'
+        'enum': {
+          '$ref': '#/definitions/enum'
         }
       }
     },
-    'enums': {
+    'enum': {
       'type': 'array',
       'items': {
-        '$ref': '#/definitions/enum'
-      }
-    },
-    'enum': {
-      'properties': {
-        'id': {
-          'type': 'string'
-        },
-        'highlight': {
-          '$ref': '#/definitions/highlight'
-        },
-        'match': {
-          '$ref': '#/definitions/match'
+        'properties': {
+          'id': {
+            'type': 'string'
+          },
+          'highlight': {
+            '$ref': '#/definitions/highlight'
+          },
+          'match': {
+            '$ref': '#/definitions/match'
+          }
         }
       }
     },
@@ -245,46 +249,72 @@ module.exports = {
         'n': {
           'type': 'string'
         },
+        'i_c': {
+          '$ref': '#/definitions/i_c'
+        },
         'gdc_d': {
           'type': 'boolean'
         },
         'n_syn': {
-          '$ref': '#/definitions/n_syns'
+          '$ref': '#/definitions/n_syn'
+        },
+        'ic_enum': {
+          '$ref': '#/definitions/ic_enum'
         }
-      }
-    },
-    'n_syns': {
-      'type': 'array',
-      'items': {
-        '$ref': '#/definitions/n_syn'
       }
     },
     'n_syn': {
-      'properties': {
-        'n_c': {
-          'type': 'string'
-        },
-        's': {
-          '$ref': '#/definitions/syns'
+      'type': 'array',
+      'items': {
+        'properties': {
+          'n_c': {
+            'type': 'string'
+          },
+          's': {
+            '$ref': '#/definitions/syn'
+          }
         }
       }
     },
-    'syns': {
+    'syn': {
       'type': 'array',
       'items': {
-        '$ref': '#/definitions/syn'
+        'properties': {
+          'termName': {
+            'type': 'string'
+          },
+          'termGroup': {
+            'type': 'string'
+          },
+          'termSource': {
+            'type': 'string'
+          }
+        }
       }
     },
-    'syn': {
+    'ic_enum': {
+      'type': 'array',
+      'items': {
+        'properties': {
+          'n': {
+            'type': 'string'
+          },
+          'term_type': {
+            'type': 'string'
+          }
+        }
+      }
+    },
+    'i_c': {
       'properties': {
-        'termName': {
+        'c': {
           'type': 'string'
         },
-        'termGroup': {
-          'type': 'string'
-        },
-        'termSource': {
-          'type': 'string'
+        'have': {
+          'type': 'array',
+          'items': {
+            'type': 'string'
+          }
         }
       }
     }
