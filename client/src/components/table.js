@@ -7,7 +7,7 @@ export const tableSynonyms = (syn) => {
       ${tHead(headerNcit)}
       ${syn.s.map((s) => `
         <tr>
-          <td class="table__td--term">${s.termName}</td>
+          <td class="table__td--term table__td--word-break">${s.termName}</td>
           <td class="table__td--source">${s.termSource}</td>
           <td class="table__td--type">${s.termGroup}</td>
         </tr>
@@ -22,7 +22,7 @@ export const tableIcdo3 = (value) => {
       ${tHead(headerIcdo)}
       ${value.ic_enum.map((ic) => `
         <tr>
-          <td class="table__td--term">${ic.n}</td>
+          <td class="table__td--term table__td--word-break">${ic.n}</td>
           <td class="table__td--source">ICD-O-3</td>
           <td class="table__td--type">${ic.term_type}</td>
         </tr>
