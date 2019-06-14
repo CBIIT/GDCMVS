@@ -98,6 +98,7 @@ a:hover, a:focus {
 
 .table {
   margin-bottom: 0;
+  table-layout: fixed;
 }
 
 .table__container {
