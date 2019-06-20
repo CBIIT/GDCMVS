@@ -82,9 +82,11 @@ export const listTemplate = (items, keywordCase) => {
       <div class="compare-form__values">
         <div>
           <div class="compare-form__value">${item.n}</div>
-          <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
-            <i class="fa fa-plus"></i>
-          </a>
+          ${item.i_c !== undefined || item.n_syn !== undefined ? `
+            <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+              <i class="fa fa-plus"></i>
+            </a>
+          ` : ``}
         </div>
         <div class="compare-form__synm" style="display: none;">
         ${item.i_c !== undefined ? `
