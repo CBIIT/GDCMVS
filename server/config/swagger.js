@@ -85,11 +85,8 @@ module.exports = {
           '_source': {
             '$ref': '#/definitions/_source'
           },
-          'highlight': {
-            '$ref': '#/definitions/_highlight'
-          },
-          'inner_hits': {
-            '$ref': '#/definitions/inner_hits'
+          'match': {
+            '$ref': '#/definitions/match'
           }
         }
       }
@@ -102,13 +99,13 @@ module.exports = {
         'node': {
           'type': 'string'
         },
-        'node_desc': {
+        'nodeDescription': {
           'type': 'string'
         },
         'category': {
           'type': 'string'
         },
-        'property_desc': {
+        'propertyDescription': {
           'type': 'string'
         },
         'type': {
@@ -127,156 +124,44 @@ module.exports = {
         'id': {
           'type': 'string'
         },
-        'v': {
-          'type': 'string'
-        },
         'url': {
           'type': 'string'
         }
       }
     },
-    '_highlight': {
-      'properties': {
-        'property.have': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'property': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'property_desc': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'cde.id': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'id': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        }
-      }
-    },
-    'inner_hits': {
-      'properties': {
-        'enum': {
-          '$ref': '#/definitions/enum'
-        }
-      }
-    },
-    'enum': {
-      'type': 'array',
-      'items': {
-        'properties': {
-          'id': {
-            'type': 'string'
-          },
-          'highlight': {
-            '$ref': '#/definitions/highlight'
-          },
-          'match': {
-            '$ref': '#/definitions/match'
-          }
-        }
-      }
-    },
-    'highlight': {
-      'properties': {
-        'enum.n.have': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.n': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.n_syn.n_c.have': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.n_syn.n_c': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.n_syn.s.termName.have': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.n_syn.s.termName': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.i_c.have': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        },
-        'enum.i_c.c': {
-          'type': 'array',
-          'items': {
-            'type': 'string'
-          }
-        }
-      }
-    },
     'match': {
-      'properties': {
-        'n': {
-          'type': 'string'
-        },
-        'i_c': {
-          '$ref': '#/definitions/i_c'
-        },
-        'gdc_d': {
-          'type': 'boolean'
-        },
-        'n_syn': {
-          '$ref': '#/definitions/n_syn'
-        },
-        'ic_enum': {
-          '$ref': '#/definitions/ic_enum'
-        }
-      }
-    },
-    'n_syn': {
       'type': 'array',
       'items': {
         'properties': {
-          'n_c': {
+          'value': {
             'type': 'string'
           },
-          's': {
-            '$ref': '#/definitions/syn'
+          'icdo3Code': {
+            'type': 'string'
+          },
+          'allSynonyms': {
+            '$ref': '#/definitions/allSynonyms'
+          },
+          'icdo3Strings': {
+            '$ref': '#/definitions/icdo3Strings'
           }
         }
       }
     },
-    'syn': {
+    'allSynonyms': {
+      'type': 'array',
+      'items': {
+        'properties': {
+          'conceptCode': {
+            'type': 'string'
+          },
+          'synonyms': {
+            '$ref': '#/definitions/synonyms'
+          }
+        }
+      }
+    },
+    'synonyms': {
       'type': 'array',
       'items': {
         'properties': {
@@ -292,27 +177,14 @@ module.exports = {
         }
       }
     },
-    'ic_enum': {
+    'icdo3Strings': {
       'type': 'array',
       'items': {
         'properties': {
-          'n': {
+          'value': {
             'type': 'string'
           },
-          'term_type': {
-            'type': 'string'
-          }
-        }
-      }
-    },
-    'i_c': {
-      'properties': {
-        'c': {
-          'type': 'string'
-        },
-        'have': {
-          'type': 'array',
-          'items': {
+          'termGroup': {
             'type': 'string'
           }
         }
