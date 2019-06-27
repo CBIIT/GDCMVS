@@ -225,6 +225,8 @@ const searchAPI = (req, res) => {
 						delete e._source.n;
 						delete e._source.gdc_d;
 						delete e._source.n_syn;
+						delete e._source.ic_enum;
+						delete e._source.term_type;
 
 						delete e._index;
 						delete e._type;
@@ -249,11 +251,6 @@ const searchAPI = (req, res) => {
 				delete entry._score;
 				delete entry._type;
 				delete entry._id;
-
-
-
-
-
 			});
 			res.json(data);
 		});
