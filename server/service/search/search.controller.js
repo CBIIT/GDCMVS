@@ -182,8 +182,7 @@ const searchAPI = (req, res) => {
 	} else {
 		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
 		let query = generateQuery(keyword, option, isBoolean);
-		let highlight = generateHighlight();
-		elastic.query(config.index_p, query, highlight, result => {
+		elastic.query(config.index_p, query, null, result => {
 			if (result.hits === undefined) {
 				return handleError.error(res, result);
 			}
@@ -192,22 +191,69 @@ const searchAPI = (req, res) => {
 				if (entry.inner_hits.enum.hits.hits.length === 0) {
 					delete entry.inner_hits;
 				} else {
-					entry.inner_hits.enum = entry.inner_hits.enum.hits.hits;
-					entry.inner_hits.enum.forEach(e => {
-						e.match = e._source;
+					entry.match = [];
+					entry.inner_hits.enum.hits.hits.forEach(e => {
+						
+						e._source.value = e._source.n;
+
+						if (e._source.i_c !== undefined) {
+							e._source.icdo3Code = e._source.i_c.c;
+							delete e._source.i_c;
+						}
+
+						if (e._source.n_syn !== undefined) {
+							e._source.allSynonyms = e._source.n_syn;
+							e._source.allSynonyms.forEach(s => {
+								s.conceptCode = s.n_c;
+								s.synonyms = s.s;
+								delete s.n_c;
+								delete s.s;
+							});
+						}
+
+						if (e._source.ic_enum !== undefined) {
+							e._source.icdo3Strings = e._source.ic_enum;
+							e._source.icdo3Strings.forEach(ic => {
+								ic.termName = ic.n;
+								ic.termGroup  = ic.term_type;
+								delete ic.n;
+								delete ic.term_type;
+							});
+							delete e._source.ic_enum;
+						}
+						
+						delete e._source.n;
+						delete e._source.gdc_d;
+						delete e._source.n_syn;
+
 						delete e._index;
 						delete e._type;
 						delete e._nested;
 						delete e._score;
-						delete e._source;
+
+						entry.match.push(e._source);
 					});
 				}
+
+				entry._source.nodeDescription =  entry._source.node_desc;
+				entry._source.propertyDescription =  entry._source.property_desc;
+
+				delete entry._source.node_desc;
+				delete entry._source.property_desc;
+				delete entry._source.cde.v
+				delete entry._source.enum;
+
+				delete entry.inner_hits;				
 				delete entry.sort;
 				delete entry._index;
 				delete entry._score;
 				delete entry._type;
 				delete entry._id;
-				delete entry._source.enum;
+
+
+
+
+
 			});
 			res.json(data);
 		});
