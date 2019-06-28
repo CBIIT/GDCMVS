@@ -85,8 +85,8 @@ module.exports = {
           '_source': {
             '$ref': '#/definitions/_source'
           },
-          'match': {
-            '$ref': '#/definitions/match'
+          'matches': {
+            '$ref': '#/definitions/matches'
           }
         }
       }
@@ -111,9 +111,6 @@ module.exports = {
         'type': {
           'type': 'string'
         },
-        'id': {
-          'type': 'string'
-        },
         'cde': {
           '$ref': '#/definitions/cde'
         }
@@ -129,7 +126,7 @@ module.exports = {
         }
       }
     },
-    'match': {
+    'matches': {
       'type': 'array',
       'items': {
         'properties': {

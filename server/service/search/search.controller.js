@@ -191,7 +191,7 @@ const searchAPI = (req, res) => {
 				if (entry.inner_hits.enum.hits.hits.length === 0) {
 					delete entry.inner_hits;
 				} else {
-					entry.match = [];
+					entry.matches = [];
 					entry.inner_hits.enum.hits.hits.forEach(e => {
 						
 						e._source.value = e._source.n;
@@ -233,13 +233,14 @@ const searchAPI = (req, res) => {
 						delete e._nested;
 						delete e._score;
 
-						entry.match.push(e._source);
+						entry.matches.push(e._source);
 					});
 				}
 
 				entry._source.nodeDescription =  entry._source.node_desc;
 				entry._source.propertyDescription =  entry._source.property_desc;
 
+				delete entry._source.id;
 				delete entry._source.node_desc;
 				delete entry._source.property_desc;
 				if(entry._source.cde !== undefined) delete entry._source.cde.v
