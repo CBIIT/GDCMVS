@@ -242,7 +242,7 @@ const searchAPI = (req, res) => {
 
 				delete entry._source.node_desc;
 				delete entry._source.property_desc;
-				delete entry._source.cde.v
+				if(entry._source.cde !== undefined) delete entry._source.cde.v
 				delete entry._source.enum;
 
 				delete entry.inner_hits;				
