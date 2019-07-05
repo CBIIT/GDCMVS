@@ -49,7 +49,6 @@ const template = (values, options) => {
                   <div class="row">
                     <div class="col-xs-10">
                       <a class="getGDCData" href="#" data-ref="${item.id}" data-tgt="${value.n}" data-keyword="${options.keyword}">${value.n}</a>
-                      ${item.id === 'MMTX_THERAPY/treatment/clinical' ? '<span class="drug-value__icon"><img src="../assets/img/pills-solid.svg" height="13px" width="13px" title="Drug Name"></span>' : ''}
                     </div>
                     <div class="col-xs-2 table__right">
                       ${value.n_syn !== undefined || value.ic_enum !== undefined ? `
