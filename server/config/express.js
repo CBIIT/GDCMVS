@@ -10,8 +10,6 @@ const path = require('path');
 const morgan = require('morgan');
 const fs = require('fs');
 const rfs = require('rotating-file-stream');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger');
 
 module.exports = app => {
 
@@ -32,8 +30,6 @@ module.exports = app => {
     app.use(cookieParser());
     app.use(express.static(path.join(config.root, 'client/static')));
     app.set('viewPath', 'client');
-
-    app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     if ('dev' === env) {
         app.use(morgan('dev'));
