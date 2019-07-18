@@ -1193,7 +1193,7 @@ const Unmapped = (req, res) => {
 		}
 		let tmp_obj = tmp_concept[keys];
 		for (let values in tmp_obj) {
-			if (gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum.indexOf(values) == -1) {
+			if (gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(values) == -1) {
 				delete tmp_obj[values];
 			}
 		}
