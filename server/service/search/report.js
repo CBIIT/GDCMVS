@@ -219,6 +219,30 @@ const exportMapping = (req, res) => {
 								}
 							});
 						}
+						else if(property === 'morphology' && i_c_data[em]){
+							tmp_data.i_c = em;
+							i_c_data[em].n_c.forEach((tmp_result, index) => { 
+								if(index === 0){
+									tmp_data.ncit_c += tmp_result;
+								}else{
+									tmp_data.ncit_c += ' | ' + tmp_result;
+								} 
+							});
+							i_c_data[em].ncit_pv.forEach((tmp_result, index) => {
+								if(index === 0){
+									tmp_data.ncit_v += tmp_result;
+								}else{
+									tmp_data.ncit_v += ' | ' + tmp_result;
+								} 
+							});
+							i_c_data[em].nm.forEach((tmp_result, index) => {
+								if(index === 0){
+									tmp_data.i_c_s += tmp_result;
+								}else{
+									tmp_data.i_c_s += ' | ' + tmp_result;
+								} 
+							});
+						}
 						data.push(tmp_data);
 					})
 				} else if (properties[property].deprecated_enum && properties[property].new_enum) {
