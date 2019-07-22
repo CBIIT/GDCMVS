@@ -36,6 +36,19 @@
         "Sporadic, pediatric": "C27914",
         "Unknown": "C17998"
     },
+    "clinical.diagnosis.international_prognostic_index": {
+        "Low Risk": "C102403",
+        "Low-Intermediate Risk": "C161807",
+        "High-Intermediate Risk": "C161808",
+        "High Risk": "C102401"
+    },
+    "clinical.diagnosis.largest_extrapelvic_peritoneal_focus": {
+        "Macroscopic (2cm or less)": "",
+        "Macroscopic (greater than 2cm)": "",
+        "Microscopic": "C25252",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
     "clinical.diagnosis.classification_of_tumor": {
         "metastasis": "C3261",
         "Not Allowed To Collect": "C141478",
@@ -169,7 +182,7 @@
         "Trophoblastic neoplasms": "C3422",
         "Unknown": "C17998",
         "Specialized Gonadal Neoplasms": "",
-        "Not Applicable": ""
+        "Not Applicable": "C48660"
     },
     "case.case.index_date": {
         "Diagnosis": "C15220",
@@ -486,7 +499,7 @@
         "Stage Tis": "C48738",
         "Stage X": "C95957",
         "Unknown": "C17998",
-        "Stage IIID": ""
+        "Stage IIID": "C137676"
     },
     "clinical.diagnosis.ajcc_pathologic_t": {
         "Not Reported": "C43234",
@@ -2608,7 +2621,7 @@
         "Copy Number Reported": "C49142",
         "Intermediate": "C73705",
         "Loss of Expression": "",
-        "Overexpressed": ""
+        "Overexpressed": "C18211"
     },
     "clinical.molecular_test.gene_symbol": {
         "A1CF": "C143031",
@@ -3318,8 +3331,15 @@
         "Unknown": "C17998",
         "Not Reported": "C43234",
         "Not Applicable": "C48660",
-        "KRT7": "",
-        "KRT20": ""
+        "KRT7": "C96444",
+        "KRT20": "C96457"
+    },
+    "clinical.molecular_test.pathogenicity": {
+        "Benign": "C14172",
+        "Likely Benign": "",
+        "Likely Pathogenic": "",
+        "Pathogenic": "C80324",
+        "Uncertain Significance": "C47944"
     },
     "clinical.molecular_test.second_gene_symbol": {
         "A1CF": "C143031",
@@ -4155,7 +4175,7 @@
         "Squamous Cell Carcinoma Antigen (SCCA)": "C120660",
         "Unknown": "C17998",
         "Not Reported": "",
-        "CA-125": ""
+        "CA-125": "C325"
     },
     "clinical.molecular_test.histone_family": {
         "H1": "C16683",
@@ -4185,7 +4205,7 @@
         "Repli-G Pooled (Qiagen) DNA": "C156437",
         "Repli-G X (Qiagen) DNA": "C156439",
         "Total RNA": "",
-        "cfDNA": ""
+        "cfDNA": "C128274"
     },
     "biospecimen.analyte.normal_tumor_genotype_snp_match": {
         "No": "C49487",
@@ -4214,8 +4234,8 @@
         "Ion Torrent Proton": "",
         "PacBio RS": "",
         "Ion Torrent S5": "",
-        "Unknown": "",
-        "Not Reported": ""
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "biospecimen.read_group.library_selection": {
         "Other": "C17649",
@@ -4411,21 +4431,21 @@
         "Tumor Resection": "",
         "Partial Hepatectomy": "C15394",
         "Total Hepatectomy": "C51781",
-        "Ascites Drainage": "",
-        "Liquid Biopsy": "",
-        "Lymphadenectomy": "",
-        "Metastasectomy": "",
-        "Omentectomy": "",
-        "Oophorectomy": "",
-        "Peritoneal Lavage": "",
-        "Punch Biopsy": "",
-        "Radical Hysterectomy": "",
-        "Salpingectomy": "",
-        "Salpingo-oophorectomy": "",
-        "Simple Hysterectomy": "",
-        "Supracervical Hysterectomy": "",
-        "Thoracentesis": "",
-        "Tumor Debulking": ""
+        "Ascites Drainage": "C159342",
+        "Liquid Biopsy": "C135727",
+        "Lymphadenectomy": "C15275",
+        "Metastasectomy": "C94461",
+        "Omentectomy": "C51787",
+        "Oophorectomy": "C15291",
+        "Peritoneal Lavage": "C159340",
+        "Punch Biopsy": "C28743",
+        "Radical Hysterectomy": "C94470",
+        "Salpingectomy": "C51605",
+        "Salpingo-oophorectomy": "C15323",
+        "Simple Hysterectomy": "C15701",
+        "Supracervical Hysterectomy": "C126397",
+        "Thoracentesis": "C15392",
+        "Tumor Debulking": "C15749"
     },
     "biospecimen.sample.preservation_method": {
         "Cryopreserved": "C16475",
@@ -4486,7 +4506,7 @@
         "Blood Derived Cancer - Peripheral Blood": "",
         "In Situ Neoplasms": "C36118",
         "Neoplasms of Uncertain and Unknown Behavior": "",
-        "Blood Derived Liquid Biopsy": "",
+        "Blood Derived Liquid Biopsy": "C135727",
         "Expanded Next Generation Cancer Model": ""
     },
     "biospecimen.sample.tissue_type": {
@@ -4775,7 +4795,42 @@
         "Lymph Node, Inguinal": "C32801",
         "Lymph Node, NOS": "C12745",
         "Small Intestine": "C12386",
-        "Kidney": ""
+        "Kidney": "C12415"
+    },
+    "clinical.diagnosis.non_nodal_regional_disease": {
+        "Absent": "C48190",
+        "Indeterminate": "C48658",
+        "Present": "C25626",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.diagnosis.non_nodal_tumor_deposits": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.diagnosis.ovarian_specimen_status": {
+        "Ovarian Capsule Intact": "",
+        "Ovarian Capsule Ruptured": "",
+        "Ovarian Capsule Fragmented": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.diagnosis.ovarian_surface_involvement": {
+        "Absent": "C48190",
+        "Present": "C25626",
+        "Indeterminate": "C48658",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.diagnosis.peritoneal_fluid_cytological_status": {
+        "Atypical": "C9478",
+        "Malignant": "C14143",
+        "Non-Malignant": "C25588",
+        "Unsatisfactory": "C126862",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "clinical.diagnosis.micropapillary_features": {
         "Not Reported": "C43234",
@@ -5032,9 +5087,9 @@
         "Recurrent Pyogenic Cholangitis": "",
         "Reflux Disease": "C26781",
         "Steatosis": "C82983",
-        "Endometriosis": "",
-        "Endosalpingiosis": "",
-        "Serous tubal intraepithelial carcinoma (STIC)": ""
+        "Endometriosis": "C3014",
+        "Endosalpingiosis": "C40121",
+        "Serous tubal intraepithelial carcinoma (STIC)": "C126449"
     },
     "clinical.follow_up.viral_hepatitis_serologies": {
         "HBV Core Antibody": "C62797",
@@ -5106,6 +5161,14 @@
         "No": "C49487",
         "Unknown": "C17998",
         "Yes": "C49488",
+        "Not Reported": "C43234"
+    },
+    "clinical.demographic.cause_of_death_source": {
+        "Autopsy": "C25153",
+        "Death Certificate": "",
+        "Medical Record": "C45258",
+        "Social Security Death Index": "C107424",
+        "Unknown": "C17998",
         "Not Reported": "C43234"
     },
     "clinical.diagnosis.anaplasia_present": {
@@ -5250,7 +5313,8 @@
         "Repli-G (Qiagen) DNA": "C128788",
         "Repli-G Pooled (Qiagen) DNA": "C156437",
         "Repli-G X (Qiagen) DNA": "C156439",
-        "Total RNA": ""
+        "Total RNA": "",
+        "cfDNA": "C128274"
     },
     "biospecimen.aliquot.analyte_type_id": {
         "D": "C449",
