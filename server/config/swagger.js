@@ -3,9 +3,9 @@ module.exports = {
   'info': {
     'version': '1.3.0',
     'title': 'GDCMVS Rest API',
-    'description': 'https://gdc-mvs-dev.nci.nih.gov/gdc/api/v1'
+    'description': 'https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1'
   },
-  'host': 'gdc-mvs-dev.nci.nih.gov/gdc',
+  'host': 'gdc-mvs-qa.nci.nih.gov/gdc',
   'basePath': '/api/v1',
   'tags': [
     {
