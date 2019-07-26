@@ -28,9 +28,9 @@ module.exports = {
         'tags': ['Search endpoint'],
         'summary': 'Search Description Summary',
         'description': '# Keyword\n' +
-          'The **keyword** paramater is used to enter the term or phrase to in search.\n' +
+          'The **keyword** parameter is used to enter the term or phrase to in search.\n' +
           '# Options\n' +
-          'The options paramater is used to perform a custom search.\n' +
+          'The options parameter is used to perform a custom search.\n' +
           'Valid entries for options specifications are: **partial** or **exact**, **syn**, **desc**. \n' +
           '\n' +
           'The **partial** is **default** search option, It is not necessary to specify it \n' +
