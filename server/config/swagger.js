@@ -28,7 +28,7 @@ module.exports = {
         'tags': ['Search endpoint'],
         'summary': 'Search Description Summary',
         'description': '# Keyword\n' +
-          'The **keyword** parameter is used to enter the term or phrase to in search.\n' +
+          'The **keyword** parameter is used to enter the term or phrase to be searched.\n' +
           '# Options\n' +
           'The options parameter is used to perform a custom search.\n' +
           'Valid entries for options specifications are: **partial** or **exact**, **syn**, **desc**. \n' +
@@ -45,10 +45,10 @@ module.exports = {
           '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data that partially matches **primary_diagnosis**. | [search?keyword=primary_diagnosis](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=primary_diagnosis)|\n' +
           '| | |\n' +
           
-          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data that partially matches melanoma.. | [search?keyword=melanoma&options=partial](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial)|\n' +
-          '| will perform exact search in enums, ICDO-3 code, NCIt code and property name and return data that exactly matches melanoma..  | [search?keyword=melanoma&options=exact](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=exact)|\n' +
-          '| will perform partial search in enums, ICDO-3 code, NCIt code, property name and Synonyms and return data that partially matches amelanoma.. | [search?keyword=melanoma&options=partial,syn](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn)|\n' +
-          '| will perform partial search in enums, ICDO-3 code, NCIt code, property name and Synonyms and property description and return data that partially matches melanoma. property description matches. | [search?keyword=melanoma&options=partial,syn,desc](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn,desc)|\n',
+          '| will perform partial search in enums, ICDO-3 code, NCIt code and property name and return data that partially matches melanoma. | [search?keyword=melanoma&options=partial](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial)|\n' +
+          '| will perform exact search in enums, ICDO-3 code, NCIt code and property name and return data that exactly matches melanoma.  | [search?keyword=melanoma&options=exact](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=exact)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code, property name and Synonyms and return data that partially matches melanoma. | [search?keyword=melanoma&options=partial,syn](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn)|\n' +
+          '| will perform partial search in enums, ICDO-3 code, NCIt code, property name and Synonyms and property description and return data that partially matches melanoma in property description. | [search?keyword=melanoma&options=partial,syn,desc](https://gdc-mvs-qa.nci.nih.gov/gdc/api/v1/search?keyword=melanoma&options=partial,syn,desc)|\n',
         'parameters': [
           {
             'name': 'keyword',
