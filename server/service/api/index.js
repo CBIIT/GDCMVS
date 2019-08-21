@@ -14,7 +14,7 @@ router.get('/', function (req, res) {
 router.use('/docs',
   swaggerUi.serve,
   function (req, res) {
-    const protocol = req.protocol;
+    const protocol = 'https';
     const host = req.get('host');
     const baseUrl = '/gdc/api/v1';
     swaggerUi.setup(swaggerDocument(protocol, host, baseUrl))(req, res);
