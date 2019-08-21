@@ -8,7 +8,7 @@ const swaggerDocument = require('../../config/swagger');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-  res.redirect('/api/v1/docs');
+  res.redirect('/gdc/api/v1/docs');
 });
 
 router.use('/docs',
