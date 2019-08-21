@@ -16,7 +16,7 @@ router.use('/docs',
   function (req, res) {
     const protocol = req.protocol;
     const host = req.get('host');
-    const baseUrl = req.baseUrl !== undefined ? req.baseUrl.replace(/\/docs/g, '') : '';
+    const baseUrl = req.originalUrl !== undefined ? req.originalUrl.replace(/\/docs/g, '') : '';
     swaggerUi.setup(swaggerDocument(protocol, host, baseUrl))(req, res);
   }
 );
