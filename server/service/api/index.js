@@ -8,7 +8,11 @@ const swaggerDocument = require('../../config/swagger');
 const router = express.Router();
 
 router.get('/', function (req, res) {
-  res.redirect('/gdc/api/v1/docs');
+  res.json({
+    'version': '1.3.0',
+    'title': 'GDCMVS Rest API',
+    'documentation': 'https://' + req.headers.host + req.baseUrl + '/docs/'
+  });
 });
 
 router.use('/docs',
