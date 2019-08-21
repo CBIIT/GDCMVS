@@ -11,7 +11,6 @@ router.get('/', function (req, res) {
   res.json({
     'version': '1.3.0',
     'title': 'GDCMVS Rest API',
-    'description': req.protocol + '://' + req.headers.host + req.baseUrl,
     'documentation': req.protocol + '://' + req.headers.host + req.baseUrl + '/docs/'
   });
 });
