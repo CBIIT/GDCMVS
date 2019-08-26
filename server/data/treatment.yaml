@@ -80,6 +80,28 @@ properties:
       $ref: "_terms.yaml#/therapeutic_agents"
     type: string
 
+  MMTX_THERAPY:	
+    enum:	
+      - Bortezomib	
+      - Vincristine	
+      - Dexamethasone	
+      - Lenalidomide	
+      - Thalidomide	
+      - Liposomal doxorubicin	
+      - Carfilzomib	
+      - Cyclophosphamide	
+      - Melphalan	
+      - Prednisone	
+      - Other	
+      - Pomalidomide	
+      - Elotuzumab	
+      - Ixazomib	
+      - Daratumumab	
+      - Bendamustine	
+      - Panobinostat	
+      - Doxorubicin	
+      - BCNU
+
   treatment_anatomic_site:
     term:
       $ref: "_terms.yaml#/treatment_anatomic_site"
