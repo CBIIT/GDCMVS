@@ -1,4 +1,25 @@
 {
+    "clinical.treatment.MMTX_THERAPY": {	
+        "Bortezomib": "C1851",	
+        "Vincristine": "C933",	
+        "Dexamethasone": "C422",	
+        "Lenalidomide": "C2668",	
+        "Thalidomide": "C870",	
+        "Liposomal doxorubicin": "",	
+        "Carfilzomib": "C52196",	
+        "Cyclophosphamide": "C405",	
+        "Melphalan": "C633",	
+        "Prednisone": "C770",	
+        "Other": "C17649",	
+        "Pomalidomide": "C72560",	
+        "Elotuzumab": "C66982",	
+        "Ixazomib": "C97940",	
+        "Daratumumab": "C74007",	
+        "Bendamustine": "C73261",	
+        "Panobinostat": "C66948",	
+        "Doxorubicin": "C456",	
+        "BCNU": "C349"	
+    },
     "clinical.diagnosis.best_overall_response": {
         "AJ-Adjuvant Therapy": "C15675",
         "CPD-Clinical Progression": "C17747",
