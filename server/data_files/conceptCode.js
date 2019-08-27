@@ -20,7 +20,7 @@
         "PSR-Pseudoresponse": "C131142",
         "RD-Responsive Disease": "",
         "RPD-Radiographic Progressive Disease": "",
-        "RP-Response": "",
+        "RP-Response": "C50995",
         "sCR-Stringent Complete Response": "C123614",
         "SD-Stable Disease": "C18213",
         "SPD-Surgical Progression": "",
@@ -254,7 +254,7 @@
         "Rectosigmoid junction": "C54188",
         "Rectum": "C12390",
         "Renal pelvis": "C12887",
-        "Retroperitoneum and peritoneum": "",
+        "Retroperitoneum and peritoneum": "C156712",
         "Skin": "C12470",
         "Small intestine": "C12386",
         "Spinal cord, cranial nerves, and other parts of central nervous system": "",
@@ -608,9 +608,9 @@
         "Loco-regional recurrence/progression": "",
         "Not Allowed To Collect": "C141478",
         "not reported": "C43234",
-        "Tumor free": "",
-        "Unknown tumor status": "",
-        "With tumor": ""
+        "Tumor free": "C156848",
+        "Unknown tumor status": "C158709",
+        "With tumor": "C156849"
     },
     "clinical.diagnosis.laterality": {
         "Bilateral": "C13332",
@@ -837,8 +837,8 @@
         "BED-Biochemical Evidence of Disease": "",
         "PDM-Persistent Distant Metastasis": "",
         "PLD-Persistent Locoregional Disease": "",
-        "TF-Tumor Free": "",
-        "WT-With Tumor": "",
+        "TF-Tumor Free": "C156848",
+        "WT-With Tumor": "C156849",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -980,7 +980,7 @@
         "Ampulla Of Vater": "C13011",
         "Anal Sphincter": "",
         "Ankle": "C32078",
-        "Anorectum": "",
+        "Anorectum": "C129464",
         "Antecubital Fossa": "C103238",
         "Antrum": "C97102",
         "Anus": "C43362",
@@ -991,7 +991,7 @@
         "Arm": "C32141",
         "Artery": "C12372",
         "Ascending Colon": "C12265",
-        "Ascending Colon Hepatic Flexure": "",
+        "Ascending Colon Hepatic Flexure": "C12266",
         "Auditory Canal": "C12498",
         "Autonomic Nervous System": "C12673",
         "Axilla": "C12674",
@@ -1071,7 +1071,7 @@
         "Forearm": "C32628",
         "Forehead": "C89803",
         "Foreskin": "C33049",
-        "Frontal Cortex": "",
+        "Frontal Cortex": "C12352",
         "Frontal Lobe": "C12352",
         "Fundus Of Stomach": "C12257",
         "Gallbladder": "C12377",
@@ -1235,7 +1235,7 @@
         "Tibia": "C12800",
         "Tongue": "C12422",
         "Tonsil": "C12802",
-        "Tonsil (Pharyngeal)": "",
+        "Tonsil (Pharyngeal)": "C33318",
         "Trachea / Major Bronchi": "",
         "Transverse Colon": "C12385",
         "Trunk": "C33816",
@@ -1258,7 +1258,7 @@
     "clinical.diagnosis.tissue_or_organ_of_origin": {
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "Intrahepatic bile duct": ""
+        "Intrahepatic bile duct": "C12677"
     },
     "clinical.family_history.relationship_primary_diagnosis": {
         "Adrenal Gland Cancer": "C9338",
@@ -1363,7 +1363,7 @@
         "Legal Guardian": "C51828",
         "Male Cousin": "",
         "Maternal Aunt": "C96575",
-        "Maternal First Cousin": "",
+        "Maternal First Cousin": "C96576",
         "Maternal First Cousin Once Removed": "",
         "Maternal Grandfather": "C96577",
         "Maternal Grandmother": "C96578",
@@ -1397,7 +1397,7 @@
         "Other": "C17649",
         "Parent": "C42709",
         "Paternal Aunt": "C96581",
-        "Paternal First Cousin": "",
+        "Paternal First Cousin": "C96582",
         "Paternal First Cousin Once Removed": "",
         "Paternal Grandfather": "C96583",
         "Paternal Grandmother": "C96584",
@@ -4081,7 +4081,7 @@
         "chr20": "C13216",
         "chr21": "C13217",
         "chr22": "C13218",
-        "chr23": "",
+        "chr23": "C33542",
         "chrM": "C28512",
         "chrX": "C13285",
         "chrY": "C13286",
@@ -4093,9 +4093,9 @@
         "H2A-Bbd": "C154613",
         "H2A.X": "C19432",
         "H2A.Z": "C126766",
-        "H2A.Z.1": "",
-        "H2A.Z.2": "",
-        "H2A.Z.2.2": "",
+        "H2A.Z.1": "C126766",
+        "H2A.Z.2": "C162832",
+        "H2A.Z.2.2": "C162834",
         "H3.1": "C101734",
         "H3.2": "C148067",
         "H3.3": "C101445",
@@ -4174,7 +4174,7 @@
         "NSE": "C116205",
         "Squamous Cell Carcinoma Antigen (SCCA)": "C120660",
         "Unknown": "C17998",
-        "Not Reported": "",
+        "Not Reported": "C43234",
         "CA-125": "C325"
     },
     "clinical.molecular_test.histone_family": {
@@ -4249,9 +4249,9 @@
     },
     "biospecimen.read_group.library_strand": {
         "Not Applicable": "C48660",
-        "Unstranded": "",
-        "First_Stranded": "",
-        "Second_Stranded": ""
+        "Unstranded": "C150427",
+        "First_Stranded": "C150428",
+        "Second_Stranded": "C150426"
     },
     "biospecimen.read_group.library_strategy": {
         "Bisulfite-Seq": "C106054",
@@ -4419,13 +4419,13 @@
         "Laparoscopic Radical Nephrectomy": "",
         "Laparoscopic Radical Prostatectomy with Robotics": "",
         "Laparoscopic Radical Prostatectomy without Robotics": "",
-        "Left Hemicolectomy": "",
+        "Left Hemicolectomy": "C51624",
         "Open Craniotomy": "",
         "Open Partial Nephrectomy": "",
         "Open Radical Nephrectomy": "",
         "Open Radical Prostatectomy": "",
         "Other Surgical Resection": "",
-        "Right Hemicolectomy": "",
+        "Right Hemicolectomy": "C51623",
         "Thoracoscopic Biopsy": "",
         "Transplant": "C15342",
         "Tumor Resection": "",
@@ -4667,10 +4667,10 @@
         "Not Reported": "C43234",
         "Seizures": "C2962",
         "Unknown": "C17998",
-        "Altered Mental Status": "",
+        "Altered Mental Status": "C121628",
         "Motor or Movement Changes": "",
         "Sensory Changes": "C157429",
-        "Visual Changes": ""
+        "Visual Changes": "C118760"
     },
     "clinical.diagnosis.gastric_esophageal_junction_involvement": {
         "No": "C49487",
@@ -4744,8 +4744,8 @@
         "6 - Established Cirrhosis": "C95156",
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "1,2 - Portal Fibrosis": "",
-        "3,4 - Fibrous Septa": ""
+        "1,2 - Portal Fibrosis": "C157159",
+        "3,4 - Fibrous Septa": "C157161"
     },
     "clinical.diagnosis.medulloblastoma_molecular_classification": {
         "Non-WNT/non-SHH Activated": "C129444",
@@ -4758,7 +4758,7 @@
     "clinical.diagnosis.metastasis_at_diagnosis": {
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "Distant Metastasis": "",
+        "Distant Metastasis": "C18206",
         "Metastasis, NOS": "",
         "No Metastasis": "",
         "Regional Metastasis": ""
@@ -4873,7 +4873,7 @@
         "Spinal Cord": "C12464",
         "Unknown": "C17998",
         "White Matter": "C33892",
-        "Deep Gray (e.g. Basal Ganglia, Thalamus)": ""
+        "Deep Gray (e.g. Basal Ganglia, Thalamus)": "C158080"
     },
     "clinical.diagnosis.synchronous_malignancy": {
         "No": "C49487",
