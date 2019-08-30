@@ -656,9 +656,6 @@
         "Pathologic Review": "C125006"
     },
     "clinical.diagnosis.site_of_resection_or_biopsy": {
-        "Connective, subcutaneous and other soft tissues of trunk, NOS": "",
-        "Overlapping lesions of oropharynx": "",
-        "Peripheral nerves and autonomic nervous system of lower limb and hip": "",
         "Not Reported": "C43234",
         "Unknown": "C17998"
     },
