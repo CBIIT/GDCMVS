@@ -1,5 +1,5 @@
 {
-    "clinical.treatment.MMTX_THERAPY": {	
+    "clinical.treatment.therapeutic_agents": {	
         "Bortezomib": "C1851",	
         "Vincristine": "C933",	
         "Dexamethasone": "C422",	

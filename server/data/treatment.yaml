@@ -78,9 +78,6 @@ properties:
   therapeutic_agents:
     term:
       $ref: "_terms.yaml#/therapeutic_agents"
-    type: string
-
-  MMTX_THERAPY:	
     enum:	
       - Bortezomib	
       - Vincristine	
