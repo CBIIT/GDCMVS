@@ -198,10 +198,10 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		p.category = fileJson.category;
 		if (entry.description === undefined) {
 			if (entry.term !== undefined && entry.term.description !== undefined) {
-				p.property_desc = entry.term.description;
+				p.property_desc = entry.term.description.replace(/(\n)/g,'');;
 			}
 		} else {
-			p.property_desc = entry.description;
+			p.property_desc = entry.description.replace(/(\n)/g,'');;
 		}
 		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
 			p.cde = {};
@@ -648,7 +648,7 @@ const bulkIndex = next => {
 
 	allProperties.forEach(ap => {
 		if (ap.cde && ap.property_desc) { // ADD CDE ID to all property description.
-			ap.property_desc = ap.property_desc.replace(/(\n)/g,'') + " (CDE ID - " + ap.cde.id + ")"
+			ap.property_desc = ap.property_desc + " (CDE ID - " + ap.cde.id + ")"
 		}
 		let doc = extend(ap, {});
 		doc.id = ap.property + "/" + ap.node + "/" + ap.category;
