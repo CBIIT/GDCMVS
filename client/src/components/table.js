@@ -1,3 +1,5 @@
+import { searchFilterSyn } from '../shared';
+
 const headerNcit = 'NCIt';
 const headerIcdo = 'ICD-O-3';
 
@@ -13,6 +15,75 @@ export const tableSynonyms = (syn) => {
         </tr>
       `.trim()).join('')}
     </table>
+  `;
+};
+
+export const tableSynonymsArray = (syn) => {
+  return `
+    <table class="table table-striped">
+      ${tHead(headerNcit)}
+      ${syn.map((s) => `
+        <tr>
+          <td class="table__td--term table__td--word-break">${s.termName}</td>
+          <td class="table__td--source">${s.termSource}</td>
+          <td class="table__td--type">${s.termGroup}</td>
+        </tr>
+      `.trim()).join('')}
+    </table>
+  `;
+};
+
+export const tableDrugSynonyms = (syn, property, value, code) => {
+  let previousKeyword = '';
+  setTimeout(() => {
+    $('#pagination-' + value + '-' + code).pagination({
+      dataSource: syn.s,
+      pageSize: 15,
+      showPageNumbers: false,
+      showNavigator: true,
+      callback: function (data, pagination) {
+        let html = tableSynonymsArray(data);
+        $('#data-' + property + '-' + value).html(html);
+      }
+    });
+
+    $('#drug-' + property + '-' + value).on('input', () => {
+      let keyword = $('#drug-' + property + '-' + value).val().trim().replace(/[\ ]+/g, ' ').toLowerCase();
+      if (previousKeyword === keyword) return;
+      previousKeyword = keyword;
+      let keywordCase = $('#drug-' + property + '-' + value).val().trim().replace(/[\ ]+/g, ' ');
+      if (keyword.length >= 3) {
+        let newSyn = searchFilterSyn(syn.s, keyword);
+        $('#pagination-' + value + '-' + code).pagination({
+          dataSource: newSyn,
+          pageSize: 15,
+          showPageNumbers: false,
+          showNavigator: true,
+          callback: function (data, pagination) {
+            let html = tableSynonymsArray(data, keywordCase);
+            $('#data-' + property + '-' + value).html(html);
+          }
+        });
+      } else {
+        $('#pagination-' + value + '-' + code).pagination({
+          dataSource: syn.s,
+          pageSize: 15,
+          showPageNumbers: false,
+          showNavigator: true,
+          callback: function (data, pagination) {
+            let html = tableSynonymsArray(data);
+            $('#data-' + property + '-' + value).html(html);
+          }
+        });
+      }
+    });
+  }, 100);
+
+  return `
+    <div id="data-${property}-${value}"></div>
+    <div class="pagination-footer">
+      <div id="pagination-${value}-${code}" class="dialog__pagination"></div>
+    </div>
   `;
 };
 
