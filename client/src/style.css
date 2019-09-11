@@ -268,6 +268,11 @@ a:hover, a:focus {
   width: 15%;
 }
 
+.table__search-container {
+  padding-top: 10px;
+  padding-bottom: 0px;
+}
+
 .table-striped > tbody > tr {
   background-color: #fff;
 }
@@ -373,6 +378,12 @@ a:hover, a:focus {
   color: #3a3a3a;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+.pagination-footer {
+  text-align: right;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .alert__error {

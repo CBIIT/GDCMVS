@@ -103,6 +103,7 @@ export const vsRender = (items, keyword) => {
           let valueObj = {};
           let source = hits._source;
           valueObj.n = highlightValueObj[source.n] !== undefined ? highlightValueObj[source.n] : source.n;
+          valueObj.src_n = source.n;
           if (source.n_syn !== undefined) {
             source.n_syn.forEach(data => {
               let newSyn = [];

@@ -134,6 +134,18 @@ export const searchFilter = (items, keyword) => {
   return newItem;
 };
 
+export const searchFilterSyn = (syn, keyword) => {
+  // Search in synonyms
+  let newSyn = [];
+  let tmpArr = syn.map(function (s) { return s.termName.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+  tmpArr.forEach((tmpArr, index) => {
+    if (tmpArr === true) {
+      newSyn.push(syn[index]);
+    }
+  });
+  return newSyn;
+};
+
 export const searchFilterCR = (items, keyword) => {
   let allIcdo3Syn = getAllSyn(items);
   let newItem = [];
