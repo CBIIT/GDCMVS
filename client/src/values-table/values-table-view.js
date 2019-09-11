@@ -1,4 +1,4 @@
-import { tableSynonyms, tableIcdo3 } from '../components/table';
+import { tableSynonyms, tableDrugSynonyms, tableIcdo3 } from '../components/table';
 
 const template = (values, options) => {
   return `
@@ -59,6 +59,18 @@ const template = (values, options) => {
                     </div>
                   </div>
                   <div class="data-content" style="display: none;">
+
+                    ${item.id === 'therapeutic_agents/treatment/clinical' ? `
+                    <div class="row table__search-container">
+                      <div class="col-xs-12 table__right">
+                        <div class="input-group dialog__input-group">
+                          <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+                          <input id="drug-${item.property}-${value.src_n}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+                        </div>
+                      </div>
+                    </div>
+                    ` : ``}
+
                     ${value.ic_enum !== undefined ? `
                       <div class="row table__td">
                         <div class="col-xs-4">${value.i_c.c} (ICD-O-3)</div>
@@ -75,7 +87,11 @@ const template = (values, options) => {
                             <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
                           </div>
                           <div class="col-xs-8">
-                            ${tableSynonyms(syn)}
+                            ${item.id === 'therapeutic_agents/treatment/clinical' ? `
+                              ${tableDrugSynonyms(syn, item.property, value.src_n, syn.n_c)}
+                            ` : `
+                              ${tableSynonyms(syn)}
+                            `}
                           </div>
                         </div>
                       `.trim()).join('')}
