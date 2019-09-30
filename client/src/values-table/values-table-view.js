@@ -1,4 +1,4 @@
-import { tableSynonyms, tableDrugSynonyms, tableIcdo3 } from '../components/table';
+import { tableSynonyms, tableMoreSynonyms, tableIcdo3 } from '../components/table';
 
 const template = (values, options) => {
   return `
@@ -60,7 +60,7 @@ const template = (values, options) => {
                   </div>
                   <div class="data-content" style="display: none;">
 
-                    ${item.id === 'therapeutic_agents/treatment/clinical' ? `
+                    ${value.synLen >= 25 ? `
                     <div class="row table__search-container">
                       <div class="col-xs-12 table__right">
                         <div class="input-group dialog__input-group">
@@ -87,8 +87,8 @@ const template = (values, options) => {
                             <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
                           </div>
                           <div class="col-xs-8">
-                            ${item.id === 'therapeutic_agents/treatment/clinical' ? `
-                              ${tableDrugSynonyms(syn, item.property, value.src_n, syn.n_c)}
+                            ${value.synLen >= 25 ? `
+                              ${tableMoreSynonyms(syn, item.property, value.src_n, syn.n_c)}
                             ` : `
                               ${tableSynonyms(syn)}
                             `}
