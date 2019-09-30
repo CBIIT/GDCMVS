@@ -37,6 +37,9 @@ const all = {
 		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
 	],
 
+	// GDC drugs properties
+	drugs_properties : ["therapeutic_agents"],
+
 	//get data from caDSR
 	caDSR_url:[
 			"https://cdebrowser.nci.nih.gov/cdebrowserServer/rest/search?publicId=",
