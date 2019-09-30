@@ -33,7 +33,7 @@ export const tableSynonymsArray = (syn) => {
   `;
 };
 
-export const tableDrugSynonyms = (syn, property, value, code) => {
+export const tableMoreSynonyms = (syn, property, value, code) => {
   let previousKeyword = '';
   setTimeout(() => {
     $('#pagination-' + value + '-' + code).pagination({

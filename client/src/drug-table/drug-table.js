@@ -1,63 +1,7 @@
 import template from './drug-table-view';
-import { getHeaderOffset, getHighlightObj, sortAlphabetically } from '../shared';
+import { getHighlightObj, sortAlphabetically } from '../shared';
 
 let termTypeNotAssigned = false;
-
-const tableToggleHandle = (event) => {
-  event.preventDefault();
-  const $this = $(event.currentTarget);
-  const $target = $this.closest('.table__gdc-values, .table__cde-values').find('.data-content');
-  $target.slideToggle(400, () => {
-    if ($target.is(':visible')) {
-      $this.attr('title', 'collapse');
-      $this.attr('aria-label', 'collapse');
-      $this.attr('aria-expanded', 'true');
-      $this.html('<i class="fa fa-minus"></i>');
-    } else {
-      $this.attr('title', 'expand');
-      $this.attr('aria-label', 'expand');
-      $this.attr('aria-expanded', 'false');
-      $this.html('<i class="fa fa-plus"></i>');
-    }
-  });
-};
-
-const detailsToggleHandle = (event) => {
-  event.preventDefault();
-  const $this = $(event.currentTarget);
-  const $target = $this.parent().find('.gdc-links');
-  $target.slideToggle(350, () => {
-    if ($target.is(':visible')) {
-      $this.attr('aria-expanded', 'true');
-    } else {
-      $this.attr('aria-expanded', 'false');
-    }
-  });
-};
-
-const suggestNotificationHandle = (event) => {
-  event.preventDefault();
-  const alertSuggest = $('#alert-suggest');
-  alertSuggest.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
-  setTimeout(() => { alertSuggest.removeClass('alert__show'); }, 3900);
-};
-
-const showMoreToggleHandle = (event) => {
-  event.preventDefault();
-  const $this = $(event.currentTarget);
-  const $target = $this.closest('.table__values').find('.table__row--toggle');
-  if ($this.hasClass('more')) {
-    $this.removeClass('more');
-    $this.attr('aria-expanded', 'false');
-    $target.slideToggle(350);
-    $this.html('<i class="fa fa-angle-down"></i> Show More (' + $this.attr('data-hidden') + ')');
-  } else {
-    $this.addClass('more');
-    $this.attr('aria-expanded', 'true');
-    $target.slideToggle(350);
-    $this.html('<i class="fa fa-angle-up"></i> Show Less');
-  }
-};
 
 export const dgRender = (items, keyword) => {
   termTypeNotAssigned = false;
@@ -102,6 +46,7 @@ export const dgRender = (items, keyword) => {
         if (highlightCdeId === undefined) {
           let valueObj = {};
           let source = hits._source;
+          let synCount = 0;
           valueObj.n = highlightValueObj[source.n] !== undefined ? highlightValueObj[source.n] : source.n;
           valueObj.src_n = source.n;
           if (source.n_syn !== undefined) {
@@ -114,11 +59,13 @@ export const dgRender = (items, keyword) => {
                 synObj.termGroup = s.termGroup;
                 newSyn.push(synObj);
               });
+              synCount += data.s.length;
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
               data.s = newSyn;
             });
             valueObj.n_syn = source.n_syn;
           }
+          valueObj.synLen = synCount;
           valueObj.i_c = {};
           valueObj.i_c.c = source.i_c ? highlightICObj[source.i_c.c] ? highlightICObj[source.i_c.c] : source.i_c.c : undefined;
           if (source.ic_enum !== undefined) {
@@ -233,22 +180,4 @@ const getAllValues = (data) => {
   });
   values = sortAlphabetically(values);
   return values;
-};
-
-export const vsEvents = ($root) => {
-  $root.on('click', '.table__toggle', (event) => {
-    tableToggleHandle(event);
-  });
-
-  $root.on('click', '.gdc-details', (event) => {
-    detailsToggleHandle(event);
-  });
-
-  $root.on('click', '.cde-suggest', (event) => {
-    suggestNotificationHandle(event);
-  });
-
-  $root.on('click', '.show-more-less', (event) => {
-    showMoreToggleHandle(event);
-  });
 };

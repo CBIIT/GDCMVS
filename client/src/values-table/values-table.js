@@ -100,6 +100,7 @@ export const vsRender = (items, keyword) => {
         if (highlightCdeId === undefined) {
           let valueObj = {};
           let source = hits._source;
+          let synCount = 0;
           valueObj.n = highlightValueObj[source.n] !== undefined ? highlightValueObj[source.n] : source.n;
           valueObj.src_n = source.n;
           if (source.n_syn !== undefined) {
@@ -112,11 +113,13 @@ export const vsRender = (items, keyword) => {
                 synObj.termGroup = s.termGroup;
                 newSyn.push(synObj);
               });
+              synCount += data.s.length;
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
               data.s = newSyn;
             });
             valueObj.n_syn = source.n_syn;
           }
+          valueObj.synLen = synCount;
           valueObj.i_c = {};
           valueObj.i_c.c = source.i_c ? highlightICObj[source.i_c.c] ? highlightICObj[source.i_c.c] : source.i_c.c : undefined;
           if (source.ic_enum !== undefined) {
