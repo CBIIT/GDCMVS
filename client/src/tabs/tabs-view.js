@@ -25,6 +25,12 @@ const template = (options) => {
                 <span class="tab-nav__notification">${options.trs_len}</span>
               </div>
             </li>
+            <li role="presentation" class="tab-nav__li ${options.dg_active === true ? `active` : ``}">
+              <div class="tab-nav__tooltip tooltip-target" data-toggle="tooltip" title="For a search term, this tab displays relevant matches in the context of the GDC Dictionary. The Dictionary defines the property names, the sets of accepted values for those properties, and contains readable definitions, links, and other information to aid users in understanding the vocabular.">
+                <a id="tab-drugs" href="#drugs" class="tab-nav__btn" aria-controls="drugs" role="tab" data-toggle="tab" aria-expanded="true">Drugs</a>
+                <span class="tab-nav__notification">${options.dg_len}</span>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -32,6 +38,7 @@ const template = (options) => {
         <div tabindex="0" role="tabpanel" class="tab-pane ${options.vs_active === true ? `active` : ``}" id="values" aria-labelledby="tab-values">${options.vsHtml}</div>
         <div tabindex="0" role="tabpanel" class="tab-pane ${options.ps_active === true ? `active` : ``}" id="properties" aria-labelledby="tab-properties">${options.psHtml}</div>
         <div tabindex="0" role="tabpanel" class="tab-pane ${options.trs_active === true ? `active` : ``}" id="dictionary" aria-labelledby="tab-dictionary">${options.trsHtml}</div>
+        <div tabindex="0" role="tabpanel" class="tab-pane ${options.dg_active === true ? `active` : ``}" id="drugs" aria-labelledby="tab-drugs">${options.dgHtml}</div>
       </div>
     </div>
   `;

@@ -1,4 +1,4 @@
-import template from './values-table-view';
+import template from './drug-table-view';
 import { getHeaderOffset, getHighlightObj, sortAlphabetically } from '../shared';
 
 let termTypeNotAssigned = false;
@@ -59,16 +59,18 @@ const showMoreToggleHandle = (event) => {
   }
 };
 
-export const vsRender = (items, keyword) => {
+export const dgRender = (items, keyword) => {
   termTypeNotAssigned = false;
   // data preprocessing
   let values = [];
   let valuesCount = 0;
   // options render
   let options = {};
+  // RegExp Keyword
+  // keyword = keyword.trim().replace(/[\ ,:_-]+/g, " ");
   items.forEach(data => {
     let enums = data.inner_hits.enum;
-    if (enums.hits.total !== 0 && data._source.property !== 'therapeutic_agents') { // If the searched term is cde id.
+    if (enums.hits.total !== 0 && data._source.property === 'therapeutic_agents') { // If the searched term is cde id.
       let enumHits = enums.hits.hits;
       let obj = {};
       obj.category = data._source.category;

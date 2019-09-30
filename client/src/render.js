@@ -2,6 +2,7 @@ import { apiSuggestMisSpelled } from './api';
 import { dtRender } from './dict-table/dict-table';
 import psRender from './props-table/props-table';
 import { vsRender } from './values-table/values-table';
+import { dgRender } from './drug-table/drug-table';
 import { tabsRender } from './tabs/tabs';
 
 const render = ($root, keyword, options, items) => {
@@ -11,6 +12,7 @@ const render = ($root, keyword, options, items) => {
     let data1 = JSON.parse(JSON.stringify(items));
     let data2 = JSON.parse(JSON.stringify(items));
     let data3 = JSON.parse(JSON.stringify(items));
+    let data4 = JSON.parse(JSON.stringify(items));
     // render each tab
     let vsHtml = vsRender(data3, keyword);
     vsHtml.active = false;
@@ -18,10 +20,12 @@ const render = ($root, keyword, options, items) => {
     psHtml.active = false;
     let dtHtml = dtRender(data1, keyword);
     dtHtml.active = false;
+    let dgHtml = dgRender(data4, keyword);
+    dgHtml.active = false;
     if (vsHtml.len === 0 && psHtml.len === 0) {
       dtHtml.len = 0;
     }
-    if (dtHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
+    if (dtHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0 && dgHtml.len === 0) {
       html = `<div class="indicator">
         <div class="indicator__content">
           <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
@@ -42,10 +46,12 @@ const render = ($root, keyword, options, items) => {
         vsHtml.active = true;
       } else if (options.activeTab === 1) {
         psHtml.active = true;
-      } else {
+      } else if (options.activeTab === 2) {
         dtHtml.active = true;
+      } else {
+        dgHtml.active = true;
       }
-      html = tabsRender(dtHtml, psHtml, vsHtml, keyword);
+      html = tabsRender(dtHtml, psHtml, vsHtml, dgHtml, keyword);
     }
   } else if (options.error === true) {
     html = `<div class="indicator">
