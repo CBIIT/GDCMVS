@@ -73,8 +73,8 @@ const template = (values, options) => {
 
                     ${value.ic_enum !== undefined ? `
                       <div class="row table__td">
-                        <div class="col-xs-4">${value.i_c.c} (ICD-O-3)</div>
-                        <div class="col-xs-8">
+                        <div class="col-xs-3">${value.i_c.c} (ICD-O-3)</div>
+                        <div class="col-xs-9">
                           ${tableIcdo3(value)}
                         </div>
                       </div>
@@ -83,10 +83,10 @@ const template = (values, options) => {
                     ${value.n_syn !== undefined ? `
                       ${value.n_syn.map((syn) => `
                         <div class="row table__td">
-                          <div class="col-xs-4">
+                          <div class="col-xs-3">
                             <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
                           </div>
-                          <div class="col-xs-8">
+                          <div class="col-xs-9">
                             ${value.synLen >= 25 ? `
                               ${tableMoreSynonyms(syn, item.property, value.src_n, syn.n_c)}
                             ` : `
