@@ -33,6 +33,25 @@ export const tableSynonymsArray = (syn) => {
   `;
 };
 
+export const tableAProperties = (prop) => {
+  return `
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+      ${prop.aprop.map((p) => `
+        <tr>
+          <td class="table__td--name">${p.name}</td>
+          <td class="table__td--value table__td--word-break">${p.value}</td>
+        </tr>
+      `.trim()).join('')}
+    </table>
+  `;
+};
+
 export const tableMoreSynonyms = (syn, property, value, code) => {
   let previousKeyword = '';
   setTimeout(() => {
