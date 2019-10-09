@@ -17,6 +17,7 @@ export const tabsRender = (trsHtml, psHtml, vsHtml, dgHtml, keyword) => {
     vs_active: vsHtml.active,
     vs_len: vsHtml.len,
     vsHtml: vsHtml.html,
+    dg_active: dgHtml.active,
     dg_len: dgHtml.len,
     dgHtml: dgHtml.html,
     keyword: keyword
