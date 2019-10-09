@@ -14,7 +14,7 @@ const ncitDetails = (uid) => {
     tmp.name = item.preferredName;
     tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI'; }).description : undefined;
     tmp.s = item.synonyms;
-    tmp.aprop = item.additionalProperties;
+    tmp.ap = item.additionalProperties;
 
     let header = headerTemplate;
     let html = bodyTemplate(tmp);

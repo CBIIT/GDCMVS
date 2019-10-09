@@ -1,4 +1,4 @@
-import { tableSynonyms, tableMoreSynonyms, tableIcdo3 } from '../components/table';
+import { tableSynonyms, tableMoreSynonyms, tableAProperties, tableIcdo3 } from '../components/table';
 
 const template = (values, options) => {
   return `
@@ -87,6 +87,7 @@ const template = (values, options) => {
                             <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
                           </div>
                           <div class="col-xs-9">
+                            ${syn.ap.length !== 0 ? `${tableAProperties(syn)}</br>` : ``}
                             ${value.synLen >= 25 ? `
                               ${tableMoreSynonyms(syn, item.property, value.src_n, syn.n_c)}
                             ` : `
