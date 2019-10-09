@@ -18,7 +18,7 @@ export const bodyTemplate = (item) => `
     <p><b>NCI Thesaurus Code:</b>
       <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code=${item.code}" target="_blank"">${item.code}</a>
     </p>
-    ${item.aprop !== undefined && item.aprop.length !== 0 ? `
+    ${item.ap !== undefined && item.ap.length !== 0 ? `
     <p><b>Additional Properties:</b></p>
     ${tableAProperties(item)}
 ` : ``}
