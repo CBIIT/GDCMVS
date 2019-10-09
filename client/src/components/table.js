@@ -42,7 +42,7 @@ export const tableAProperties = (prop) => {
         <th>Value</th>
       </tr>
     </thead>
-      ${prop.aprop.map((p) => `
+      ${prop.ap.map((p) => `
         <tr>
           <td class="table__td--name">${p.name}</td>
           <td class="table__td--value table__td--word-break">${p.value}</td>
