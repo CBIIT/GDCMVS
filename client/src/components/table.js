@@ -52,7 +52,7 @@ export const tableAProperties = (prop) => {
   `;
 };
 
-export const tableMoreSynonyms = (syn, property, value, code) => {
+export const tableMoreSynonyms = (syn, value, code) => {
   let previousKeyword = '';
   setTimeout(() => {
     $('#pagination-' + value + '-' + code).pagination({
@@ -62,15 +62,15 @@ export const tableMoreSynonyms = (syn, property, value, code) => {
       showNavigator: true,
       callback: function (data, pagination) {
         let html = tableSynonymsArray(data);
-        $('#data-' + property + '-' + value).html(html);
+        $('#data-' + value + '-' + code).html(html);
       }
     });
 
-    $('#drug-' + property + '-' + value).on('input', () => {
-      let keyword = $('#drug-' + property + '-' + value).val().trim().replace(/[\ ]+/g, ' ').toLowerCase();
+    $('#drug-' + value + '-' + code).on('input', () => {
+      let keyword = $('#drug-' + value + '-' + code).val().trim().replace(/[\ ]+/g, ' ').toLowerCase();
       if (previousKeyword === keyword) return;
       previousKeyword = keyword;
-      let keywordCase = $('#drug-' + property + '-' + value).val().trim().replace(/[\ ]+/g, ' ');
+      let keywordCase = $('#drug-' + value + '-' + code).val().trim().replace(/[\ ]+/g, ' ');
       if (keyword.length >= 3) {
         let newSyn = searchFilterSyn(syn.s, keyword);
         $('#pagination-' + value + '-' + code).pagination({
@@ -80,7 +80,7 @@ export const tableMoreSynonyms = (syn, property, value, code) => {
           showNavigator: true,
           callback: function (data, pagination) {
             let html = tableSynonymsArray(data, keywordCase);
-            $('#data-' + property + '-' + value).html(html);
+            $('#data-' + value + '-' + code).html(html);
           }
         });
       } else {
@@ -91,7 +91,7 @@ export const tableMoreSynonyms = (syn, property, value, code) => {
           showNavigator: true,
           callback: function (data, pagination) {
             let html = tableSynonymsArray(data);
-            $('#data-' + property + '-' + value).html(html);
+            $('#data-' + value + '-' + code).html(html);
           }
         });
       }
@@ -99,7 +99,7 @@ export const tableMoreSynonyms = (syn, property, value, code) => {
   }, 100);
 
   return `
-    <div id="data-${property}-${value}"></div>
+    <div id="data-${value}-${code}"></div>
     <div class="pagination-footer">
       <div id="pagination-${value}-${code}" class="dialog__pagination"></div>
     </div>

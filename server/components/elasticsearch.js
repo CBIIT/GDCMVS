@@ -129,9 +129,10 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				tmp.pvc = cc[s];
 				if (Array.isArray(cc[s])) {
 					tmp.syn = [];
+					tmp.aprop = [];
 					cc[s].forEach((s, i) => {
 						tmp.syn.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] ? syns[tmp.pvc[i]].synonyms : []);
-						tmp.aprop.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] && syns[tmp.pvc].additionalProperties !== undefined ? syns[tmp.pvc[i]].additionalProperties : []);
+						tmp.aprop.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] && syns[tmp.pvc[i]].additionalProperties !== undefined ? syns[tmp.pvc[i]].additionalProperties : []);
 					});
 				} else {
 					tmp.syn = tmp.pvc !== "" && syns[tmp.pvc] ? syns[tmp.pvc].synonyms : [];
@@ -601,13 +602,14 @@ const bulkIndex = next => {
 					item.n_syn = [];
 					if(Array.isArray(item.n_c) && Array.isArray(item.s)){
 						item.n_c.forEach((nc, i) => {
-							item.n_syn.push({n_c: item.n_c, s: item.s, ap: item.ap});
+							item.n_syn.push({n_c: item.n_c[i], s: item.s[i], ap: item.ap[i]});
 						});
 					}else{
 						item.n_syn.push({n_c: item.n_c, s: item.s, ap: item.ap});
 					}
 					delete item.n_c;
 					delete item.s;
+					delete item.ap;
 				}
 				else if(item.n_c !== undefined && item.n_c === ""){
 					delete item.n_c;

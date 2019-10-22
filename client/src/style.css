@@ -139,6 +139,11 @@ a:hover, a:focus {
   color: #217dbc;
 }
 
+.table__td--big {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 .table__td--slim {
   padding-top: 8px;
   padding-bottom: 8px;
@@ -147,6 +152,26 @@ a:hover, a:focus {
 .table__td--xslim{
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.table__td--top{
+  padding-top: 12px;
+  padding-bottom: 0;
+}
+
+.table__td--bottom{
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+
+.table__td--big-top {
+  padding-top: 20px;
+  padding-bottom: 12px;
+}
+
+.table__td--big-bottom {
+  padding-top: 12px;
+  padding-bottom: 20px;
 }
 
 .table__td--right {

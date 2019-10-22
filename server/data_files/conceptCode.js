@@ -1,6 +1,6 @@
 {
     "clinical.treatment.therapeutic_agents": {	
-        "Bortezomib": "C1851",	
+        "Bortezomib": ["C1851","C405"],	
         "Vincristine": "C933",	
         "Dexamethasone": "C422",	
         "Lenalidomide": "C2668",	
