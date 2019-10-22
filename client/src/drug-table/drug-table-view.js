@@ -60,21 +60,12 @@ const template = (values, options) => {
                   </div>
                   <div class="data-content" style="display: none;">
 
-                    ${value.synLen >= 25 ? `
-                    <div class="row table__search-container">
-                      <div class="col-xs-12 table__right">
-                        <div class="input-group dialog__input-group">
-                          <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
-                          <input id="drug-${item.property}-${value.src_n}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
-                        </div>
-                      </div>
-                    </div>
-                    ` : ``}
-
                     ${value.ic_enum !== undefined ? `
                       <div class="row table__td">
-                        <div class="col-xs-3">${value.i_c.c} (ICD-O-3)</div>
-                        <div class="col-xs-9">
+                        <div class="col-xs-12">${value.i_c.c} (ICD-O-3)</div>
+                      </div>
+                      <div class="row table__td">
+                        <div class="col-xs-12">
                           ${tableIcdo3(value)}
                         </div>
                       </div>
@@ -82,17 +73,41 @@ const template = (values, options) => {
 
                     ${value.n_syn !== undefined ? `
                       ${value.n_syn.map((syn) => `
-                        <div class="row table__td">
-                          <div class="col-xs-3">
+                        <div class="row table__td table__td--top">
+                          <div class="col-xs-12">
                             <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
                           </div>
-                          <div class="col-xs-9">
-                            ${syn.ap.length !== 0 ? `${tableAProperties(syn)}</br>` : ``}
-                            ${value.synLen >= 25 ? `
-                              ${tableMoreSynonyms(syn, item.property, value.src_n, syn.n_c)}
+                        </div>
+                        <div class="row table__td">
+                          <div class="col-xs-4">
+                            <b>Synonyms &amp; Abbreviations:</b>
+                          </div>
+                          ${syn.s.length >= 25 ? `
+                          <div class="col-xs-8 table__right">
+                            <div class="input-group dialog__input-group">
+                              <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+                              <input id="drug-${value.src_n}-${syn.n_c}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+                            </div>
+                          </div>
+                        ` : ``}
+                        </div>
+                        <div class="row table__td table__td--bottom">
+                          <div class="col-xs-12">
+                            ${syn.s.length >= 25 ? `
+                              ${tableMoreSynonyms(syn, value.src_n, syn.n_c)}
                             ` : `
                               ${tableSynonyms(syn)}
                             `}
+                          </div>
+                        </div>
+                        <div class="row table__td table__td--bottom">
+                          <div class="col-xs-12">
+                            <b>Additional Properties:</b>
+                          </div>
+                        </div>
+                        <div class="row table__td table__td--bottom">
+                          <div class="col-xs-12">
+                            ${syn.ap.length !== 0 ? `${tableAProperties(syn)}` : ``}
                           </div>
                         </div>
                       `.trim()).join('')}
