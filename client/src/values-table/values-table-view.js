@@ -72,51 +72,67 @@ const template = (values, options) => {
                   ` : ``}
 
                   ${value.n_syn !== undefined ? `
-                    ${value.n_syn.map((syn) => `
+
+                    ${value.n_syn.length > 1 ? `
                       <div class="row table__td">
                         <div class="col-xs-12">
-                          <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
+                          <ul class="nav nav-tabs" role="tablist">
+                          ${value.n_syn.map((syn, i) => `
+                            <li role="presentation" class="${i === 0 ? `active` : ``}"><a href="#tab-${value.src_n}-${syn.n_c}" aria-controls="home" role="tab" data-toggle="tab">${syn.n_c} (NCIt)</a></li>
+                          `.trim()).join('')}
+                          </ul>
                         </div>
                       </div>
+                    ` : ``}
 
-                      <div class="row table__td">
-                        <div class="col-xs-4">
-                          <b>Synonyms &amp; Abbreviations:</b>
-                        </div>
-                        ${syn.s.length >= 25 ? `
-                        <div class="col-xs-8 table__right">
-                          <div class="input-group dialog__input-group">
-                            <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
-                            <input id="drug-${value.src_n}-${syn.n_c}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+                    <div class="tab-content">
+                      ${value.n_syn.map((syn, i) => `
+                      <div role="tabpanel" class="tab-pane ${i === 0 ? `active` : ``}" id="tab-${value.src_n}-${syn.n_c}">
+                        <div class="row table__td">
+                          <div class="col-xs-12">
+                            <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
                           </div>
                         </div>
-                      ` : ``}
-                      </div>
 
-                      <div class="row table__td table__td--bottom">
-                        <div class="col-xs-12">
+                        <div class="row table__td">
+                          <div class="col-xs-4">
+                            <b>Synonyms &amp; Abbreviations:</b>
+                          </div>
                           ${syn.s.length >= 25 ? `
-                            ${tableMoreSynonyms(syn, value.src_n, syn.n_c)}
-                          ` : `
-                            ${tableSynonyms(syn)}
-                          `}
+                          <div class="col-xs-8 table__right">
+                            <div class="input-group dialog__input-group">
+                              <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+                              <input id="drug-${value.src_n}-${syn.n_c}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+                            </div>
+                          </div>
+                        ` : ``}
                         </div>
+
+                        <div class="row table__td table__td--bottom">
+                          <div class="col-xs-12">
+                            ${syn.s.length >= 25 ? `
+                              ${tableMoreSynonyms(syn, value.src_n, syn.n_c)}
+                            ` : `
+                              ${tableSynonyms(syn)}
+                            `}
+                          </div>
+                        </div>
+
+                        ${syn.ap !== undefined && syn.ap.length !== 0 ? `
+                          <div class="row table__td table__td--bottom">
+                            <div class="col-xs-12">
+                              <b>Additional Properties:</b>
+                            </div>
+                          </div>
+                          <div class="row table__td table__td--bottom">
+                            <div class="col-xs-12">
+                              ${tableAProperties(syn)}
+                            </div>
+                          </div>
+                        ` : ``}
                       </div>
-
-                      ${syn.ap !== undefined && syn.ap.length !== 0 ? `
-                        <div class="row table__td table__td--bottom">
-                          <div class="col-xs-12">
-                            <b>Additional Properties:</b>
-                          </div>
-                        </div>
-                        <div class="row table__td table__td--bottom">
-                          <div class="col-xs-12">
-                            ${tableAProperties(syn)}
-                          </div>
-                        </div>
-                      ` : ``}
-
-                    `.trim()).join('')}
+                      `.trim()).join('')}
+                    </div>
                   ` : ``}
                   </div>
                 </div>
