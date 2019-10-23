@@ -1,4 +1,4 @@
-import { tableSynonyms, tableMoreSynonyms, tableIcdo3 } from '../components/table';
+import { tableSynonyms, tableMoreSynonyms, tableAProperties, tableIcdo3 } from '../components/table';
 
 const template = (values, options) => {
   return `
@@ -71,34 +71,53 @@ const template = (values, options) => {
                     </div>
                   ` : ``}
 
-                    ${value.n_syn !== undefined ? `
-                      ${value.n_syn.map((syn) => `
-                        <div class="row table__td">
-                          <div class="col-xs-12">
-                            <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
-                          </div>
+                  ${value.n_syn !== undefined ? `
+                    ${value.n_syn.map((syn) => `
+                      <div class="row table__td">
+                        <div class="col-xs-12">
+                          <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a> (NCIt)
+                        </div>
+                      </div>
+
+                      <div class="row table__td">
+                        <div class="col-xs-4">
+                          <b>Synonyms &amp; Abbreviations:</b>
                         </div>
                         ${syn.s.length >= 25 ? `
-                        <div class="row table__td">
-                          <div class="col-xs-12 table__right">
-                            <div class="input-group dialog__input-group">
-                              <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
-                              <input id="drug-${item.property}-${value.src_n}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
-                            </div>
+                        <div class="col-xs-8 table__right">
+                          <div class="input-group dialog__input-group">
+                            <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+                            <input id="drug-${value.src_n}-${syn.n_c}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
                           </div>
                         </div>
-                        ` : ``}
+                      ` : ``}
+                      </div>
+
+                      <div class="row table__td table__td--bottom">
+                        <div class="col-xs-12">
+                          ${syn.s.length >= 25 ? `
+                            ${tableMoreSynonyms(syn, value.src_n, syn.n_c)}
+                          ` : `
+                            ${tableSynonyms(syn)}
+                          `}
+                        </div>
+                      </div>
+
+                      ${syn.ap !== undefined && syn.ap.length !== 0 ? `
                         <div class="row table__td table__td--bottom">
                           <div class="col-xs-12">
-                            ${syn.s.length >= 25 ? `
-                              ${tableMoreSynonyms(syn, value.src_n, syn.n_c)}
-                            ` : `
-                              ${tableSynonyms(syn)}
-                            `}
+                            <b>Additional Properties:</b>
                           </div>
                         </div>
+                        <div class="row table__td table__td--bottom">
+                          <div class="col-xs-12">
+                            ${tableAProperties(syn)}
+                          </div>
+                        </div>
+                      ` : ``}
+
                     `.trim()).join('')}
-                    ` : ``}
+                  ` : ``}
                   </div>
                 </div>
               </div>
