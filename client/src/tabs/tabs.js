@@ -6,7 +6,7 @@ const storageTabHandle = (valueTab) => {
   localStorage.setItem('option', JSON.stringify(option));
 };
 
-export const tabsRender = (trsHtml, psHtml, vsHtml, dgHtml, keyword) => {
+export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
   let options = {
     trs_active: trsHtml.active,
     trs_len: trsHtml.len,
@@ -17,9 +17,6 @@ export const tabsRender = (trsHtml, psHtml, vsHtml, dgHtml, keyword) => {
     vs_active: vsHtml.active,
     vs_len: vsHtml.len,
     vsHtml: vsHtml.html,
-    dg_active: dgHtml.active,
-    dg_len: dgHtml.len,
-    dgHtml: dgHtml.html,
     keyword: keyword
   };
   let html = template(options);
@@ -38,10 +35,6 @@ export const tabsEvents = ($root) => {
 
   $root.on('click', '#tab-dictionary', () => {
     storageTabHandle(2);
-  });
-
-  $root.on('click', '#tab-drugs', () => {
-    storageTabHandle(3);
   });
 
   $root.tooltip({
