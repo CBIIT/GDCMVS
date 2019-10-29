@@ -121,7 +121,7 @@ const template = (values, options) => {
                         ${syn.ap !== undefined && syn.ap.length !== 0 ? `
                           <div class="row table__td table__td--bottom">
                             <div class="col-xs-12">
-                              <b>Additional Properties:</b>
+                              <b>Additional Attributes:</b>
                             </div>
                           </div>
                           <div class="row table__td table__td--bottom">
