@@ -1,5 +1,5 @@
 import template from './values-table-view';
-import { getHeaderOffset, getHighlightObj, sortAlphabetically } from '../shared';
+import { getHeaderOffset, getHighlightObj, sortAlphabetically, sortSynonyms } from '../shared';
 
 let termTypeNotAssigned = false;
 
@@ -105,16 +105,21 @@ export const vsRender = (items, keyword) => {
           if (source.n_syn !== undefined) {
             source.n_syn.forEach(data => {
               let newSyn = [];
+              let preferredTerm;
               data.s.forEach(s => {
                 if (s.termSource !== 'NCI') return;
                 let synObj = {};
                 synObj.termName = highlightSynObj[s.termName] ? highlightSynObj[s.termName] : s.termName;
                 synObj.termSource = s.termSource;
                 synObj.termGroup = s.termGroup;
-                s.termGroup !== 'PT' ? newSyn.push(synObj) : newSyn.unshift(synObj);
+                if (s.termGroup === 'PT' && preferredTerm === undefined) {
+                  preferredTerm = s.termName;
+                }
+                newSyn.push(synObj);
               });
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
-              data.s = newSyn;
+              data.s = sortSynonyms(newSyn);
+              data.pt = preferredTerm;
             });
             valueObj.n_syn = source.n_syn;
           }
