@@ -131,10 +131,12 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 					tmp.syn = [];
 					tmp.aprop = [];
 					cc[s].forEach((s, i) => {
+						// tmp.definition =  tmp.pvc[i] !== "" && syns[tmp.pvc[i]] ? syns[tmp.pvc[i]].definitions.length ? syns[tmp.pvc[i]].definitions.find((defs) => defs.defSource === 'NCI').description : undefined : undefined;
 						tmp.syn.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] ? syns[tmp.pvc[i]].synonyms : []);
 						tmp.aprop.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] && syns[tmp.pvc[i]].additionalProperties !== undefined ? syns[tmp.pvc[i]].additionalProperties : []);
 					});
 				} else {
+					tmp.definitions = tmp.pvc !== "" && syns[tmp.pvc] !== undefined && syns[tmp.pvc].definitions !== undefined ? syns[tmp.pvc].definitions : [];
 					tmp.syn = tmp.pvc !== "" && syns[tmp.pvc] ? syns[tmp.pvc].synonyms : [];
 					tmp.aprop = tmp.pvc !== "" && syns[tmp.pvc] && syns[tmp.pvc].additionalProperties !== undefined ? syns[tmp.pvc].additionalProperties : [];
 				}
@@ -300,6 +302,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 					tmp.n_c = item.pvc;
 					tmp.s = item.syn;
 					tmp.ap = item.aprop;
+					tmp.def = item.definitions;
 					p.enum.push(tmp);
 				});
 			} else {
@@ -605,11 +608,12 @@ const bulkIndex = next => {
 							item.n_syn.push({n_c: item.n_c[i], s: item.s[i], ap: item.ap[i]});
 						});
 					}else{
-						item.n_syn.push({n_c: item.n_c, s: item.s, ap: item.ap});
+						item.n_syn.push({n_c: item.n_c, s: item.s, ap: item.ap, def: item.def});
 					}
 					delete item.n_c;
 					delete item.s;
 					delete item.ap;
+					delete item.def;
 				}
 				else if(item.n_c !== undefined && item.n_c === ""){
 					delete item.n_c;
