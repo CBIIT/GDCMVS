@@ -1,5 +1,6 @@
 import template from './values-table-view';
 import { getHeaderOffset, getHighlightObj, sortAlphabetically, sortSynonyms } from '../shared';
+import { isUndefined } from 'util';
 
 let termTypeNotAssigned = false;
 
@@ -119,6 +120,15 @@ export const vsRender = (items, keyword) => {
               });
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
               data.s = sortSynonyms(newSyn);
+              if (
+                data.def !== undefined &&
+                data.def.length !== 0 &&
+                data.def.find((defs) => defs.defSource === 'NCI') !== undefined
+              ) {
+                data.def = data.def.find((defs) => { return defs.defSource === 'NCI'; }).description;
+              } else {
+                data.def = undefined;
+              }
               data.pt = preferredTerm;
             });
             valueObj.n_syn = source.n_syn;

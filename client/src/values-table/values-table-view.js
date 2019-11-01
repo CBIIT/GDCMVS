@@ -96,6 +96,14 @@ const template = (values, options) => {
                           </div>
                         </div>
 
+                        ${syn.def !== undefined ? `
+                          <div class="row table__td">
+                            <div class="col-xs-12">
+                              <b>Definition:</b> ${syn.def}
+                            </div>
+                          </div>
+                        ` : ``}
+
                         <div class="row table__td">
                           <div class="col-xs-4">
                             <b>Synonyms &amp; Abbreviations:</b>
