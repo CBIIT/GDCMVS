@@ -52,46 +52,46 @@ export const tableAProperties = (prop) => {
   `;
 };
 
-export const tableMoreSynonyms = (syn, value, code) => {
+export const tableMoreSynonyms = (syn) => {
   let previousKeyword = '';
   setTimeout(() => {
-    $('#pagination-' + value + '-' + code).pagination({
+    $('#pagination-' + syn.id).pagination({
       dataSource: syn.s,
       pageSize: 15,
       showPageNumbers: false,
       showNavigator: true,
       callback: function (data, pagination) {
         let html = tableSynonymsArray(data);
-        $('#data-' + value + '-' + code).html(html);
+        $('#data-' + syn.id).html(html);
       }
     });
 
-    $('#drug-' + value + '-' + code).on('input', () => {
-      let keyword = $('#drug-' + value + '-' + code).val().trim().replace(/[\ ]+/g, ' ').toLowerCase();
+    $('#drug-' + syn.id).on('input', () => {
+      let keyword = $('#drug-' + syn.id).val().trim().replace(/[\ ]+/g, ' ').toLowerCase();
       if (previousKeyword === keyword) return;
       previousKeyword = keyword;
-      let keywordCase = $('#drug-' + value + '-' + code).val().trim().replace(/[\ ]+/g, ' ');
+      let keywordCase = $('#drug-' + syn.id).val().trim().replace(/[\ ]+/g, ' ');
       if (keyword.length >= 3) {
         let newSyn = searchFilterSyn(syn.s, keyword);
-        $('#pagination-' + value + '-' + code).pagination({
+        $('#pagination-' + syn.id).pagination({
           dataSource: newSyn,
           pageSize: 15,
           showPageNumbers: false,
           showNavigator: true,
           callback: function (data, pagination) {
             let html = tableSynonymsArray(data, keywordCase);
-            $('#data-' + value + '-' + code).html(html);
+            $('#data-' + syn.id).html(html);
           }
         });
       } else {
-        $('#pagination-' + value + '-' + code).pagination({
+        $('#pagination-' + syn.id).pagination({
           dataSource: syn.s,
           pageSize: 15,
           showPageNumbers: false,
           showNavigator: true,
           callback: function (data, pagination) {
             let html = tableSynonymsArray(data);
-            $('#data-' + value + '-' + code).html(html);
+            $('#data-' + syn.id).html(html);
           }
         });
       }
@@ -99,9 +99,9 @@ export const tableMoreSynonyms = (syn, value, code) => {
   }, 100);
 
   return `
-    <div id="data-${value}-${code}"></div>
+    <div id="data-${syn.id}"></div>
     <div class="pagination-footer">
-      <div id="pagination-${value}-${code}" class="dialog__pagination"></div>
+      <div id="pagination-${syn.id}" class="dialog__pagination"></div>
     </div>
   `;
 };
