@@ -79,7 +79,7 @@ const template = (values, options) => {
                           <ul class="nav nav-tabs" role="tablist">
                           ${value.n_syn.map((syn, i) => `
                             <li role="presentation" class="${i === 0 ? `active` : ``}">
-                              <a href="#tab-${value.src_n}-${syn.n_c}" aria-controls="home" role="tab" data-toggle="tab">${syn.n_c} (NCIt) ${syn.pt.length <= 15 ? `${syn.pt}` : `${syn.pt.substring(0, 15)}...`}</a>
+                              <a href="#tab-${syn.id}" aria-controls="home" role="tab" data-toggle="tab">${syn.n_c} (NCIt) ${syn.pt.length <= 15 ? `${syn.pt}` : `${syn.pt.substring(0, 15)}...`}</a>
                             </li>
                           `.trim()).join('')}
                           </ul>
@@ -89,14 +89,14 @@ const template = (values, options) => {
 
                     <div class="tab-content">
                       ${value.n_syn.map((syn, i) => `
-                      <div role="tabpanel" class="tab-pane ${i === 0 ? `active` : ``}" id="tab-${value.src_n}-${syn.n_c}">
+                      <div role="tabpanel" class="tab-pane ${i === 0 ? `active` : ``}" id="tab-${syn.id}">
                         <div class="row table__td">
                           <div class="col-xs-12">
                             <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
                           </div>
                         </div>
 
-                        ${syn.def !== undefined ? `
+                        ${value.drug === true && syn.def !== undefined ? `
                           <div class="row table__td">
                             <div class="col-xs-12">
                               <b>Definition:</b> ${syn.def}
@@ -112,7 +112,7 @@ const template = (values, options) => {
                           <div class="col-xs-8 table__right">
                             <div class="input-group dialog__input-group">
                               <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
-                              <input id="drug-${value.src_n}-${syn.n_c}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+                              <input id="drug-${syn.id}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
                             </div>
                           </div>
                         ` : ``}
@@ -121,15 +121,15 @@ const template = (values, options) => {
                         <div class="row table__td table__td--bottom">
                           <div class="col-xs-12">
                             ${syn.s.length >= 25 ? `
-                              ${tableMoreSynonyms(syn, value.src_n, syn.n_c)}
+                              ${tableMoreSynonyms(syn)}
                             ` : `
                               ${tableSynonyms(syn)}
                             `}
                           </div>
                         </div>
 
-                        ${syn.ap !== undefined && syn.ap.length !== 0 ? `
-                          <div class="row table__td table__td--bottom">
+                        ${value.drug === true && syn.ap !== undefined && syn.ap.length !== 0 ? `
+                          <div class="row table__td table__td">
                             <div class="col-xs-12">
                               <b>Additional Attributes:</b>
                             </div>
