@@ -120,17 +120,18 @@ export const vsRender = (items, keyword) => {
               });
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
               data.id = (valueObj.src_n + '-' + data.n_c).replace(/[^a-zA-Z0-9-]+/gi, '');
+              data.pt = preferredTerm;
               data.s = sortSynonyms(newSyn);
-              if (
-                data.def !== undefined &&
+              if (data.def !== undefined &&
                 data.def.length !== 0 &&
-                data.def.find((defs) => defs.defSource === 'NCI') !== undefined
-              ) {
-                data.def = data.def.find((defs) => { return defs.defSource === 'NCI'; }).description;
+                data.def.find((defs) => defs.defSource === 'NCI') !== undefined) {
+                data.def = data.def.find((defs) => defs.defSource === 'NCI').description;
               } else {
                 data.def = undefined;
               }
-              data.pt = preferredTerm;
+              data.ap = data.ap.filter((aps) => {
+                return aps.name === 'CAS_Registry' || aps.name === 'FDA_UNII_Code' || aps.name === 'NSC_Code';
+              });
             });
             valueObj.n_syn = source.n_syn;
           }
