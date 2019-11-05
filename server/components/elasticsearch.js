@@ -16,6 +16,7 @@ const extend = require('util')._extend;
 const _ = require('lodash');
 const report = require('../service/search/report');
 const searchable_nodes = require('../config').searchable_nodes;
+const drugs_properties = require('../config').drugs_properties;
 const shared = require('../service/search/shared');
 const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
@@ -130,8 +131,9 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 				if (Array.isArray(cc[s])) {
 					tmp.syn = [];
 					tmp.aprop = [];
+					tmp.definitions = [];
 					cc[s].forEach((s, i) => {
-						// tmp.definition =  tmp.pvc[i] !== "" && syns[tmp.pvc[i]] ? syns[tmp.pvc[i]].definitions.length ? syns[tmp.pvc[i]].definitions.find((defs) => defs.defSource === 'NCI').description : undefined : undefined;
+						tmp.definitions.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] !== undefined && syns[tmp.pvc[i]].definitions !== undefined ? syns[tmp.pvc[i]].definitions : []);
 						tmp.syn.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] ? syns[tmp.pvc[i]].synonyms : []);
 						tmp.aprop.push(tmp.pvc[i] !== "" && syns[tmp.pvc[i]] && syns[tmp.pvc[i]].additionalProperties !== undefined ? syns[tmp.pvc[i]].additionalProperties : []);
 					});
@@ -406,6 +408,7 @@ const bulkIndex = next => {
 		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
 	});
 	gdc_data = report.preProcess(searchable_nodes, gdc_data);
+	//let gdc_drugs = report.preProcess(drugs_properties, gdc_data);
 	//build suggestion index
 	let suggestionBody = [];
 
@@ -549,11 +552,9 @@ const bulkIndex = next => {
 			if (p.enum) {
 				let checker_enum = JSON.parse(JSON.stringify(gdc_data[node].properties[property].enum)).map(ems => {return ems.trim().toLowerCase()});
 				p.enum.forEach(em => {
-					if (checker_enum.indexOf(em.n.trim().toLowerCase()) !== -1) {
-						em.gdc_d = true;
-					} else {
-						em.gdc_d = false;
-					}
+					em.gdc_d = checker_enum.indexOf(em.n.trim().toLowerCase()) !== -1 ? true : false;
+					//check if enum propeties is drug value
+					em.drug = drugs_properties.indexOf(property) !== -1 ? true : false;
 				});
 			}
 		}
@@ -605,7 +606,7 @@ const bulkIndex = next => {
 					item.n_syn = [];
 					if(Array.isArray(item.n_c) && Array.isArray(item.s)){
 						item.n_c.forEach((nc, i) => {
-							item.n_syn.push({n_c: item.n_c[i], s: item.s[i], ap: item.ap[i]});
+							item.n_syn.push({n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i]});
 						});
 					}else{
 						item.n_syn.push({n_c: item.n_c, s: item.s, ap: item.ap, def: item.def});
@@ -618,6 +619,8 @@ const bulkIndex = next => {
 				else if(item.n_c !== undefined && item.n_c === ""){
 					delete item.n_c;
 					delete item.s;
+					delete item.ap;
+					delete item.def;
 				}
 			}
 		});

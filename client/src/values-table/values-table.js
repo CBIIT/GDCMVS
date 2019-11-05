@@ -1,6 +1,5 @@
 import template from './values-table-view';
 import { getHeaderOffset, getHighlightObj, sortAlphabetically, sortSynonyms } from '../shared';
-import { isUndefined } from 'util';
 
 let termTypeNotAssigned = false;
 
@@ -103,6 +102,7 @@ export const vsRender = (items, keyword) => {
           let source = hits._source;
           valueObj.n = highlightValueObj[source.n] !== undefined ? highlightValueObj[source.n] : source.n;
           valueObj.src_n = source.n;
+          valueObj.drug = source.drug;
           if (source.n_syn !== undefined) {
             source.n_syn.forEach(data => {
               let newSyn = [];
@@ -119,6 +119,7 @@ export const vsRender = (items, keyword) => {
                 newSyn.push(synObj);
               });
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
+              data.id = (valueObj.src_n + '-' + data.n_c).replace(/[^a-zA-Z0-9-]+/gi, '');
               data.s = sortSynonyms(newSyn);
               if (
                 data.def !== undefined &&
