@@ -129,9 +129,11 @@ export const vsRender = (items, keyword) => {
               } else {
                 data.def = undefined;
               }
-              data.ap = data.ap.filter((aps) => {
-                return aps.name === 'CAS_Registry' || aps.name === 'FDA_UNII_Code' || aps.name === 'NSC_Code';
-              });
+              if (data.ap !== undefined && data.ap.length !== 0) {
+                data.ap = data.ap.filter((aps) => {
+                  return aps.name === 'CAS_Registry' || aps.name === 'FDA_UNII_Code' || aps.name === 'NSC_Code';
+                });
+              }
             });
             valueObj.n_syn = source.n_syn;
           }
