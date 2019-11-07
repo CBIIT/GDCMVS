@@ -190,7 +190,7 @@ export const sortAlphabetically = (values) => {
 };
 
 export const sortSynonyms = (synonyms) => {
-  const mapped = { PT: 1, BR: 2, FB: 3, CN: 4, AB: 5, SY: 6, SN: 7, AQS: 8 };
+  const mapped = { PT: 1, BR: 2, FB: 3, CN: 4, AB: 5, SY: 6, SN: 7, AQ: 8, AQS: 9 };
   synonyms.sort((a, b) => (mapped[a.termGroup] > mapped[b.termGroup]) ? 1 : (a.termGroup === b.termGroup) ? ((a.termName.toLowerCase() > b.termName.toLowerCase()) ? 1 : -1) : -1);
   return synonyms;
 };

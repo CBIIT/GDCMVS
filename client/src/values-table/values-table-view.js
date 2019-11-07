@@ -79,7 +79,9 @@ const template = (values, options) => {
                           <ul class="nav nav-tabs" role="tablist">
                           ${value.n_syn.map((syn, i) => `
                             <li role="presentation" class="${i === 0 ? `active` : ``}">
-                              <a href="#tab-${syn.id}" aria-controls="home" role="tab" data-toggle="tab">${syn.n_c} (NCIt) ${syn.pt.length <= 15 ? `${syn.pt}` : `${syn.pt.substring(0, 15)}...`}</a>
+                              <a href="#tab-${syn.id}" aria-controls="tab" role="tab" data-toggle="tab">
+                                ${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt.length <= 15 ? `${syn.pt}` : `${syn.pt.substring(0, 15)}...`}` : ``}
+                              </a>
                             </li>
                           `.trim()).join('')}
                           </ul>
