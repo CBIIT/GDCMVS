@@ -76,11 +76,11 @@ const template = (values, options) => {
                     ${value.n_syn.length > 1 ? `
                       <div class="row table__td">
                         <div class="col-xs-12">
-                          <ul class="nav nav-tabs" role="tablist">
+                          <ul class="nav nav-tabs nav-tabs-ncit" role="tablist">
                           ${value.n_syn.map((syn, i) => `
                             <li role="presentation" class="${i === 0 ? `active` : ``}">
-                              <a href="#tab-${syn.id}" aria-controls="tab" role="tab" data-toggle="tab">
-                                ${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt.length <= 15 ? `${syn.pt}` : `${syn.pt.substring(0, 15)}...`}` : ``}
+                              <a href="#tab-${syn.id}" aria-controls="${syn.n_c}" role="tab" data-toggle="tab">
+                                ${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.substring(0, 34)}${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.length >= 34 ? `...` : ``}
                               </a>
                             </li>
                           `.trim()).join('')}

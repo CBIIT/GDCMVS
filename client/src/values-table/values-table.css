@@ -64,3 +64,27 @@
 .table__row--toggle {
   display: none;
 }
+
+.nav-tabs-ncit {
+  padding-bottom: 5px;
+}
+
+.nav-tabs-ncit > li {
+  width: 33%;
+  min-width: 270px;
+}
+
+.nav-tabs-ncit  > li > a {
+  border-radius: 4px;
+}
+
+.nav-tabs-ncit > li.active > a {
+  background-color: #2079BB !important;
+  color: #fff !important;
+  border: 1px solid #2079BB;
+}
+
+.nav-tabs-ncit > li.active > a:hover {
+  background-color: #2079BB !important;
+  color: #fff !important;
+}
