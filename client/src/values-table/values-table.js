@@ -139,6 +139,7 @@ export const vsRender = (items, keyword) => {
           }
           valueObj.i_c = {};
           valueObj.i_c.c = source.i_c ? highlightICObj[source.i_c.c] ? highlightICObj[source.i_c.c] : source.i_c.c : undefined;
+          valueObj.i_c.id = source.i_c ? (valueObj.src_n + '-' + source.i_c.c).replace(/[^a-zA-Z0-9-]+/gi, '') : undefined;
           if (source.ic_enum !== undefined) {
             valueObj.ic_enum = source.ic_enum;
             source.ic_enum.forEach(ic => {
