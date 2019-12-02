@@ -119,7 +119,7 @@ export const vsRender = (items, keyword) => {
                 newSyn.push(synObj);
               });
               data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;
-              data.id = (valueObj.src_n + '-' + data.n_c).replace(/[^a-zA-Z0-9-]+/gi, '');
+              data.id = (obj.property + '-' + valueObj.src_n + '-' + data.n_c).replace(/[^a-zA-Z0-9-]+/gi, '');
               data.pt = preferredTerm;
               data.s = sortSynonyms(newSyn);
               if (data.def !== undefined &&
@@ -139,7 +139,7 @@ export const vsRender = (items, keyword) => {
           }
           valueObj.i_c = {};
           valueObj.i_c.c = source.i_c ? highlightICObj[source.i_c.c] ? highlightICObj[source.i_c.c] : source.i_c.c : undefined;
-          valueObj.i_c.id = source.i_c ? (valueObj.src_n + '-' + source.i_c.c).replace(/[^a-zA-Z0-9-]+/gi, '') : undefined;
+          valueObj.i_c.id = source.i_c ? (obj.property + '-' + valueObj.src_n + '-' + source.i_c.c).replace(/[^a-zA-Z0-9-]+/gi, '') : undefined;
           if (source.ic_enum !== undefined) {
             valueObj.ic_enum = source.ic_enum;
             source.ic_enum.forEach(ic => {
