@@ -60,90 +60,111 @@ const template = (values, options) => {
                   </div>
                   <div class="data-content" style="display: none;">
 
-                  ${value.ic_enum !== undefined ? `
-                    <div class="row table__td">
-                      <div class="col-xs-12">${value.i_c.c} (ICD-O-3)</div>
-                    </div>
-                    <div class="row table__td">
-                      <div class="col-xs-12">
-                        ${tableIcdo3(value)}
-                      </div>
-                    </div>
-                  ` : ``}
 
-                  ${value.n_syn !== undefined ? `
+                  ${value.n_syn !== undefined || value.ic_enum !== undefined ? `
 
-                    ${value.n_syn.length > 1 ? `
                       <div class="row table__td">
                         <div class="col-xs-12">
                           <ul class="nav nav-tabs nav-tabs-ncit" role="tablist">
-                          ${value.n_syn.map((syn, i) => `
-                            <li role="presentation" class="${i === 0 ? `active` : ``}">
-                              <a href="#tab-${syn.id}" aria-controls="${syn.n_c}" role="tab" data-toggle="tab">
-                                ${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.substring(0, 34)}${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.length >= 34 ? `...` : ``}
+
+                          ${value.ic_enum !== undefined && value.n_syn !== undefined ? `
+                            <li role="presentation" class="active">
+                              <a href="#tab-${value.i_c.id}" aria-controls="${value.i_c.c}" role="tab" data-toggle="tab">
+                                ${`${value.i_c.c} (ICD-O-3)`.substring(0, 34)}
                               </a>
                             </li>
-                          `.trim()).join('')}
+                          ` : ``}
+
+                          ${value.n_syn !== undefined && value.n_syn.length !== 0 && value.ic_enum !== undefined ? `
+
+                            ${value.n_syn.map((syn, i) => `
+                              <li role="presentation" class="${value.ic_enum === undefined && i === 0 ? `active` : ``}">
+                                <a href="#tab-${syn.id}" aria-controls="${syn.n_c}" role="tab" data-toggle="tab">
+                                  ${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.substring(0, 34)}${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.length >= 34 ? `...` : ``}
+                                </a>
+                              </li>
+                            `.trim()).join('')}
+
+                          ` : ``}
+
                           </ul>
                         </div>
                       </div>
-                    ` : ``}
 
                     <div class="tab-content">
-                      ${value.n_syn.map((syn, i) => `
-                      <div role="tabpanel" class="tab-pane ${i === 0 ? `active` : ``}" id="tab-${syn.id}">
-                        <div class="row table__td">
-                          <div class="col-xs-12">
-                            <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
-                          </div>
-                        </div>
 
-                        ${value.drug === true && syn.def !== undefined ? `
+                      ${value.ic_enum !== undefined ? `
+                        <div role="tabpanel" class="tab-pane active" id="tab-${value.i_c.id}">
                           <div class="row table__td">
-                            <div class="col-xs-12">
-                              <b>Definition:</b> ${syn.def}
-                            </div>
-                          </div>
-                        ` : ``}
-
-                        <div class="row table__td">
-                          <div class="col-xs-4">
-                            <b>Synonyms &amp; Abbreviations:</b>
-                          </div>
-                          ${syn.s.length >= 25 ? `
-                          <div class="col-xs-8 table__right">
-                            <div class="input-group dialog__input-group">
-                              <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
-                              <input id="drug-${syn.id}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
-                            </div>
-                          </div>
-                        ` : ``}
-                        </div>
-
-                        <div class="row table__td table__td--bottom">
-                          <div class="col-xs-12">
-                            ${syn.s.length >= 25 ? `
-                              ${tableMoreSynonyms(syn)}
-                            ` : `
-                              ${tableSynonyms(syn)}
-                            `}
-                          </div>
-                        </div>
-
-                        ${value.drug === true && syn.ap !== undefined && syn.ap.length !== 0 ? `
-                          <div class="row table__td table__td">
-                            <div class="col-xs-12">
-                              <b>Additional Attributes:</b>
-                            </div>
+                            <div class="col-xs-12">${value.i_c.c} (ICD-O-3)</div>
                           </div>
                           <div class="row table__td table__td--bottom">
                             <div class="col-xs-12">
-                              ${tableAProperties(syn)}
+                              ${tableIcdo3(value)}
                             </div>
                           </div>
-                        ` : ``}
-                      </div>
-                      `.trim()).join('')}
+                        </div>
+                      ` : ``}
+
+                      ${value.n_syn !== undefined && value.n_syn.length !== 0 ? `
+
+                        ${value.n_syn.map((syn, i) => `
+                          <div role="tabpanel" class="tab-pane ${value.ic_enum === undefined && i === 0 ? `active` : ``}" id="tab-${syn.id}">
+                            <div class="row table__td">
+                              <div class="col-xs-12">
+                                <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
+                              </div>
+                            </div>
+
+                            ${value.drug === true && syn.def !== undefined ? `
+                              <div class="row table__td">
+                                <div class="col-xs-12">
+                                  <b>Definition:</b> ${syn.def}
+                                </div>
+                              </div>
+                            ` : ``}
+
+                            <div class="row table__td">
+                              <div class="col-xs-4">
+                                <b>Synonyms &amp; Abbreviations:</b>
+                              </div>
+                              ${syn.s.length >= 25 ? `
+                              <div class="col-xs-8 table__right">
+                                <div class="input-group dialog__input-group">
+                                  <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+                                  <input id="drug-${syn.id}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+                                </div>
+                              </div>
+                            ` : ``}
+                            </div>
+
+                            <div class="row table__td table__td--bottom">
+                              <div class="col-xs-12">
+                                ${syn.s.length >= 25 ? `
+                                  ${tableMoreSynonyms(syn)}
+                                ` : `
+                                  ${tableSynonyms(syn)}
+                                `}
+                              </div>
+                            </div>
+
+                            ${value.drug === true && syn.ap !== undefined && syn.ap.length !== 0 ? `
+                              <div class="row table__td table__td">
+                                <div class="col-xs-12">
+                                  <b>Additional Attributes:</b>
+                                </div>
+                              </div>
+                              <div class="row table__td table__td--bottom">
+                                <div class="col-xs-12">
+                                  ${tableAProperties(syn)}
+                                </div>
+                              </div>
+                            ` : ``}
+                          </div>
+                        `.trim()).join('')}
+
+                      ` : ``}
+
                     </div>
                   ` : ``}
                   </div>
