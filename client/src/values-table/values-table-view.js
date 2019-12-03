@@ -63,9 +63,9 @@ const template = (values, options) => {
 
                   ${value.n_syn !== undefined || value.ic_enum !== undefined ? `
 
-                      <div class="row table__td">
+                      <div class="row table__td table__td--top">
                         <div class="col-xs-12">
-                          <ul class="nav nav-tabs nav-tabs-ncit" role="tablist">
+                          <ul class="nav nav-tabs nav-tabs-gdc" role="tablist">
 
                           ${value.ic_enum !== undefined && value.n_syn !== undefined ? `
                             <li role="presentation" class="active">
@@ -94,7 +94,7 @@ const template = (values, options) => {
                     <div class="tab-content">
 
                       ${value.ic_enum !== undefined ? `
-                        <div role="tabpanel" class="tab-pane active" id="tab-${value.i_c.id}">
+                        <div role="tabpanel" class="tab-pane tab-pane-gdc active" id="tab-${value.i_c.id}">
                           <div class="row table__td">
                             <div class="col-xs-12">${value.i_c.c} (ICD-O-3)</div>
                           </div>
@@ -109,7 +109,7 @@ const template = (values, options) => {
                       ${value.n_syn !== undefined && value.n_syn.length !== 0 ? `
 
                         ${value.n_syn.map((syn, i) => `
-                          <div role="tabpanel" class="tab-pane ${value.ic_enum === undefined && i === 0 ? `active` : ``}" id="tab-${syn.id}">
+                          <div role="tabpanel" class="tab-pane tab-pane-gdc ${value.ic_enum === undefined && i === 0 ? `active` : ``}" id="tab-${syn.id}">
                             <div class="row table__td">
                               <div class="col-xs-12">
                                 <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
