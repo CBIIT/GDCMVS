@@ -1,6 +1,6 @@
 import { headerTemplate, bodyTemplate } from './ncit-details-view';
 import { apiEVSRest } from '../../api';
-import { getHeaderOffset, getScrollTop } from '../../shared';
+import { getHeaderOffset, getScrollTop, sortSynonyms } from '../../shared';
 
 const ncitDetails = (uid) => {
   uid = uid.replace(/<b>/g, '').replace(/<\/b>/g, '');
@@ -10,10 +10,12 @@ const ncitDetails = (uid) => {
     }
 
     let tmp = {};
+    let sym = [];
     tmp.code = item.code;
     tmp.name = item.preferredName;
     tmp.definition = item.definitions.length ? item.definitions.find(function (defs) { return defs.defSource === 'NCI'; }).description : undefined;
-    tmp.s = item.synonyms;
+    sym = item.synonyms.filter(s => s.termSource === 'NCI');
+    tmp.s = sortSynonyms(sym);
     tmp.ap = item.additionalProperties;
 
     let header = headerTemplate;

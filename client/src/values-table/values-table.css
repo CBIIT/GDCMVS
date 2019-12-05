@@ -66,22 +66,24 @@
 }
 
 .nav-tabs-gdc > li {
-  width: 33%;
+  width: 33.33%;
   min-width: 270px;
 }
 
 .nav-tabs-gdc  > li > a {
+  padding: 8px 15px;
   border: 1px solid #e6e6e6;
   margin-bottom: 3px;
   border-radius: 6px 6px 0 0;
   border-bottom-width: 3px;
   border-bottom-color: #95a1a1;
   color: #6A7676;
+  background-color: #F4F4F4;
 }
 
 .nav-tabs-gdc > li > a:hover,
 .nav-tabs-gdc > li > a:focus {
-  background-color: #fff;
+  background-color: #FAFAFA;
   border-bottom-width: 3px;
   border-bottom-color: #6A7676;
   color: #6A7676;
