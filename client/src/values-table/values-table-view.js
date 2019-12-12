@@ -75,7 +75,8 @@ const template = (values, options) => {
                             </li>
                           ` : ``}
 
-                          ${value.n_syn !== undefined && value.n_syn.length !== 0 && value.ic_enum !== undefined ? `
+                          ${value.n_syn !== undefined && value.n_syn.length !== 0 && value.ic_enum !== undefined
+                            || value.n_syn !== undefined && value.n_syn.length > 1 && value.ic_enum === undefined ? `
 
                             ${value.n_syn.map((syn, i) => `
                               <li role="presentation" class="${value.ic_enum === undefined && i === 0 ? `active` : ``}">
