@@ -12,7 +12,7 @@ export const headerTemplate = `
           <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Partial match
         </label>
         <label class="checkbox__label checkbox__label--height">
-          <input id="compare_synonyms" class="checkbox__input" type="checkbox" value="">
+          <input id="compare_synonyms" class="checkbox__input" type="checkbox" value="" checked>
           <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms
         </label>
         <label class="checkbox__label checkbox__label--height">
