@@ -75,8 +75,7 @@ const template = (values, options) => {
                             </li>
                           ` : ``}
 
-                          ${value.n_syn !== undefined && value.n_syn.length !== 0 && value.ic_enum !== undefined
-                            || value.n_syn !== undefined && value.n_syn.length > 1 && value.ic_enum === undefined ? `
+                          ${(value.n_syn !== undefined && value.n_syn.length !== 0 && value.ic_enum !== undefined) || (value.n_syn !== undefined && value.n_syn.length > 1 && value.ic_enum === undefined) ? `
 
                             ${value.n_syn.map((syn, i) => `
                               <li role="presentation" class="${value.ic_enum === undefined && i === 0 ? `active` : ``}">
@@ -110,7 +109,7 @@ const template = (values, options) => {
                       ${value.n_syn !== undefined && value.n_syn.length !== 0 ? `
 
                         ${value.n_syn.map((syn, i) => `
-                          <div role="tabpanel" class="tab-pane tab-pane-gdc ${value.ic_enum === undefined && i === 0 ? `active` : ``}" id="tab-${syn.id}">
+                          <div role="tabpanel" class="tab-pane tab-pane-gdc${value.ic_enum === undefined && i === 0 ? ` active` : ``}" id="tab-${syn.id}">
                             <div class="row table__td">
                               <div class="col-xs-12">
                                 <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
