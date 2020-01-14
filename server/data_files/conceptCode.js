@@ -64,8 +64,8 @@
         "High Risk": "C161809"
     },
     "clinical.diagnosis.largest_extrapelvic_peritoneal_focus": {
-        "Macroscopic (2cm or less)": "",
-        "Macroscopic (greater than 2cm)": "",
+        "Macroscopic (2cm or less)": "C53696",
+        "Macroscopic (greater than 2cm)": "C51138",
         "Microscopic": "C25252",
         "Unknown": "C17998",
         "Not Reported": "C43234"
@@ -207,7 +207,7 @@
         "Not Applicable": "C48660"
     },
     "case.case.index_date": {
-        "Diagnosis": "C15220",
+        "Diagnosis": "C164339",
         "First Patient Visit": "C164021",
         "Study Enrollment": "C139171",
         "First Treatment": "C164022",
@@ -657,7 +657,7 @@
         "Core Biopsy": "C15680",
         "Cystoscopy": "C16482",
         "Cytology": "C16491",
-        "Debulking": "C51661",
+        "Debulking": "C15749",
         "Diagnostic Imaging": "C16502",
         "Dilation and Curettage Procedure": "C15226",
         "Enucleation": "C48601",
@@ -1348,7 +1348,7 @@
         "Domestic Partner": "C53262",
         "Father": "C25174",
         "Father-in-law": "C68640",
-        "Female Cousin": "C166134",
+        "Female Cousin": "C165786",
         "First Cousin": "C71411",
         "First Cousin Once Removed": "C71412",
         "Foster Brother": "C165788",
@@ -1396,7 +1396,7 @@
         "Mother": "C25189",
         "Mother-in-law": "C68639",
         "Natural Brother": "C96570",
-        "Natural Child": "C100807",
+        "Natural Child": "C42708",
         "Natural Daughter": "C25165",
         "Natural Father": "C96572",
         "Natural Grandchild": "C100805",
@@ -4284,11 +4284,11 @@
     "biospecimen.read_group.platform": {
         "Illumina": "C146817",
         "Other": "C17649",
-        "SOLiD": "",
-        "LS454": "",
-        "Ion Torrent": "",
-        "Complete Genomics": "",
-        "PacBio": ""
+        "SOLiD": "C146811",
+        "LS454": "C146809",
+        "Ion Torrent": "C125894",
+        "Complete Genomics": "C146815",
+        "PacBio": "C146819"
     },
     "biospecimen.read_group.target_capture_kit": {
         "Not Applicable": "C48660",
@@ -4424,7 +4424,7 @@
         "Whipple Procedure": "C15356",
         "Abdomino-perineal Resection of Rectum": "C91826",
         "Anterior Resection of Rectum": "C113716",
-        "Aspirate": "C15631",
+        "Aspirate": "C13347",
         "Blood Draw": "C17610",
         "Cystectomy": "C15217",
         "Endo Rectal Tumor Resection": "C165178",
@@ -4479,7 +4479,7 @@
         "Cell Lines": "C16403",
         "DNA": "C449",
         "Granulocytes": "C12530",
-        "Metastatic": "C3261",
+        "Metastatic": "C156440",
         "Not Allowed To Collect": "C141478",
         "Not Reported": "C43234",
         "Pleural Effusion": "C3331",
@@ -4688,9 +4688,9 @@
         "Seizures": "C2962",
         "Unknown": "C17998",
         "Altered Mental Status": "C121628",
-        "Motor or Movement Changes": "",
+        "Motor or Movement Changes": "C157433",
         "Sensory Changes": "C157429",
-        "Visual Changes": "C118760"
+        "Visual Changes": "C157424"
     },
     "clinical.diagnosis.gastric_esophageal_junction_involvement": {
         "No": "C49487",
@@ -5000,7 +5000,7 @@
     "clinical.follow_up.progression_or_recurrence_type": {
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "Distant": "",
+        "Distant": "C55073",
         "Local": "C36162",
         "Regional": "C41844",
         "Biochemical": "C25434"
@@ -5086,7 +5086,7 @@
         "Tobacco, Smokeless": "C137998",
         "Tobacco, Smoking": "C154329",
         "Undescended Testis": "C12326",
-        "Vision Changes": "C118760",
+        "Vision Changes": "C157424",
         "Alcoholic Liver Disease": "C34783",
         "Alpha-1 Antitrypsin Deficiency": "C84397",
         "Autoimmune Atrophic Chronic Gastritis": "C156076",
@@ -5158,6 +5158,9 @@
         "Low Pass WGS": "C165220",
         "miRNA-Seq": "C156057",
         "ATAC-Seq": "C156056"
+    },
+    "data_file.submitted_genomic_profile.type": {
+        "submitted_genomic_profile": "C94411"
     },
     "data_file.submitted_genomic_profile.data_category": {
         "Genomic Profiling": "C94411",
@@ -5303,9 +5306,9 @@
     },
     "clinical.diagnosis.tumor_regression_grade": {
         "0": "C155941",
-        "1": "C140890",
-        "2": "C140891",
-        "3": "C140892",
+        "1": "C155942",
+        "2": "C155943",
+        "3": "C155944",
         "Not Reported": "C43234",
         "Unknown": "C17998"
     },
