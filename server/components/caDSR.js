@@ -220,12 +220,24 @@ const loadNcitSynonyms_continue = next => {
 	}
 	let ncit = [];
 	ncitids.forEach(id => {
-		if (!(id in synonyms)) {
-			if (id.indexOf('E') === -1) {
-				ncit.push(id);
-			}
+		if (Array.isArray(id)) {
+			id.forEach((id) => {
+				if (!(id in synonyms)) {
+					if (id.indexOf('E') === -1) {
+						ncit.push(id);
+					}
+				} else {
+					logger.debug("in the synonyms:" + id);
+				}
+			});
 		} else {
-			logger.debug("in the synonyms:" + id);
+			if (!(id in synonyms)) {
+				if (id.indexOf('E') === -1) {
+					ncit.push(id);
+				}
+			} else {
+				logger.debug("in the synonyms:" + id);
+			}
 		}
 	});
 	if(ncit.length > 0){
@@ -416,6 +428,9 @@ const loadCtcaeSynonyms_continue = next => {
 		let vs = cc[c];
 		for (let v in vs) {
 			let code = vs[v];
+			if(code.isArray()){
+
+			}
 			if (code !== "" && ncitids.indexOf(code) == -1) {
 				ncitids.push(code);
 			}
