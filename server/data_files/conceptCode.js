@@ -8342,8 +8342,6 @@
         "Tumor Adjacent Normal - Post Neo-adjuvant Therapy": "C164033",
         "Xenograft Tissue": "C12932",
         "Benign Neoplasms": "C3677",
-        "Blood Derived Cancer - Bone Marrow": "",
-        "Blood Derived Cancer - Peripheral Blood": "",
         "In Situ Neoplasms": "C36118",
         "Neoplasms of Uncertain and Unknown Behavior": "",
         "Blood Derived Liquid Biopsy": "C135727",
