@@ -1356,7 +1356,7 @@
         "Docetaxel": "C1526",
         "Docetaxel Anhydrous": "C61734",
         "Docetaxel Emulsion ANX-514": "C78196",
-        "Docetaxel Formulation CKD-810": ["C88322", "C165259"],
+        "Docetaxel Formulation CKD-810": "C88322",
         "Docetaxel Lipid Microspheres": "C102568",
         "Docetaxel Nanoparticle CPC634": "C121961",
         "Docetaxel Polymeric Micelles": "C165263",
