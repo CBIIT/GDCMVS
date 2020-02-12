@@ -26,7 +26,8 @@ var allProperties = [];
 
 var esClient = new elasticsearch.Client({
 	host: config_dev.elasticsearch.host,
-	log: config_dev.elasticsearch.log
+	log: config_dev.elasticsearch.log,
+	requestTimeout: config_dev.elasticsearch.timeout
 });
 
 const parseRef = (ref, termsJson, defJson) => {
