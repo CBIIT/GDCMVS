@@ -76,8 +76,8 @@ properties:
     type: string
 
   therapeutic_agents:
-    $ref:
-      - "_terms.yaml#/therapeutic_agents/common"
+    term:
+      $ref: "_terms.yaml#/therapeutic_agents"
     type: string
 
   treatment_anatomic_site:
