@@ -76,28 +76,9 @@ properties:
     type: string
 
   therapeutic_agents:
-    term:
-      $ref: "_terms.yaml#/therapeutic_agents"
-    enum:	
-      - Bortezomib	
-      - Vincristine	
-      - Dexamethasone	
-      - Lenalidomide	
-      - Thalidomide	
-      - Liposomal doxorubicin	
-      - Carfilzomib	
-      - Cyclophosphamide	
-      - Melphalan	
-      - Prednisone	
-      - Other	
-      - Pomalidomide	
-      - Elotuzumab	
-      - Ixazomib	
-      - Daratumumab	
-      - Bendamustine	
-      - Panobinostat	
-      - Doxorubicin	
-      - BCNU
+    $ref:
+      - "_terms.yaml#/therapeutic_agents/common"
+    type: string
 
   treatment_anatomic_site:
     term:
