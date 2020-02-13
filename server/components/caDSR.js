@@ -428,9 +428,6 @@ const loadCtcaeSynonyms_continue = next => {
 		let vs = cc[c];
 		for (let v in vs) {
 			let code = vs[v];
-			if(code.isArray()){
-
-			}
 			if (code !== "" && ncitids.indexOf(code) == -1) {
 				ncitids.push(code);
 			}
