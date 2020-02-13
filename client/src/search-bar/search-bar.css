@@ -4,13 +4,17 @@
   margin: 0 auto;
 }
 
-.search-bar__input {
+.search-bar__group {
   box-shadow: 1px 7px 7px -6px #e3e3e3;
   border-radius: 4px;
 }
 
-.search-bar__input:hover {
+.search-bar__group:hover {
   box-shadow:0 3px 8px 0 #e3e3e3;
+}
+
+.search-bar__input {
+  padding-right: 60px;
 }
 
 .search-bar__options {

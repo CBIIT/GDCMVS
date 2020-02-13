@@ -220,12 +220,24 @@ const loadNcitSynonyms_continue = next => {
 	}
 	let ncit = [];
 	ncitids.forEach(id => {
-		if (!(id in synonyms)) {
-			if (id.indexOf('E') === -1) {
-				ncit.push(id);
-			}
+		if (Array.isArray(id)) {
+			id.forEach((id) => {
+				if (!(id in synonyms)) {
+					if (id.indexOf('E') === -1) {
+						ncit.push(id);
+					}
+				} else {
+					logger.debug("in the synonyms:" + id);
+				}
+			});
 		} else {
-			logger.debug("in the synonyms:" + id);
+			if (!(id in synonyms)) {
+				if (id.indexOf('E') === -1) {
+					ncit.push(id);
+				}
+			} else {
+				logger.debug("in the synonyms:" + id);
+			}
 		}
 	});
 	if(ncit.length > 0){
@@ -305,6 +317,15 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 						tmp[ncitids[idx]].synonyms.push(obj);
 						checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
 					});
+					if (d.additionalProperties !== undefined) {
+						tmp[ncitids[idx]].additionalProperties = [];
+						d.additionalProperties.forEach(data => {
+							let obj = {};
+							obj.name = data.name;
+							obj.value = data.value;
+							tmp[ncitids[idx]].additionalProperties.push(obj);
+						});
+					}
 					let str = {};
 					str[ncitids[idx]] = syns;
 					fs.appendFile("./server/data_files/ncit_details.js", JSON.stringify(tmp), err => {

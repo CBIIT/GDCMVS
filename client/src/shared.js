@@ -5,7 +5,7 @@ let notificationOn = false;
 
 export const getHeaderOffset = () => headerOffset;
 
-export const getScrollTop = () => prevScrollOffset
+export const getScrollTop = () => prevScrollOffset;
 
 export const onScroll = ($window) => {
   const currentScrollOffset = $window.scrollTop();
@@ -18,26 +18,26 @@ export const onScroll = ($window) => {
     headerOffset = headerHeight;
     prevScrollOffset = currentScrollOffset;
   }
-}
+};
 
 export const onResize = ($docsContainer, $parentContainer, $mainContainer) => {
   headerHeight = $('.navbar .container').height();
   setHeight($docsContainer, $parentContainer, $mainContainer);
   headerOffset = headerHeight;
-}
+};
 
 export const setHeight = ($docsContainer, $parentContainer, $mainContainer) => {
   $docsContainer.attr('style', 'margin-top: ' + (headerHeight - 54) + 'px !important');
   $parentContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
   $mainContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 12) + 'px)');
-}
+};
 
 export const errorNotification = (status, errorThrown) => {
   if (notificationOn === true) return;
   notificationOn = true;
-  //close progress bar
+  // close progress bar
   $('#gdc-loading-icon').fadeOut('fast');
-  //show the notification alert error
+  // show the notification alert error
   const $alertError = $('#alert-error');
   $alertError.text('Error ' + status + ': ' + errorThrown);
   $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
@@ -48,227 +48,160 @@ export const errorNotification = (status, errorThrown) => {
 };
 
 export const dialogsOnResize = ($window) => {
-  const dialogs = $('#gdc_data, #gdc_terms_data, #compare_dialog, #ncit_details, #caDSR_data, #compareGDC_dialog, #source_details, #type_details');
-  if (dialogs.length == 0) return;
+  const dialogs = $('#gdc_data, #gdc_terms_data, #ncit_details, #compare_dialog, #source_details, #type_details');
+  if (dialogs.length === 0) return;
   dialogs.each((index, element) => {
     const $target = $(element).parent();
     if ($target.offset().top < headerOffset) {
-      $target.css('top', (headerOffset + 10) + "px");
+      $target.css('top', (headerOffset + 10) + 'px');
     } else if ($window.width() < ($target.offset().left + $target.width())) {
-      $target.css('left', ($window.width() - $target.width() - 10) + "px");
+      $target.css('left', ($window.width() - $target.width() - 10) + 'px');
     }
   });
-}
+};
 
-export const htmlChildContent = (tag, tmpl) =>{
-  const re = new RegExp('<'+tag+'>([^]*)<\/'+tag+'>', 'g');
+export const htmlChildContent = (tag, tmpl) => {
+  const re = new RegExp('<' + tag + '>([^]*)<\/' + tag + '>', 'g');
   return re.exec(tmpl)[1];
-}
-
-// Remove duplicate synonyms case insensitive
- export const removeDuplicateSynonyms = (it) => {
-    if (it.s == undefined) return;
-    let cache = {};
-    let tmp_s = [];
-    it.s.forEach(function (s) {
-      let lc = s.trim().toLowerCase();
-      if (!(lc in cache)) {
-        cache[lc] = [];
-      }
-      cache[lc].push(s);
-    });
-    for (let idx in cache) {
-      //find the term with the first character capitalized
-      let word = findWord(cache[idx]);
-      tmp_s.push(word);
-    }
-    return tmp_s;
-}
+};
 
 export const getAllSyn = (items) => {
-  let all_icdo3_syn = {};
-  items.forEach(item => {
-    if(item.i_c === undefined) return;
-    if(item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined){
-      if(item.i_c.n_syn){
-        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-        all_icdo3_syn[item.i_c.c].n_syn = item.i_c.n_syn;
-        item.i_c.n_syn.forEach(syn => {
-          if(syn.s === undefined) return;
-          all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(syn.s.map(function(x){ return x.termName}));
-        });
-      }else{
-        all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [item.n_c], all_syn: [] };
-        if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-        if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
-      }
-    }else if(all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1){
-      if(item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-      if(item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s.map(function(x){ return x.termName}));
-      all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+  items.forEach(em => {
+    if (em.n_syn !== undefined) {
+      em.all_syn = [];
+      em.n_syn.forEach(syn => {
+        em.all_syn = em.all_syn.concat(syn.s.map(function (x) { return x.termName; }));
+      });
     }
   });
-  return  all_icdo3_syn;
-}
+  return items;
+};
 
 export const searchFilter = (items, keyword) => {
-  let all_icdo3_syn = getAllSyn(items);
-  let new_item = [];
-  JSON.parse(JSON.stringify(items)).forEach(item =>{
-    let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
-    if(idx !== -1){
-      if(idx === 0) new_item.unshift(item);
-      if(idx !== 0) new_item.push(item);
+  let allIcdo3Syn = getAllSyn(items);
+  let newItem = [];
+  JSON.parse(JSON.stringify(items)).forEach(item => {
+    let idx = item.n.replace(/<b>/g, '').replace(/<\/b>/g, '').toLowerCase().indexOf(keyword);
+    if (idx !== -1) {
+      if (idx === 0) newItem.unshift(item);
+      if (idx !== 0) newItem.push(item);
     }
   });
   // Search in synonyms
-  JSON.parse(JSON.stringify(items)).forEach(item =>{
-   if(item.s !== undefined){
-    let tmp_arr = item.s.map(function(s){return s.termName.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
-    if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
-      new_item.push(item);
+  JSON.parse(JSON.stringify(items)).forEach(item => {
+    if (item.s !== undefined) {
+      let tmpArr = item.s.map(function (s) { return s.termName.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+        newItem.push(item);
+      }
     }
-   }
   });
 
   // Search in all_syn synonyms if it has icdo3 code
-  JSON.parse(JSON.stringify(items)).forEach(item =>{
-    if(item.all_syn !== undefined){
-      let tmp_arr = item.all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
-      if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
-        new_item.push(item);
+  JSON.parse(JSON.stringify(items)).forEach(item => {
+    if (item.all_syn !== undefined) {
+      let tmpArr = item.all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+        newItem.push(item);
+      }
+    } else if (item.i_c !== undefined && allIcdo3Syn[item.i_c.c] && allIcdo3Syn[item.i_c.c].all_syn) {
+      let tmpArr = allIcdo3Syn[item.i_c.c].all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+        newItem.push(item);
       }
     }
-    else if(item.i_c !== undefined && all_icdo3_syn[item.i_c.c] && all_icdo3_syn[item.i_c.c].all_syn){
-     let tmp_arr = all_icdo3_syn[item.i_c.c].all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
-     if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
-       new_item.push(item);
-     }
-    }
-   });
+  });
 
   // Highlight matched values and synonyms
-  new_item.forEach(item =>{
-    item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
-    if(item.s !== undefined){
-     item.s = item.s.map(function(s) {return {termName: s.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: s.termGroup, termSource: s.termSource}});
+  newItem.forEach(item => {
+    item.n = item.n.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(new RegExp(keyword, 'ig'), '<b>$&</b>');
+    if (item.s !== undefined) {
+      item.s = item.s.map(function (s) { return { termName: s.termName.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(new RegExp(keyword, 'ig'), '<b>$&</b>'), termGroup: s.termGroup, termSource: s.termSource }; });
     }
-    if(item.i_c !== undefined && item.i_c.n_syn !== undefined){
+    if (item.i_c !== undefined && item.i_c.n_syn !== undefined) {
       item.i_c.n_syn.forEach(syn => {
-        if(syn.s === undefined) return;
-        syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
-      })
+        if (syn.s === undefined) return;
+        syn.s = syn.s.map(function (x) { return { termName: x.termName.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(new RegExp(keyword, 'ig'), '<b>$&</b>'), termGroup: x.termGroup, termSource: x.termSource }; });
+      });
     }
-    if(item.n_syn !== undefined){
+    if (item.n_syn !== undefined) {
       item.n_syn.forEach(syn => {
-        if(syn.s === undefined) return;
-        syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
-      })
+        if (syn.s === undefined) return;
+        syn.s = syn.s.map(function (x) { return { termName: x.termName.replace(/<b>/g, '').replace(/<\/b>/g, '').replace(new RegExp(keyword, 'ig'), '<b>$&</b>'), termGroup: x.termGroup, termSource: x.termSource }; });
+      });
     }
   });
-  return new_item;
-}
+  return newItem;
+};
+
+export const searchFilterSyn = (syn, keyword) => {
+  // Search in synonyms
+  let newSyn = [];
+  let tmpArr = syn.map(function (s) { return s.termName.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+  tmpArr.forEach((tmpArr, index) => {
+    if (tmpArr === true) {
+      newSyn.push(syn[index]);
+    }
+  });
+  return newSyn;
+};
 
 export const searchFilterCR = (items, keyword) => {
-  let all_icdo3_syn = all_icdo3_syn = getAllSyn(items);
-  let new_item = [];
-  JSON.parse(JSON.stringify(items)).forEach(item =>{
-    let idx = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").toLowerCase().indexOf(keyword);
-    if(idx !== -1){
-      if(idx === 0) new_item.unshift(item);
-      if(idx !== 0) new_item.push(item);
+  let allIcdo3Syn = getAllSyn(items);
+  let newItem = [];
+  JSON.parse(JSON.stringify(items)).forEach(item => {
+    let idx = item.n.replace(/<b>/g, '').replace(/<\/b>/g, '').toLowerCase().indexOf(keyword);
+    if (idx !== -1) {
+      if (idx === 0) newItem.unshift(item);
+      if (idx !== 0) newItem.push(item);
     }
   });
   // Search in synonyms
-  JSON.parse(JSON.stringify(items)).forEach(item =>{
-   if(item.s !== undefined){
-    let tmp_arr = item.s.map(function(s){return s.termName.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
-    if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
-      new_item.push(item);
+  JSON.parse(JSON.stringify(items)).forEach(item => {
+    if (item.s !== undefined) {
+      let tmpArr = item.s.map(function (s) { return s.termName.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+        newItem.push(item);
+      }
     }
-   }
   });
 
   // Search in all_syn synonyms if it has icdo3 code
-  JSON.parse(JSON.stringify(items)).forEach(item =>{
-    if(item.all_syn !== undefined){
-      let tmp_arr = item.all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
-      if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
-        new_item.push(item);
+  JSON.parse(JSON.stringify(items)).forEach(item => {
+    if (item.all_syn !== undefined) {
+      let tmpArr = item.all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+        newItem.push(item);
+      }
+    } else if (item.i_c !== undefined && allIcdo3Syn[item.i_c.c] && allIcdo3Syn[item.i_c.c].all_syn) {
+      let tmpArr = allIcdo3Syn[item.i_c.c].all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
+      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+        newItem.push(item);
       }
     }
-    else if(item.i_c !== undefined && all_icdo3_syn[item.i_c.c] && all_icdo3_syn[item.i_c.c].all_syn){
-     let tmp_arr = all_icdo3_syn[item.i_c.c].all_syn.map(function(x){ return x.trim().toLowerCase()}).map(function(s){ return s.indexOf(keyword) >= 0});
-     if(tmp_arr.indexOf(true) >= 0 && !_.some(new_item, item)){
-       new_item.push(item);
-     }
-    }
-   });
-
-  // Highlight matched values and synonyms
-  // new_item.forEach(item =>{
-  //   item.n = item.n.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>");
-  //   if(item.s !== undefined){
-  //    item.s = item.s.map(function(s) {return {termName: s.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: s.termGroup, termSource: s.termSource}});
-  //   }
-  //   if(item.i_c !== undefined && item.i_c.n_syn !== undefined){
-  //     item.i_c.n_syn.forEach(syn => {
-  //       if(syn.s === undefined) return;
-  //       syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
-  //     })
-  //   }
-  //   if(item.n_syn !== undefined){
-  //     item.n_syn.forEach(syn => {
-  //       if(syn.s === undefined) return;
-  //       syn.s = syn.s.map(function(x) {return {termName: x.termName.replace(/<b>/g, "").replace(/<\/b>/g, "").replace(new RegExp(keyword, "ig"), "<b>$&</b>"), termGroup: x.termGroup, termSource: x.termSource}});
-  //     })
-  //   }
-  // });
-  return new_item;
-}
-
-export const findWord = (words) => {
-  let word = "";
-  if (words.length == 1) {
-    return words[0];
-  }
-  words.forEach(function (w) {
-    if (word !== "") {
-      return;
-    }
-    let idx_space = w.indexOf(" ");
-    let idx_comma = w.indexOf(",");
-    if (idx_space == -1 && idx_comma == -1) {
-      if (/^[A-Z][a-z0-9]{0,}$/.test(w)) {
-        word = w;
-      }
-    }
-    else if (idx_space !== -1 && idx_comma == -1) {
-      if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
-        word = w;
-      }
-    }
-    else if (idx_space == -1 && idx_comma !== -1) {
-      if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
-        word = w;
-      }
-    }
-    else {
-      if (idx_comma > idx_space) {
-        if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_space))) {
-          word = w;
-        }
-      }
-      else {
-        if (/^[A-Z][a-z0-9]{0,}$/.test(w.substr(0, idx_comma))) {
-          word = w;
-        }
-      }
-    }
-
   });
-  if (word == "") {
-    word = words[0];
+
+  return newItem;
+};
+
+export const sortAlphabetically = (values) => {
+  values.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+  return values;
+};
+
+export const sortSynonyms = (synonyms) => {
+  const mapped = { PT: 1, BR: 2, FB: 3, CN: 4, AB: 5, SY: 6, SN: 7, AQ: 8, AQS: 9 };
+  synonyms.sort((a, b) => (mapped[a.termGroup] > mapped[b.termGroup]) ? 1 : (a.termGroup === b.termGroup) ? ((a.termName.toLowerCase() > b.termName.toLowerCase()) ? 1 : -1) : -1);
+  return synonyms;
+};
+
+export const getHighlightObj = (highlight) => {
+  let highlightObj = {};
+  if (highlight !== undefined) {
+    highlight.forEach(val => {
+      let tmp = val.replace(/<b>/g, '').replace(/<\/b>/g, '');
+      if (highlightObj[tmp] === undefined) highlightObj[tmp] = val;
+    });
   }
-  return word;
+  return highlightObj;
 };

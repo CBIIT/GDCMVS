@@ -13,6 +13,8 @@
 
 .tab-nav__text {
   color: #535A60;
+  max-width: 400px;
+  margin-left: 2em;
 }
 
 .tab-nav__term {

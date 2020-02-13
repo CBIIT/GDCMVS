@@ -11,11 +11,11 @@ const morgan = require('morgan');
 const fs = require('fs');
 const rfs = require('rotating-file-stream');
 
-module.exports = app =>{
+module.exports = app => {
 
-	let env = config.env;
+    let env = config.env;
 
-	app.set('views', config.root + '/client');
+    app.set('views', config.root + '/client');
     app.engine('html', require('ejs').renderFile);
     app.set('view engine', 'html');
     app.use(compression());
@@ -42,8 +42,8 @@ module.exports = app =>{
 
         // create a rotating write stream
         var accessLogStream = rfs('access.log', {
-          interval: '1d', // rotate daily
-          path: logDirectory
+            interval: '1d', // rotate daily
+            path: logDirectory
         })
 
         morgan.format('log-format', ':remote-addr - - [:date[clf]] ":method :url HTTP/:http-version" :status ":referrer" ":user-agent"');

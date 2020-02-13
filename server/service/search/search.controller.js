@@ -76,7 +76,6 @@ const searchICDO3Data = (req, res) => {
 		query.match_phrase_prefix["enum.i_c.have"] = {};
 		query.match_phrase_prefix["enum.i_c.have"].query = icdo3_code;
 		query.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
-		//query.analyzer = "keyword";
 		let highlight;
 
 		elastic.query(config.index_p, query, highlight, result => {
@@ -124,27 +123,28 @@ const searchICDO3Data = (req, res) => {
 	}
 }
 
-
 const searchP = (req, res) => {
-	let isBoolSearch = {
-		value: false,
-		type: "" 
-	};
+	let isBoolean = false;
 	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
-	let original_keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
+	let option = {};
+	if(req.query.options){
+		option.match = req.query.options.indexOf("exact") !== -1 ? "exact" : "partial";
+		option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
+		option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
+	}
+	else{
+		option = {
+			match: "partial",
+			syn: false,
+			desc: false
+		};
+	}
 	if (keyword.trim() === '') {
 		res.json([]);
 	} else {
-		if (keyword.indexOf('AND') !== -1 || keyword.indexOf('OR') !== -1 || keyword.indexOf('NOT') !== -1) {
-			if(keyword.indexOf(' AND ') !== -1) isBoolSearch.type = "AND";
-			if(keyword.indexOf(' OR ') !== -1) isBoolSearch.type = "OR";
-			if(keyword.indexOf(' NOT ') !== -1) isBoolSearch.type = "NOT";
-			if (keyword.indexOf('NOT') !== -1) keyword = keyword.replace(new RegExp('NOT', 'g'), 'OR');
-			isBoolSearch.value = true;
-		}
-		let option = JSON.parse(req.query.option);
-		let query = generateQuery(keyword, option, isBoolSearch);
-		let highlight = generateHighlight(keyword, option, isBoolSearch);
+		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
+		let query = generateQuery(keyword, option, isBoolean);
+		let highlight = generateHighlight();
 		elastic.query(config.index_p, query, highlight, result => {
 			if (result.hits === undefined) {
 				return handleError.error(res, result);
@@ -162,344 +162,270 @@ const searchP = (req, res) => {
 	}
 };
 
-const generateQuery = (keyword, option, isBoolSearch) => {
-	if (keyword.indexOf("/") !== -1 && option.match !== "exact") keyword = keyword.replace(/\//g, "\\/");
-	let query = {};
-	if (isBoolSearch.value === true && option.match !== "exact") {
-		query.query_string = {};
-		query.query_string.fields = [];
-		query.query_string.fields.push("name.have");
-		if (option.desc) {
-			query.query_string.fields.push("desc");
-		}
-		if (option.syn) {
-			query.query_string.fields.push("enum.s.termName.have");
-			// query.query_string.fields.push("enum.all_syn.have");
-		}
-		query.query_string.fields.push("enum.n_c");
-		query.query_string.fields.push("enum.all_n_c");
-		query.query_string.fields.push("cde.id");
-		query.query_string.fields.push("enum.n.have");
-		query.query_string.fields.push("enum.i_c.have");
-		query.query_string.query = keyword;
+const searchAPI = (req, res) => {
+	let isBoolean = false;
+	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
+	let option = {};
+	if(req.query.options){
+		option.match = req.query.options.indexOf("exact") !== -1 ? "exact" : "partial";
+		option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
+		option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
+	}	else{
+		option = {
+			match: "partial",
+			syn: false,
+			desc: false
+		};
 	}
-	else if(isBoolSearch.value === true && option.match === "exact"){
-		if(isBoolSearch.type === "AND") {
-			keyword = keyword.replace(new RegExp(' AND ', 'g'), ' ');
-			query.bool = {};
-			query.bool.should = [];
-			let m = {};
-			m.multi_match = {};
-			m.multi_match.query = keyword;
-			m.multi_match.analyzer = "case_insensitive";
-			m.multi_match.fields = ["name"];
-			if (option.desc) {
-				m.multi_match.fields.push("desc");
+	if (keyword.trim() === '') {
+		res.json([]);
+	} else {
+		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
+		let query = generateQuery(keyword, option, isBoolean);
+		elastic.query(config.index_p, query, null, result => {
+			if (result.hits === undefined) {
+				return handleError.error(res, result);
 			}
-			if (option.syn) {
-				m.multi_match.fields.push("enum.s.termName");
-				// m.multi_match.fields.push("enum.all_syn");
-			}
-			m.multi_match.fields.push("enum.n");
-			m.multi_match.fields.push("enum.n_c");
-			m.multi_match.fields.push("enum.all_n_c");
-			m.multi_match.fields.push("cde.id");
-			m.multi_match.fields.push("enum.i_c.c");
-			query.bool.should.push(m);
-		}
-		if(isBoolSearch.type === "OR"){
-			query.bool = {};
-			query.bool.should = [];
-			let temp_keyword = keyword.split(' OR ');
-			temp_keyword.forEach(value => {
-				let m = {};
-				m.multi_match = {};
-				m.multi_match.query = value;
-				m.multi_match.analyzer = "case_insensitive";
-				m.multi_match.fields = ["name"];
-				if (option.desc) {
-					m.multi_match.fields.push("desc");
+			let data = result.hits.hits;
+			data.forEach(entry => {
+				if (entry.inner_hits.enum.hits.hits.length === 0) {
+					delete entry.inner_hits;
+				} else {
+					entry.matches = [];
+					entry.inner_hits.enum.hits.hits.forEach(e => {
+						
+						e._source.value = e._source.n;
+
+						if (e._source.i_c !== undefined) {
+							e._source.icdo3Code = e._source.i_c.c;
+							delete e._source.i_c;
+						}
+
+						if (e._source.n_syn !== undefined) {
+							e._source.allSynonyms = e._source.n_syn;
+							e._source.allSynonyms.forEach(s => {
+								s.conceptCode = s.n_c;
+								s.synonyms = s.s;
+								delete s.n_c;
+								delete s.s;
+							});
+						}
+
+						if (e._source.ic_enum !== undefined) {
+							e._source.icdo3Strings = e._source.ic_enum;
+							e._source.icdo3Strings.forEach(ic => {
+								ic.termName = ic.n;
+								ic.termGroup  = ic.term_type;
+								delete ic.n;
+								delete ic.term_type;
+							});
+							delete e._source.ic_enum;
+						}
+						
+						delete e._source.n;
+						delete e._source.gdc_d;
+						delete e._source.n_syn;
+						delete e._source.ic_enum;
+						delete e._source.term_type;
+
+						delete e._index;
+						delete e._type;
+						delete e._nested;
+						delete e._score;
+
+						entry.matches.push(e._source);
+					});
 				}
-				if (option.syn) {
-					m.multi_match.fields.push("enum.s.termName");
-					// m.multi_match.fields.push("enum.all_syn");
-				}
-				m.multi_match.fields.push("enum.n");
-				m.multi_match.fields.push("enum.n_c");
-				m.multi_match.fields.push("enum.all_n_c");
-				m.multi_match.fields.push("cde.id");
-				m.multi_match.fields.push("enum.i_c.c");
-				query.bool.should.push(m);
+
+				entry._source.nodeDescription =  entry._source.node_desc;
+				entry._source.propertyDescription =  entry._source.property_desc;
+
+				delete entry._source.id;
+				delete entry._source.node_desc;
+				delete entry._source.property_desc;
+				if(entry._source.cde !== undefined) delete entry._source.cde.v
+				delete entry._source.enum;
+
+				delete entry.inner_hits;				
+				delete entry.sort;
+				delete entry._index;
+				delete entry._score;
+				delete entry._type;
+				delete entry._id;
 			});
-		}
-		if(isBoolSearch.type === "NOT"){
-			query.bool = {};
-			query.bool.should = [];
-			query.bool.must_not = [];
-			let temp_keyword = keyword.split(' OR ');
-			temp_keyword.forEach((value, index) => {
-				if(index === 0){
-					let m = {};
-					m.multi_match = {};
-					m.multi_match.query = value;
-					m.multi_match.analyzer = "case_insensitive";
-					m.multi_match.fields = ["name"];
-					if (option.desc) {
-						m.multi_match.fields.push("desc");
-					}
-					if (option.syn) {
-						m.multi_match.fields.push("enum.s.termName");
-						// m.multi_match.fields.push("enum.all_syn");
-					}
-					m.multi_match.fields.push("enum.n");
-					m.multi_match.fields.push("enum.n_c");
-					m.multi_match.fields.push("enum.all_n_c");
-					m.multi_match.fields.push("cde.id");
-					m.multi_match.fields.push("enum.i_c.c");
-					query.bool.should.push(m);
-				}
-				else{
-					let m = {};
-					m.multi_match = {};
-					m.multi_match.query = value;
-					m.multi_match.analyzer = "case_insensitive";
-					m.multi_match.fields = ["name"];
-					if (option.desc) {
-						m.multi_match.fields.push("desc");
-					}
-					if (option.syn) {
-						m.multi_match.fields.push("enum.s.termName");
-						// m.multi_match.fields.push("enum.all_syn");
-					}
-					m.multi_match.fields.push("enum.n");
-					m.multi_match.fields.push("enum.n_c");
-					m.multi_match.fields.push("enum.all_n_c");
-					m.multi_match.fields.push("cde.id");
-					m.multi_match.fields.push("enum.i_c.c");
-					query.bool.must_not.push(m);
-				}
-			});
-		}
-	} 
-	else {
+			res.json(data);
+		});
+	}
+};
+
+const generateQuery = (keyword, option, isBoolean) => {
+	let query = {};
+	if(option.match === "exact"){ // Perform exact search
+		if (/[^\w\d\s]/g.test(keyword) === true && isBoolean === false) keyword = keyword.replace(/[^\w\d\s]/g, '\\$&') // Escape special characters
 		query.bool = {};
 		query.bool.should = [];
-		if (option.match !== "exact") {
-			let m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["name.have"] = keyword;
-			query.bool.should.push(m);
-			if (option.desc) {
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["desc"] = keyword;
-				query.bool.should.push(m);
-			}
-			if (option.syn) {
-				m = {};
-				m.match_phrase_prefix = {};
-				m.match_phrase_prefix["enum.s.termName.have"] = keyword;
-				query.bool.should.push(m);
-				// m = {};
-				// m.match_phrase_prefix = {};
-				// m.match_phrase_prefix["enum.all_syn.have"] = keyword;
-				// query.bool.should.push(m);
-			}
+		let m = {};
+		m.query_string = {};
+		m.query_string.query = keyword;
+		m.query_string.fields = [];
+		m.query_string.fields.push("cde.id");
+		m.query_string.fields.push("property");
+		if (option.desc) {
+			m.query_string.fields.push("property_desc");
+		}
+		query.bool.should.push(m);
+
+		m = {};
+		m.nested = {};
+		m.nested.path = "enum"
+		m.nested.query = {};
+		m.nested.query.query_string = {};
+		m.nested.query.query_string.fields = [];
+		
+		if (option.syn) {
+			m.nested.query.query_string.fields.push("enum.n_syn.s.termName");
+		}
+		m.nested.query.query_string.fields.push("enum.n_syn.n_c");
+		m.nested.query.query_string.fields.push("enum.n");
+		m.nested.query.query_string.fields.push("enum.i_c.c");
+		m.nested.query.query_string.query = keyword;
+		
+		m.nested.inner_hits = {};
+		m.nested.inner_hits.from = 0;
+		m.nested.inner_hits.size = 1000000;
+		m.nested.inner_hits.highlight = generateHighlightInnerHits();
+		query.bool.should.push(m);
+	}
+	else if(option.match !== "exact" && isBoolean === true){ // Perform boolean search
+		if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
+		query.bool = {};
+		query.bool.should = [];
+		let m = {};
+		m.query_string = {};
+		m.query_string.default_operator = "AND";
+		m.query_string.query = keyword;
+		m.query_string.fields = [];
+		m.query_string.fields.push("cde.id");
+		m.query_string.fields.push("property.have");
+		if (option.desc) {
+			m.query_string.fields.push("property_desc");
+		}
+		query.bool.should.push(m);
+
+		m = {};
+		m.nested = {};
+		m.nested.path = "enum"
+		m.nested.query = {};
+		m.nested.query.query_string = {};
+		m.nested.query.query_string.fields = [];
+		m.nested.query.query_string.default_operator = "AND";
+
+		if (option.syn) {
+			m.nested.query.query_string.fields.push("enum.n_syn.s.termName.have");
+		}
+		m.nested.query.query_string.fields.push("enum.n_syn.n_c.have");
+		m.nested.query.query_string.fields.push("enum.n.have");
+		m.nested.query.query_string.fields.push("enum.i_c.have");
+		m.nested.query.query_string.query = keyword;
+
+		m.nested.inner_hits = {};
+		m.nested.inner_hits.from = 0;
+		m.nested.inner_hits.size = 10000000;
+		m.nested.inner_hits.highlight = generateHighlightInnerHits();
+		query.bool.should.push(m);
+	}
+	else{ // If it's partial and not a boolean search
+	if (keyword.indexOf("/") !== -1) keyword = keyword.replace(/\//g, "\\/");
+		query.bool = {};
+		query.bool.should = [];
+
+		let m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["property.have"] = keyword;
+		query.bool.should.push(m);
+
+		m = {};
+		m.match_phrase_prefix = {};
+		m.match_phrase_prefix["cde.id"] = keyword;
+		query.bool.should.push(m);
+
+		if (option.desc) {
 			m = {};
 			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.n_c"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.all_n_c"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["cde.id"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.n.have"] = keyword;
-			query.bool.should.push(m);
-			m = {};
-			m.match_phrase_prefix = {};
-			m.match_phrase_prefix["enum.i_c.have"] = {};
-			m.match_phrase_prefix["enum.i_c.have"].query = keyword;
-			m.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
-			query.bool.should.push(m);
-		} else {
-			let m = {};
-			m.multi_match = {};
-			m.multi_match.query = keyword;
-			m.multi_match.analyzer = "case_insensitive";
-			m.multi_match.fields = ["name"];
-			if (option.desc) {
-				m.multi_match.fields.push("desc");
-			}
-			if (option.syn) {
-				m.multi_match.fields.push("enum.s.termName");
-				// m.multi_match.fields.push("enum.all_syn");
-			}
-			m.multi_match.fields.push("enum.n");
-			m.multi_match.fields.push("enum.n_c");
-			m.multi_match.fields.push("enum.all_n_c");
-			m.multi_match.fields.push("cde.id");
-			m.multi_match.fields.push("enum.i_c.c");
+			m.match_phrase_prefix["property_desc"] = keyword;
 			query.bool.should.push(m);
 		}
+
+		m = {};
+		m.nested = {};
+		m.nested.path = "enum"
+		m.nested.query = {};
+		m.nested.query.bool = {};
+		m.nested.query.bool.should = [];
+
+		let n = {};
+		if (option.syn) {
+			n = {};
+			n.match_phrase_prefix = {};
+			n.match_phrase_prefix["enum.n_syn.s.termName.have"] = keyword;
+			m.nested.query.bool.should.push(n);
+		}
+		n = {};
+		n.match_phrase_prefix = {};
+		n.match_phrase_prefix["enum.n_syn.n_c.have"] = keyword;
+		m.nested.query.bool.should.push(n);
+		
+		n = {};
+		n.match_phrase_prefix = {};
+		n.match_phrase_prefix["enum.n.have"] = keyword;
+		m.nested.query.bool.should.push(n);
+
+		n = {};
+		n.match_phrase_prefix = {};
+		n.match_phrase_prefix["enum.i_c.have"] = {};
+		n.match_phrase_prefix["enum.i_c.have"].query = keyword;
+		n.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
+		m.nested.query.bool.should.push(n);
+
+		m.nested.inner_hits = {};
+		m.nested.inner_hits.from = 0;
+		m.nested.inner_hits.size = 1000000;
+		m.nested.inner_hits.highlight = generateHighlightInnerHits();
+		query.bool.should.push(m);
 	}
 	return query;
 }
 
-const generateHighlight = (keyword, option, isBoolSearch) => {
-	if (keyword.indexOf("/") !== -1 && option.match !== "exact") keyword = keyword.replace(/\//g, "\\/");
-	let highlight;
-	if (isBoolSearch.value === true && option.match !== "exact") {
-		highlight = {
-			"pre_tags": ["<b>"],
-			"post_tags": ["</b>"],
-			"highlight_query": {
-				"query_string": {
-					"fields": [],
-					"query": keyword
-				}
-			},
-			"fields": {
-				"name.have": {
-					"number_of_fragments": 0
-				},
-				"enum.n.have": {
-					"number_of_fragments": 0
-				},
-				"enum.i_c.have": {
-					"number_of_fragments": 0
-				},
-				"enum.n_c": {
-					"number_of_fragments": 0
-				},
-				"enum.all_n_c": {
-					"number_of_fragments": 0
-				},
-				"cde.id": {
-					"number_of_fragments": 0
-				}
-			}
-		};
-		highlight.highlight_query.query_string.fields.push("name.have");
-		if (option.desc) {
-			highlight.highlight_query.query_string.fields.push("desc");
+const generateHighlightInnerHits = () => {
+	let highlight = {
+		"pre_tags": ["<b>"],
+		"post_tags": ["</b>"],
+		"fields": {
+			"enum.n.have": {"number_of_fragments": 0},
+			"enum.n": {"number_of_fragments": 0},
+			"enum.n_syn.n_c.have": {"number_of_fragments": 0},
+			"enum.n_syn.n_c": {"number_of_fragments": 0},
+			"enum.n_syn.s.termName.have": {"number_of_fragments": 0},
+			"enum.n_syn.s.termName": {"number_of_fragments": 0},
+			"enum.i_c.have": {"number_of_fragments": 0},
+			"enum.i_c.c": {"number_of_fragments": 0}
 		}
-		if (option.syn) {
-			highlight.highlight_query.query_string.fields.push("enum.s.termName.have");
-			// highlight.highlight_query.query_string.fields.push("enum.all_syn.have");
+	};
+	return highlight;
+}
 
+const generateHighlight = () => {
+	let highlight = {
+		"pre_tags": ["<b>"],
+		"post_tags": ["</b>"],
+		"fields": {
+			"property.have": {"number_of_fragments": 0},
+			"property": {"number_of_fragments": 0},
+			"property_desc": {"number_of_fragments": 0},
+			"cde.id": {"number_of_fragments": 0},
+			"id": {"number_of_fragments": 0}
 		}
-		highlight.highlight_query.query_string.fields.push("enum.n_c");
-		highlight.highlight_query.query_string.fields.push("enum.all_n_c");
-		highlight.highlight_query.query_string.fields.push("cde.id");
-		highlight.highlight_query.query_string.fields.push("enum.n.have");
-		highlight.highlight_query.query_string.fields.push("enum.i_c.have");
-		if (option.desc) {
-			highlight.fields["desc"] = {
-				"number_of_fragments": 0
-			};
-		}
-		if (option.syn) {
-			highlight.fields["enum.s.termName.have"] = {
-				"number_of_fragments": 0
-			};
-			// highlight.fields["enum.all_syn.have"] = {
-			// 	"number_of_fragments": 0
-			// };
-		}
-	}
-	else if(isBoolSearch.value === true && option.match === "exact"){
-		highlight = {
-			"pre_tags": ["<b>"],
-			"post_tags": ["</b>"],
-			"fields": {
-				"name": {},
-				"enum.n": {},
-				"enum.i_c.c": {},
-				"enum.n_c": {},
-				"enum.all_n_c": {},
-				"cde.id": {}
-			}
-		};
-		if (option.desc) {
-			highlight.fields["desc"] = {
-				"number_of_fragments": 0
-			};
-		}
-		if (option.syn) {
-			highlight.fields["enum.s.termName"] = {};
-			// highlight.fields["enum.all_syn"] = {};
-		}
-
-	} 
-	else {
-		if (option.match !== "exact") {
-			highlight = {
-				"pre_tags": ["<b>"],
-				"post_tags": ["</b>"],
-				"fields": {
-					"name.have": {
-						"number_of_fragments": 0
-					},
-					"enum.n.have": {
-						"number_of_fragments": 0
-					},
-					"enum.i_c.have": {
-						"number_of_fragments": 0
-					},
-					"enum.n_c": {
-						"number_of_fragments": 0
-					},
-					"enum.all_n_c": {
-						"number_of_fragments": 0
-					},
-					"cde.id": {
-						"number_of_fragments": 0
-					}
-				}
-			};
-			if (option.desc) {
-				highlight.fields["desc"] = {
-					"number_of_fragments": 0
-				};
-			}
-			if (option.syn) {
-				highlight.fields["enum.s.termName.have"] = {
-					"number_of_fragments": 0
-				};
-				// highlight.fields["enum.all_syn.have"] = {
-				// 	"number_of_fragments": 0
-				// };
-			}
-		} else {
-			highlight = {
-				"pre_tags": ["<b>"],
-				"post_tags": ["</b>"],
-				"fields": {
-					"name": {},
-					"enum.n": {},
-					"enum.i_c.c": {},
-					"enum.n_c": {},
-					"enum.all_n_c": {},
-					"cde.id": {}
-				}
-			};
-			if (option.desc) {
-				highlight.fields["desc"] = {
-					"number_of_fragments": 0
-				};
-			}
-			if (option.syn) {
-				highlight.fields["enum.s.termName"] = {};
-				// highlight.fields["enum.all_syn"] = {};
-			}
-		}
-	}
+	};
 	return highlight;
 }
 
@@ -510,18 +436,24 @@ const indexing = (req, res) => {
 	config_property.index = config.index_p;
 	config_property.body = {
 		"settings": {
+			"number_of_shards": 10, 
+			"max_inner_result_window": 10000000,
+			"max_result_window": 10000000,
 			"analysis": {
 				"analyzer": {
 					"case_insensitive": {
 						"tokenizer": "keyword",
-						"filter": [
-							"lowercase", "whitespace_remove"
-						]
+						"filter": ["lowercase", "whitespace_remove"]
 					},
 					"my_standard": {
 						"tokenizer": "standard",
 						"char_filter": ["my_filter"],
-						"filter": ["standard", "lowercase"]
+						"filter": ["lowercase","whitespace_remove"]
+					},
+					"my_ngram": {
+						"tokenizer": "ngram_tokenizer",
+						"char_filter": ["my_filter"],
+						"filter": ["lowercase","whitespace_remove"]
 					}
 				},
 				"char_filter": {
@@ -535,6 +467,13 @@ const indexing = (req, res) => {
 						"type": "pattern_replace",
 						"pattern": "[_-]",
 						"replacement": " "
+					}
+				},
+				"tokenizer": {
+					"ngram_tokenizer": {
+						"type": "nGram",
+						"min_gram": "2",
+						"token_chars": ["letter", "digit", "symbol"]
 					}
 				}
 			}
@@ -551,7 +490,7 @@ const indexing = (req, res) => {
 					"node": {
 						"type": "keyword"
 					},
-					"name": {
+					"property": {
 						"type": "text",
 						"fields": {
 							"have": {
@@ -561,51 +500,56 @@ const indexing = (req, res) => {
 						},
 						"analyzer": "case_insensitive"
 					},
-					"enum.n": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
+					"enum":{
+						"type": "nested",
+						"properties": {
+							"n": {
+								"type": "text",
+								"fields": {
+									"have": {
+										"type": "text",
+										"analyzer": "my_standard"
+									}
+								},
+								"analyzer": "case_insensitive"
+							},
+							"n_syn.s.termName": {
+								"type": "text",
+								"fields": {
+									"have": {
+										"type": "text",
+										"analyzer": "my_standard"
+									}
+								},
+								"analyzer": "case_insensitive"
+							},
+							"n_syn.n_c": {
+								"type": "text",
+								"fields": {
+									"have": {
+										"type": "text",
+										"analyzer": "my_standard"
+									}
+								},
+								"analyzer": "case_insensitive"
+							},
+							"i_c":{
+								"properties": {
+									"c": {
+										"type": "text",
+										"analyzer": "case_insensitive"
+									},
+									"have": {
+										"type": "text",
+										"analyzer": "my_standard"
+									}
+								}
 							}
-						},
-						"analyzer": "case_insensitive"
-					},
-					"enum.s.termName": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text"
-							}
-						},
-						"analyzer": "case_insensitive"
-					},
-					// "enum.all_syn.termName": {
-					// 	"type": "text",
-					// 	"fields": {
-					// 		"have": {
-					// 			"type": "text"
-					// 		}
-					// 	},
-					// 	"analyzer": "case_insensitive"
-					// },
-					"enum.n_c": {
-						"type": "text",
-						"analyzer": "case_insensitive"
-					},
-					"enum.all_n_c": {
-						"type": "text",
-						"analyzer": "case_insensitive"
+						}
 					},
 					"cde.id": {
 						"type": "text",
 						"analyzer": "case_insensitive"
-					},
-					"enum.i_c.c": {
-						"type": "text",
-						"analyzer": "case_insensitive"
-					},
-					"enum.i_c.have": {
-						"type": "text"
 					}
 				}
 			}
@@ -740,34 +684,17 @@ const getDataFromGDC = (req, res) => {
 
 const getGDCData = (req, res) => {
 	let uid = req.query.id;
-	if (gdcData[uid] == undefined) {
-		//load data file to memory
-
-		let query = {};
-		query.terms = {};
-		query.terms._id = [];
-		query.terms._id.push(uid);
-		elastic.query(config.index_p, query, null, result => {
-			if (result.hits === undefined) {
-				return handleError.error(res, result);
-			}
-			let data = result.hits.hits;
-			//cache the data and response
-
-			if (data.length > 0) {
-				let p = data[0];
-				gdcData[uid] = p._source.enum;
-				let cde = p._source.cde;
-				if (cde !== undefined && !(cde.id in cdeData)) {
-					cdeData[cde.id] = p._source.cde_pv;
-				}
-			}
-
-			res.json(gdcData[uid]);
-		});
-	} else {
-		res.json(gdcData[uid]);
-	}
+	let query = {};
+	query.terms = {};
+	query.terms.id = [];
+	query.terms.id.push(uid);
+	elastic.query(config.index_p, query, null, result => {
+		if (result.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.hits.hits;
+		res.json(data);
+	});
 };
 
 const preloadCadsrData = (req, res) => {
@@ -1266,7 +1193,7 @@ const Unmapped = (req, res) => {
 		}
 		let tmp_obj = tmp_concept[keys];
 		for (let values in tmp_obj) {
-			if (gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum.indexOf(values) == -1) {
+			if (gdc_data[node] && gdc_data[node].properties[property] && gdc_data[node].properties[property].enum && gdc_data[node].properties[property].enum.indexOf(values) == -1) {
 				delete tmp_obj[values];
 			}
 		}
@@ -1300,6 +1227,7 @@ module.exports = {
 	suggestion,
 	suggestionMisSpelled,
 	searchP,
+	searchAPI,
 	getPV,
 	getDataFromCDE,
 	getDataFromGDC,
