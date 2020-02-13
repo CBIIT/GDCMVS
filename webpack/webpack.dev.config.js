@@ -1,5 +1,5 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     entry: {
@@ -11,36 +11,36 @@ module.exports = {
     },
     module: {
         rules: [
-    
-          // JS 
+
+          // eslint
+          { test: /\.js$/,
+            enforce: "pre",
+            exclude: /node_modules/,
+            loader: "eslint-loader"
+          },
+        
+          // JS
           { test: /\.js$/,
             exclude: /node_modules/,
             use: {
               loader: 'babel-loader',
               options: { 
-                  presets: ['es2015','stage-2'] 
+                  presets: ['@babel/preset-env']
                 }
             },
           },
     
           // CSS
           { test: /\.css$/,
-            use: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader']
-            })
-          },
-          
-          // HTML
-          {
-            test: /\.html$/,
-            use: {
-              loader: 'html-loader'
-            }
+            use: [
+              { loader: "style-loader" },
+              MiniCssExtractPlugin.loader,
+              { loader: "css-loader" },
+            ]
           }
         ]
       },
       plugins: [
-        new ExtractTextPlugin("styles.css"),
+        new MiniCssExtractPlugin({filename: "styles.css"})
       ]
 }

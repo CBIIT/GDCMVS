@@ -79,7 +79,7 @@ properties:
     term:
       $ref: "_terms.yaml#/therapeutic_agents"
     type: string
-
+   
   treatment_anatomic_site:
     term:
       $ref: "_terms.yaml#/treatment_anatomic_site"

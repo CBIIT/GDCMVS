@@ -23,6 +23,7 @@ module.exports = function (app) {
 	});
 
 	app.use('/search/', require('./server/service/search'));
+	app.use('/api/v1/', require('./server/service/api'));
 
 	//put all the routers here
 	app.get('/', function (req, res) {

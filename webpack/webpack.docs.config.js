@@ -1,7 +1,8 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const FileManagerPlugin = require('filemanager-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -20,42 +21,25 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: { 
-              presets: ['es2015','stage-2'] 
+              presets: ['@babel/preset-env']
             }
         },
       },
 
       // CSS
       { test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                minimize: true
-              }
-          }]
-        })
-      },
-
-      // HTML
-      { test: /\.html$/,
-        use: {
-          loader: 'html-loader',
-          options: {
-            minimize: true,
-            removeAttributeQuotes: false,
-            caseSensitive: true,
-            ignoreCustomFragments: [/\{\{.*?}}/],
-          }
-        }
+        use: [
+          { loader: "style-loader" },
+          MiniCssExtractPlugin.loader,
+          { loader: "css-loader" },
+        ]
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin("styles.css"),
-    new CleanWebpackPlugin(['dist'], {root: path.resolve(__dirname, '../client/static')}),
+    new MiniCssExtractPlugin({filename: "styles.css"}),
+    new OptimizeCssAssetsPlugin(),
+    new CleanWebpackPlugin(),
     new FileManagerPlugin({
     onEnd: [{
         copy: [

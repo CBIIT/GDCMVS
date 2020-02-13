@@ -52,6 +52,7 @@
 }
 
 .dialog__input-addon {
+  width: 3em;
   height: 2.1em;
   padding: 7px 12px;
   font-size: 14px;
