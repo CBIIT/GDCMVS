@@ -1,14 +1,13 @@
-import tmpl from './tabs.html';
+import template from './tabs-view';
 
 const storageTabHandle = (valueTab) => {
   const option = JSON.parse(localStorage.getItem('option'));
   option.activeTab = valueTab;
   localStorage.setItem('option', JSON.stringify(option));
-}
+};
 
 export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
-
-  let html = $.templates(tmpl).render({
+  let options = {
     trs_active: trsHtml.active,
     trs_len: trsHtml.len,
     trsHtml: trsHtml.html,
@@ -19,10 +18,11 @@ export const tabsRender = (trsHtml, psHtml, vsHtml, keyword) => {
     vs_len: vsHtml.len,
     vsHtml: vsHtml.html,
     keyword: keyword
-  });
+  };
+  let html = template(options);
 
   return html;
-}
+};
 
 export const tabsEvents = ($root) => {
   $root.on('click', '#tab-values', () => {
@@ -39,8 +39,8 @@ export const tabsEvents = ($root) => {
 
   $root.tooltip({
     selector: '[data-toggle="tooltip"]',
-    delay: {'show': 100, 'hide': 50},
+    delay: { 'show': 100, 'hide': 50 },
     placement: 'bottom',
     trigger: 'hover'
   });
-}
+};

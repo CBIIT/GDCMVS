@@ -98,6 +98,7 @@ a:hover, a:focus {
 
 .table {
   margin-bottom: 0;
+  table-layout: fixed;
 }
 
 .table__container {
@@ -138,6 +139,11 @@ a:hover, a:focus {
   color: #217dbc;
 }
 
+.table__td--big {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 .table__td--slim {
   padding-top: 8px;
   padding-bottom: 8px;
@@ -146,6 +152,26 @@ a:hover, a:focus {
 .table__td--xslim{
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.table__td--top{
+  padding-top: 12px;
+  padding-bottom: 0;
+}
+
+.table__td--bottom{
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+
+.table__td--big-top {
+  padding-top: 20px;
+  padding-bottom: 12px;
+}
+
+.table__td--big-bottom {
+  padding-top: 12px;
+  padding-bottom: 20px;
 }
 
 .table__td--right {
@@ -254,16 +280,22 @@ a:hover, a:focus {
 
 .table__th--term,
 .table__td--term {
-  width: 65%;
+  width: 63%;
 }
+
 .table__th--source,
 .table__td--source {
-  width: 20%;
+  width: 22%;
 }
 
 .table__th--type,
 .table__td--type {
   width: 15%;
+}
+
+.table__search-container {
+  padding-top: 10px;
+  padding-bottom: 0px;
 }
 
 .table-striped > tbody > tr {
@@ -371,6 +403,12 @@ a:hover, a:focus {
   color: #3a3a3a;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+.pagination-footer {
+  text-align: right;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .alert__error {
