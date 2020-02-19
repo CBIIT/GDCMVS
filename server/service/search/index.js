@@ -26,6 +26,7 @@ router.get('/ncit/detail', controller.getNCItInfo);
 // Generate Reports
 // get all values report
 // router.get('/exportAllValues', report.exportAllValues);
+// get all values with ncit report
 // router.get('/exportMapping', report.exportMapping);
 // Create a report with diff value with old version
 // router.get('/exportDelta', report.exportDelta);
