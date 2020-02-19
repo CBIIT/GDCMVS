@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', function (req, res) {
   res.json({
-    'version': '1.3.0',
+    'version': '2.0.1',
     'title': 'GDCMVS Rest API',
     'documentation': 'https://' + req.headers.host + '/gdc/api/v1/docs/'
   });
