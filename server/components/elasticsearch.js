@@ -25,16 +25,20 @@ var gdc_values = {};
 var allProperties = [];
 
 var esClient = new elasticsearch.Client({
-	host: config_dev.elasticsearch.host,
-	log: config_dev.elasticsearch.log,
-	requestTimeout: config_dev.elasticsearch.timeout
+  host: config_dev.elasticsearch.host,
+  log: config_dev.elasticsearch.log,
+  requestTimeout: config_dev.elasticsearch.timeout
 });
 
 const parseRef = (ref, termsJson, defJson) => {
-	let idx = ref.indexOf('/');
-	let name = ref.substr(idx + 1);
-	if (ref.indexOf('_terms.yaml') === 0) {
-		return termsJson[name];
+	let name = ref.split('/')[1];
+	if (name === undefined) {
+		return {
+			"$ref": ref
+		};
+	}
+	if (ref.indexOf('_terms.yaml') === 0) {	
+		return termsJson[name].common;
 	} else if (ref.indexOf('_definitions.yaml') === 0) {
 		return defJson[name];
 	} else {
@@ -55,8 +59,8 @@ const parseRefYaml = (ref, termsJson, defJson) => {
 		let refJson = yaml.load(folderPath + '/' + fileName);
 		let tmp = refJson[title];
 		data.enum = tmp[titleValue].enum;
-		if (tmp[titleValue].term) {
-			data = extend(data, parseRef(tmp[titleValue].term['$ref'], termsJson, defJson));
+		if (tmp[titleValue]) {
+			data = extend(data, parseRef(tmp[titleValue].$ref[0], termsJson, defJson));
 		}
 		return data;
 	} else {
@@ -80,36 +84,34 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		let p = {};
 		let entryRaw = propsRaw[prop];
 		if (prop === '$ref') {
-			let idx = entryRaw.indexOf('/');
-			entry.property = entryRaw.substr(idx + 1);
-			entry = extend(entry, parseRef(entryRaw, termsJson, defJson));
+			let idx = entryRaw[0].indexOf('/');
+			entry.property = entryRaw[0].substr(idx + 1);
+			entry = extend(entry, parseRef(entryRaw[0], termsJson, defJson));
 		} else {
 			entry.property = prop;
 			if (entryRaw['$ref'] !== undefined) {
-				if (entryRaw['$ref'].indexOf("_terms.yaml") == -1 && entryRaw['$ref'].indexOf("_definitions.yaml") == -1) {
-					entry = extend(entry, parseRefYaml(entryRaw['$ref'], termsJson, defJson));
-				} else {
-					entry = extend(entry, parseRef(entryRaw['$ref'], termsJson, defJson));
+				let ref = Array.isArray(entryRaw['$ref']) ? entryRaw['$ref'][0] : entryRaw['$ref'];
+				if(Array.isArray(entryRaw['$ref'])){
+					if (ref.indexOf("_terms.yaml") == -1 && ref.indexOf("_definitions.yaml") == -1) {
+						entry = extend(entry, parseRefYaml(ref, termsJson, defJson));
+					} else {
+						entry = extend(entry, parseRef(ref, termsJson, defJson));
+					}
 				}
 				delete entryRaw['$ref'];
 				entry = extend(entry, entryRaw);
-			} else if (entryRaw.term !== undefined) {
-				if (entryRaw.term['$ref'] !== undefined) {
-					entryRaw.term = extend(entryRaw.term, parseRef(entryRaw.term['$ref'], termsJson, defJson));
-					delete entryRaw.term['$ref'];
-				}
-				entry = extend(entry, entryRaw);
-				if (entry.term.termDef !== undefined && entry.term.termDef.cde_id !== undefined) {
-					entry.term.termDef.cde_id = "" + entry.term.termDef.cde_id;
-					if (entry.term.termDef.source === 'caDSR') {
-						entry.syns = cdeData[entry.term.termDef.cde_id];
+
+				if (entry.termDef !== undefined && entry.termDef.cde_id !== undefined) {
+					entry.termDef.cde_id = '' + entry.termDef.cde_id;
+					if (entry.termDef.source === 'caDSR') {
+						entry.syns = cdeData[entry.termDef.cde_id];
 						if (entry.syns !== undefined && entry.syns.length > 0) {
 							entry.cde_len = entry.syns.length;
 						}
-					} else if (entry.term.termDef.source === 'NCIt') {
+					} else if (entry.termDef.source === 'NCIt') {
 						p.ncit = {};
-						p.ncit.id = entry.term.termDef.cde_id;
-						p.ncit.url = entry.term.termDef.term_url;
+						p.ncit.id = entry.termDef.cde_id;
+						p.ncit.url = entry.termDef.term_url;
 					}
 				}
 			} else {
