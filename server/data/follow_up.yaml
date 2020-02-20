@@ -5,15 +5,16 @@ title: Follow-Up
 type: object
 namespace: https://gdc.cancer.gov
 category: clinical
-program: '*'
 project: '*'
-description: >
-  A visit by a patient or study participant to a medical professional. A clinical encounter that
-  encompasses planned and unplanned trial interventions, procedures and assessments that may be
-  performed on a subject. A visit has a start and an end, each described with a rule. The process
-  by which information about the health status of an individual is obtained before and after a study
-  has officially closed; an activity that continues something that has already begun or that repeats
-  something that has already been done.
+program: '*'
+description: >-
+  A visit by a patient or study participant to a medical professional. A clinical
+  encounter that encompasses planned and unplanned trial interventions, procedures
+  and assessments that may be performed on a subject. A visit has a start and an end,
+  each described with a rule. The process by which information about the health status
+  of an individual is obtained before and after a study has officially closed; an
+  activity that continues something that has already begun or that repeats something
+  that has already been done.
 additionalProperties: false
 submittable: true
 downloadable: false
@@ -23,9 +24,9 @@ validators: null
 systemProperties:
   - id
   - project_id
-  - state
   - created_datetime
   - updated_datetime
+  - state
 
 links:
   - name: cases
@@ -51,11 +52,13 @@ uniqueKeys:
   - [project_id, submitter_id]
 
 properties:
-  $ref: "_definitions.yaml#/ubiquitous_properties"
+
+  $ref:
+    - "_definitions.yaml#/ubiquitous_properties"
 
   adverse_event:
-    term:
-      $ref: "_terms.yaml#/adverse_event"
+    $ref:
+      - "_terms.yaml#/adverse_event/common"
     enum:
       - Abdominal Distension
       - Abdominal Infection
@@ -848,33 +851,109 @@ properties:
       - Wound Infection
       - Wrist Fracture
 
+  adverse_event_grade:
+    $ref:
+      - "_terms.yaml#/adverse_event_grade/common"
+    enum:
+      - Grade 1
+      - Grade 2
+      - Grade 3
+      - Grade 4
+      - Grade 5
+
+  aids_risk_factors:
+    $ref:
+      - "_terms.yaml#/aids_risk_factors/common"
+    enum:
+      - Candidiasis
+      - Coccidioidomycosis
+      - Cryptococcosis
+      - Cytomegalovirus
+      - Encephalopathy
+      - Herpes Simplex Virus
+      - Histoplasmosis
+      - Isosporiasis
+      - Mycobacterium avium Complex
+      - Mycobacterium tuberculosis
+      - Mycobacterium, NOS
+      - Nocardiosis
+      - Pneumocystis Pneumonia
+      - Pneumonia, NOS
+      - Progressive Multifocal Leukoencephalopathy
+      - Salmonella Septicemia
+      - Toxoplasmosis
+      - Wasting Syndrome
+
   barretts_esophagus_goblet_cells_present:
-    term:
-      $ref: "_terms.yaml#/barretts_esophagus_goblet_cells_present"
+    $ref:
+      - "_terms.yaml#/barretts_esophagus_goblet_cells_present/common"
     enum:
       - "Yes"
       - "No"
       - Unknown
       - Not Reported
+    enumDef:
+      "Yes":
+        $ref:
+          - "_terms.yaml#/yes/common"
+      "No":
+        $ref:
+          - "_terms.yaml#/no/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  body_surface_area:
+    $ref:
+      - "_terms.yaml#/body_surface_area/common"
+    type: number
 
   bmi:
-    term:
-      $ref: "_terms.yaml#/bmi"
+    $ref:
+      - "_terms.yaml#/bmi/common"
     type: number
 
   cause_of_response:
-    term:
-      $ref: "_terms.yaml#/cause_of_response"
+    $ref:
+      - "_terms.yaml#/cause_of_response/common"
     type: string
 
+  cd4_count:
+    $ref:
+      - "_terms.yaml#/cd4_count/common"
+    type: number
+
+  cdc_hiv_risk_factors:
+    $ref:
+      - "_terms.yaml#/cdc_hiv_risk_factors/common"
+    enum:
+      - Hemophiliac
+      - Heterosexual Contact
+      - Homosexual Contact
+      - Intravenous Drug User
+      - None
+      - Transfusion Recipient
+      - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
   comorbidity:
-    term:
-      $ref: "_terms.yaml#/comorbidity"
+    $ref:
+      - "_terms.yaml#/comorbidity/common"
     enum:
       - Acute Renal Failure
       - Adenocarcinoma
-      - Adrenocortical Insufficiency
       - Adenomatous Polyposis Coli
+      - Adrenocortical Insufficiency
       - Allergies
       - Alpha-1 Antitrypsin
       - Anemia
@@ -896,10 +975,10 @@ properties:
       - Cancer
       - Cataracts
       - Celiac Disease
-      - Cirrhosis, Unknown Etiology
       - Cerebrovascular Disease
       - Cholelithiasis
       - Chronic Renal Failure
+      - Cirrhosis, Unknown Etiology
       - Colon Polyps
       - Common Variable Immunodeficiency
       - Congestive Heart Failure (CHF)
@@ -918,8 +997,8 @@ properties:
       - Diverticulitis
       - DVT/PE
       - Dyslipidemia
-      - Epilepsy
       - Eczema
+      - Epilepsy
       - Epstein-Barr Virus
       - Familial Adenomatous Polyposis
       - Fanconi Anemia
@@ -928,9 +1007,9 @@ properties:
       - GERD
       - Glaucoma
       - Glycogen Storage Disease
-      - Gout
       - Gonadal Dysfunction
       - Gorlin Syndrome
+      - Gout
       - H. pylori Infection
       - Hashimoto's Thyroiditis
       - Headache
@@ -948,8 +1027,8 @@ properties:
       - HIV / AIDS
       - Human Papillomavirus Infection
       - HUS/TTP
-      - Hypercholesterolemia
       - Hypercalcemia
+      - Hypercholesterolemia
       - Hyperglycemia
       - Hyperlipidemia
       - Hypertension
@@ -964,9 +1043,9 @@ properties:
       - ITP
       - Joint Replacement
       - Kidney Disease
+      - Li-Fraumeni Syndrome
       - Liver Cirrhosis (Liver Disease)
       - Liver Toxicity (Non-Infectious)
-      - Li-Fraumeni Syndrome
       - Low Grade Liver Dysplastic Nodule
       - Lupus
       - Lynch Syndrome
@@ -983,8 +1062,8 @@ properties:
       - Other Cancer Within 5 Years
       - Other Nonmalignant Systemic Disease
       - Other Pulmonary Complications
-      - Pancreatitis
       - Pain (Various)
+      - Pancreatitis
       - Peptic Ulcer (Ulcer)
       - Peripheral Neuropathy
       - Peripheral Vascular Disease
@@ -994,11 +1073,11 @@ properties:
       - Psoriasis
       - Pulmonary Fibrosis
       - Pulmonary Hemorrhage
-      - Renal Failure (Requiring Dialysis)
       - Renal Dialysis
+      - Renal Failure (Requiring Dialysis)
       - Renal Insufficiency
-      - Rheumatologic Disease
       - Rheumatoid Arthritis
+      - Rheumatologic Disease
       - Rubinstein-Taybi Syndrome
       - Sarcoidosis
       - Seizure
@@ -1014,62 +1093,89 @@ properties:
       - Wagr Syndrome
       - Unknown
       - Not Reported
+    enumDef:
+      Cancer:
+        $ref:
+          - "_terms.yaml#/cancer/common"
+      Other:
+        $ref:
+          - "_terms.yaml#/other/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   comorbidity_method_of_diagnosis:
-    term:
-      $ref: "_terms.yaml#/comorbidity_method_of_diagnosis"
+    $ref:
+      - "_terms.yaml#/comorbidity_method_of_diagnosis/common"
     enum:
       - Histology
       - Pathology
       - Radiology
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   days_to_adverse_event:
-    term:
-      $ref: "_terms.yaml#/days_to_adverse_event"
+    $ref:
+      - "_terms.yaml#/days_to_adverse_event/common"
     type: integer
-    minimum: -32872
     maximum: 32872
+    minimum: -32872
 
   days_to_comorbidity:
-    term:
-      $ref: "_terms.yaml#days_to_comorbidity"
+    $ref:
+      - "_terms.yaml#days_to_comorbidity"
     type: integer
-    minimum: -32872
     maximum: 32872
+    minimum: -32872
 
   days_to_follow_up:
-    term:
-      $ref: "_terms.yaml#/days_to_follow_up"
+    $ref:
+      - "_terms.yaml#/days_to_follow_up/common"
+    oneOf:
+      - type: integer
+        maximum: 32872
+        minimum: -32872
+      - type: "null"
+
+  days_to_imaging:
+    $ref:
+      - "_terms.yaml#/days_to_imaging/common"
     type: integer
-    minimum: -32872
-    maximum: 32872
 
   days_to_progression:
-    term:
-      $ref: "_terms.yaml#/days_to_progression"
+    $ref:
+      - "_terms.yaml#/days_to_progression/common"
     type: integer
-    minimum: -32872
     maximum: 32872
+    minimum: -32872
 
   days_to_progression_free:
-    term:
-      $ref: "_terms.yaml#/days_to_progression_free"
+    $ref:
+      - "_terms.yaml#/days_to_progression_free/common"
     type: integer
-    minimum: -32872
     maximum: 32872
+    minimum: -32872
 
   days_to_recurrence:
-    term:
-      $ref: "_terms.yaml#/days_to_recurrence"
+    $ref:
+      - "_terms.yaml#/days_to_recurrence/common"
     type: integer
-    minimum: -32872
     maximum: 32872
+    minimum: -32872
 
   diabetes_treatment_type:
-    term:
-      $ref: "_terms.yaml#/diabetes_treatment_type"
+    $ref:
+      - "_terms.yaml#/diabetes_treatment_type/common"
     enum:
       - Alpha-Glucosidase Inhibitor
       - Biguanide
@@ -1077,15 +1183,25 @@ properties:
       - Injected Insulin
       - Insulin
       - Oral Hypoglycemic
+      - Other
       - Sulfonylurea
       - Thiazolidinedione
-      - Other
       - Unknown
       - Not Reported
+    enumDef:
+      Other:
+        $ref:
+          - "_terms.yaml#/other/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   disease_response:
-    term:
-      $ref: "_terms.yaml#/disease_response"
+    $ref:
+      - "_terms.yaml#/disease_response/common"
     enum:
       - AJ-Adjuvant Therapy
       - BED-Biochemical Evidence of Disease
@@ -1120,15 +1236,22 @@ properties:
       - WT-With Tumor
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   dlco_ref_predictive_percent:
-    term:
-      $ref: "_terms.yaml#/dlco_ref_predictive_percent"
+    $ref:
+      - "_terms.yaml#/dlco_ref_predictive_percent/common"
     type: number
 
   ecog_performance_status:
-    term:
-      $ref: "_terms.yaml#/ecog_performance_status"
+    $ref:
+      - "_terms.yaml#/ecog_performance_status/common"
     enum:
       - "0"
       - "1"
@@ -1138,44 +1261,116 @@ properties:
       - "5"
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  evidence_of_recurrence_type:
+    $ref:
+      - "_terms.yaml#/evidence_of_recurrence_type/common"
+    enum:
+      - Biopsy with Histologic Confirmation
+      - Convincing Image Source
+      - Positive Biomarker(s)
 
   fev1_ref_post_bronch_percent:
-    term:
-      $ref: "_terms.yaml#/fev1_ref_post_bronch_percent"
+    $ref:
+      - "_terms.yaml#/fev1_ref_post_bronch_percent/common"
     type: number
 
   fev1_ref_pre_bronch_percent:
-    term:
-      $ref: "_terms.yaml#/fev1_ref_pre_bronch_percent"
+    $ref:
+      - "_terms.yaml#/fev1_ref_pre_bronch_percent/common"
     type: number
 
   fev1_fvc_pre_bronch_percent:
-    term:
-      $ref: "_terms.yaml#/fev1_fvc_pre_bronch_percent"
+    $ref:
+      - "_terms.yaml#/fev1_fvc_pre_bronch_percent/common"
     type: number
 
   fev1_fvc_post_bronch_percent:
-    term:
-      $ref: "_terms.yaml#/fev1_fvc_post_bronch_percent"
+    $ref:
+      - "_terms.yaml#/fev1_fvc_post_bronch_percent/common"
     type: number
 
-  height:
-    term:
-      $ref: "_terms.yaml#/height"
-    type: number
-
-  hepatitis_sustained_virological_response:
-    term:
-      $ref: "_terms.yaml#/hepatitis_sustained_virological_response"
+  haart_treatment_indicator:
+    $ref:
+      - "_terms.yaml#/haart_treatment_indicator/common"
     enum:
       - "Yes"
       - "No"
       - Unknown
       - Not Reported
+    enumDef:
+      "Yes":
+        $ref:
+          - "_terms.yaml#/yes/common"
+      "No":
+        $ref:
+          - "_terms.yaml#/no/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  height:
+    $ref:
+      - "_terms.yaml#/height/common"
+    type: number
+
+  hepatitis_sustained_virological_response:
+    $ref:
+      - "_terms.yaml#/hepatitis_sustained_virological_response/common"
+    enum:
+      - "Yes"
+      - "No"
+      - Unknown
+      - Not Reported
+    enumDef:
+      "Yes":
+        $ref:
+          - "_terms.yaml#/yes/common"
+      "No":
+        $ref:
+          - "_terms.yaml#/no/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  hiv_viral_load:
+    $ref:
+      - "_terms.yaml#/hiv_viral_load/common"
+    type: number
+
+  hormonal_contraceptive_use:
+    $ref:
+      - "_terms.yaml#/hormonal_contraceptive_use/common"
+    enum:
+      - Current User
+      - Former User
+      - Never Used
+      - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   hpv_positive_type:
-    term:
-      $ref: "_terms.yaml#/hpv_positive_type"
+    $ref:
+      - "_terms.yaml#/hpv_positive_type/common"
     enum:
       - "16"
       - "18"
@@ -1200,10 +1395,107 @@ properties:
       - Other
       - Unknown
       - Not Reported
+    enumDef:
+      Other:
+        $ref:
+          - "_terms.yaml#/other/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  hysterectomy_margins_involved:
+    $ref:
+      - "_terms.yaml#/hysterectomy_margins_involved/common"
+    enum:
+      - Bladder
+      - Macroscopic Parametrium
+      - Microscopic Parametrium
+      - None
+      - Vagina
+      - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  hysterectomy_type:
+    $ref:
+      - "_terms.yaml#/hysterectomy_type/common"
+    enum:
+      - Hysterectomy, NOS
+      - Not performed
+      - Radical Hysterectomy
+      - Simple Hysterectomy
+      - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  imaging_result:
+    $ref:
+      - "_terms.yaml#/imaging_result/common"
+    enum:
+      - Positive
+      - Indeterminate
+      - Negative
+      - Not Performed
+      - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  imaging_type:
+    $ref:
+      - "_terms.yaml#/imaging_type/common"
+    enum:
+      - 99mTc Bone Scintigraphy
+      - CT Scan
+      - MRI
+      - PET
+
+  immunosuppressive_treatment_type:
+    $ref:
+      - "_terms.yaml#/immunosuppressive_treatment_type/common"
+    enum:
+      - Anti-TNF Therapy
+      - Azathioprine
+      - Cyclophosphamide
+      - Methotrexate
+      - None
+      - Other
+      - Unknown
+      - Not Reported
+    enumDef:
+      Other:
+        $ref:
+          - "_terms.yaml#/other/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   karnofsky_performance_status:
-    term:
-      $ref: "_terms.yaml#/karnofsky_performance_status"
+    $ref:
+      - "_terms.yaml#/karnofsky_performance_status/common"
     enum:
       - "0"
       - "10"
@@ -1218,34 +1510,85 @@ properties:
       - "100"
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   menopause_status:
-    term:
-      $ref: "_terms.yaml#/menopause_status"
+    $ref:
+      - "_terms.yaml#/menopause_status/common"
     enum:
       - Premenopausal
       - Perimenopausal
       - Postmenopausal
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  nadir_cd4_count:
+    $ref:
+      - "_terms.yaml#/nadir_cd4_count/common"
+    type: number
 
   pancreatitis_onset_year:
-    term:
-      $ref: "_terms.yaml#/pancreatitis_onset_year"
+    $ref:
+      - "_terms.yaml#/pancreatitis_onset_year/common"
     type: integer
 
+  pregnancy_outcome:
+    $ref:
+      - "_terms.yaml#/pregnancy_outcome/common"
+    enum:
+      - Ectopic Pregnancy
+      - Induced Abortion
+      - Live Birth
+      - Miscarriage
+      - Stillbirth
+      - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
   progression_or_recurrence:
-    term:
-      $ref: "_terms.yaml#/progression_or_recurrence"
+    $ref:
+      - "_terms.yaml#/progression_or_recurrence/common"
     enum:
       - "Yes"
       - "No"
       - Unknown
       - Not Reported
+    enumDef:
+      "Yes":
+        $ref:
+          - "_terms.yaml#/yes/common"
+      "No":
+        $ref:
+          - "_terms.yaml#/no/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   progression_or_recurrence_anatomic_site:
-    term:
-      $ref: "_terms.yaml#/progression_or_recurrence_anatomic_site"
+    $ref:
+      - "_terms.yaml#/progression_or_recurrence_anatomic_site/common"
     enum:
       - Abdomen, NOS
       - Abdominal esophagus
@@ -1267,6 +1610,7 @@ properties:
       - Autonomic nervous system, NOS
       - Axillary tail of breast
       - Base of tongue, NOS
+      - Biliary tract, NOS
       - Bladder neck
       - Bladder, NOS
       - Blood
@@ -1293,8 +1637,10 @@ properties:
       - Cerebrum
       - Cervical esophagus
       - Cervix uteri
+      - Cheek mucosa
       - Choroid
       - Ciliary body
+      - Clitoris
       - Cloacogenic zone
       - Colon, NOS
       - Commissure of lip
@@ -1422,6 +1768,7 @@ properties:
       - Other specified parts of pancreas
       - Ovary
       - Overlapping lesion of accessory sinuses
+      - Overlapping lesion of biliary tract
       - Overlapping lesion of bladder
       - Overlapping lesion of bones, joints and articular cartilage
       - Overlapping lesion of bones, joints and articular cartilage of limbs
@@ -1573,16 +1920,19 @@ properties:
       - Vestibule of mouth
       - Vulva, NOS
       - Waldeyer ring
-      - Biliary tract, NOS
-      - Cheek mucosa
-      - Clitoris
-      - Overlapping lesion of biliary tract
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   progression_or_recurrence_type:
-    term:
-      $ref: "_terms.yaml#/progression_or_recurrence_type"
+    $ref:
+      - "_terms.yaml#/progression_or_recurrence_type/common"
     enum:
       - Biochemical
       - Distant
@@ -1590,25 +1940,50 @@ properties:
       - Regional
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  recist_targeted_regions_number:
+    $ref:
+      - "_terms.yaml#/recist_targeted_regions_number/common"
+    type: integer
+
+  recist_targeted_regions_sum:
+    $ref:
+      - "_terms.yaml#/recist_targeted_regions_sum/common"
+    type: number
 
   reflux_treatment_type:
-    term:
-      $ref: "_terms.yaml#/reflux_treatment_type"
+    $ref:
+      - "_terms.yaml#/reflux_treatment_type/common"
     enum:
       - Antacids
       - H2 Blockers
       - Medically Treated
       - No Treatment
       - Not Applicable
-      - Not Reported
       - Proton Pump Inhibitors
       - Surgically Treated
       - Unknown
+      - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   risk_factor:
-    term:
-      $ref: "_terms.yaml#/risk_factor"
+    $ref:
+      - "_terms.yaml#/risk_factor/common"
     enum:
+      - Adenosis (Atypical Adenomatous Hyperplasia)
       - Alcohol Consumption
       - Alcoholic Liver Disease
       - Allergy, Animal, NOS
@@ -1631,27 +2006,35 @@ properties:
       - Barrett's Esophagus
       - Beckwith-Wiedemann
       - Behcet's Disease
+      - Benign Prostatic Hyperplasia
+      - BRCA Family History
       - Cancer
       - Cholelithiasis
       - Chronic Hepatitis
       - Cirrhosis
       - Colon Polyps
+      - Colonization, Bacterial
+      - Colonization, Fungal
       - Common variable immune deficiency (CVID)
+      - Cyst(s)
       - Denys-Drash Syndrome
       - Diabetes, NOS
       - Diabetes, Type I
       - Diabetes, Type II
       - Diet
       - Diverticulitis
+      - Eczema
       - Endometriosis
       - Endosalpingiosis
-      - Eczema
+      - Epithelial Dysplasia
+      - Epithelial Hyperplasia
       - Epstein-Barr Virus
       - Familial Adenomatous Polyposis
       - Fanconi Anemia
       - Fibrosis
       - Gastric Polyp(s)
       - Gilbert's Syndrome
+      - Glomerular Disease
       - Gorlin Syndrome
       - Hashimoto's Thyroiditis
       - Hay Fever
@@ -1664,10 +2047,14 @@ properties:
       - Hepatitis B Infection
       - Hepatitis C Infection
       - Hepatitis, NOS
+      - Hereditary Prostate Cancer
       - High Grade Dysplasia
+      - High-grade Prostatic Intraepithelial Neoplasia (PIN)
       - HIV
       - Human Papillomavirus Infection
       - Hypospadias
+      - Inflammation
+      - Inflammation, Hyperkeratosis
       - Intestinal Metaplasia
       - Iron Overload
       - Li-Fraumeni Syndrome
@@ -1675,6 +2062,7 @@ properties:
       - Lymphocytic Thyroiditis
       - Lynch Syndrome
       - Myasthenia Gravis
+      - Nodular Prostatic Hyperplasia
       - Nonalcoholic Fatty Liver Disease
       - Nonalcoholic Steatohepatitis
       - Obesity
@@ -1690,31 +2078,69 @@ properties:
       - Seizure
       - Sensory Changes
       - Serous tubal intraepithelial carcinoma (STIC)
+      - Sialadenitis
+      - Squamous Metaplasia
       - Steatosis
       - Tattoo
       - Thyroid Nodular Hyperplasia
       - Tobacco, NOS
       - Tobacco, Smokeless
       - Tobacco, Smoking
+      - Tubulointerstitial Disease
+      - Tumor-associated Lymphoid Proliferation
       - Turcot Syndrome
       - Undescended Testis
+      - Vascular Disease
       - Vision Changes
       - Wagr Syndrome
       - Unknown
       - Not Reported
+    enumDef:
+      Cancer:
+        $ref:
+          - "_terms.yaml#/cancer/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   risk_factor_treatment:
-    term:
-      $ref: "_terms.yaml#/risk_factor_treatment"
+    $ref:
+      - "_terms.yaml#/risk_factor_treatment/common"
     enum:
       - "Yes"
       - "No"
       - Unknown
       - Not Reported
+    enumDef:
+      "Yes":
+        $ref:
+          - "_terms.yaml#/yes/common"
+      "No":
+        $ref:
+          - "_terms.yaml#/no/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+
+  scan_tracer_used:
+    $ref:
+      - "_terms.yaml#/scan_tracer_used/common"
+    enum:
+      - Acetate
+      - Axumin
+      - Choline
+      - PSMA
+      - Sodium Fluoride
 
   viral_hepatitis_serologies:
-    term:
-      $ref: "_terms.yaml#/viral_hepatitis_serologies"
+    $ref:
+      - "_terms.yaml#/viral_hepatitis_serologies/common"
     enum:
       - HBV Core Antibody
       - HBV DNA
@@ -1726,13 +2152,21 @@ properties:
       - Hepatitis C Virus RNA
       - Unknown
       - Not Reported
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   weight:
-    term:
-      $ref: "_terms.yaml#/weight"
+    $ref:
+      - "_terms.yaml#/weight/common"
     type: number
 
   cases:
     $ref: "_definitions.yaml#/to_one"
+
   diagnoses:
     $ref: "_definitions.yaml#/to_one"
