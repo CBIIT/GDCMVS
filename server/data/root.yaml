@@ -1,19 +1,20 @@
 $schema: "http://json-schema.org/draft-04/schema#"
 
-id: "data_format"
-title: Data Format
+id: "root"
+title: Root
 type: object
 namespace: https://gdc.cancer.gov
-category: TBD
+category: data
 project: '*'
 program: '*'
 description: >-
-  Data format of a legacy file (deprecated).
+  This is the GDC root node.
 additionalProperties: false
 submittable: false
 downloadable: false
 previous_version_downloadable: false
 validators: null
+root: '*'
 
 systemProperties:
   - id
@@ -21,11 +22,10 @@ systemProperties:
 links: []
 
 required:
-  - name
+  - type
 
 uniqueKeys:
   - [id]
-  - [name]
 
 properties:
 
@@ -33,10 +33,8 @@ properties:
     type: string
 
   id:
-    $ref:
-      - "_definitions.yaml#/uuid"
+    enum:
+      - "root"
 
-  name:
-    description: >-
-      name of this data format
+  schema_version:
     type: string

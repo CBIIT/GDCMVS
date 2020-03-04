@@ -4127,7 +4127,12 @@
     {"nm":"9476/3","i_c":"9476/3","n_c":"C129444"},
     {"nm":"9477/3","i_c":"9477/3","n_c":"C129444"},
     {"nm":"9478/3","i_c":"9478/3","n_c":"C129499"},
-    {"nm":"9542/3","i_c":"9542/3","n_c":"C6561"}
+    {"nm":"9542/3","i_c":"9542/3","n_c":"C6561"},
+    {"nm":"8310/6","i_c":"8310/6","n_c":""},
+    {"nm":"8311/6","i_c":"8311/6","n_c":""},
+    {"nm":"8441/6","i_c":"8441/6","n_c":""},
+    {"nm":"8482/6","i_c":"8482/6","n_c":""},
+    {"nm":"8806/6","i_c":"8806/6","n_c":""}
     ],
     "clinical.diagnosis.site_of_resection_or_biopsy":[
     {"i_c":"C49.6","nm":"Connective, subcutaneous and other soft tissues of trunk, NOS","n_c":"","term_type":"PT"},
@@ -5580,6 +5585,7 @@
     {"nm":"Labium minus","i_c":"C51.1","n_c":"C12307","term_type":"PT"},
     {"nm":"Lacrimal gland","i_c":"C69.5","n_c":"C12346","term_type":"PT"},
     {"nm":"Laryngeal cartilage","i_c":"C32.3","n_c":"C12281","term_type":"PT"},
+    {"nm":"Laryngeal Commissure","i_c":"C32.0","n_c":"","term_type":"RT"},
     {"nm":"Larynx, NOS","i_c":"C32.9","n_c":"C12420","term_type":"PT"},
     {"nm":"Lateral floor of mouth","i_c":"C04.1","n_c":"","term_type":"PT"},
     {"nm":"Lateral wall of bladder","i_c":"C67.2","n_c":"C12333","term_type":"PT"},
