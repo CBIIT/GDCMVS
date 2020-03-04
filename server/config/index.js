@@ -32,9 +32,11 @@ const all = {
 	index_v: 'gdc-v',
 
 	// GDC searchable nodes
-	searchable_nodes : ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test", "treatment", "slide", "sample", "read_group", "portion", "analyte",
-		"aliquot", "slide_image", "analysis_metadata", "clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
-		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number", "submitted_unaligned_reads"
+	searchable_nodes : ["case", "demographic", "diagnosis", "exposure", "family_history", "follow_up", "molecular_test",
+		"treatment", "slide", "sample", "read_group", "portion", "analyte", "aliquot", "slide_image", "analysis_metadata",
+		"clinical_supplement", "experiment_metadata", "pathology_report", "run_metadata", "biospecimen_supplement",
+		"submitted_aligned_reads", "submitted_genomic_profile", "submitted_methylation_beta_value", "submitted_tangent_copy_number",
+		"submitted_unaligned_reads", "data_release", "root"
 	],
 
 	// GDC drugs properties
