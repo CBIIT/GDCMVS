@@ -1,15 +1,15 @@
 $schema: "http://json-schema.org/draft-04/schema#"
 
-id: "mirna_expression_workflow"
-title: miRNA Expression Workflow
+id: "expression_analysis_workflow"
+title: Expression Analysis Workflow
 type: object
 namespace: https://gdc.cancer.gov
 category: analysis
 project: '*'
 program: '*'
 description: >-
-  Metadata for the miRNA profiling pipeline used to quantify miRNA expression from
-  GDC harmonized data.
+  Metadata for the expression analysis workflow used to generate additional analysis
+  on top of the gene expression data.
 additionalProperties: false
 submittable: false
 downloadable: false
@@ -25,10 +25,10 @@ systemProperties:
 
 links:
   - name: aligned_reads_files
-    backref: mirna_expression_workflows
+    backref: expression_analysis_workflows
     label: performed_on
     target_type: aligned_reads
-    multiplicity: one_to_one
+    multiplicity: many_to_one
     required: true
 
 required:
@@ -49,7 +49,8 @@ properties:
     $ref:
       - "_terms.yaml#/workflow_type/common"
     enum:
-      - BCGSC miRNA Profiling
+      - Seurat - 10x Chromium
+      - Seurat - Smart-Seq2
 
   aligned_reads_files:
     $ref: "_definitions.yaml#/to_one"

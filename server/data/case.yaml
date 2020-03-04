@@ -5,11 +5,11 @@ title: Case
 type: object
 namespace: https://gdc.cancer.gov
 category: administrative
-program: '*'
 project: '*'
-description: >
-  The collection of all data related to a specific subject in the
-  context of a specific project.
+program: '*'
+description: >-
+  The collection of all data related to a specific subject in the context of a specific
+  project.
 additionalProperties: false
 submittable: true
 downloadable: false
@@ -44,20 +44,35 @@ uniqueKeys:
   - [id]
   - [project_id, submitter_id]
 
-# Case properties
 properties:
-  $ref: "_definitions.yaml#/ubiquitous_properties"
+
+  $ref:
+    - "_definitions.yaml#/ubiquitous_properties"
+
+  consent_type:
+    $ref:
+      - "_terms.yaml#/consent_type/common"
+    enum:
+      - Consent by Death
+      - Consent Exemption
+      - Consent Waiver
+      - Informed Consent
+
+  days_to_consent:
+    $ref:
+      - "_terms.yaml#/days_to_consent/common"
+    type: integer
 
   days_to_lost_to_followup:
-    term:
-      $ref: "_terms.yaml#/days_to_lost_to_followup"
+    $ref:
+      - "_terms.yaml#/days_to_lost_to_followup/common"
     type: integer
-    minimum: -32872
     maximum: 32872
+    minimum: -32872
 
   disease_type:
-    term:
-      $ref: "_terms.yaml#/disease_type"
+    $ref:
+      - "_terms.yaml#/disease_type/common"
     enum:
       - Acinar Cell Neoplasms
       - Adenomas and Adenocarcinomas
@@ -207,29 +222,62 @@ properties:
       - Uterine Carcinosarcoma
       - Uterine Corpus Endometrial Carcinoma
       - Uveal Melanoma
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
+      Mesothelioma:
+        $ref:
+          - "_terms.yaml#/mesothelioma/common"
+      Multiple Myeloma:
+        $ref:
+          - "_terms.yaml#/multiple_myeloma/common"
+      Neuroblastoma:
+        $ref:
+          - "_terms.yaml#/neuroblastoma/common"
+      Osteosarcoma:
+        $ref:
+          - "_terms.yaml#/osteosarcoma/common"
+      Sarcoma:
+        $ref:
+          - "_terms.yaml#/sarcoma/common"
 
   index_date:
-    term:
-      $ref: "_terms.yaml#/index_date"
+    $ref:
+      - "_terms.yaml#/index_date/common"
     enum:
       - Diagnosis
       - First Patient Visit
       - First Treatment
       - Initial Genomic Sequencing
+      - Recurrence
       - Sample Procurement
       - Study Enrollment
 
   lost_to_followup:
-    term:
-      $ref: "_terms.yaml#/lost_to_followup"
+    $ref:
+      - "_terms.yaml#/lost_to_followup/common"
     enum:
       - "Yes"
       - "No"
       - Unknown
+    enumDef:
+      "Yes":
+        $ref:
+          - "_terms.yaml#/yes/common"
+      "No":
+        $ref:
+          - "_terms.yaml#/no/common"
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
 
   primary_site:
-    term:
-      $ref: "_terms.yaml#/primary_site"
+    $ref:
+      - "_terms.yaml#/primary_site/common"
     enum:
       - Accessory sinuses
       - Adrenal gland
@@ -341,8 +389,16 @@ properties:
       - Soft Tissue
       - Thyroid
       - Uterus
+    enumDef:
+      Unknown:
+        $ref:
+          - "_terms.yaml#/unknown/common"
+      Not Reported:
+        $ref:
+          - "_terms.yaml#/not_reported/common"
 
   projects:
     $ref: "_definitions.yaml#/to_one"
+
   tissue_source_sites:
     $ref: "_definitions.yaml#/to_one"

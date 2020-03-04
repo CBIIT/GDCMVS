@@ -1,15 +1,14 @@
 $schema: "http://json-schema.org/draft-04/schema#"
 
-id: "aggregated_somatic_mutation"
-title: Aggregated Somatic Mutation
+id: "secondary_expression_analysis"
+title: Secondary Expression Analysis
 type: object
 namespace: https://gdc.cancer.gov
 category: data_file
 project: '*'
 program: '*'
 description: >-
-  MAF/TSV files that contain all somatic mutations from multiple somatic variant callers
-  and/or multiple cases.
+  Data file containing secondary analysis results from gene expression data.
 additionalProperties: false
 submittable: false
 downloadable: true
@@ -26,17 +25,11 @@ systemProperties:
   - error_type
 
 links:
-  - name: projects
-    backref: aggregated_somatic_mutations
-    label: derived_from
-    target_type: project
-    multiplicity: many_to_one
-    required: false
-  - name: somatic_aggregation_workflows
-    backref: aggregated_somatic_mutations
+  - name: expression_analysis_workflows
+    backref: secondary_expression_analyses
     label: data_from
-    target_type: somatic_aggregation_workflow
-    multiplicity: one_to_one
+    target_type: expression_analysis_workflow
+    multiplicity: many_to_one
     required: true
 
 required:
@@ -48,7 +41,6 @@ required:
   - data_format
   - data_type
   - experimental_strategy
-  - somatic_aggregation_workflows
 
 uniqueKeys:
   - [id]
@@ -63,37 +55,27 @@ properties:
     $ref:
       - "_terms.yaml#/data_category/common"
     enum:
-      - Simple Nucleotide Variation
-
-  data_type:
-    $ref:
-      - "_terms.yaml#/data_type/common"
-    enum:
-      - Aggregated Somatic Mutation
+      - Transcriptome Profiling
 
   data_format:
     $ref:
       - "_terms.yaml#/data_format/common"
     enum:
-      - MAF
+      - HDF5
       - TSV
+
+  data_type:
+    $ref:
+      - "_terms.yaml#/data_type/common"
+    enum:
+      - Differential Gene Expression
+      - Single Cell Analysis
 
   experimental_strategy:
     $ref:
       - "_terms.yaml#/experimental_strategy/common"
     enum:
-      - ATAC-Seq
-      - Bisulfite-Seq
-      - ChIP-Seq
-      - Low Pass WGS
-      - miRNA-Seq
-      - RNA-Seq
-      - Targeted Sequencing
-      - WGS
-      - WXS
+      - scRNA-Seq
 
-  projects:
-    $ref: "_definitions.yaml#/to_one"
-
-  somatic_aggregation_workflows:
+  expression_analysis_workflows:
     $ref: "_definitions.yaml#/to_one"

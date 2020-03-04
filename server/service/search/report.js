@@ -350,8 +350,8 @@ const preProcess = (searchable_nodes, data) => {
 			let p = data[key1].properties;
 			for (let key in p) {
 				if (key !== '$ref') {
-					if (p[key].$ref && p[key].$ref.indexOf("_terms.yaml") === -1 && p[key].$ref.indexOf("_definitions.yaml") === -1) {
-						let ref = p[key].$ref;
+					let ref = Array.isArray(p[key].$ref) ? p[key].$ref[0] : p[key].$ref;
+					if (ref && ref.indexOf("_terms.yaml") === -1 && ref.indexOf("_definitions.yaml") === -1) {
 						let node = ref.split('#/')[0].replace('.yaml', '');
 						let remaining = ref.split('#/')[1];
 						let type = remaining.split('/')[0];
@@ -383,9 +383,9 @@ const preProcess = (searchable_nodes, data) => {
 			let p = data[key1].properties;
 			for (let key in p) {
 				let property_data = p[key];
-				if (property_data.term && property_data.term.$ref) {
-					if (property_data.term.$ref.indexOf('_terms.yaml') !== -1) {
-						let ref = property_data.term.$ref;
+				if (property_data.$ref) {
+					let ref = Array.isArray(property_data.$ref) ? property_data.$ref[0] : property_data.$ref;
+					if (ref.indexOf('_terms.yaml') !== -1) {
 						if (ref.indexOf('#/') !== -1) {
 							let file_name = ref.split('#/')[0];
 							let ref_property = ref.split('#/')[1];
