@@ -84,14 +84,14 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		let p = {};
 		let entryRaw = propsRaw[prop];
 		// remove break lines in enum
-		if (entryRaw.enum !== undefined){
-				let tmpEnum = [];
-				entryRaw.enum.forEach(n => {
-					tmpEnum.push(n.replace(/\n|\r/g, " "));
-				})
-				delete entryRaw.enum;
-				entryRaw.enum = tmpEnum;
-		}
+		// if (entryRaw.enum !== undefined){
+		// 		let tmpEnum = [];
+		// 		entryRaw.enum.forEach(n => {
+		// 			tmpEnum.push(n.replace(/\n|\r/g, " "));
+		// 		})
+		// 		delete entryRaw.enum;
+		// 		entryRaw.enum = tmpEnum;
+		// }
 		if (prop === '$ref') {
 			let idx = entryRaw[0].indexOf('/');
 			entry.property = entryRaw[0].substr(idx + 1);
