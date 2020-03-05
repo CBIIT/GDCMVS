@@ -1319,6 +1319,7 @@
         "Deuteporfin": "C132685",
         "Deuterated Enzalutamide": "C158096",
         "Devimistat": "C80039",
+        "Dexamethason": "",
         "Dexamethasone": "C422",
         "Dexamethasone Phosphate": "C77001",
         "Dexamethasone Sodium Phosphate": "C1362",
@@ -1529,7 +1530,7 @@
         "Estramustine": "C479",
         "Estramustine Phosphate Sodium": "C480",
         "Estrogen Receptor Agonist GTx-758": "C96432",
-        "Estrogens,Conjugated": "C482",
+        "Estrogens, Conjugated": "C482",
         "Etalocib": "C1626",
         "Etanercept": "C2381",
         "Etanidazole": "C1092",
@@ -2118,6 +2119,7 @@
         "Liposomal Vinorelbine": "C62790",
         "Liposomal Vinorelbine Tartrate": "C135619",
         "Liposomal c-raf Antisense Oligonucleotide": "C95718",
+        "Liposome": "",
         "Liposome-Encapsulated Doxorubicin Citrate": "C61317",
         "Liposome-encapsulated Daunorubicin-Cytarabine": "C67504",
         "Liposome-encapsulated OSI-7904": "C38694",
@@ -2635,7 +2637,7 @@
         "PARP Inhibitor CEP-9722": "C84880",
         "PARP Inhibitor E7016": "C91387",
         "PARP-1/2 Inhibitor ABT-767": "C96795",
-        "PARP/Tankyrase Inhibitor 2X-121 ": "C102746",
+        "PARP/Tankyrase Inhibitor 2X-121": "C102746",
         "PBN Derivative OKN-007": "C102983",
         "PCNU": "C1186",
         "PD-1 Directed Probody CX-188": "C160716",
@@ -3331,7 +3333,7 @@
         "T900607": "C26674",
         "TAM/c-Met Inhibitor RXDX-106": "C150585",
         "TGF-beta Receptor 1 Inhibitor PF-06952229": "C160258",
-        "TGFa-PE38 Immunotoxin ": "C29483",
+        "TGFa-PE38 Immunotoxin": "C29483",
         "TGFbeta Inhibitor LY3200882": "C132013",
         "TGFbeta Receptor Ectodomain-IgG Fc Fusion Protein AVID200": "C159817",
         "THL-P": "C88275",
@@ -3527,7 +3529,7 @@
         "Transdermal 4-Hydroxytestosterone": "C114103",
         "Transferrin Receptor-Targeted Anti-RRM2 siRNA CALAA-01": "C78450",
         "Transferrin Receptor-Targeted Liposomal p53 cDNA": "C29474",
-        "Transferrin-CRM107 ": "C26676",
+        "Transferrin-CRM107": "C26676",
         "Tranylcypromine Sulfate": "C61980",
         "Trapoxin": "C1665",
         "Trastuzumab": "C1647",
@@ -3712,6 +3714,7 @@
         "XIAP/cIAP1 Antagonist ASTX660": "C123913",
         "XPO1 Inhibitor SL-801": "C128246",
         "Xanthohumol": "C121950",
+        "Xeloda": "",
         "Xentuzumab": "C106118",
         "Xiaoai Jiedu Decoction": "C165272",
         "Y 90 Monoclonal Antibody CC49": "C2597",
@@ -5168,9 +5171,10 @@
         "Wilms Tumor": "C3267"
     },
     "clinical.family_history.relationship_type": {
-        "Adopted Daughter": "C166131",
-        "Adopted Son": "C166132",
         "Adopted Brother": "",
+        "Adopted Daughter": "C166131",
+        "Adopted Sister": "",
+        "Adopted Son": "C166132",
         "Adoptive Father": "C166133",
         "Adoptive Mother": "C166134",
         "Adopted Brother": "",
@@ -8756,7 +8760,12 @@
         "9751/1": "",
         "9752/1": "",
         "9753/1": "",
-        "9754/3": ""
+        "9754/3": "",
+        "8310/6": "",
+        "8311/6": "",
+        "8441/6": "",
+        "8482/6": "",
+        "8806/6": ""
     },
     "clinical.diagnosis.peripancreatic_lymph_nodes_positive": {
         "0": "C70430",
@@ -9028,6 +9037,13 @@
         "Biospecimen Supplement": "C164025"
     },
     "data_file.biospecimen_supplement.data_format": {
+        "BCR Auxiliary XML": "",
+        "BCR Biotab": "",
+        "BCR SSF XML": "",
+        "BCR PPS XML": "",
+        "BCR XML": "",
+        "CDC JSON": "",
+        "FoundationOne XML": "",
         "TSV": "C164049",
         "XLSX": "C164050"
     },
@@ -9249,8 +9265,9 @@
         "Complete Necrosis (No Viable Tumor)": "C156234",
         "Incomplete Necrosis (Viable Tumor Present)": "C156235",
         "No Necrosis": "",
-        "Not Reported": "C43234",
-        "Unknown": "C17998"
+        "No Known Treatment Effect": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "biospecimen.aliquot.analyte_type": {
         "DNA": "C449",
@@ -9484,6 +9501,11 @@
         "Clinical Supplement": "C164028"
     },
     "data_file.clinical_supplement.data_format": {
+        "BCR Biotab": "",
+        "BCR OMF XML": "",
+        "BCR XML": "",
+        "CDC JSON": "",
+        "FoundationOne XML": "",
         "TSV": "C164049",
         "XLSX": "C164050"
     },

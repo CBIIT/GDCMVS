@@ -2,7 +2,7 @@ module.exports = function (protocol, host, basePath) {
   return {
     'swagger': '2.0',
     'info': {
-      'version': '1.3.0',
+      'version': '1.0.0',
       'title': 'GDCMVS Rest API'
     },
     'host': host,
