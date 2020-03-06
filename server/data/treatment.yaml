@@ -711,8 +711,7 @@ properties:
       - 5-Fluorouracil (5-FU) with the vitamin-like drug leucovorin (also called folinic
         acid) or levo-leucovorin
       - 5-Fluorouracil (5-FU), Leucovorin, Oxaliplatin (Eloxatin)
-      - 6-Phosphofructo-2-kinase/fructose-2,6-bisphosphatases Isoform 3 Inhibitor
-        ACT-PFK-158
+      - 6-Phosphofructo-2-kinase/fructose-2,6-bisphosphatases Isoform 3 Inhibitor ACT-PFK-158
       - 7-Cyanoquinocarcinol
       - 7-Ethyl-10-Hydroxycamptothecin
       - 7-Hydroxystaurosporine
@@ -762,14 +761,12 @@ properties:
       - Adenosine A2A Receptor Antagonist/Phosphodiesterase 10A PBF-999
       - Adenosine A2A/A2B Receptor Antagonist AB928
       - Adenosine A2B Receptor Antagonist PBF-1129
-      - Adenovector-transduced AP1903-inducible MyD88/CD40-expressing Autologous PSMA-specific
-        Prostate Cancer Vaccine BPX-201
+      - Adenovector-transduced AP1903-inducible MyD88/CD40-expressing Autologous PSMA-specific Prostate Cancer Vaccine BPX-201
       - Adenoviral Brachyury Vaccine ETBX-051
       - Adenoviral Cancer Vaccine PF-06936308
       - Adenoviral MUC1 Vaccine ETBX-061
       - Adenoviral PSA Vaccine ETBX-071
-      - Adenoviral Transduced hIL-12-expressing Autologous Dendritic Cells INXN-3001
-        Plus Activator Ligand INXN-1001
+      - Adenoviral Transduced hIL-12-expressing Autologous Dendritic Cells INXN-3001 Plus Activator Ligand INXN-1001
       - Adenoviral Tumor-specific Neoantigen Priming Vaccine GAd-209-FSP
       - Adenoviral Tumor-specific Neoantigen Priming Vaccine GRT-C901
       - Adenovirus-expressing TLR5/TLR5 Agonist Nanoformulation M-VM3
@@ -831,8 +828,7 @@ properties:
       - Allogeneic GM-CSF-secreting Lethally Irradiated Whole Melanoma Cell Vaccine
       - Allogeneic GM-CSF-secreting Tumor Vaccine PANC 10.05 pcDNA-1/GM-Neo
       - Allogeneic GM-CSF-secreting Tumor Vaccine PANC 6.03 pcDNA-1/GM-Neo
-      - Allogeneic IL13-Zetakine/HyTK-Expressing-Glucocorticoid Resistant Cytotoxic
-        T Lymphocytes GRm13Z40-2
+      - Allogeneic IL13-Zetakine/HyTK-Expressing-Glucocorticoid Resistant Cytotoxic T Lymphocytes GRm13Z40-2
       - Allogeneic Irradiated Melanoma Cell Vaccine CSF470
       - Allogeneic Large Multivalent Immunogen Melanoma Vaccine LP2307
       - Allogeneic Melanoma Vaccine AGI-101H
@@ -1151,8 +1147,7 @@ properties:
       - Anti-HER2 Bispecific Antibody-drug Conjugate ZW49
       - Anti-HER2 Immune Stimulator-antibody Conjugate NJH395
       - Anti-HER2 Monoclonal Antibody CT-P6
-      - Anti-HER2 Monoclonal Antibody/Anti-CD137Anticalin Bispecific Fusion Protein
-        PRS-343
+      - Anti-HER2 Monoclonal Antibody/Anti-CD137Anticalin Bispecific Fusion Protein PRS-343
       - Anti-HER2-vc0101 ADC PF-06804103
       - Anti-HER2/Anti-CD3 Bispecific Monoclonal Antibody BTRC 4017A
       - Anti-HER2/Anti-CD3 Bispecific Monoclonal Antibody GBR 1302
@@ -1423,8 +1418,7 @@ properties:
       - Autologous ACTR-CD16-CD28-expressing T-lymphocytes ACTR707
       - Autologous Anti-BCMA CAR-transduced T-cells KITE-585
       - Autologous Anti-BCMA-CAR Expressing Stem Memory T-cells P-BCMA-101
-      - Autologous Anti-BCMA-CAR-4-1BB-CD3zeta-expressing CD4+/CD8+ T-lymphocytes
-        JCARH125
+      - Autologous Anti-BCMA-CAR-4-1BB-CD3zeta-expressing CD4+/CD8+ T-lymphocytes JCARH125
       - Autologous Anti-BCMA-CAR-4-1BB-CD3zeta-expressing Memory T-lymphocytes bb21217
       - Autologous Anti-BCMA-CAR-4-1BB-CD3zeta-expressing T-cells CT053
       - Autologous Anti-BCMA-CAR-expressing CD4+/CD8+ T-lymphocytes FCARH143
@@ -1436,8 +1430,7 @@ properties:
       - Autologous Anti-CD19 Chimeric Antigen Receptor T-cells SJCAR19
       - Autologous Anti-CD19 T-cell Receptor T cells ET190L1
       - Autologous Anti-CD19/CD22 CAR T-cells AUTO3
-      - Autologous Anti-CD19CAR-4-1BB-CD3zeta-EGFRt-expressing CD4+/CD8+ Central Memory
-        T-lymphocytes JCAR014
+      - Autologous Anti-CD19CAR-4-1BB-CD3zeta-EGFRt-expressing CD4+/CD8+ Central Memory T-lymphocytes JCAR014
       - Autologous Anti-CD22 CAR-4-1BB-TCRz-transduced T-lymphocytes CART22-65s
       - Autologous Anti-HLA-A*02/AFP TCRm-expressing T-cells ET140202
       - Autologous Anti-HLA-A*0201/AFP CAR T-cells ET1402L1
@@ -1461,13 +1454,10 @@ properties:
       - Autologous Genetically-modified MAGE-A4 C1032 CD8alpha T Cells
       - Autologous Genetically-modified MAGE-A4 C1032 T Cells
       - Autologous Heat-Shock Protein 70 Peptide Vaccine AG-858
-      - Autologous HPV16 E7-specific HLA-A*02:01-restricted TCR Gene Engineered Lymphocytes
-        KITE-439
-      - Autologous LMP1/LMP2/EBNA1-specific HLA-A02:01/24:02/11:01-restricted TCR-expressing
-        T-lymphocytes YT-E001
+      - Autologous HPV16 E7-specific HLA-A*02:01-restricted TCR Gene Engineered Lymphocytes KITE-439
+      - Autologous LMP1/LMP2/EBNA1-specific HLA-A02:01/24:02/11:01-restricted TCR-expressing T-lymphocytes YT-E001
       - Autologous MAGE-A3/A6-specific TCR Gene-engineered Lymphocytes KITE-718
-      - Autologous MCPyV-specific HLA-A02-restricted TCR-transduced CD4+ and CD8+
-        T-cells FH-MCVA2TCR
+      - Autologous MCPyV-specific HLA-A02-restricted TCR-transduced CD4+ and CD8+ T-cells FH-MCVA2TCR
       - Autologous Mesenchymal Stem Cells Apceth_101
       - Autologous Mesothelin-specific Human mRNA CAR-transfected PBMCs MCY-M11
       - Autologous NKG2D CAR-CD3zeta-DAP10-expressing T-Lymphocytes CYAD-01
@@ -1828,8 +1818,7 @@ properties:
       - Cetuximab
       - Cetuximab (Erbitux)
       - Cetuximab-IR700 Conjugate RM-1929
-      - Cetuximab-loaded Ethylcellulose Polymeric Nanoparticles Decorated with Octreotide
-        (SY)
+      - Cetuximab-loaded Ethylcellulose Polymeric Nanoparticles Decorated with Octreotide (SY)
       - Cevipabulin
       - Cevipabulin Fumarate
       - Cevipabulin Succinate
@@ -1856,8 +1845,7 @@ properties:
       - Choline Kinase Alpha Inhibitor TCD-717
       - CHP-NY-ESO-1 Peptide Vaccine IMF-001
       - Chromomycin A3
-      - Chrysanthemum morifolium/Ganoderma lucidum/Glycyrrhiza glabra/Isatis indigotica/Panax
-        pseudoginseng/Rabdosia rubescens/Scutellaria baicalensis/Serona repens Supplement
+      - Chrysanthemum morifolium/Ganoderma lucidum/Glycyrrhiza glabra/Isatis indigotica/Panax pseudoginseng/Rabdosia rubescens/Scutellaria baicalensis/Serona repens Supplement
       - Cibisatamab
       - Ciclopirox Prodrug CPX-POM
       - Cidan Herbal Capsule
@@ -2084,8 +2072,7 @@ properties:
       - DNA Interference Oligonucleotide PNT2258
       - DNA Minor Groove Binding Agent SG2000
       - DNA Plasmid Encoding Interleukin-12 INO-9012
-      - DNA Plasmid-encoding Interleukin-12 INO-9012/PSA/PSMA DNA Plasmids INO-5150
-        Formulation INO-5151
+      - DNA Plasmid-encoding Interleukin-12 INO-9012/PSA/PSMA DNA Plasmids INO-5150 Formulation INO-5151
       - DNA Plasmid-encoding Interleukin-12/HPV DNA Plasmids Therapeutic Vaccine MEDI0457
       - DNA Vaccine VB10.16
       - DNA-dependent Protein Kinase Inhibitor VX-984
@@ -2570,8 +2557,7 @@ properties:
       - HPV 16 E7 Antigen-expressing Lactobacillis casei Vaccine BLS-ILB-E710c
       - HPV DNA Plasmids Therapeutic Vaccine VGX-3100
       - HPV E6/E7 DNA Vaccine GX-188E
-      - HPV Types 16/18 E6/E7-Adenoviral Transduced Autologous Lymphocytes/alpha-Galactosylceramide
-        Vaccine BVAC-C
+      - HPV Types 16/18 E6/E7-Adenoviral Transduced Autologous Lymphocytes/alpha-Galactosylceramide Vaccine BVAC-C
       - HPV-16 E6 Peptides Vaccine/Candida albicans Extract
       - HPV-6-targeting Immunotherapeutic Vaccine INO-3106
       - HPV16 E7-specific HLA-A*02:01-restricted IgG1-Fc Fusion Protein CUE-101
@@ -2867,8 +2853,7 @@ properties:
       - Lipid Encapsulated Anti-PLK1 siRNA TKM-PLK1
       - Lipid Nanoparticle Encapsulated mRNAs Encoding Human IL-12A/IL-12B MEDI-1191
       - Lipid Nanoparticle Encapsulated OX40L mRNA-2416
-      - Lipid Nanoparticle Encapsulating mRNAs Encoding Human OX40L/IL-23/IL-36gamma
-        mRNA-2752
+      - Lipid Nanoparticle Encapsulating mRNAs Encoding Human OX40L/IL-23/IL-36gamma mRNA-2752
       - Liposomal c-raf Antisense Oligonucleotide
       - Liposomal Curcumin
       - Liposomal Cytarabine
@@ -2900,16 +2885,14 @@ properties:
       - Litronesib
       - Live-attenuated Double-deleted Listeria monocytogenes Bacteria JNJ-64041809
       - Live-Attenuated Listeria Encoding Human Mesothelin Vaccine CRS-207
-      - Live-attenuated Listeria monocytogenes-encoding EGFRvIII-NY-ESO-1 Vaccine
-        ADU-623
+      - Live-attenuated Listeria monocytogenes-encoding EGFRvIII-NY-ESO-1 Vaccine ADU-623
       - Liver X Receptor beta Agonist RGX-104
       - Lm-tLLO-neoantigens Vaccine ADXS-NEO
       - LMB-1 Immunotoxin
       - LMB-2 Immunotoxin
       - LMB-7 Immunotoxin
       - LMB-9 Immunotoxin
-      - LmddA-LLO-chHER2 Fusion Protein-secreting Live-attenuated Listeria Cancer
-        Vaccine ADXS31-164
+      - LmddA-LLO-chHER2 Fusion Protein-secreting Live-attenuated Listeria Cancer Vaccine ADXS31-164
       - LMP-2:340-349 Peptide Vaccine
       - LMP-2:419-427 Peptide Vaccine
       - Lobaplatin
@@ -3392,8 +3375,7 @@ properties:
       - Ontuxizumab
       - Onvansertib
       - Opaganib
-      - OPCs/Green Tea/Spirullina/Curcumin/Antrodia Camphorate/Fermented Soymilk Extract
-        Capsule
+      - OPCs/Green Tea/Spirullina/Curcumin/Antrodia Camphorate/Fermented Soymilk Extract Capsule
       - Opioid Growth Factor
       - Oportuzumab Monatox
       - Oprozomib
@@ -3423,15 +3405,13 @@ properties:
       - Other
       - Otlertuzumab
       - Ovapuldencel-T
-      - Ovarian Cancer Stem Cell/hTERT/Survivin mRNAs-loaded Autologous Dendritic
-        Cell Vaccine DC-006
+      - Ovarian Cancer Stem Cell/hTERT/Survivin mRNAs-loaded Autologous Dendritic Cell Vaccine DC-006
       - Ovine Submaxillary Mucin
       - OX40L-expressing Oncolytic Adenovirus DNX-2440
       - Oxaliplatin
       - OXALIplatin (Eloxatin)
       - Oxaliplatin (Eloxatin) and 5-Fluorouracil (5-FU)
-      - Oxaliplatin-Encapsulated Transferrin-Conjugated N-glutaryl Phosphatidylethanolamine
-        Liposome
+      - Oxaliplatin-Encapsulated Transferrin-Conjugated N-glutaryl Phosphatidylethanolamine Liposome
       - Oxcarbazepine
       - Oxeclosporin
       - Oxidative Phosphorylation Inhibitor IACS-010759
@@ -3683,8 +3663,7 @@ properties:
       - Piroxantrone Hydrochloride
       - Pixantrone
       - Pixantrone Dimaleate
-      - PKA Regulatory Subunit RIalpha Mixed-Backbone Antisense Oligonucleotide GEM
-        231
+      - PKA Regulatory Subunit RIalpha Mixed-Backbone Antisense Oligonucleotide GEM 231
       - PKC-alpha Antisense Oligodeoxynucleotide ISIS 3521
       - PKC-beta Inhibitor MS-553
       - Placebo
@@ -3888,8 +3867,7 @@ properties:
       - Recombinant Transforming Growth Factor-Beta-2
       - Recombinant Tumor Necrosis Factor-Alpha
       - Recombinant Tyrosinase-Related Protein-2
-      - Recombinant Vesicular Stomatitis Virus-expressing Human Interferon Beta and
-        Sodium-Iodide Symporter
+      - Recombinant Vesicular Stomatitis Virus-expressing Human Interferon Beta and Sodium-Iodide Symporter
       - Refametinib
       - Regorafenib
       - Regorafenib (Stivarga)
