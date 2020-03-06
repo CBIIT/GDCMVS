@@ -59,7 +59,7 @@ const parseRefYaml = (ref, termsJson, defJson) => {
 		let refJson = yaml.load(folderPath + '/' + fileName);
 		let tmp = refJson[title];
 		data.enum = tmp[titleValue].enum;
-		if (tmp[titleValue]) {
+	if (tmp[titleValue]) {
 			data = extend(data, parseRef(tmp[titleValue].$ref[0], termsJson, defJson));
 		}
 		return data;
@@ -83,6 +83,15 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		let entry = {};
 		let p = {};
 		let entryRaw = propsRaw[prop];
+		// remove break lines in enum
+		// if (entryRaw.enum !== undefined){
+		// 		let tmpEnum = [];
+		// 		entryRaw.enum.forEach(n => {
+		// 			tmpEnum.push(n.replace(/\n|\r/g, " "));
+		// 		})
+		// 		delete entryRaw.enum;
+		// 		entryRaw.enum = tmpEnum;
+		// }
 		if (prop === '$ref') {
 			let idx = entryRaw[0].indexOf('/');
 			entry.property = entryRaw[0].substr(idx + 1);
@@ -91,12 +100,10 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 			entry.property = prop;
 			if (entryRaw['$ref'] !== undefined) {
 				let ref = Array.isArray(entryRaw['$ref']) ? entryRaw['$ref'][0] : entryRaw['$ref'];
-				if(Array.isArray(entryRaw['$ref'])){
-					if (ref.indexOf("_terms.yaml") == -1 && ref.indexOf("_definitions.yaml") == -1) {
-						entry = extend(entry, parseRefYaml(ref, termsJson, defJson));
-					} else {
-						entry = extend(entry, parseRef(ref, termsJson, defJson));
-					}
+				if (ref.indexOf("_terms.yaml") == -1 && ref.indexOf("_definitions.yaml") == -1) {
+					entry = extend(entry, parseRefYaml(ref, termsJson, defJson));
+				} else {
+					entry = extend(entry, parseRef(ref, termsJson, defJson));
 				}
 				delete entryRaw['$ref'];
 				entry = extend(entry, entryRaw);
@@ -320,7 +327,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 					});
 				}
 			}
-
+			
 		}
 		//property type
 		if (entry.enum !== undefined && entry.enum.length > 0) {
