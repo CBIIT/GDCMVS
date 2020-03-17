@@ -560,7 +560,7 @@ const exportDelta = (req, res) => {
 							temp_data.n = node;
 							temp_data.p = property;
 							//check if this value exists in old data
-							if (old_enums_array.indexOf(em) !== -1) {
+							if (old_enums_array !== undefined && old_enums_array.indexOf(em) !== -1) {
 								temp_data.value_old = em;
 							} else {
 								temp_data.value_old = "no match";
@@ -622,7 +622,7 @@ const exportDelta = (req, res) => {
 						}
 						let old_enums_array = old_p_array[property].enum;
 						old_enums_array.forEach(em => {
-							if (new_enums_array.indexOf(em) === -1) {
+							if (new_enums_array !== undefined && new_enums_array.indexOf(em) === -1) {
 								let temp_data = {};
 								temp_data.c = category;
 								temp_data.n = node;
@@ -686,7 +686,7 @@ const exportDelta = (req, res) => {
 						}
 						let old_enums_array = old_p_array[property].new_enum;
 						old_enums_array.forEach(em => {
-							if (new_enums_array.indexOf(em) === -1) {
+							if (new_enums_array !== undefined && new_enums_array.indexOf(em) === -1) {
 								let temp_data = {};
 								temp_data.c = category;
 								temp_data.n = node;
@@ -755,7 +755,7 @@ const exportDelta = (req, res) => {
 							temp_data.n = node;
 							temp_data.p = property;
 							//check if this value exists in old data
-							if (old_enums_array.indexOf(em) !== -1) {
+							if (old_enums_array !== undefined && old_enums_array.indexOf(em) !== -1) {
 								temp_data.value_old = em;
 							} else {
 								temp_data.value_old = "no match";
