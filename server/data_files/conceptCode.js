@@ -4356,14 +4356,14 @@
         "T1a1": "C139711",
         "T1a2": "C139712",
         "T1b": "C48722",
-        "T1b1": "C139692",
-        "T1b2": "C139693",
+        "T1b1": "C139714",
+        "T1b2": "C139715",
         "T1c": "C48723",
         "T1mi": "C95805",
         "T2": "C48724",
         "T2a": "C48725",
-        "T2a1": "C139696",
-        "T2a2": "C139697",
+        "T2a1": "C139718",
+        "T2a2": "C139719",
         "T2b": "C48726",
         "T2c": "C48727",
         "T2d": "C148411",
@@ -4382,7 +4382,7 @@
         "Tis": "C48738",
         "Tis (DCIS)": "C139414",
         "Tis (LCIS)": "C48976",
-        "Tis (Paget's)": "C47858",
+        "Tis (Paget's)": "C139415",
         "TX": "C48737",
         "Unknown": "C17998"
     },
@@ -4430,8 +4430,8 @@
         "Stage IC3": "",
         "Stage II": "C96252",
         "Stage IIA": "C96253",
-        "Stage IIA1": "C95172",
-        "Stage IIA2": "C95173",
+        "Stage IIA1": "C162223",
+        "Stage IIA2": "C162224",
         "Stage IIB": "C96254",
         "Stage IIC": "",
         "Stage III": "C96255",
@@ -4542,13 +4542,13 @@
         "COPD": "C3199",
         "Coronary Artery Disease": "C26732",
         "Cryptogenic Organizing Pneumonia": "C62586",
-        "Deep Vein Thrombosis / Thromboembolism": "C49343",
+        "Deep Vein Thrombosis / Thromboembolism": ["C49343", "C50713"],
         "Depression": "C2982",
         "Diabetes": "C2985",
         "Diabetic Neuropathy": "C26748",
         "Diet Controlled Diabetes": "",
         "Diverticulitis": "C26752",
-        "DVT/PE": "C49343",
+        "DVT/PE": ["C49343", "C50713"],
         "Dyslipidemia": "C80385",
         "Eczema": "C3001",
         "Epilepsy": "C3020",
@@ -4567,7 +4567,7 @@
         "Hepatitis C Infection": "C3098",
         "HIV / AIDS": "C2851",
         "Human Papillomavirus Infection": "C27851",
-        "HUS/TTP": "C75545",
+        "HUS/TTP": ["C75545", "C78797"],
         "Hypercalcemia": "C3112",
         "Hypercholesterolemia": "C37967",
         "Hyperglycemia": "C26797",
@@ -4577,7 +4577,7 @@
         "Hypothyroidism": "C26800",
         "Inflammatory Bowel Disease": "C3138",
         "Insulin Controlled Diabetes": "",
-        "Interstitial Pneumontis or ARDS": "C3353",
+        "Interstitial Pneumontis or ARDS": ["C3353", "C27006"],
         "Iron Overload": "C78393",
         "Ischemic Heart Disease": "C50625",
         "ITP": "C3446",
@@ -4593,7 +4593,7 @@
         "Obesity": "C3283",
         "Organ transplant (site)": "C15289",
         "Osteoarthritis": "C3293",
-        "Osteoporosis or Osteopenia": "C3298",
+        "Osteoporosis or Osteopenia": ["C3298", "C50910"],
         "Other": "C17649",
         "Other Cancer Within 5 Years": "",
         "Other Nonmalignant Systemic Disease": "",
@@ -4643,7 +4643,7 @@
         "Tyrosinemia": "C98640",
         "Alpha-1 Antitrypsin": "C84397",
         "Biliary Disorder": "C2899",
-        "Cirrhosis, Unknown Etiology": "",
+        "Cirrhosis, Unknown Etiology": "C2951",
         "Hepatitis A Infection": "C3096",
         "Herpes": "C50583",
         "Cholelithiasis": "C122822",
@@ -4655,7 +4655,7 @@
         "Low Grade Liver Dysplastic Nodule": "C96770",
         "Nonalcoholic Steatohepatitis": "C84445",
         "Primary Sclerosing Cholangitis": "C4828",
-        "Steatosis": "C82983",
+        "Steatosis": "C36185",
         "Wagr Syndrome": "C3718"
     },
     "clinical.follow_up.disease_response": {
@@ -7202,11 +7202,11 @@
         "KRT20": "C96457"
     },
     "clinical.molecular_test.pathogenicity": {
-        "Benign": "C14172",
-        "Likely Benign": "",
-        "Likely Pathogenic": "",
-        "Pathogenic": "C80324",
-        "Uncertain Significance": "C47944"
+        "Benign": "C168802",
+        "Likely Benign": "C168801",
+        "Likely Pathogenic": "C168800",
+        "Pathogenic": "C168799",
+        "Uncertain Significance": "C94187"
     },
     "clinical.molecular_test.second_gene_symbol": {
         "A1CF": "C143031",
@@ -8727,7 +8727,7 @@
         "Not Reported": "C43234"
     },
     "clinical.diagnosis.peritoneal_fluid_cytological_status": {
-        "Atypical": "C9478",
+        "Atypical": "C8326",
         "Malignant": "C14143",
         "Non-Malignant": "C25588",
         "Unsatisfactory": "C126862",
@@ -8891,7 +8891,7 @@
         "Distant": "C55073",
         "Local": "C36162",
         "Regional": "C41844",
-        "Biochemical": "C25434"
+        "Biochemical": "C165196"
     },
     "clinical.follow_up.reflux_treatment_type": {
         "Antacids": "C29633",
@@ -9264,7 +9264,7 @@
     "clinical.treatment.treatment_effect": {
         "Complete Necrosis (No Viable Tumor)": "C156234",
         "Incomplete Necrosis (Viable Tumor Present)": "C156235",
-        "No Necrosis": "",
+        "No Necrosis": "C168971",
         "No Known Treatment Effect": "",
         "Unknown": "C17998",
         "Not Reported": "C43234"
