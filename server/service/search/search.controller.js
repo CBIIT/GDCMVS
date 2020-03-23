@@ -206,8 +206,14 @@ const searchAPI = (req, res) => {
 							e._source.allSynonyms.forEach(s => {
 								s.conceptCode = s.n_c;
 								s.synonyms = s.s;
+								if (e._source.drug !== undefined && e._source.drug === true) {
+									s.additionalAttributes = s.ap;
+									s.definitions = s.def;
+								}
 								delete s.n_c;
 								delete s.s;
+								delete s.ap;
+								delete s.def;
 							});
 						}
 
@@ -220,6 +226,10 @@ const searchAPI = (req, res) => {
 								delete ic.term_type;
 							});
 							delete e._source.ic_enum;
+						}
+
+						if (e._source.drug !== undefined && e._source.drug !== true) {
+							delete e._source.drug;
 						}
 						
 						delete e._source.n;
