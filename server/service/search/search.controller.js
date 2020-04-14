@@ -205,7 +205,7 @@ const searchAPI = (req, res) => {
 							e._source.allSynonyms = e._source.n_syn;
 							e._source.allSynonyms.forEach(s => {
 								s.conceptCode = s.n_c;
-								s.synonyms = s.s;
+								s.synonyms = shared.sortSynonyms(s.s);
 								if (e._source.drug !== undefined && e._source.drug === true) {
 									s.additionalAttributes = s.ap;
 									s.definitions = s.def;
@@ -221,7 +221,7 @@ const searchAPI = (req, res) => {
 							e._source.icdo3Strings = e._source.ic_enum;
 							e._source.icdo3Strings.forEach(ic => {
 								ic.termName = ic.n;
-								ic.termGroup  = ic.term_type;
+								ic.termGroup = ic.term_type;
 								delete ic.n;
 								delete ic.term_type;
 							});
@@ -253,7 +253,7 @@ const searchAPI = (req, res) => {
 				delete entry._source.id;
 				delete entry._source.node_desc;
 				delete entry._source.property_desc;
-				if(entry._source.cde !== undefined) delete entry._source.cde.v
+				if(entry._source.cde !== undefined) delete entry._source.cde.v;
 				delete entry._source.enum;
 
 				delete entry.inner_hits;				

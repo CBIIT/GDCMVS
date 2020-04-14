@@ -149,7 +149,7 @@ export const vsRender = (items, keyword) => {
           obj.vs.push(valueObj);
         }
       });
-      obj.vs = sortAlphabetically(obj.vs);
+      // obj.vs = sortAlphabetically(obj.vs);
       valuesCount += obj.vs.length;
       values.push(obj);
     }
