@@ -185,12 +185,12 @@ export const searchFilterCR = (items, keyword) => {
 };
 
 export const sortAlphabetically = (values) => {
-  values.sort((a, b) => (a.n.toLowerCase() > b.n.toLowerCase()) ? 1 : ((b.n.toLowerCase() > a.n.toLowerCase()) ? -1 : 0));
+  values.sort((a, b) => (a.src_n.toLowerCase() > b.src_n.toLowerCase()) ? 1 : ((b.src_n.toLowerCase() > a.src_n.toLowerCase()) ? -1 : 0));
   return values;
 };
 
 export const sortSynonyms = (synonyms) => {
-  const mapped = { PT: 1, BR: 2, FB: 3, CN: 4, AB: 5, SY: 6, SN: 7, AQ: 8, AQS: 9 };
+  const mapped = { PT: 1, BR: 2, FB: 3, CN: 4, AB: 5, SY: 6, SN: 7, AD: 8, AQ: 9, AQS: 10 };
   synonyms.sort((a, b) => (mapped[a.termGroup] > mapped[b.termGroup]) ? 1 : (a.termGroup === b.termGroup) ? ((a.termName.toLowerCase() > b.termName.toLowerCase()) ? 1 : -1) : -1);
   return synonyms;
 };
