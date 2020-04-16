@@ -205,7 +205,7 @@ const searchAPI = (req, res) => {
 							e._source.allSynonyms = e._source.n_syn;
 							e._source.allSynonyms.forEach(s => {
 								s.conceptCode = s.n_c;
-								s.synonyms = shared.sortSynonyms(s.s);
+								s.synonyms = s.s;
 								if (e._source.drug !== undefined && e._source.drug === true) {
 									s.additionalAttributes = s.ap;
 									s.definitions = s.def;
