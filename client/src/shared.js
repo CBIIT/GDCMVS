@@ -185,7 +185,13 @@ export const searchFilterCR = (items, keyword) => {
 };
 
 export const sortAlphabetically = (values) => {
-  values.sort((a, b) => (a.src_n.toLowerCase() > b.src_n.toLowerCase()) ? 1 : ((b.src_n.toLowerCase() > a.src_n.toLowerCase()) ? -1 : 0));
+  values.sort((a, b) => {
+    const an = a.n.replace(/<b>/g, '').replace(/<\/b>/g, '').toLowerCase();
+    const bn = b.n.replace(/<b>/g, '').replace(/<\/b>/g, '').toLowerCase();
+    if (an > bn) { return 1; }
+    if (bn > an) { return -1; }
+    return 0;
+  });
   return values;
 };
 
