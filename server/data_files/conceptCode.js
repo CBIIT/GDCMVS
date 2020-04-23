@@ -9057,7 +9057,7 @@
     "data_file.slide_image.data_type": {
         "Cell Culture Image": "C165212",
         "Slide Image": "C165215",
-        "Tissue Microarray Image": ""
+        "Tissue Microarray Image": "C171154"
     },
     "data_file.slide_image.experimental_strategy": {
         "Cell Culture": "C16396",
@@ -9081,7 +9081,7 @@
     },
     "data_file.submitted_genomic_profile.data_category": {
         "Genomic Profiling": "C94411",
-        "Combined Nucleotide Variation": ""
+        "Combined Nucleotide Variation": "C171155"
     },
     "data_file.submitted_genomic_profile.experimental_strategy": {
         "Targeted Sequencing": "C130177",
@@ -9166,7 +9166,7 @@
         "Absolute Neutrophil": "C63321",
         "Albumin": "C64431",
         "Alpha Fetoprotein": "C74732",
-        "B-cell genotyping": "",
+        "B-cell genotyping": "C171142",
         "Basophil": "C64470",
         "Beta 2 Microglobulin": "C81980",
         "Blood Urea Nitrogen": "C61019",
@@ -9176,13 +9176,13 @@
         "C-Reactive Protein": "C64548",
         "Creatinine": "C64547",
         "Eosinophil": "C64550",
-        "Epstein-Barr Virus": "",
+        "Epstein-Barr Virus": "C171143",
         "Glucose": "C105585",
         "Hematocrit": "C64796",
         "Hemoglobin": "C64848",
-        "HPV-E6/E7": "",
+        "HPV-E6/E7": "C171144",
         "Human Chorionic Gonadotropin": "C147128",
-        "Human Papillomavirus": "",
+        "Human Papillomavirus": "C171145",
         "Immunoglobulin A": "C81969",
         "Immunoglobulin G": "C81971",
         "Immunoglobulin M": "C81972",
@@ -9876,7 +9876,7 @@
         "Not Reported": "C43234"
     },
     "clinical.exposure.exposure_duration": {
-        "Six Weeks or More": "",
+        "Six Weeks or More": "C171137",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -9909,13 +9909,13 @@
         "Mycobacterium avium Complex": "C36197",
         "Mycobacterium tuberculosis": "C27314",
         "Mycobacterium, NOS": "C26831",
-        "Nocardiosis": "",
+        "Nocardiosis": "C171147",
         "Pneumocystis Pneumonia": "C3334",
         "Pneumonia, NOS": "C3333",
         "Progressive Multifocal Leukoencephalopathy": "C26815",
-        "Salmonella Septicemia": "",
+        "Salmonella Septicemia": "C171146",
         "Toxoplasmosis": "C3418",
-        "Wasting Syndrome": ""
+        "Wasting Syndrome": "C171148"
     },
     "clinical.follow_up.cdc_hiv_risk_factors": {
         "Hemophiliac": "C3093",
@@ -9923,7 +9923,7 @@
         "Homosexual Contact": "C154863",
         "Intravenous Drug User": "C84367",
         "None": "C159672",
-        "Transfusion Recipient": "",
+        "Transfusion Recipient": "C171149",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
