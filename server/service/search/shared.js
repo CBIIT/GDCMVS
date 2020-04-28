@@ -54,6 +54,15 @@ const readGdcDictionaryVersion = () => {
     return content;
 }
 
+const sortSynonyms = (synonyms) => {
+    const mapped = { PT: 1, BR: 2, FB: 3, CN: 4, AB: 5, SY: 6, SN: 7, AD: 8, AQ: 9, AQS: 10 };
+    synonyms.forEach((e, i) => {
+        if (e.termSource !== 'NCI') synonyms.splice(i, 1);
+    });
+    synonyms.sort((a, b) => (mapped[a.termGroup] > mapped[b.termGroup]) ? 1 : (a.termGroup === b.termGroup) ? ((a.termName.toLowerCase() > b.termName.toLowerCase()) ? 1 : -1) : -1);
+    return synonyms;
+}
+
 module.exports = {
     readNCItDetails,
     readGDCValues,
@@ -63,5 +72,6 @@ module.exports = {
     readCDEDataType,
     readSynonymsCtcae,
     readSynonymsNcit,
-    readGdcDictionaryVersion
+    readGdcDictionaryVersion,
+    sortSynonyms
 };
