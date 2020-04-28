@@ -1,46 +1,51 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-    entry: {
-      main: ['./client/src/index.js', './client/src/style.css'],
-    },
-    output: {
-      filename: 'bundle.js',
-      path: path.resolve(__dirname, '../client/static/dist')
-    },
-    module: {
-        rules: [
+  entry: {
+    main: './client/src/index.js'
+  },
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, '../client/static/dist')
+  },
+  module: {
+    rules: [
+      // eslint
+      // {
+      //   test: /\.js$/,
+      //   enforce: 'pre',
+      //   exclude: /node_modules/,
+      //   loader: 'eslint-loader'
+      // },
 
-          // eslint
-          { test: /\.js$/,
-            enforce: "pre",
-            exclude: /node_modules/,
-            loader: "eslint-loader"
-          },
-        
-          // JS
-          { test: /\.js$/,
-            exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-              options: { 
-                  presets: ['@babel/preset-env']
-                }
-            },
-          },
-    
-          // CSS
-          { test: /\.css$/,
-            use: [
-              { loader: "style-loader" },
-              MiniCssExtractPlugin.loader,
-              { loader: "css-loader" },
-            ]
+      // JS
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        }
+      },
+
+      // CSS
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          MiniCssExtractPlugin.loader,
+          {
+            loader: require.resolve('css-loader'),
+            options: {
+              importLoaders: 1
+            }
           }
         ]
-      },
-      plugins: [
-        new MiniCssExtractPlugin({filename: "styles.css"})
-      ]
-}
+      }
+    ]
+  },
+  plugins: [new MiniCssExtractPlugin({ filename: 'styles.css' })]
+};

@@ -1,0 +1,25 @@
+body {
+  min-width: 970px;
+}
+
+:global #body {
+  min-height: 640px;
+  margin-top: 0 !important;
+}
+
+:global .main-container {
+  padding-bottom: 127px;
+  font-size: 1.3rem;
+}
+
+:global .info-content {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5em 0;
+}
+
+footer {
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+}
