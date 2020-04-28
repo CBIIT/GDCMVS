@@ -206,9 +206,23 @@ const exportMapping = (req, res) => {
 							});
 						}
 						if (cc[category + "." + node + "." + property] && cc[category + "." + node + "." + property][em]) {
-							tmp_data.ncit_c = cc[category + "." + node + "." + property][em];
-							tmp_data.ncit_v = ncit_pv[cc[category + "." + node + "." + property][em]] ? ncit_pv[cc[category + "." + node + "." + property][em]].preferredName : "";
-						}else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
+
+							if (Array.isArray(cc[category + "." + node + "." + property][em])) {
+								cc[category + "." + node + "." + property][em].forEach((tmp_ncit, index) => {
+									if (index === 0){
+										tmp_data.ncit_c += tmp_ncit;
+										tmp_data.ncit_v += ncit_pv[tmp_ncit] ? ncit_pv[tmp_ncit].preferredName : "";
+									} else {
+										tmp_data.ncit_c += ' | ' + tmp_ncit;
+										tmp_data.ncit_v += ' | ' + (ncit_pv[tmp_ncit] ? ncit_pv[tmp_ncit].preferredName : "");
+									}
+								});
+
+							} else {
+								tmp_data.ncit_c = cc[category + "." + node + "." + property][em];
+								tmp_data.ncit_v = ncit_pv[cc[category + "." + node + "." + property][em]] ? ncit_pv[cc[category + "." + node + "." + property][em]].preferredName : "";
+							}
+						} else if(property !== "morphology" && all_gdc_values[category + "." + node + "." + property]){
 							all_gdc_values[category + "." + node + "." + property].forEach(data => {
 								if(em === data.nm){
 									tmp_data.ncit_c = data.n_c;
@@ -389,9 +403,10 @@ const preProcess = (searchable_nodes, data) => {
 						if (ref.indexOf('#/') !== -1) {
 							let file_name = ref.split('#/')[0];
 							let ref_property = ref.split('#/')[1];
+							let prop = ref_property.split('/')[0];
 							let term_definition = yaml.load(folderPath + '/' + file_name);
-							if (term_definition[ref_property]) {
-								property_data.relation = term_definition[ref_property]
+							if (term_definition[prop]) {
+								property_data.relation = term_definition[prop].common !== undefined ? term_definition[prop].common : term_definition[prop];
 							}
 						}
 					}
@@ -560,7 +575,7 @@ const exportDelta = (req, res) => {
 							temp_data.n = node;
 							temp_data.p = property;
 							//check if this value exists in old data
-							if (old_enums_array.indexOf(em) !== -1) {
+							if (old_enums_array !== undefined && old_enums_array.indexOf(em) !== -1) {
 								temp_data.value_old = em;
 							} else {
 								temp_data.value_old = "no match";
@@ -622,7 +637,7 @@ const exportDelta = (req, res) => {
 						}
 						let old_enums_array = old_p_array[property].enum;
 						old_enums_array.forEach(em => {
-							if (new_enums_array.indexOf(em) === -1) {
+							if (new_enums_array !== undefined && new_enums_array.indexOf(em) === -1) {
 								let temp_data = {};
 								temp_data.c = category;
 								temp_data.n = node;
@@ -686,7 +701,7 @@ const exportDelta = (req, res) => {
 						}
 						let old_enums_array = old_p_array[property].new_enum;
 						old_enums_array.forEach(em => {
-							if (new_enums_array.indexOf(em) === -1) {
+							if (new_enums_array !== undefined && new_enums_array.indexOf(em) === -1) {
 								let temp_data = {};
 								temp_data.c = category;
 								temp_data.n = node;
@@ -755,7 +770,7 @@ const exportDelta = (req, res) => {
 							temp_data.n = node;
 							temp_data.p = property;
 							//check if this value exists in old data
-							if (old_enums_array.indexOf(em) !== -1) {
+							if (old_enums_array !== undefined && old_enums_array.indexOf(em) !== -1) {
 								temp_data.value_old = em;
 							} else {
 								temp_data.value_old = "no match";
