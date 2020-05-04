@@ -7,7 +7,7 @@ const Suggest = styled.div`
 
 const SuggestContent = styled.div`
   width: calc(100% - 11.5em);
-  /* display: none; */
+  display: none;
   border-radius: 5px;
   padding-top: .5em;
   padding-bottom: .5em;
@@ -45,7 +45,7 @@ const SuggestBox = (props) => {
 
   return (
     <Suggest>
-      <SuggestContent>
+      <SuggestContent style={props.suggest.length === 0 ? {} : { display: 'block' }}>
         { suggestItems }
       </SuggestContent>
     </Suggest>
