@@ -6,16 +6,19 @@ import TabsController from '../components/TabsController';
 // import { Tab, TabContainer, TabContent, Sonnet, TabPane, Row, Col, Nav, NavItem } from 'react-bootstrap';
 
 function App() {
+  let [keywordState, setKeywordState] = useState('');
   let [sourceState, setSourceState] = useState([]);
 
   const searchHandler = (keyword) => {
+    setKeywordState(keyword);
+    // setSourceState(apiSearchAll(keyword, {}));
     apiSearchAll(keyword, {}).then(result => setSourceState(result));
   };
 
   return (
-    <div >
+    <div>
       <SearchBox search={searchHandler}/>
-      <TabsController source={sourceState}/>
+      <TabsController keyword={keywordState} source={sourceState}/>
     </div>
   );
 }

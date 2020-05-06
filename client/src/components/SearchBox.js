@@ -21,19 +21,23 @@ const SearchOptions = styled.div`
   border-bottom: 1px solid #ecf0f1;
 `;
 
+const SearchButton = styled(Button)`
+  background-color: #6a7676;
+  border-color: #6a7676;
+  padding: 8px 45px;
+  font-size: 17px;
+  color: #fff;
+`;
+
 const SearchBox = (props) => {
   let [suggestState, setSuggestState] = useState([]);
   let [searchState, setSearchState] = useState('');
   let [sourceState, setSourceState] = useState([]);
 
-  const suggestHandler = (e) => {
-    setSearchState(e.target.value);
-    apiSuggest(e.target.value).then(result => setSuggestState(result));
+  const suggestHandler = event => {
+    setSearchState(event.target.value);
+    apiSuggest(event.target.value).then(result => setSuggestState(result));
   };
-
-  // const searchHandler = () => {
-  //   apiSearchAll(searchState, {}).then(result => setSourceState(result));
-  // };
 
   return (
     <div>
@@ -41,7 +45,7 @@ const SearchBox = (props) => {
         <InputGroup>
           <FormControl type="text" onChange={suggestHandler}/>
           <InputGroup.Button>
-            <Button onClick={() => props.search(searchState)}>Search</Button>
+            <SearchButton onClick={() => props.search(searchState)}>Search</SearchButton>
           </InputGroup.Button>
         </InputGroup>
         <SuggestBox suggest={suggestState} />
