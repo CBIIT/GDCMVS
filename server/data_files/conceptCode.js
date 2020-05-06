@@ -48,7 +48,7 @@
         "ALK-FAK Inhibitor CEP-37440": "C111685",
         "ALK/FAK/Pyk2 Inhibitor CT-707": "C126648",
         "ALK/TRK Inhibitor TSR-011": "C114287",
-        "ALK/c-Met Inhibitor  TQ-B3139": "C148513",
+        "ALK/c-Met Inhibitor TQ-B3139": "C148513",
         "APC8015F": "C48640",
         "APE1/Ref-1 Redox Inhibitor APX3330": "C150216",
         "AR Antagonist BMS-641988": "C62522",
