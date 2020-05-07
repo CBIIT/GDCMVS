@@ -72,8 +72,8 @@ const DictTable = (props) => {
   //     }
   //     let highlightValueObj = {};
   //     if (enumHits.total !== 0) highlightValueObj = getAllValueHighlight(enumHits);
-  //     propertyObj.all_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
-  //     propertyObj.all_values.sort();
+  //     // propertyObj.all_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+  //     // propertyObj.all_values.sort();
 
   //     if (enumHits.total !== 0 && highlightCdeId === undefined) {
   //       enumHits.hits.forEach(emHit => {
@@ -147,8 +147,8 @@ const DictTable = (props) => {
   //     }
   //     let highlightValueObj = {};
   //     if (enumHits.total !== 0) highlightValueObj = getAllValueHighlight(enumHits);
-  //     propertyObj.all_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
-  //     propertyObj.all_values.sort();
+  //     // propertyObj.all_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+  //     // propertyObj.all_values.sort();
 
   //     if (enumHits.total !== 0 && highlightCdeId === undefined) {
   //       enumHits.hits.forEach(emHit => {

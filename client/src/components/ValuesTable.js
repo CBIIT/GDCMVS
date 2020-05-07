@@ -1,9 +1,54 @@
 import React, { useState } from 'react';
-// import styled from 'styled-components';
+import styled from 'styled-components';
+import { Grid, Row, Col, Table, Glyphicon } from 'react-bootstrap';
 import { getHighlightObj, sortAlphabetically, sortSynonyms } from '../shared';
 
-const ValuesTable = (props) => {
+const Container = styled(Grid)`
+  font-size: 1.3rem;
+  padding-left: 15px;
+  padding-right: 15px;
+`;
 
+const TableThead = styled(Row)`
+  background: #f1f1f1;
+`;
+
+const TableTh = styled.div`
+  font-weight: 700;
+  text-align: left;
+  padding-top: 15px;
+  padding-bottom: 15px;
+`;
+
+const TableBody = styled(Row)`
+  overflow-y: auto;
+  max-height: 500px;
+`;
+
+const TableRow = styled(Row)`
+  border-bottom: 1px solid #ecf0f1;
+`;
+
+const TableCol = styled(Col)`
+  text-align: left;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 1.428571;
+`;
+
+const TableValues = styled(Col)`
+  border-left: 1px solid #ecf0f1;
+`;
+
+const TableValueCol = styled(Col)`
+  text-align: left;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 1.428571;
+  border-bottom: 1px solid #ecf0f1;
+`;
+
+const ValuesTable = (props) => {
   let termTypeNotAssigned = false;
   let valuesCount = 0;
 
@@ -98,14 +143,105 @@ const ValuesTable = (props) => {
     }
   });
 
+
+
+  const TableSynonyms = (props) => {
+    if (props.synonyms !== undefined) {
+      return props.synonyms.map((item, index) =>
+        <tr key={index}>
+          <td>{item.termName}</td>
+          <td>{item.termSource}</td>
+          <td>{item.termGroup}</td>
+        </tr>
+      );
+    }
+    return (null);
+  };
+
+  const NcitValues = (props) => {
+    if (props.ncit !== undefined) {
+      return props.ncit.map((item, index) =>
+        <div key={index} className="ncit-value-container">
+          <Row>
+            <TableCol xs={12}>
+              <b>NCI Thesaurus Code: </b>
+              <a href="#">{item.n_c}</a>
+            </TableCol>
+          </Row>
+          <Row>
+            <TableCol xs={12}>
+              <Table striped bordered condensed hover>
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <TableSynonyms synonyms={item.s}/>
+                </tbody>
+              </Table>
+            </TableCol>
+          </Row>
+        </div>
+      );
+    }
+    return (null);
+  };
+
+  const TableValue = (props) => props.value.map((item, index) =>
+    <Row key={index}>
+      <TableValueCol xs={12}>
+        <Row>
+          <Col xs={10}>
+            <a dangerouslySetInnerHTML={{ __html: item.n }}></a>
+          </Col>
+          <Col xs={2}>
+            <a href="#">
+              <Glyphicon glyph="plus" />
+            </a>
+          </Col>
+        </Row>
+        <div className="ncit-values">
+          <NcitValues ncit={item.n_syn} />
+        </div>
+      </TableValueCol>
+    </Row>
+  );
+
   const valuesItems = values.map((item, index) =>
-    <div key={index}>
-      <pre>{JSON.stringify(item)}</pre>
-    </div>
+    <TableRow key={index}>
+      <TableCol xs={3}>
+        {item.category}
+        <ul>
+          <li>{item.node}
+            <ul>
+              <li>{item.property}</li>
+            </ul>
+          </li>
+        </ul>
+      </TableCol>
+      <TableValues xs={9}>
+        <TableValue value={item.vs} />
+      </TableValues>
+    </TableRow>
   );
 
   return (
-    <div>{valuesItems}</div>
+    <Container>
+      <TableThead>
+        <Col xs={3}>
+          <TableTh>Category / Node / Property</TableTh>
+        </Col>
+        <Col xs={9}>
+          <TableTh>Matched GDC Values</TableTh>
+        </Col>
+      </TableThead>
+      <TableBody>
+        <Col xs={12}>{valuesItems}</Col>
+      </TableBody>
+    </Container>
   );
 };
 
