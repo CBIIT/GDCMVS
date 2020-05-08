@@ -1,11 +1,46 @@
 import React, { useState } from 'react';
-// import styled from 'styled-components';
+import styled from 'styled-components';
+import { Grid, Row, Col } from 'react-bootstrap';
 import { getHighlightObj } from '../shared';
 
-const PropsTable = (props) => {
-  let data = JSON.parse(JSON.stringify(props.properties));
+const Container = styled(Grid)`
+  font-size: 1.3rem;
+  padding-left: 15px;
+  padding-right: 15px;
+`;
 
-  const properties = data.map((item) => {
+const TableThead = styled(Row)`
+  background: #f1f1f1;
+`;
+
+const TableTh = styled.div`
+  font-weight: 700;
+  text-align: left;
+  padding-top: 15px;
+  padding-bottom: 15px;
+`;
+
+const TableBody = styled(Row)`
+  overflow-y: auto;
+  max-height: 500px;
+`;
+
+const TableRow = styled(Row)`
+  border-bottom: 1px solid #ecf0f1;
+`;
+
+const TableCol = styled(Col)`
+  text-align: left;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 1.428571;
+`;
+
+const PropsTable = (props) => {
+  let items = JSON.parse(JSON.stringify(props.properties));
+  let properties = [];
+
+  items.forEach(item => {
     if (item.highlight === undefined) return;
     let source = item._source;
     let highlight = item.highlight;
@@ -36,17 +71,60 @@ const PropsTable = (props) => {
       propObj.cdeId = highlightCdeIdObj[source.cde.id] ? highlightCdeIdObj[source.cde.id] : source.cde.id;
       propObj.cdeUrl = source.cde.url;
     }
-    return propObj;
+    properties.push(propObj);
   });
 
-  const PropsItems = properties.map((item, index) =>
-    <div key={index}>
-      <pre>{JSON.stringify(item)}</pre>
-    </div>
+  const propsItems = properties.map((item, index) =>
+    <TableRow key={index}>
+      <TableCol xs={2}>
+        {item.category}
+        <ul>
+          <li>{item.node}</li>
+        </ul>
+      </TableCol>
+      <TableCol xs={2}>
+        <a href="#" dangerouslySetInnerHTML={{ __html: item.property }}></a>
+      </TableCol>
+      <TableCol xs={4} dangerouslySetInnerHTML={{ __html: item.property_desc }}></TableCol>
+      <TableCol xs={2}>
+        {item.enum !== undefined
+          ? <div>
+            <a class="getGDCTerms" href="#" data-ref="">See All Values</a><br />
+            <a class="toCompare" href="#" data-ref=""> Compare with User List</a>
+          </div>
+          : <div>{item.type}</div>
+        }
+      </TableCol>
+      <TableCol xs={2}>
+        <div></div>
+      </TableCol>
+    </TableRow>
   );
 
+
   return (
-    <div>{PropsItems}</div>
+    <Container>
+      <TableThead>
+        <Col xs={2}>
+          <TableTh>Category / Node</TableTh>
+        </Col>
+        <Col xs={2}>
+          <TableTh>Property</TableTh>
+        </Col>
+        <Col xs={4}>
+          <TableTh>Description</TableTh>
+        </Col>
+        <Col xs={2}>
+          <TableTh>GDC Property Values</TableTh>
+        </Col>
+        <Col xs={2}>
+          <TableTh>caDSR CDE Reference</TableTh>
+        </Col>
+      </TableThead>
+      <TableBody>
+        <Col xs={12}>{propsItems}</Col>
+      </TableBody>
+    </Container>
   );
 };
 

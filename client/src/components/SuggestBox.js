@@ -46,7 +46,7 @@ const SuggestBox = (props) => {
   return (
     <Suggest>
       <SuggestContent style={props.suggest.length === 0 ? {} : { display: 'block' }}>
-        { suggestItems }
+        {suggestItems}
       </SuggestContent>
     </Suggest>
   );

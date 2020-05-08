@@ -96,7 +96,7 @@ const TabsController = (props) => {
       <Tab.Container id="tabs-controller" defaultActiveKey="values">
         <Row className="clearfix">
           <TabNavsCol sm={12}>
-            <TabNavText>Results for KEYWORD in:</TabNavText>
+            <TabNavText>Results for <b>{props.keyword}</b> in:</TabNavText>
             <StyledNav bsStyle="tabs">
               <NavItem eventKey="values">Values</NavItem>
               <NavItem eventKey="properties">Properties</NavItem>
@@ -106,13 +106,13 @@ const TabsController = (props) => {
           <Col sm={12}>
             <Tab.Content animation>
               <Tab.Pane unmountOnExit={true} eventKey="values">
-                <ValuesTable keyword={props.keyword} values={props.source}/>
+                <ValuesTable values={props.source}/>
               </Tab.Pane>
               <Tab.Pane unmountOnExit={true} eventKey="properties">
-                <PropsTable keyword={props.keyword} properties={props.source}/>
+                <PropsTable properties={props.source}/>
               </Tab.Pane>
               <Tab.Pane unmountOnExit={true} eventKey="dictionary">
-                <DictTable keyword={props.keyword} dictionary={props.source}/>
+                <DictTable dictionary={props.source}/>
               </Tab.Pane>
             </Tab.Content>
           </Col>

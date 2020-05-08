@@ -29,6 +29,11 @@ const TableRow = styled(Row)`
   border-bottom: 1px solid #ecf0f1;
 `;
 
+const TableRowFlex = styled(TableRow)`
+  display: flex;
+  align-items: stretch;
+`;
+
 const TableCol = styled(Col)`
   text-align: left;
   padding-top: 12px;
@@ -36,25 +41,28 @@ const TableCol = styled(Col)`
   line-height: 1.428571;
 `;
 
+const TableColFlex = styled(TableCol)`
+  display: flex;
+  align-items: stretch;
+`;
+
 const TableValues = styled(Col)`
   border-left: 1px solid #ecf0f1;
 `;
 
-const TableValueCol = styled(Col)`
-  text-align: left;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  line-height: 1.428571;
-  border-bottom: 1px solid #ecf0f1;
+const ColRight = styled(Col)`
+  text-align: right;
 `;
 
 const ValuesTable = (props) => {
   let termTypeNotAssigned = false;
   let valuesCount = 0;
 
-  let data = JSON.parse(JSON.stringify(props.values));
+  let items = JSON.parse(JSON.stringify(props.values));
 
-  const values = data.map((data, index) => {
+  let values = [];
+
+  items.forEach((data, index) => {
     let enums = data.inner_hits.enum;
     if (enums.hits.total !== 0) { // If the searched term is cde id.
       let enumHits = enums.hits.hits;
@@ -139,11 +147,11 @@ const ValuesTable = (props) => {
       });
       obj.vs = sortAlphabetically(obj.vs);
       valuesCount += obj.vs.length;
-      return obj;
+      values.push(obj);
     }
   });
 
-
+  console.log(values);
 
   const TableSynonyms = (props) => {
     if (props.synonyms !== undefined) {
@@ -190,28 +198,41 @@ const ValuesTable = (props) => {
     return (null);
   };
 
-  const TableValue = (props) => props.value.map((item, index) =>
-    <Row key={index}>
-      <TableValueCol xs={12}>
+  const TableValue = (props) => {
+    let [isToggleOn, setIsToggleOn] = useState(false);
+
+    const ToggleTableHandler = event => {
+      event.preventDefault();
+      setIsToggleOn(!isToggleOn);
+    };
+
+    console.log(props);
+
+    return (
+      <TableCol xs={12}>
         <Row>
           <Col xs={10}>
-            <a dangerouslySetInnerHTML={{ __html: item.n }}></a>
+            <a href="#" dangerouslySetInnerHTML={{ __html: props.name }}></a>
           </Col>
-          <Col xs={2}>
-            <a href="#">
-              <Glyphicon glyph="plus" />
-            </a>
-          </Col>
+          <ColRight xs={2}>
+            {props.nsyn !== undefined &&
+              <a href="#" onClick={ToggleTableHandler}>
+                <Glyphicon glyph="plus" />
+              </a>
+            }
+          </ColRight>
         </Row>
-        <div className="ncit-values">
-          <NcitValues ncit={item.n_syn} />
-        </div>
-      </TableValueCol>
-    </Row>
-  );
+        {props.nsyn !== undefined &&
+          <div className="ncit-values" style={isToggleOn === true ? { display: 'block' } : { display: 'none' }}>
+            <NcitValues ncit={props.nsyn} />
+          </div>
+        }
+      </TableCol>
+    );
+  };
 
   const valuesItems = values.map((item, index) =>
-    <TableRow key={index}>
+    <TableRowFlex key={index}>
       <TableCol xs={3}>
         {item.category}
         <ul>
@@ -223,9 +244,11 @@ const ValuesTable = (props) => {
         </ul>
       </TableCol>
       <TableValues xs={9}>
-        <TableValue value={item.vs} />
+        {item.vs.map((value, index) =>
+          <TableRowFlex key={index}><TableValue name={value.n} nsyn={value.n_syn}/></TableRowFlex>
+        )}
       </TableValues>
-    </TableRow>
+    </TableRowFlex>
   );
 
   return (
