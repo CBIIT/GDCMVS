@@ -101,7 +101,6 @@ const PropsTable = (props) => {
     </TableRow>
   );
 
-
   return (
     <Container>
       <TableThead>

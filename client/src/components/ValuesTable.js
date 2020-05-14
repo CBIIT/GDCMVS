@@ -62,7 +62,7 @@ const ValuesTable = (props) => {
 
   let values = [];
 
-  items.forEach((data, index) => {
+  items.forEach((data) => {
     let enums = data.inner_hits.enum;
     if (enums.hits.total !== 0) { // If the searched term is cde id.
       let enumHits = enums.hits.hits;
@@ -205,8 +205,6 @@ const ValuesTable = (props) => {
       event.preventDefault();
       setIsToggleOn(!isToggleOn);
     };
-
-    console.log(props);
 
     return (
       <TableCol xs={12}>
