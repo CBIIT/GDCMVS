@@ -55,6 +55,8 @@
     "css-loader": "^2.1.1",
     "eslint": "^5.16.0",
     "eslint-loader": "^2.2.1",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.2",
     "filemanager-webpack-plugin": "^2.0.5",
     "mini-css-extract-plugin": "^0.6.0",
     "mocha": "^7.1.2",

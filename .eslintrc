@@ -1,5 +1,10 @@
 {
   "parser": "babel-eslint",
+
+  "plugins": [
+    "react",
+    "react-hooks"
+  ],
   
   "env": {
     "browser": true,
@@ -17,9 +22,15 @@
     "ecmaVersion": 2018,
     "sourceType": "module",
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
+      "modules": true
     }
   },
+
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
 
   "rules": {
     "accessor-pairs": "error",
@@ -190,6 +201,9 @@
     "valid-typeof": ["error", { "requireStringLiterals": true }],
     "wrap-iife": ["error", "any", { "functionPrototypeMethods": true }],
     "yield-star-spacing": ["error", "both"],
-    "yoda": ["error", "never"]
+    "yoda": ["error", "never"],
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/prop-types": 0
   }
 }

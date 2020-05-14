@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap';
 import ValuesTable from './ValuesTable';

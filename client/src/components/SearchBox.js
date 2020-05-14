@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { apiSuggest } from '../api';
-import { InputGroup, FormControl, FormGroup,Button, Checkbox} from 'react-bootstrap';
+import { InputGroup, FormControl, FormGroup, Button, Checkbox } from 'react-bootstrap';
 import SuggestBox from './SuggestBox';
 
 const SearchBar = styled.div`
@@ -32,7 +32,7 @@ const SearchButton = styled(Button)`
 const SearchBox = (props) => {
   let [suggestState, setSuggestState] = useState([]);
   let [searchState, setSearchState] = useState('');
-  let [sourceState, setSourceState] = useState([]);
+  // let [sourceState, setSourceState] = useState([]);
 
   const suggestHandler = event => {
     setSearchState(event.target.value);
@@ -55,8 +55,8 @@ const SearchBox = (props) => {
           <Checkbox inline>Exact match</Checkbox>
           <Checkbox inline>Property description</Checkbox>
           <Checkbox inline>Synonyms</Checkbox>
-          <a href="https://ncit.nci.nih.gov/" target="_blank">Search in NCIt</a>
-          <a href="https://ncit.nci.nih.gov/" target="_blank">Search in NCIt</a>
+          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">Search in NCIt</a>
+          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">Search in NCIt</a>
         </FormGroup>
       </SearchOptions>
     </div>

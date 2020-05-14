@@ -72,7 +72,7 @@ const Properties = styled.li`
   }
 `;
 
-const Values= styled.li`
+const Values = styled.li`
   & .treeindenter {
     padding-left: 85px;
   }
@@ -138,7 +138,7 @@ const DictTable = (props) => {
       }
       let highlightValueObj = {};
       if (enumHits.total !== 0) highlightValueObj = getAllValueHighlight(enumHits);
-      propertyObj.all_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+      propertyObj.all_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
       propertyObj.all_values.sort();
 
       if (enumHits.total !== 0 && highlightCdeId === undefined) {
@@ -153,10 +153,10 @@ const DictTable = (props) => {
         });
       } else if (enumHits.total !== 0 && highlightCdeId !== undefined) {
         let highlightValueObj = getAllValueHighlight(enumHits);
-        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
         propertyObj.hl_values.sort();
       } else if (enumHits.total === 0 && highlightCdeId !== undefined) {
-        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return x.n; }) : [];
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function(x) { return x.n; }) : [];
         propertyObj.hl_values.sort();
       }
       propertyObj.length += propertyObj.hl_values.length;
@@ -213,7 +213,7 @@ const DictTable = (props) => {
       }
       let highlightValueObj = {};
       if (enumHits.total !== 0) highlightValueObj = getAllValueHighlight(enumHits);
-      propertyObj.all_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+      propertyObj.all_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
       propertyObj.all_values.sort();
 
       if (enumHits.total !== 0 && highlightCdeId === undefined) {
@@ -228,10 +228,10 @@ const DictTable = (props) => {
         });
       } else if (enumHits.total !== 0 && highlightCdeId !== undefined) {
         let highlightValueObj = getAllValueHighlight(enumHits);
-        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function(x) { return highlightValueObj[x.n] ? highlightValueObj[x.n] : x.n; }) : [];
         propertyObj.hl_values.sort();
       } else if (enumHits.total === 0 && highlightCdeId !== undefined) {
-        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function (x) { return x.n; }) : [];
+        propertyObj.hl_values = source.enum !== undefined ? source.enum.map(function(x) { return x.n; }) : [];
         propertyObj.hl_values.sort();
       }
       propertyObj.length += propertyObj.hl_values.length;
@@ -284,19 +284,19 @@ const DictTable = (props) => {
     return (null);
   };
 
-  const AllValues = (props) => {
-    if (props.allvalues !== undefined || props.allvalues.length !== 0) {
-      return props.allvalues.map((item, index) =>
-        <Values key={index}>
-          <TableRow>
-            <TableCol className="treeindenter" xs={4} dangerouslySetInnerHTML={{ __html: item }}></TableCol>
-            <TableCol xs={8}></TableCol>
-          </TableRow>
-        </Values>
-      );
-    }
-    return (null);
-  };
+  // const AllValues = (props) => {
+  //   if (props.allvalues !== undefined || props.allvalues.length !== 0) {
+  //     return props.allvalues.map((item, index) =>
+  //       <Values key={index}>
+  //         <TableRow>
+  //           <TableCol className="treeindenter" xs={4} dangerouslySetInnerHTML={{ __html: item }}></TableCol>
+  //           <TableCol xs={8}></TableCol>
+  //         </TableRow>
+  //       </Values>
+  //     );
+  //   }
+  //   return (null);
+  // };
 
   const PropertiesTable = (props) => {
     let [isToggleOn, setIsToggleOn] = useState(false);

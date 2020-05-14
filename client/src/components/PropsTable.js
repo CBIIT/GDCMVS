@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { getHighlightObj } from '../shared';
@@ -89,8 +89,8 @@ const PropsTable = (props) => {
       <TableCol xs={2}>
         {item.enum !== undefined
           ? <div>
-            <a class="getGDCTerms" href="#" data-ref="">See All Values</a><br />
-            <a class="toCompare" href="#" data-ref=""> Compare with User List</a>
+            <a id="getGDCTerms" href="#" data-ref="">See All Values</a><br />
+            <a id="toCompare" href="#" data-ref=""> Compare with User List</a>
           </div>
           : <div>{item.type}</div>
         }
