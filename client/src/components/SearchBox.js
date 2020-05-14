@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { apiSuggest } from '../api';
 import { InputGroup, FormControl, FormGroup, Button, Checkbox } from 'react-bootstrap';
 import SuggestBox from './SuggestBox';
+import GDCTerms from './dialogs/GDCTerms';
 
 const SearchBar = styled.div`
   width: 60%;
@@ -59,6 +60,7 @@ const SearchBox = (props) => {
           <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">Search in NCIt</a>
         </FormGroup>
       </SearchOptions>
+      <GDCTerms />
     </div>
   );
 };

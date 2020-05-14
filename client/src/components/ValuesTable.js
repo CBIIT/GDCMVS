@@ -41,10 +41,10 @@ const TableCol = styled(Col)`
   line-height: 1.428571;
 `;
 
-const TableColFlex = styled(TableCol)`
-  display: flex;
-  align-items: stretch;
-`;
+// const TableColFlex = styled(TableCol)`
+//   display: flex;
+//   align-items: stretch;
+// `;
 
 const TableValues = styled(Col)`
   border-left: 1px solid #ecf0f1;
@@ -55,8 +55,8 @@ const ColRight = styled(Col)`
 `;
 
 const ValuesTable = (props) => {
-  let termTypeNotAssigned = false;
-  let valuesCount = 0;
+  // let termTypeNotAssigned = false;
+  // let valuesCount = 0;
 
   let items = JSON.parse(JSON.stringify(props.values));
 
@@ -138,20 +138,18 @@ const ValuesTable = (props) => {
           valueObj.i_c.id = source.i_c ? (obj.property + '-' + valueObj.src_n + '-' + source.i_c.c).replace(/[^a-zA-Z0-9-]+/gi, '') : undefined;
           if (source.ic_enum !== undefined) {
             valueObj.ic_enum = source.ic_enum;
-            source.ic_enum.forEach(ic => {
-              if (ic.term_type === '*') termTypeNotAssigned = true;
-            });
+            // source.ic_enum.forEach(ic => {
+            //   if (ic.term_type === '*') termTypeNotAssigned = true;
+            // });
           }
           obj.vs.push(valueObj);
         }
       });
       obj.vs = sortAlphabetically(obj.vs);
-      valuesCount += obj.vs.length;
+      // valuesCount += obj.vs.length;
       values.push(obj);
     }
   });
-
-  console.log(values);
 
   const TableSynonyms = (props) => {
     if (props.synonyms !== undefined) {
