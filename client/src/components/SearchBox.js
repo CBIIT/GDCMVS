@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { apiSuggest } from '../api';
-import { InputGroup, FormControl, FormGroup, Button, Checkbox } from 'react-bootstrap';
+import { InputGroup, FormControl, FormGroup, Button, Checkbox, Glyphicon } from 'react-bootstrap';
 import SuggestBox from './SuggestBox';
 // import GDCValues from './dialogs/GDCValues';
 
@@ -30,13 +30,59 @@ const SearchButton = styled(Button)`
   color: #fff;
 `;
 
+const CheckboxSpan = styled.span`
+  position: relative;
+  display: block;
+  border: 1px solid #dce4ec;
+  background-color: #fff;
+  border-radius: .25em;
+  width: 2em;
+  height: 2em;
+  float: left;
+  margin-right: .5em;
+`;
+
+const CheckboxIcon = styled(Glyphicon)`
+  position: absolute;
+  font-size: .9em;
+  line-height: 0;
+  top: 50%;
+  left: 26%;
+`;
+
+const CheckboxStyled = styled(Checkbox)`
+  padding-left: 0;
+
+  input[type=checkbox] {
+    background-color: red;
+  }
+  input[type=checkbox]:checked + ${CheckboxSpan} {
+    background-color: #6a7676;
+    border-color: #6a7676;
+  }
+
+  input[type=checkbox]:focus + ${CheckboxSpan} {
+    box-shadow: 0 0 4px 2px #c2c2c2;
+    outline: thin dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
+
+  input[type=checkbox] + ${CheckboxSpan} > ${CheckboxIcon}{
+    opacity: 0;
+  }
+
+  input[type=checkbox]:checked + ${CheckboxSpan} > ${CheckboxIcon}{
+    opacity: 1;
+    color: #fff;
+  }
+`;
+
 const SearchBox = (props) => {
   let [suggestState, setSuggestState] = useState([]);
   let [searchState, setSearchState] = useState('');
   let [selectIndexState, setSelectIndexState] = useState(-1);
-  // let [sourceState, setSourceState] = useState([]);
-
-  // const ref = useRef(null);
+  let [checkedState, setCheckedState] = useState(false);
 
   const suggestClickHandler = (id, event) => {
     setSearchState(id);
@@ -68,47 +114,29 @@ const SearchBox = (props) => {
     setSelectIndexState(-1);
   };
 
-  // useEffect(() => {
-  //   document.body.addEventListener('click', clickHandler);
-  //   return () => document.body.removeEventListener('click', clickHandler);
-  // }, []);
-
-  // const measuredRef = useCallback(node => {
-  //   if (node !== null) {
-  //     console.log(node);
-  //   }
-  // }, []);
-
-  // const useOutsideClick = (ref, callback) => {
-  //   const handleClick = e => {
-  //     if (ref.current && !ref.current.contains(e.target)) {
-  //       callback();
-  //     }
-  //   };
-  //   useEffect(() => {
-  //     document.addEventListener('click', handleClick);
-  //     return () => {
-  //       document.removeEventListener('click', handleClick);
-  //     };
-  //   });
-  // };
-
-  // useOutsideClick(ref, () => {
-  //   alert('You clicked outside');
-  // });
-
   const suggestHandler = event => {
     setSearchState(event.target.value);
     apiSuggest(event.target.value).then(result => setSuggestState(result));
+  };
+
+  const checkedToggleHandler = event => {
+    setCheckedState(event.target.checked);
   };
 
   return (
     <div>
       <SearchBar>
         <InputGroup>
-          <FormControl type="text" value={searchState} onChange={suggestHandler} onKeyDown={suggestKeyPressHandler}/>
+          <FormControl
+            type="text"
+            value={searchState}
+            onChange={suggestHandler}
+            onKeyDown={suggestKeyPressHandler}
+          />
           <InputGroup.Button>
-            <SearchButton onClick={() => props.searchTrigger(searchState)}>Search</SearchButton>
+            <SearchButton onClick={() => props.searchTrigger(searchState)}>
+              Search
+            </SearchButton>
           </InputGroup.Button>
         </InputGroup>
         <SuggestBox
@@ -120,11 +148,30 @@ const SearchBox = (props) => {
       </SearchBar>
       <SearchOptions>
         <FormGroup>
-          <Checkbox inline>Exact match</Checkbox>
-          <Checkbox inline>Property description</Checkbox>
-          <Checkbox inline>Synonyms</Checkbox>
-          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">Search in NCIt</a>
-          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">Search in NCIt</a>
+          <CheckboxStyled inline onChange={checkedToggleHandler}>
+            <CheckboxSpan>
+              <CheckboxIcon glyph="ok" />
+            </CheckboxSpan>
+            Exact match
+          </CheckboxStyled>
+          <CheckboxStyled inline onChange={checkedToggleHandler}>
+            <CheckboxSpan>
+              <CheckboxIcon glyph="ok" />
+            </CheckboxSpan>
+            Property description
+          </CheckboxStyled>
+          <CheckboxStyled inline onChange={checkedToggleHandler}>
+            <CheckboxSpan>
+              <CheckboxIcon glyph="ok" />
+            </CheckboxSpan>
+            Synonyms
+          </CheckboxStyled>
+          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">
+            Search in NCIt
+          </a>
+          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">
+            Search in NCIt
+          </a>
         </FormGroup>
       </SearchOptions>
     </div>
