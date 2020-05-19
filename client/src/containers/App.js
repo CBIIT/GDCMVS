@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div>
-      <SearchBox search={searchHandler}/>
+      <SearchBox searchTrigger={searchHandler}/>
       <TabsController keyword={keywordState} source={sourceState}/>
     </div>
   );

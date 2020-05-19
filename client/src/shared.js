@@ -1,3 +1,15 @@
+export const getAllSyn = (items) => {
+  items.forEach(em => {
+    if (em.n_syn !== undefined) {
+      em.all_syn = [];
+      em.n_syn.forEach(syn => {
+        em.all_syn = em.all_syn.concat(syn.s.map((x) => { return x.termName; }));
+      });
+    }
+  });
+  return items;
+};
+
 export const sortAlphabetically = (values) => {
   values.sort((a, b) => {
     const an = a.n.replace(/<b>/g, '').replace(/<\/b>/g, '').toLowerCase();

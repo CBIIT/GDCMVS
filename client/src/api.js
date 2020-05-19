@@ -11,3 +11,8 @@ export const apiSearchAll = async(keyword, options) => {
   const response = await fetch(`${baseUrl}/all/p?keyword=${keyword}&options=${opts}`);
   return response.json();
 };
+
+export const apiGetGDCDataById = async(id) => {
+  const response = await fetch(`${baseUrl}/p/local/vs?id=${id}`);
+  return response.json();
+};

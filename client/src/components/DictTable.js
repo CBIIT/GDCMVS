@@ -268,8 +268,6 @@ const DictTable = (props) => {
     dictionary.push(categoryObj);
   }
 
-  console.log(dictionary);
-
   const HighlightValues = (props) => {
     if (props.hlvalues !== undefined || props.hlvalues.length !== 0) {
       return props.hlvalues.map((item, index) =>

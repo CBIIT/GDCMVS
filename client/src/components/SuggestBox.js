@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const Suggest = styled.div`
@@ -24,6 +24,14 @@ const SuggestObject = styled.div`
   font-size: 1em;
   display: flex;
   justify-content: space-between;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &.selected {
+    background-color: #f0f0f0;
+  }
 `;
 
 const SuggestName = styled.div`
@@ -36,8 +44,23 @@ const SuggestType = styled.div`
 `;
 
 const SuggestBox = (props) => {
+  const node = useRef();
+
+  useEffect(() => {
+    const clickHandler = event => {
+      if (node.current.contains(event.target)) return;
+      props.cleanSuggest();
+    };
+
+    document.body.addEventListener('click', clickHandler);
+    return () => document.body.removeEventListener('click', clickHandler);
+  }, [props]);
+
   const suggestItems = props.suggest.map((item, index) =>
-    <SuggestObject key={item.id}>
+    <SuggestObject
+      key={item.id}
+      onClick={e => props.suggestClick(item.id, e)}
+      className={index === props.suggestSelected ? 'selected' : ''}>
       <SuggestName>{item.id}</SuggestName>
       <SuggestType>{item.type}</SuggestType>
     </SuggestObject>
@@ -45,7 +68,7 @@ const SuggestBox = (props) => {
 
   return (
     <Suggest>
-      <SuggestContent style={props.suggest.length === 0 ? {} : { display: 'block' }}>
+      <SuggestContent ref={node} style={props.suggest.length === 0 ? {} : { display: 'block' }}>
         {suggestItems}
       </SuggestContent>
     </Suggest>

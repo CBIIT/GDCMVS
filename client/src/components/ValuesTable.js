@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Grid, Row, Col, Table, Glyphicon } from 'react-bootstrap';
 import { getHighlightObj, sortAlphabetically, sortSynonyms } from '../shared';
+import GDCTerms from './dialogs/GDCTerms';
 
 const Container = styled(Grid)`
   font-size: 1.3rem;
@@ -238,6 +239,7 @@ const ValuesTable = (props) => {
             </ul>
           </li>
         </ul>
+        <GDCTerms idterm={item.id}/>
       </TableCol>
       <TableValues xs={9}>
         {item.vs.map((value, index) =>
