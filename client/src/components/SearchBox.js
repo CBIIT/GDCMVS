@@ -30,6 +30,11 @@ const SearchButton = styled(Button)`
   color: #fff;
 `;
 
+const FormGroupStyled = styled(FormGroup)`
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
 const CheckboxSpan = styled.span`
   position: relative;
   display: block;
@@ -51,11 +56,6 @@ const CheckboxIcon = styled(Glyphicon)`
 `;
 
 const CheckboxStyled = styled(Checkbox)`
-  padding-left: 0;
-
-  input[type=checkbox] {
-    background-color: red;
-  }
   input[type=checkbox]:checked + ${CheckboxSpan} {
     background-color: #6a7676;
     border-color: #6a7676;
@@ -76,6 +76,10 @@ const CheckboxStyled = styled(Checkbox)`
     opacity: 1;
     color: #fff;
   }
+`;
+
+const ExternalLink = styled.a`
+  margin-left: 2em;
 `;
 
 const SearchBox = (props) => {
@@ -154,32 +158,34 @@ const SearchBox = (props) => {
         />
       </SearchBar>
       <SearchOptions>
-        <FormGroup>
-          <CheckboxStyled id="match" inline onChange={checkedToggleHandler}>
+        <FormGroupStyled>
+          <CheckboxStyled id="match" inline value={optionsState.match} onChange={checkedToggleHandler}>
             <CheckboxSpan>
               <CheckboxIcon glyph="ok" />
             </CheckboxSpan>
             Exact match
           </CheckboxStyled>
-          <CheckboxStyled id="desc" inline onChange={checkedToggleHandler}>
+          <CheckboxStyled id="desc" inline value={optionsState.desc} onChange={checkedToggleHandler}>
             <CheckboxSpan>
               <CheckboxIcon glyph="ok" />
             </CheckboxSpan>
             Property description
           </CheckboxStyled>
-          <CheckboxStyled id="syns" inline onChange={checkedToggleHandler}>
+          <CheckboxStyled id="syns" inline value={optionsState.syns} onChange={checkedToggleHandler}>
             <CheckboxSpan>
               <CheckboxIcon glyph="ok" />
             </CheckboxSpan>
             Synonyms
           </CheckboxStyled>
-          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">
+        </FormGroupStyled>
+        <div>
+          <ExternalLink href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">
             Search in NCIt
-          </a>
-          <a href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">
+          </ExternalLink>
+          <ExternalLink href="https://ncit.nci.nih.gov/" target="_blank" rel="noreferrer">
             Search in NCIt
-          </a>
-        </FormGroup>
+          </ExternalLink>
+        </div>
       </SearchOptions>
     </div>
   );
