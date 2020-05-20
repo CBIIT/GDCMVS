@@ -8,9 +8,9 @@ function App() {
   let [keywordState, setKeywordState] = useState('');
   let [sourceState, setSourceState] = useState([]);
 
-  const searchHandler = (keyword) => {
+  const searchHandler = (keyword, options) => {
     setKeywordState(keyword);
-    apiSearchAll(keyword, {}).then(result => setSourceState(result));
+    apiSearchAll(keyword, options).then(result => setSourceState(result));
   };
 
   return (

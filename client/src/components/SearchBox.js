@@ -82,12 +82,16 @@ const SearchBox = (props) => {
   let [suggestState, setSuggestState] = useState([]);
   let [searchState, setSearchState] = useState('');
   let [selectIndexState, setSelectIndexState] = useState(-1);
-  let [checkedState, setCheckedState] = useState(false);
+  let [optionsState, setOptionsState] = useState({
+    match: false,
+    desc: false,
+    syns: false
+  });
 
   const suggestClickHandler = (id, event) => {
     setSearchState(id);
     setSuggestState([]);
-    props.searchTrigger(id);
+    props.searchTrigger(id, optionsState);
   };
 
   const suggestKeyPressHandler = event => {
@@ -120,7 +124,10 @@ const SearchBox = (props) => {
   };
 
   const checkedToggleHandler = event => {
-    setCheckedState(event.target.checked);
+    setOptionsState({
+      ...optionsState,
+      [event.target.id]: event.target.checked
+    });
   };
 
   return (
@@ -134,7 +141,7 @@ const SearchBox = (props) => {
             onKeyDown={suggestKeyPressHandler}
           />
           <InputGroup.Button>
-            <SearchButton onClick={() => props.searchTrigger(searchState)}>
+            <SearchButton onClick={() => props.searchTrigger(searchState, optionsState)}>
               Search
             </SearchButton>
           </InputGroup.Button>
@@ -148,19 +155,19 @@ const SearchBox = (props) => {
       </SearchBar>
       <SearchOptions>
         <FormGroup>
-          <CheckboxStyled inline onChange={checkedToggleHandler}>
+          <CheckboxStyled id="match" inline onChange={checkedToggleHandler}>
             <CheckboxSpan>
               <CheckboxIcon glyph="ok" />
             </CheckboxSpan>
             Exact match
           </CheckboxStyled>
-          <CheckboxStyled inline onChange={checkedToggleHandler}>
+          <CheckboxStyled id="desc" inline onChange={checkedToggleHandler}>
             <CheckboxSpan>
               <CheckboxIcon glyph="ok" />
             </CheckboxSpan>
             Property description
           </CheckboxStyled>
-          <CheckboxStyled inline onChange={checkedToggleHandler}>
+          <CheckboxStyled id="syns" inline onChange={checkedToggleHandler}>
             <CheckboxSpan>
               <CheckboxIcon glyph="ok" />
             </CheckboxSpan>
