@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Grid, Row, Col, Table, Glyphicon } from 'react-bootstrap';
+import { Grid, Row, Col, Table, Glyphicon, Tab, Nav, NavItem } from 'react-bootstrap';
 import { getHighlightObj, sortAlphabetically, sortSynonyms } from '../shared';
 import GDCTerms from './dialogs/GDCTerms';
 
@@ -42,10 +42,23 @@ const TableCol = styled(Col)`
   line-height: 1.428571;
 `;
 
-// const TableColFlex = styled(TableCol)`
-//   display: flex;
-//   align-items: stretch;
-// `;
+const TableUl = styled.ul`
+  padding-left: 15px;
+  list-style: none;
+`;
+
+const TableLi = styled.li`
+  &::before {
+    font-family: 'Glyphicons Halflings';
+    content: "\\e259";
+    font-size: 1rem;
+    display: inline-block;
+    margin: 0 5px 0 -15px;
+    color: #acacac;
+    transform: rotate(45deg);
+    position: absolute;
+  }
+`;
 
 const TableValues = styled(Col)`
   border-left: 1px solid #ecf0f1;
@@ -152,6 +165,8 @@ const ValuesTable = (props) => {
     }
   });
 
+  console.log(values);
+
   const TableSynonyms = (props) => {
     if (props.synonyms !== undefined) {
       return props.synonyms.map((item, index) =>
@@ -197,6 +212,38 @@ const ValuesTable = (props) => {
     return (null);
   };
 
+  const TabsContent = (props) => {
+    if (props.ncit !== undefined || props.icemun !== undefined) {
+      return (
+        <Tab.Container id="tabs-controller" defaultActiveKey={props.ncit[0].id}>
+          <Row className="clearfix">
+            <Col sm={12}>
+              <Nav bsStyle="tabs">
+                {props.ncit.map((syn, index) =>
+                  <NavItem key={index} eventKey={syn.id}>{syn.n_c} (NCIt)</NavItem>
+                )}
+                <NavItem eventKey="first">Tab 1</NavItem>
+                <NavItem eventKey="second">Tab 2</NavItem>
+              </Nav>
+            </Col>
+            <Col sm={12}>
+              <Tab.Content animation={false}>
+                {props.ncit.map((syn, index) =>
+                  <Tab.Pane key={index} eventKey={syn.id}>
+                    <pre>{JSON.stringify(syn)}</pre>
+                  </Tab.Pane>
+                )}
+                <Tab.Pane eventKey="first">Tab 1 content</Tab.Pane>
+                <Tab.Pane eventKey="second">Tab 2 content</Tab.Pane>
+              </Tab.Content>
+            </Col>
+          </Row>
+        </Tab.Container>
+      );
+    }
+    return (null);
+  };
+
   const TableValue = (props) => {
     let [isToggleOn, setIsToggleOn] = useState(false);
 
@@ -212,16 +259,17 @@ const ValuesTable = (props) => {
             <a href="#" dangerouslySetInnerHTML={{ __html: props.name }}></a>
           </Col>
           <ColRight xs={2}>
-            {props.nsyn !== undefined &&
+            {(props.nsyn !== undefined || props.icemun !== undefined) &&
               <a href="#" onClick={ToggleTableHandler}>
                 <Glyphicon glyph="plus" />
               </a>
             }
           </ColRight>
         </Row>
-        {props.nsyn !== undefined &&
+        {(props.nsyn !== undefined || props.icemun !== undefined) &&
           <div className="ncit-values" style={isToggleOn === true ? { display: 'block' } : { display: 'none' }}>
             <NcitValues ncit={props.nsyn} />
+            <TabsContent ncit={props.nsyn} icemun={props.icenum} />
           </div>
         }
       </TableCol>
@@ -232,18 +280,20 @@ const ValuesTable = (props) => {
     <TableRowFlex key={index}>
       <TableCol xs={3}>
         {item.category}
-        <ul>
-          <li>{item.node}
-            <ul>
-              <li>{item.property}</li>
-            </ul>
-          </li>
-        </ul>
+        <TableUl>
+          <TableLi>{item.node}
+            <TableUl>
+              <TableLi>{item.property}</TableLi>
+            </TableUl>
+          </TableLi>
+        </TableUl>
         <GDCTerms idterm={item.id}/>
       </TableCol>
       <TableValues xs={9}>
         {item.vs.map((value, index) =>
-          <TableRowFlex key={index}><TableValue name={value.n} nsyn={value.n_syn}/></TableRowFlex>
+          <TableRowFlex key={index}>
+            <TableValue name={value.n} ic={value.i_c} icemun={value.ic_enum} nsyn={value.n_syn}/>
+          </TableRowFlex>
         )}
       </TableValues>
     </TableRowFlex>

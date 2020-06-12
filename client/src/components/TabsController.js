@@ -104,7 +104,7 @@ const TabsController = (props) => {
             </StyledNav>
           </TabNavsCol>
           <Col sm={12}>
-            <Tab.Content animation>
+            <Tab.Content animation={false}>
               <Tab.Pane unmountOnExit={true} eventKey="values">
                 <ValuesTable values={props.source}/>
               </Tab.Pane>

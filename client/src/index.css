@@ -24,7 +24,11 @@ footer {
   bottom: 0;
 }
 
-.flexible-modal {
+a, a:focus, a:hover, a:link, a:visited {
+  color: #2a72a4;
+}
+
+/* .flexible-modal {
   position: absolute;
   z-index: 1;
   border: 1px solid #ccc;
@@ -55,4 +59,4 @@ footer {
   right:0;
   top:0;
   cursor:move;
-}
+} */
