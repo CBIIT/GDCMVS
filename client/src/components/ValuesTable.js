@@ -180,6 +180,51 @@ const ValuesTable = (props) => {
     return (null);
   };
 
+  const TableICDO3Syns = (props) => {
+    if (props.synonyms !== undefined) {
+      return props.synonyms.map((item, index) =>
+        <tr key={index}>
+          <td>{item.n}</td>
+          <td>(ICD-O-3)</td>
+          <td>{item.term_type}</td>
+        </tr>
+      );
+    }
+    return (null);
+  };
+
+  const NcitValue = (props) => {
+    if (props.synonym !== undefined) {
+      return (
+        <div className="ncit-value-container">
+          <Row>
+            <TableCol xs={12}>
+              <b>NCI Thesaurus Code: </b>
+              <a href="#">{props.synonym.n_c}</a>
+            </TableCol>
+          </Row>
+          <Row>
+            <TableCol xs={12}>
+              <Table striped bordered condensed hover>
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <TableSynonyms synonyms={props.synonym.s}/>
+                </tbody>
+              </Table>
+            </TableCol>
+          </Row>
+        </div>
+      );
+    }
+    return (null);
+  };
+
   const NcitValues = (props) => {
     if (props.ncit !== undefined) {
       return props.ncit.map((item, index) =>
@@ -215,30 +260,67 @@ const ValuesTable = (props) => {
   const TabsContent = (props) => {
     if (props.ncit !== undefined || props.icemun !== undefined) {
       return (
-        <Tab.Container id="tabs-controller" defaultActiveKey={props.ncit[0].id}>
+        <Tab.Container id="tabs-controller" defaultActiveKey={ props.icemun !== undefined ? props.ic.id : props.ncit[0].id}>
           <Row className="clearfix">
             <Col sm={12}>
               <Nav bsStyle="tabs">
-                {props.ncit.map((syn, index) =>
-                  <NavItem key={index} eventKey={syn.id}>{syn.n_c} (NCIt)</NavItem>
-                )}
-                <NavItem eventKey="first">Tab 1</NavItem>
-                <NavItem eventKey="second">Tab 2</NavItem>
+                {props.icemun !== undefined &&
+                  <NavItem eventKey={props.ic.id} dangerouslySetInnerHTML={{ __html: props.ic.c + ' (ICD-O-3)' }}></NavItem>
+                }
+                {props.ncit !== undefined &&
+                  props.ncit.map((syn, index) =>
+                    <NavItem key={index} eventKey={syn.id}>{syn.n_c} (NCIt)</NavItem>
+                  )
+                }
               </Nav>
             </Col>
             <Col sm={12}>
               <Tab.Content animation={false}>
-                {props.ncit.map((syn, index) =>
-                  <Tab.Pane key={index} eventKey={syn.id}>
-                    <pre>{JSON.stringify(syn)}</pre>
+                {props.icemun !== undefined &&
+                  <Tab.Pane eventKey={props.ic.id}>
+                    <ICDO3Value ic={props.ic} icemun={props.icemun} />
                   </Tab.Pane>
-                )}
-                <Tab.Pane eventKey="first">Tab 1 content</Tab.Pane>
-                <Tab.Pane eventKey="second">Tab 2 content</Tab.Pane>
+                }
+                {props.ncit !== undefined &&
+                  props.ncit.map((syn, index) =>
+                    <Tab.Pane key={index} eventKey={syn.id}>
+                      <NcitValue synonym={syn} />
+                    </Tab.Pane>
+                  )
+                }
               </Tab.Content>
             </Col>
           </Row>
         </Tab.Container>
+      );
+    }
+    return (null);
+  };
+
+  const ICDO3Value = (props) => {
+    if (props.icemun !== undefined) {
+      return (
+        <div className="icdo3-value-container">
+          <Row>
+            <TableCol xs={12} dangerouslySetInnerHTML={{ __html: props.ic.c + ' (ICD-O-3)' }}></TableCol>
+          </Row>
+          <Row>
+            <TableCol xs={12}>
+              <Table striped bordered condensed hover>
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <TableICDO3Syns synonyms={props.icemun}/>
+                </tbody>
+              </Table>
+            </TableCol>
+          </Row>
+        </div>
       );
     }
     return (null);
@@ -268,8 +350,15 @@ const ValuesTable = (props) => {
         </Row>
         {(props.nsyn !== undefined || props.icemun !== undefined) &&
           <div className="ncit-values" style={isToggleOn === true ? { display: 'block' } : { display: 'none' }}>
-            <NcitValues ncit={props.nsyn} />
-            <TabsContent ncit={props.nsyn} icemun={props.icenum} />
+            {(props.nsyn !== undefined && props.nsyn.length === 1 && props.icemun === undefined) &&
+              <NcitValues ncit={props.nsyn} />
+            }
+            {((props.nsyn !== undefined && props.icemun !== undefined) || (props.nsyn !== undefined && props.nsyn.length > 1)) &&
+              <TabsContent ncit={props.nsyn} ic={props.ic} icemun={props.icemun} />
+            }
+            {(props.nsyn === undefined && props.icemun !== undefined) &&
+              <ICDO3Value ic={props.ic} icemun={props.icemun} />
+            }
           </div>
         }
       </TableCol>
