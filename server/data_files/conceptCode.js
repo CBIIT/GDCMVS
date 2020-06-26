@@ -4762,7 +4762,7 @@
         "Ethanol Injection Ablation": "C67444",
         "External Beam Radiation": "C15751",
         "Hormone Therapy": "C15445",
-        "I-131 Radiation Therapy": "",
+        "I-131 Radiation Therapy": "C157968",
         "Immunotherapy (Including Vaccines)": "C15262",
         "Internal Radiation": "C15195",
         "Not Reported": "C43234",
@@ -7955,6 +7955,10 @@
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
+    "clinical.molecular_test.clonality": {
+        "Clonal": "C41179",
+        "Non-clonal": "C172229"
+    },
     "clinical.molecular_test.histone_variant": {
         "CENP-A": "C152974",
         "H2A-Bbd": "C154613",
@@ -7982,9 +7986,9 @@
         "Chrimerism": "C62582",
         "Conversion": "C165230",
         "Deletion": "C19296",
-        "Deletion-Insertion": "C99752",
+        "Deletion-Insertion": "C171175",
         "Duplication": "C45582",
-        "Extension": "",
+        "Extension": "C148650",
         "Hypermethylation": "C20102",
         "Insertion": "C19295",
         "Inversion": "C45589",
@@ -8206,13 +8210,13 @@
         "Serum": "C13325",
         "Sputum": "C13278",
         "Unknown": "C17998",
-        "2D Classical Conditionally Reprogrammed Cells": "",
-        "2D Modified Conditionally Reprogrammed Cells": "",
-        "3D Organoid": "",
-        "3D Air-Liquid Interface Organoid": "",
-        "3D Neurosphere": "",
+        "2D Classical Conditionally Reprogrammed Cells": "C172257",
+        "2D Modified Conditionally Reprogrammed Cells": "C172258",
+        "3D Organoid": "C172259",
+        "3D Air-Liquid Interface Organoid": "C172260",
+        "3D Neurosphere": "C172261",
         "Adherent Cell Line": "C20216",
-        "Buccal Cells": "",
+        "Buccal Cells": "C172264",
         "Buffy Coat": "C84507",
         "Bone Marrow Components": "C164009",
         "Bone Marrow Components NOS": "C164009",
@@ -8245,7 +8249,7 @@
         "Autopsy": "C25153",
         "Biopsy": "C15189",
         "Bone Marrow Aspirate": "C133261",
-        "Buccal Mucosal Resection": "",
+        "Buccal Mucosal Resection": "C172322",
         "Core Biopsy": "C15680",
         "Deep Parotidectomy": "C161002",
         "Endolaryngeal Excision": "C160999",
@@ -8280,7 +8284,7 @@
         "Pneumonectomy": "C15305",
         "Sigmoid Colectomy": "C91838",
         "Simple Mastectomy": "C15281",
-        "Subtotal Prostatectomy": "",
+        "Subtotal Prostatectomy": "C172325",
         "Subtotal Resection": "C131680",
         "Superficial Parotidectomy": "C51910",
         "Supracricoid Laryngectomy": "C91839",
@@ -8336,7 +8340,7 @@
         "Peritoneal Lavage": "C159340",
         "Punch Biopsy": "C28743",
         "Radical Hysterectomy": "C94470",
-        "Radical Maxillectomy": "",
+        "Radical Maxillectomy": "C172324",
         "Radical Nephrectomy": "C51778",
         "Radical Prostatectomy": "C15399",
         "Salpingectomy": "C51605",
@@ -8377,18 +8381,18 @@
         "Blood Derived Cancer - Peripheral Blood, Post-treatment": "C164031",
         "Blood Derived Normal": "C41067",
         "Bone Marrow Normal": "C84513",
-        "Buccal Cell Normal": "",
+        "Buccal Cell Normal": "C172264",
         "Cell Line Derived Xenograft Tissue": "C156443",
         "Control Analyte": "C156442",
         "EBV Immortalized Normal": "C163993",
-        "FFPE Recurrent": "",
-        "FFPE Scrolls": "",
+        "FFPE Recurrent": "C172267",
+        "FFPE Scrolls": "C172268",
         "Fibroblasts from Bone Marrow Normal": "C164010",
         "GenomePlex (Rubicon) Amplified DNA": "C128787",
-        "Human Tumor Original Cells": "",
+        "Human Tumor Original Cells": "C172293",
         "Lymphoid Normal": "C13049",
         "Mononuclear Cells from Bone Marrow Normal": "C164011",
-        "Next Generation Cancer Model": "",
+        "Next Generation Cancer Model": "C172295",
         "Primary Blood Derived Cancer - Peripheral Blood": "C164030",
         "Recurrent Blood Derived Cancer - Peripheral Blood": "C164017",
         "Primary Blood Derived Cancer - Bone Marrow": "C164015",
@@ -8397,7 +8401,7 @@
         "Recurrent Blood Derived Cancer - Bone Marrow": "C164017",
         "Repli-G (Qiagen) DNA": "C128788",
         "Repli-G X (Qiagen) DNA": "C156439",
-        "Slides": "",
+        "Slides": "C172296",
         "Solid Tissue Normal": "C164014",
         "Total RNA": "C163995",
         "Tumor Adjacent Normal - Post Neo-adjuvant Therapy": "C164033",
@@ -8416,6 +8420,10 @@
         "Abnormal": "C25401",
         "Peritumoral": "C119010"
     },
+    "biospecimen.sample.tissue_collection_type": {
+        "Prospective": "C172297",
+        "Retrospective": "C172298"
+    },
     "biospecimen.sample.tumor_code": {
         "Acute Leukemia of Ambiguous Lineage (ALAL)": "C7464",
         "Acute lymphoblastic leukemia (ALL)": "C3167",
@@ -8427,9 +8435,9 @@
         "Wilms tumor (WT)": "C3267",
         "Non cancerous tissue": "",
         "Diffuse Large B-Cell Lymphoma (DLBCL)": "C8851",
-        "Lung Cancer (all types)": "",
-        "Cervical Cancer (all types)": "",
-        "Anal Cancer (all types)": "",
+        "Lung Cancer (all types)": "C4878",
+        "Cervical Cancer (all types)": "C9039",
+        "Anal Cancer (all types)": "C9291",
         "Induction Failure AML (AML-IF)": "",
         "Clear cell sarcoma of the kidney (CCSK)": "C4264",
         "Rhabdoid tumor (kidney) (RT)": "C8715",
@@ -8661,7 +8669,7 @@
         "Distant Metastasis": "C18206",
         "Metastasis, NOS": "C19151",
         "No Metastasis": "C164041",
-        "Regional Metastasis": ""
+        "Regional Metastasis": "C172220"
     },
     "clinical.diagnosis.metastasis_at_diagnosis_site": {
         "Abdomen": "C12664",
@@ -8683,8 +8691,8 @@
         "Spinal Cord": "C12464",
         "Unknown": "C17998",
         "Ascites": "C2885",
-        "Distant Nodes": "",
-        "Distant Organ": "",
+        "Distant Nodes": "C172221",
+        "Distant Organ": "C172223",
         "Colon": "C12382",
         "Groin": "C12726",
         "Omentum": "C33209",
@@ -8772,8 +8780,8 @@
         "0": "C70430",
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "1-3": "",
-        "4 or More": ""
+        "1-3": "C172224",
+        "4 or More": "C172226"
     },
     "clinical.diagnosis.supratentorial_localization": {
         "Cerebral Cortex": "C12443",
@@ -8927,25 +8935,25 @@
         "Diet": "C15222",
         "Adenosis (Atypical Adenomatous Hyperplasia)": ["C120861", "C5665"],
         "Alcohol Consumption": "C16273",
-        "Allergy, Animal, NOS": "",
-        "Allergy, Ant": "",
-        "Allergy, Bee": "",
-        "Allergy, Cat": "",
+        "Allergy, Animal, NOS": "C172303",
+        "Allergy, Ant": "C172307",
+        "Allergy, Bee": "C172308",
+        "Allergy, Cat": "C172310",
         "Allergy, Dairy or Lactose": "",
-        "Allergy, Dog": "",
-        "Allergy, Eggs": "",
-        "Allergy, Food, NOS": "",
-        "Allergy, Fruit": "",
-        "Allergy, Meat": "",
-        "Allergy, Mold or Dust": "",
+        "Allergy, Dog": "C172311",
+        "Allergy, Eggs": "C172313",
+        "Allergy, Food, NOS": "C172304",
+        "Allergy, Fruit": "C172316",
+        "Allergy, Meat": "C172317",
+        "Allergy, Mold or Dust": "C172306",
         "Allergy, Nuts": "",
         "Allergy, Processed Foods": "",
-        "Allergy, Seafood": "",
-        "Allergy, Wasp": "",
+        "Allergy, Seafood": "C172320",
+        "Allergy, Wasp": "C172321",
         "Barrett's Esophagus": "C2891",
         "Behcet's Disease": "C34416",
         "Benign Prostatic Hyperplasia": "C2897",
-        "BRCA Family History": "",
+        "BRCA Family History": "C172230",
         "Cancer": "C9305",
         "Cirrhosis": "C2951",
         "Common variable immune deficiency (CVID)": "C26725",
@@ -9201,7 +9209,7 @@
         "Prolymphocytes": "C74620",
         "Promonocytes": "C74621",
         "Promyelocytes": "C74622",
-        "Segmented Neutrophil": "C36719",
+        "Segmented Neutrophil": "C81997",
         "Serum Free Immunoglobulin Light Chain, Kappa": "C98730",
         "Serum Free Immunoglobulin Light Chain, Lambda": "C98732",
         "Serum Free Immunoglobulin Light Chain, NOS": "C147376",
@@ -9220,8 +9228,8 @@
     },
     "data_file.submitted_unaligned_reads.read_pair_number": {
         "I1": "",
-        "R1": "",
-        "R2": "",
+        "R1": "C172301",
+        "R2": "C172302",
         "Not Applicable": "C48660"
     },
     "clinical.diagnosis.tumor_focality": {
@@ -9519,7 +9527,7 @@
     "data_file.slide_image.data_format": {
         "JPEG": "C48230",
         "TIFF": "C70631",
-        "SVS": ""
+        "SVS": "C172214"
     },
     "data_file.submitted_aligned_reads.data_category": {
         "Sequencing Reads": "C153349"
@@ -9531,9 +9539,9 @@
         "BAM": "C153249"
     },
     "data_file.submitted_genomic_profile.data_format": {
-        "MAF": "",
+        "MAF": "C172215",
         "TSV": "C164049",
-        "VCF": "",
+        "VCF": "C172216",
         "XML": "C45967"
     },
     "data_file.submitted_methylation_beta_value.data_category": {
@@ -9572,9 +9580,9 @@
     "metadata_file.analysis_metadata.data_format": {
         "MAGE-TAB": "C82937",
         "SRA XML": "",
-        "SDRF": "",
-        "IDF": "",
-        "ADF": ""
+        "SDRF": "C172211",
+        "IDF": "C172212",
+        "ADF": "C172213"
     },
     "metadata_file.experiment_metadata.data_category": {
         "Sequencing Data": "C153329",
@@ -9592,7 +9600,7 @@
         "Run Metadata": "C165214"
     },
     "case.case.consent_type": {
-        "Consent by Death": "",
+        "Consent by Death": "C172262",
         "Consent Exemption": "C79226",
         "Consent Waiver": "C103270",
         "Informed Consent": "C16735"
@@ -9836,28 +9844,38 @@
         "Pattern 5": "C28089"
     },
     "clinical.diagnosis.lymph_node_involved_site": {
-        "Axillary": "",
-        "Cervical": "",
-        "Epitrochlear": "",
-        "Femoral": "",
-        "Hilar": "",
-        "Iliac-common": "",
-        "Iliac-external": "",
-        "Iliac, NOS": "",
-        "Inguinal": "",
-        "Mediastinal": "",
-        "Mesenteric": "",
-        "None": "",
-        "Occipital": "",
-        "Paraaortic": "",
-        "Parotid": "",
-        "Popliteal": "",
-        "Retroperitoneal": "",
-        "Splenic": "",
-        "Submandibular": "",
-        "Supraclavicular": "",
+        "Axillary": "C12904",
+        "Cervical": "C32298",
+        "Epitrochlear": "C98182",
+        "Femoral": "C98183",
+        "Hilar": "C102330",
+        "Iliac-common": "C103384",
+        "Iliac-external": "C88143",
+        "Iliac, NOS": "C32761",
+        "Inguinal": "C32801",
+        "Mediastinal": "C33073",
+        "Mesenteric": "C77641",
+        "None": "C41132",
+        "Occipital": "C98188",
+        "Paraaortic": "C77643",
+        "Parotid": "C33278",
+        "Popliteal": "C53146",
+        "Retroperitoneal": "C98189",
+        "Splenic": "C142320",
+        "Submandibular": "C77650",
+        "Supraclavicular": "C12903",
         "Unknown": "C17998",
         "Not Reported": "C43234"
+    },
+    "clinical.diagnosis.margins_involved_site": {
+        "Gerota Fascia": "C162125",
+        "Parenchyma": "C74601",
+        "Perinephric Fat": "C162218",
+        "Renal": "C12415",
+        "Renal Capsule": "C12885",
+        "Renal Sinus": "C162219",
+        "Renal Vein": "C33462",
+        "Ureter": "C12416"
     },
     "clinical.diagnosis.papillary_renal_cell_type": {
         "Type 1": "C27886",
@@ -9891,9 +9909,9 @@
         "Not Reported": "C43234"
     },
     "clinical.follow_up.adverse_event_grade": {
-        "Grade 1": "C84263",
-        "Grade 2": "C84264",
-        "Grade 3": "C84265",
+        "Grade 1": "C41338",
+        "Grade 2": "C41339",
+        "Grade 3": "C41340",
         "Grade 4": "C84266",
         "Grade 5": "C48275"
     },
@@ -9929,7 +9947,7 @@
     },
     "clinical.follow_up.evidence_of_recurrence_type": {
         "Biopsy with Histologic Confirmation": "C158780",
-        "Convincing Image Source": "C158781",
+        "Convincing Image Source": "C158782",
         "Positive Biomarker(s)": "C150123"
     },
     "clinical.follow_up.haart_treatment_indicator": {
@@ -9950,6 +9968,14 @@
         "Not performed": "C141477",
         "Radical Hysterectomy": "C94470",
         "Simple Hysterectomy": "C15701",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.follow_up.imaging_result": {
+        "Positive": "C38758",
+        "Indeterminate": "C48658",
+        "Negative": "C38757",
+        "Not Performed": "C141477",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10031,5 +10057,11 @@
         "Once Weekly": "C64526",
         "Unknown": "C17998",
         "Not Reported": "C43234"
+    },
+    "data.data_release.type": {
+        "data_release": "C172217"
+    },
+    "data.root.id": {
+        "root": "C172256"
     }
 }
