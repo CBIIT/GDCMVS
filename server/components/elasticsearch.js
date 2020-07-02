@@ -202,8 +202,8 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		}
 		
 		// build type ahead index for CDE ID
-		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
-			let em = entry.term.termDef.cde_id.toString().trim().toLowerCase();
+		if (entry.termDef !== undefined && entry.termDef.source === 'caDSR' && entry.termDef.cde_id !== undefined && entry.termDef.cde_id !== 'null') {
+			let em = entry.termDef.cde_id.toString().trim().toLowerCase();
 			if (em in allTerm) {
 				//if exist, then check if have the same type
 				let t = allTerm[em];
@@ -222,17 +222,17 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
 		p.node_desc = fileJson.description;
 		p.category = fileJson.category;
 		if (entry.description === undefined) {
-			if (entry.term !== undefined && entry.term.description !== undefined) {
-				p.property_desc = entry.term.description;
+			if (entry.termDef !== undefined && entry.termDef.description !== undefined) {
+				p.property_desc = entry.termDef.description;
 			}
 		} else {
 			p.property_desc = entry.description;
 		}
-		if (entry.term !== undefined && entry.term.termDef !== undefined && entry.term.termDef.source === 'caDSR' && entry.term.termDef.cde_id !== undefined) {
+		if (entry.termDef !== undefined && entry.termDef.source === 'caDSR' && entry.termDef.cde_id !== undefined && entry.termDef.cde_id !== 'null') {
 			p.cde = {};
-			p.cde.id = entry.term.termDef.cde_id;
-			p.cde.v = entry.term.termDef.cde_version;
-			p.cde.url = entry.term.termDef.term_url;
+			p.cde.id = entry.termDef.cde_id;
+			p.cde.v = entry.termDef.cde_version;
+			p.cde.url = entry.termDef.term_url;
 		}
 		//generate enum
 		if (entry.syns == undefined) {
