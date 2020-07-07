@@ -174,7 +174,11 @@ const searchAPI = (req, res) => {
       !optionsArray.includes('syn') &&
       !optionsArray.includes('desc')
     ) {
-      res.json('Error: Valid entries for options specifications are: partial or exact, syn, desc.');
+      return res.status(404).json({
+        'status': 404,
+        'error': 'Bad Request',
+        'message': 'Required parameter \'options\' has an invalid value = ' + req.query.options
+      });
     }
     option.match = optionsArray.includes('exact') ? 'exact' : 'partial';
     option.syn = optionsArray.includes('syn');
@@ -187,7 +191,7 @@ const searchAPI = (req, res) => {
     };
   }
   if (keyword === undefined || keyword.trim() === '') {
-    res.json([]);
+    return res.json([]);
   } else {
     if (keyword.indexOf(' AND ') !== -1 || keyword.indexOf(' OR ') !== -1 || keyword.indexOf(' NOT ') !== -1) isBoolean = true;
     let query = generateQuery(keyword, option, isBoolean);
@@ -269,7 +273,7 @@ const searchAPI = (req, res) => {
         delete entry._type;
         delete entry._id;
       });
-      res.json(data);
+      return res.json(data);
     });
   }
 };
