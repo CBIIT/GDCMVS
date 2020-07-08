@@ -35,7 +35,7 @@ const template = (values, options) => {
             <div class="gdc-links" style="display: none;">
               <a class="getGDCTerms" href="#" data-ref="${item.id}">See All Values</a></br>
               <a class="toCompare" href="#" data-ref="${item.id}"> Compare with User List</a></br>
-              ${item.cdeId !== '' ? `
+              ${item.cdeId !== undefined && item.cdeId !== '' ? `
                 <span>caDSR:</span>
                 <a href="${item.cdeUrl}" target="_blank">CDE</a>
               ` : ``}
