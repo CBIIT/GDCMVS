@@ -2929,7 +2929,7 @@
         "Procarbazine": "C62072",
         "Procarbazine Hydrochloride": "C773",
         "Procaspase Activating Compound-1 VO-100": "C120318",
-        "Progestational": "",
+        "Progestational IUD": "",
         "Prohibitin-Targeting Peptide 1": "C95709",
         "Prostaglandin E2 EP4 Receptor Inhibitor E7046": "C129689",
         "Prostate Cancer Vaccine ONY-P1": "C71723",
