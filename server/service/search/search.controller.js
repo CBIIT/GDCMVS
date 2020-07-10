@@ -17,54 +17,54 @@ var cdeData = {};
 var gdcData = {};
 
 const suggestion = (req, res) => {
-	let term = req.query.keyword;
-	let suggest = {
-		"term_suggest": {
-			"prefix": term,
-			"completion": {
-				"field": "id",
-				"size": 10
-			}
-		}
-	};
-	elastic.suggest(config.suggestionName, suggest, result => {
-		if (result.suggest === undefined) {
-			return handleError.error(res, result);
-		}
-		let dt = result.suggest.term_suggest;
-		let data = [];
-		dt[0].options.forEach(opt => {
-			data.push(opt._source);
-		});
-		res.json(data);
-	})
+  let term = req.query.keyword;
+  let suggest = {
+    "term_suggest": {
+      "prefix": term,
+      "completion": {
+        "field": "id",
+        "size": 10
+      }
+    }
+  };
+  elastic.suggest(config.suggestionName, suggest, result => {
+    if (result.suggest === undefined) {
+      return handleError.error(res, result);
+    }
+    let dt = result.suggest.term_suggest;
+    let data = [];
+    dt[0].options.forEach(opt => {
+      data.push(opt._source);
+    });
+    res.json(data);
+  })
 };
 
 const suggestionMisSpelled = (req, res) => {
-	let term = req.query.keyword.replace(/[ _-]+/g, " ");
-	let suggest = {
-		"term_suggest": {
-			"prefix": term,
-			"completion": {
-				"field": "id",
-				"size": 3,
-				"fuzzy": {
-					"fuzziness": "AUTO"
-				}
-			}
-		}
-	};
-	elastic.suggest(config.suggestionName, suggest, result => {
-		if (result.suggest === undefined) {
-			return handleError.error(res, result);
-		}
-		let dt = result.suggest.term_suggest;
-		let data = [];
-		dt[0].options.forEach(opt => {
-			data.push(opt._source);
-		});
-		res.json(data);
-	})
+  let term = req.query.keyword.replace(/[ _-]+/g, " ");
+  let suggest = {
+    "term_suggest": {
+      "prefix": term,
+      "completion": {
+        "field": "id",
+        "size": 3,
+        "fuzzy": {
+          "fuzziness": "AUTO"
+        }
+      }
+    }
+  };
+  elastic.suggest(config.suggestionName, suggest, result => {
+    if (result.suggest === undefined) {
+      return handleError.error(res, result);
+    }
+    let dt = result.suggest.term_suggest;
+    let data = [];
+    dt[0].options.forEach(opt => {
+      data.push(opt._source);
+    });
+    res.json(data);
+  })
 };
 
 const searchICDO3Data = (req, res) => {
@@ -163,109 +163,119 @@ const searchP = (req, res) => {
 };
 
 const searchAPI = (req, res) => {
-	let isBoolean = false;
-	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
-	let option = {};
-	if(req.query.options){
-		option.match = req.query.options.indexOf("exact") !== -1 ? "exact" : "partial";
-		option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
-		option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
-	}	else{
-		option = {
-			match: "partial",
-			syn: false,
-			desc: false
-		};
-	}
-	if (keyword.trim() === '') {
-		res.json([]);
-	} else {
-		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
-		let query = generateQuery(keyword, option, isBoolean);
-		elastic.query(config.index_p, query, null, result => {
-			if (result.hits === undefined) {
-				return handleError.error(res, result);
-			}
-			let data = result.hits.hits;
-			data.forEach(entry => {
-				if (entry.inner_hits.enum.hits.hits.length === 0) {
-					delete entry.inner_hits;
-				} else {
-					entry.matches = [];
-					entry.inner_hits.enum.hits.hits.forEach(e => {
-						
-						e._source.value = e._source.n;
+  let isBoolean = false;
+  let keyword = req.query.keyword !== undefined ? req.query.keyword.trim().replace(/[\ ]+/g, ' ') : undefined;
+  let option = {};
+  if (req.query.options !== undefined) {
+    let optionsArray = req.query.options.split(',');
+    if (
+      !optionsArray.includes('exact') &&
+      !optionsArray.includes('partial') &&
+      !optionsArray.includes('syn') &&
+      !optionsArray.includes('desc')
+    ) {
+      return res.status(404).json({
+        'status': 404,
+        'error': 'Bad Request',
+        'message': 'Required parameter \'options\' has an invalid value = ' + req.query.options
+      });
+    }
+    option.match = optionsArray.includes('exact') ? 'exact' : 'partial';
+    option.syn = optionsArray.includes('syn');
+    option.desc = optionsArray.includes('desc');
+  } else {
+    option = {
+      match: 'partial',
+      syn: false,
+      desc: false
+    };
+  }
+  if (keyword === undefined || keyword.trim() === '') {
+    return res.json([]);
+  } else {
+    if (keyword.indexOf(' AND ') !== -1 || keyword.indexOf(' OR ') !== -1 || keyword.indexOf(' NOT ') !== -1) isBoolean = true;
+    let query = generateQuery(keyword, option, isBoolean);
+    elastic.query(config.index_p, query, null, result => {
+      if (result.hits === undefined) {
+        return handleError.error(res, result);
+      }
+      let data = result.hits.hits;
+      data.forEach(entry => {
+        if (entry.inner_hits.enum.hits.hits.length === 0) {
+          delete entry.inner_hits;
+        } else {
+          entry.matches = [];
+          entry.inner_hits.enum.hits.hits.forEach(e => {
+            e._source.value = e._source.n;
+            if (e._source.i_c !== undefined) {
+              e._source.icdo3Code = e._source.i_c.c;
+              delete e._source.i_c;
+            }
 
-						if (e._source.i_c !== undefined) {
-							e._source.icdo3Code = e._source.i_c.c;
-							delete e._source.i_c;
-						}
+            if (e._source.n_syn !== undefined) {
+              e._source.allSynonyms = e._source.n_syn;
+              e._source.allSynonyms.forEach(s => {
+                s.conceptCode = s.n_c;
+                s.synonyms = s.s;
+                if (e._source.drug !== undefined && e._source.drug === true) {
+                  s.additionalAttributes = s.ap;
+                  s.definitions = s.def;
+                }
+                delete s.n_c;
+                delete s.s;
+                delete s.ap;
+                delete s.def;
+              });
+            }
 
-						if (e._source.n_syn !== undefined) {
-							e._source.allSynonyms = e._source.n_syn;
-							e._source.allSynonyms.forEach(s => {
-								s.conceptCode = s.n_c;
-								s.synonyms = s.s;
-								if (e._source.drug !== undefined && e._source.drug === true) {
-									s.additionalAttributes = s.ap;
-									s.definitions = s.def;
-								}
-								delete s.n_c;
-								delete s.s;
-								delete s.ap;
-								delete s.def;
-							});
-						}
+            if (e._source.ic_enum !== undefined) {
+              e._source.icdo3Strings = e._source.ic_enum;
+              e._source.icdo3Strings.forEach(ic => {
+                ic.termName = ic.n;
+                ic.termGroup = ic.term_type;
+                delete ic.n;
+                delete ic.term_type;
+              });
+              delete e._source.ic_enum;
+            }
 
-						if (e._source.ic_enum !== undefined) {
-							e._source.icdo3Strings = e._source.ic_enum;
-							e._source.icdo3Strings.forEach(ic => {
-								ic.termName = ic.n;
-								ic.termGroup = ic.term_type;
-								delete ic.n;
-								delete ic.term_type;
-							});
-							delete e._source.ic_enum;
-						}
+            if (e._source.drug !== undefined && e._source.drug !== true) {
+              delete e._source.drug;
+            }
 
-						if (e._source.drug !== undefined && e._source.drug !== true) {
-							delete e._source.drug;
-						}
-						
-						delete e._source.n;
-						delete e._source.gdc_d;
-						delete e._source.n_syn;
-						delete e._source.ic_enum;
-						delete e._source.term_type;
+            delete e._source.n;
+            delete e._source.gdc_d;
+            delete e._source.n_syn;
+            delete e._source.ic_enum;
+            delete e._source.term_type;
 
-						delete e._index;
-						delete e._type;
-						delete e._nested;
-						delete e._score;
+            delete e._index;
+            delete e._type;
+            delete e._nested;
+            delete e._score;
 
-						entry.matches.push(e._source);
-					});
-				}
+            entry.matches.push(e._source);
+          });
+        }
 
-				entry._source.nodeDescription =  entry._source.node_desc;
-				entry._source.propertyDescription =  entry._source.property_desc;
+        entry._source.nodeDescription = entry._source.node_desc;
+        entry._source.propertyDescription = entry._source.property_desc;
 
-				delete entry._source.id;
-				delete entry._source.node_desc;
-				delete entry._source.property_desc;
-				if(entry._source.cde !== undefined) delete entry._source.cde.v;
-				delete entry._source.enum;
+        delete entry._source.id;
+        delete entry._source.node_desc;
+        delete entry._source.property_desc;
+        if (entry._source.cde !== undefined) delete entry._source.cde.v;
+        delete entry._source.enum;
 
-				delete entry.inner_hits;				
-				delete entry.sort;
-				delete entry._index;
-				delete entry._score;
-				delete entry._type;
-				delete entry._id;
-			});
-			res.json(data);
-		});
-	}
+        delete entry.inner_hits;
+        delete entry._index;
+        delete entry._score;
+        delete entry._type;
+        delete entry._id;
+      });
+      return res.json(data);
+    });
+  }
 };
 
 const generateQuery = (keyword, option, isBoolean) => {
