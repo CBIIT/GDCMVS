@@ -347,6 +347,7 @@ const exportMapping = (req, res) => {
 };
 
 const preProcess = (searchable_nodes, data) => {
+
 	// Remove deprecated properties and nodes
 	for (let key in data) {
 		if (searchable_nodes.indexOf(key) === -1) {
@@ -391,6 +392,9 @@ const preProcess = (searchable_nodes, data) => {
 		}
 	}
 
+	// get all terms definition 
+	let term_definition = yaml.load(folderPath + '/_terms.yaml');
+
 	// get $ref for Property
 	for (let key1 in data) {
 		if (data[key1].properties) {
@@ -401,10 +405,10 @@ const preProcess = (searchable_nodes, data) => {
 					let ref = Array.isArray(property_data.$ref) ? property_data.$ref[0] : property_data.$ref;
 					if (ref.indexOf('_terms.yaml') !== -1) {
 						if (ref.indexOf('#/') !== -1) {
-							let file_name = ref.split('#/')[0];
+							// let file_name = ref.split('#/')[0];
 							let ref_property = ref.split('#/')[1];
 							let prop = ref_property.split('/')[0];
-							let term_definition = yaml.load(folderPath + '/' + file_name);
+							// let term_definition = yaml.load(folderPath + '/' + file_name);
 							if (term_definition[prop]) {
 								property_data.relation = term_definition[prop].common !== undefined ? term_definition[prop].common : term_definition[prop];
 							}
