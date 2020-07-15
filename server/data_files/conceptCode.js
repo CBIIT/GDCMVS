@@ -3909,7 +3909,7 @@
         "not reported": "C43234",
         "other": "C17649",
         "primary": "C8509",
-        "Progression": "",
+        "Progression": "C17609",
         "recurrence": "C4798",
         "Unknown": "C17998",
         "Premalignant": "C36032"
@@ -3948,6 +3948,13 @@
         "RX": "C139581",
         "Not Reported": "C43234",
         "Unknown": "C17998"
+    },
+    "clinical.diagnosis.satellite_nodule_present": {
+        "Absent": "C48190",
+        "Indeterminate": "C48658",
+        "Present": "C25626",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "clinical.diagnosis.vascular_invasion_present": {
         "No": "C49487",
@@ -4333,7 +4340,7 @@
         "Stage IA": "C27975",
         "Stage IA1": "C27983",
         "Stage IA2": "C27984",
-        "Stage IA3": "",
+        "Stage IA3": "C136485",
         "Stage IB": "C27976",
         "Stage IB1": "C28052",
         "Stage IB2": "C28053",
@@ -4524,7 +4531,7 @@
     "clinical.diagnosis.site_of_resection_or_biopsy": {
         "Not Reported": "C43234",
         "Unknown": "C17998",
-        "Pancreatic neck": ""
+        "Pancreatic neck": "C158551"
     },
     "clinical.follow_up.comorbidity": {
         "Acute Renal Failure": "C26808",
@@ -4535,11 +4542,11 @@
         "Arrhythmia": "C2881",
         "Arthritis": "C2883",
         "Asthma": "C28397",
-        "Ataxia-telangiectasia": "",
+        "Ataxia-telangiectasia": "C2887",
         "Atrial Fibrillation": "C50466",
-        "Autoimmune Lymphoproliferative Syndrome (ALPS)": "",
+        "Autoimmune Lymphoproliferative Syndrome (ALPS)": "C37864",
         "Avascular Necrosis": "C118385",
-        "Bacteroides fragilis": "",
+        "Bacteroides fragilis": "C86172",
         "Barrett's Esophagus": "C2891",
         "Basal Cell Carcinoma": "C2921",
         "Behcet's Disease": "C34416",
@@ -4550,7 +4557,7 @@
         "Cancer": "C9305",
         "Cataracts": "C26713",
         "Cerebrovascular Disease": "C2938",
-        "Chlamydia": "",
+        "Chlamydia": "C34463",
         "Chronic Renal Failure": "C9438",
         "Chronic Systemic Steroid Use": "",
         "Colon Polyps": "C2954",
@@ -4561,7 +4568,7 @@
         "Coronary Artery Disease": "C26732",
         "Cryptogenic Organizing Pneumonia": "C62586",
         "Cryptococcal Meningitis": "",
-        "Cytomegalovirus (CMV)": "",
+        "Cytomegalovirus (CMV)": "C53649",
         "Deep Vein Thrombosis / Thromboembolism": ["C49343", "C50713"],
         "Depression": "C2982",
         "Diabetes": "C2985",
@@ -4608,10 +4615,10 @@
         "Lupus": "C27153",
         "Lymphocytic Meningitis": "",
         "MAI": "",
-        "Malaria": "",
-        "Metabolic Syndrome": "",
+        "Malaria": "C34797",
+        "Metabolic Syndrome": "C84442",
         "Myasthenia Gravis": "C60989",
-        "Mycobacterium avium Complex": "",
+        "Mycobacterium avium Complex": "C36197",
         "Myocardial Infarction": "C27996",
         "Not Reported": "C43234",
         "Obesity": "C3283",
@@ -4638,15 +4645,15 @@
         "Rheumatologic Disease": "C27204",
         "Sarcoidosis": "C34995",
         "Seizure": "C2962",
-        "Shingles": "",
-        "Sjogren's Syndrome": "",
+        "Shingles": "C71079",
+        "Sjogren's Syndrome": "C26883",
         "Sleep apnea": "C26884",
         "Smoking": "C17934",
-        "Staphylococcus aureus": "",
+        "Staphylococcus aureus": "C122576",
         "Stroke": "C3390",
-        "Syphilis": "",
+        "Syphilis": "C35055",
         "Transient Ischemic Attack": "C50781",
-        "Treponema pallidum": "",   
+        "Treponema pallidum": "C85197",   
         "Tuberculosis": "C3423",
         "Ulcerative Colitis": "C2952",
         "Unknown": "C17998",
@@ -4667,8 +4674,8 @@
         "Lynch Syndrome": "C8494",
         "Neuroendocrine Tumor": "C3809",
         "Peutz-Jeghers Disease": "C3324",
-        "Pneumocystis Pneumonia": "",
-        "Polycystic Ovarian Syndrome (PCOS)": "",
+        "Pneumocystis Pneumonia": "C3334",
+        "Polycystic Ovarian Syndrome (PCOS)": "C26862",
         "Rubinstein-Taybi Syndrome": "C75466",
         "Turcot Syndrome": "C3938",
         "Tyrosinemia": "C98640",
@@ -6817,7 +6824,7 @@
         "HOXA11": "C97568",
         "HOXA13": "C97571",
         "HOXA9": "C24474",
-        "HOXB1": "",
+        "HOXB1": "C162630",
         "HOXC11": "C97574",
         "HOXC13": "C97577",
         "HOXD11": "C97580",
@@ -7539,7 +7546,7 @@
         "HOXA11": "C97568",
         "HOXA13": "C97571",
         "HOXA9": "C24474",
-        "HOXB1": "",
+        "HOXB1": "C162630",
         "HOXC11": "C97574",
         "HOXC13": "C97577",
         "HOXD11": "C97580",
@@ -8076,7 +8083,7 @@
         "HLA-DR": "C16692",
         "Mesothelin": "C20887",
         "NSE": "C116205",
-        "Prostate-Specific Antigen (PSA)": "",
+        "Prostate-Specific Antigen (PSA)": "C17525",
         "Squamous Cell Carcinoma Antigen (SCCA)": "C120660",
         "Unknown": "C17998",
         "Not Reported": "C43234",
@@ -8566,6 +8573,13 @@
         "Intermediate Risk": "C102402",
         "Low Risk": "C102403"
     },
+    "clinical.diagnosis.eln_risk_classification": {
+        "Adverse": "",
+        "Favorable": "",
+        "Intermediate": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
     "clinical.diagnosis.enneking_msts_grade": {
         "High Grade (G2)": "C140261",
         "Low Grade (G1)": "C140260",
@@ -8730,7 +8744,7 @@
         "Ascites": "C2885",
         "Distant Nodes": "C172221",
         "Distant Organ": "C172223",
-        "Esophagus": "",
+        "Esophagus": "C12389",
         "Colon": "C12382",
         "Groin": "C12726",
         "Omentum": "C33209",
@@ -8856,6 +8870,24 @@
         "Extramural": "C44280",
         "Intramural": "C25234"
     },
+
+    "clinical.diagnosis.who_cns_grade": {
+        "Grade I": "",
+        "Grade II": "",
+        "Grade III": "",
+        "Grade IV": "",
+        "Grade Not Assigned": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.diagnosis.who_nte_grade": {
+        "G1": "",
+        "G2": "",
+        "G3": "",
+        "GX": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
     "clinical.diagnosis.wilms_tumor_histologic_subtype": {
         "Not Reported": "C43234",
         "Unfavorable": "C102561",
@@ -8867,6 +8899,14 @@
         "Not Reported": "C43234",
         "Unknown": "C17998",
         "Yes": "C49488"
+    },
+    "clinical.exposure.alcohol_type": {
+        "Beer": "C66824",
+        "Liquor": "C66826",
+        "Other": "C17649",
+        "Wine": "C66822",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "clinical.exposure.alcohol_intensity": {
         "Drinker": "C126383",
@@ -8982,25 +9022,25 @@
         "Allergy, Seafood": "C172320",
         "Allergy, Wasp": "C172321",
         "Alpha-1 Antitrypsin Deficiency": "C84397",
-        "Ataxia-telangiectasia": "",
+        "Ataxia-telangiectasia": "C2887",
         "Autoimmune Atrophic Chronic Gastritis": "C156076",
-        "Autoimmune Lymphoproliferative Syndrome (ALPS)": "",
-        "Bacteroides fragilis": "",
-        "BAP1 Tumor Predisposition Syndrome": "",
+        "Autoimmune Lymphoproliferative Syndrome (ALPS)": "C37864",
+        "Bacteroides fragilis": "C86172",
+        "BAP1 Tumor Predisposition Syndrome": "C172639",
         "Barrett's Esophagus": "C2891",
         "Behcet's Disease": "C34416",
         "Benign Prostatic Hyperplasia": "C2897",
-        "Birt-Hogg-Dube Syndrome": "",
+        "Birt-Hogg-Dube Syndrome": "C28244",
         "BRCA Family History": "C172230",
         "Cancer": "C9305",
-        "Chlamydia": "",
+        "Chlamydia": "C34463",
         "Chronic Systemic Steroid Use": "",
         "Cirrhosis": "C2951",
         "Common variable immune deficiency (CVID)": "C26725",
-        "Cowden Syndrome": "",
+        "Cowden Syndrome": "C3076",
         "Cryptococcal Meningitis": "",
         "Cyst(s)": "C2978",
-        "Cytomegalovirus (CMV)": "",
+        "Cytomegalovirus (CMV)": "C53649",
         "Diabetes, NOS": "C2985",
         "Diabetes, Type I": "C2986",
         "Diverticulitis": "C26752",
@@ -9018,13 +9058,13 @@
         "Hepatitis B Infection": "C3097",
         "Hepatitis C Infection": "C3098",
         "Hepatitis, NOS": "C3095",
-        "Hereditary Breast Cancer": "",
-        "Hereditary Kidney Oncocytoma": "",
-        "Hereditary Leiomyomatosis and Renal Cell Carcinoma": "",
-        "Hereditary Ovarian Cancer": "",
-        "Hereditary Papillary Renal Cell Carcinoma": "",
+        "Hereditary Breast Cancer": "C4503",
+        "Hereditary Kidney Oncocytoma": "C8960",
+        "Hereditary Leiomyomatosis and Renal Cell Carcinoma": "C51302",
+        "Hereditary Ovarian Cancer": "C36102",
+        "Hereditary Papillary Renal Cell Carcinoma": "C9222",
         "Hereditary Prostate Cancer": "C103817",
-        "Hereditary Renal Cell Carcinoma": "",
+        "Hereditary Renal Cell Carcinoma": "C39789",
         "High-grade Prostatic Intraepithelial Neoplasia (PIN)": "C5541",
         "HIV": "C14219",
         "Human Papillomavirus Infection": "C27851",
@@ -9033,10 +9073,10 @@
         "Inflammation, Hyperkeratosis": "C5541",
         "Lymphocytic Meningitis": "",
         "Lymphocytic Thyroiditis": "C38766",
-        "Malaria": "",
-        "Metabolic Syndrome": "",
+        "Malaria": "C34797",
+        "Metabolic Syndrome": "C84442",
         "Myasthenia Gravis": "C60989",
-        "Mycobacterium avium Complex": "",
+        "Mycobacterium avium Complex": "C36197",
         "Nodular Prostatic Hyperplasia": "",
         "Oral Contraceptives": "C389",
         "Pancreatitis": "C3306",
@@ -9044,28 +9084,28 @@
         "Sarcoidosis": "C34995",
         "Seizure": "C2962",
         "Sensory Changes": "C157429",
-        "Shingles": "",
+        "Shingles": "C71079",
         "Sialadenitis": "C26882",
-        "Sjogren's Syndrome": "",
+        "Sjogren's Syndrome": "C26883",
         "Squamous Metaplasia": "C3237",
-        "Staphylococcus aureus": "",
+        "Staphylococcus aureus": "C122576",
         "Steatosis": "C82983",
-        "Succinate Dehydrogenase-Deficient Renal Cell Carcinoma": "",
-        "Syphilis": "",
+        "Succinate Dehydrogenase-Deficient Renal Cell Carcinoma": "C156464",
+        "Syphilis": "C35055",
         "Tattoo": "C113681",
         "Thyroid Nodular Hyperplasia": "",
         "Tobacco, NOS": "C18059",
         "Tobacco, Smokeless": "C137998",
         "Tobacco, Smoking": "C154329",
-        "Treponema pallidum": "",
-        "Tuberculosis": "",
-        "Tuberous Sclerosis": "",
+        "Treponema pallidum": "C85197",
+        "Tuberculosis": "C3423",
+        "Tuberous Sclerosis": "C3424",
         "Tubulointerstitial Disease": "C123036",
         "Tumor-associated Lymphoid Proliferation": "C171150",
         "Undescended Testis": "C12326",
         "Vascular Disease": "C35117",
         "Vision Changes": "C157424",
-        "Von Hippel-Lindau Syndrome": "",
+        "Von Hippel-Lindau Syndrome": "C3105",
         "Alcoholic Liver Disease": "C34783",
         "Cholelithiasis": "C122822",
         "Chronic Hepatitis": "C82978",
@@ -9080,8 +9120,8 @@
         "Nonalcoholic Fatty Liver Disease": "C84444",
         "Nonalcoholic Steatohepatitis": "C84445",
         "Parasitic Disease of Biliary Tract": "",
-        "Pneumocystis Pneumonia": "",
-        "Polycystic Ovarian Syndrome (PCOS)": "",
+        "Pneumocystis Pneumonia": "C3334",
+        "Polycystic Ovarian Syndrome (PCOS)": "C26862",
         "Primary Sclerosing Cholangitis": "C4828",
         "Recurrent Pyogenic Cholangitis": "C164213",
         "Reflux Disease": "C26781",
@@ -9233,7 +9273,7 @@
         "Urine": "C13283"
     },
     "clinical.molecular_test.laboratory_test": {
-        "5-Hydroxyindoleacetic Acid": "",
+        "5-Hydroxyindoleacetic Acid": "C112217",
         "Absolute Neutrophil": "C63321",
         "Albumin": "C64431",
         "Alpha Fetoprotein": "C74732",
@@ -9243,14 +9283,14 @@
         "Blood Urea Nitrogen": "C61019",
         "Calcium": "C64488",
         "Cellularity": "C111153",
-        "Chromogranin A": "",
+        "Chromogranin A": "C122108",
         "Chromogranin B": "",
         "Circulating Tumor Cells": "C96593",
         "C-Reactive Protein": "C64548",
         "Creatinine": "C64547",
         "Eosinophil": "C64550",
         "Epstein-Barr Virus": "C171143",
-        "Gamma-Enolase": "",
+        "Gamma-Enolase": "C116205",
         "Glucose": "C105585",
         "Hematocrit": "C64796",
         "Hemoglobin": "C64848",
@@ -9539,7 +9579,7 @@
         "Smokehouse smoke": "C164095",
         "Tobacco smoke, cigar": "C164097",
         "Tobacco smoke, cigarettes": "C164098",
-        "Tobacco smoke, NOS": "",
+        "Tobacco smoke, NOS": "C829",
         "Tobacco smoke, pipe": "C164099",
         "Unknown": "C17998",
         "Waste burning smoke": "C164101",
@@ -9963,7 +10003,7 @@
     },
     "clinical.exposure.exposure_type": {
         "Marijuana": "C26659",
-        "Smoke": "",
+        "Smoke": "C164057",
         "Tobacco": "C891",
         "Wood Dust": ""
     },
@@ -10014,7 +10054,7 @@
     "clinical.follow_up.evidence_of_recurrence_type": {
         "Biopsy with Histologic Confirmation": "C158780",
         "Convincing Image Source": "C158782",
-        "Physical Examination": "",
+        "Physical Examination": "C83119",
         "Positive Biomarker(s)": "C150123"
     },
     "clinical.follow_up.haart_treatment_indicator": {
@@ -10023,10 +10063,24 @@
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
+    "clinical.follow_up.hormonal_contraceptive_type": {
+        "Current User": "",
+        "Former User": "",
+        "Never Used": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
     "clinical.follow_up.hormonal_contraceptive_use": {
         "Current User": "C160671",
         "Former User": "C160672",
         "Never Used": "C160673",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.follow_up.hormone_replacement_therapy_type": {
+        "Estrogen only": "",
+        "Progesterone and Estrogen": "",
+        "Progesterone only": "",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10068,6 +10122,12 @@
         "Live Birth": "C50613",
         "Miscarriage": "C34336",
         "Stillbirth": "C49151",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.follow_up.procedures_performed": {
+        "Colonoscopy": "C16450",
+        "Endoscopy": "C16546",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10130,5 +10190,171 @@
     },
     "data.root.id": {
         "root": "C172256"
+    },
+    "clinical.pathology_detail.anaplasia_present": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.anaplasia_present_type": {
+        "Absent": "C48190",
+        "Diffuse": "C14175",
+        "Equivocal": "C86071",
+        "Focal": "C28224",
+        "Present": "C36113",
+        "Sclerosis": "C69309",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.bone_marrow_malignant_cells": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.columnar_mucosa_present": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.dysplasia_degree": {
+        "High Grade": "C156083",
+        "Indefinite": "C164039",
+        "Low Grade": "C156084",
+        "No Dysplasia": "C164040",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.dysplasia_type": {
+        "Other": "C17649",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.largest_extrapelvic_peritoneal_focus": {
+        "Macroscopic (2cm or less)": "C53696",
+        "Macroscopic (greater than 2cm)": "C51138",
+        "Microscopic": "C25252",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.lymph_node_involved_site": {
+        "Axillary": "C12904",
+        "Cervical": "C32298",
+        "Epitrochlear": "C98182",
+        "C43234": "C98183",
+        "Hilar": "C102330",
+        "Iliac-common": "C103384",
+        "Iliac-external": "C88143",
+        "Iliac, NOS": "C32761",
+        "Inguinal": "C32801",
+        "Mediastinal": "C33073",
+        "Mesenteric": "C77641",
+        "None": "C41132",
+        "Occipital": "C98188",
+        "Paraaortic": "C77643",
+        "Parotid": "C33278",
+        "Popliteal": "C53146",
+        "Retroperitoneal": "C98189",
+        "Splenic": "C142320",
+        "Submandibular": "C77650",
+        "Supraclavicular": "C12903",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.lymph_node_involvement": {
+        "Positive": "",
+        "Negative": "",
+        "Indeterminant": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.lymphatic_invasion_present": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.margin_status": {
+        "Involved": "",
+        "Uninvolved": "",
+        "Indeterminant": "",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.metaplasia_present": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.morphologic_architectural_pattern": {
+        "Cohesive": "",
+        "Cribiform": "C35920",
+        "Micropapillary": "C36181",
+        "Non-cohesive": "",
+        "Papillary Renal Cell": "",
+        "Papillary, NOS": "C35911",
+        "Solid": "C36182",
+        "Tubular": "C35925"
+    },
+    "clinical.pathology_detail.non_nodal_regional_disease": {
+        "Absent": "C48190",
+        "Indeterminate": "C48658",
+        "Present": "C25626",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.non_nodal_tumor_deposits": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.perineural_invasion_present": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.peripancreatic_lymph_nodes_positive": {
+        "0": "C70430",
+        "1-3": "C172224",
+        "4 or More": "C172226",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.transglottic_extension": {
+        "Absent": "C38757",
+        "Present": "C160996",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.vascular_invasion_present": {
+        "Yes": "C49488",
+        "No": "C49487",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "clinical.pathology_detail.vascular_invasion_type": {
+        "Extramural": "C44280",
+        "Intramural": "C25234",
+        "Macro": "C43566",
+        "Micro": "C25252",
+        "No Vascular Invasion": "C164046",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
+    },
+    "biospecimen.read_group.chipseq_target": {
+        "H3K4me1": "C120024",
+        "H3K4me3": "C107153",
+        "H3K9me3": "",
+        "H3K27me3": "",
+        "H3K36me3": "C142872",
+        "H3K27ac": "C120023",
+        "Input Control": "C156442",
+        "Unknown": "C17998"
     }
+
 }
