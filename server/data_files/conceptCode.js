@@ -4530,8 +4530,7 @@
     },
     "clinical.diagnosis.site_of_resection_or_biopsy": {
         "Not Reported": "C43234",
-        "Unknown": "C17998",
-        "Pancreatic neck": "C158551"
+        "Unknown": "C17998"
     },
     "clinical.follow_up.comorbidity": {
         "Acute Renal Failure": "C26808",
@@ -8082,7 +8081,7 @@
         "CD79A": "C97423",
         "HLA-DR": "C16692",
         "Mesothelin": "C20887",
-        "NSE": "C116205",
+        "NSE": "C62216",
         "Prostate-Specific Antigen (PSA)": "C17525",
         "Squamous Cell Carcinoma Antigen (SCCA)": "C120660",
         "Unknown": "C17998",
