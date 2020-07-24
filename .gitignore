@@ -5,3 +5,4 @@ client/static/dist
 gdc-docs
 geckodriver.exe
 .env
+.vscode
