@@ -8,7 +8,7 @@
     "run-some-test": "node tests/skipTest.js && node tests/runSomeTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "test": "node tests/convert.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
-    "build": "webpack --config webpack/webpack.prod.config.js --mode=production",
+    "build": "webpack --config webpack/webpack.dev.config.js --mode=production",
     "watch": "webpack --watch --config webpack/webpack.dev.config.js --mode=development --devtool=eval-source-map",
     "gdcdocs": "webpack --config webpack/webpack.docs.config.js --mode=production",
     "start": "node app.js"
@@ -25,6 +25,7 @@
     "commander": "^2.20.1",
     "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
+    "dotenv": "^8.2.0",
     "ejs": "^2.7.1",
     "elasticsearch": "^15.2.0",
     "express": "^4.17.1",

@@ -3,15 +3,19 @@
 const path = require('path');
 const _ = require('lodash');
 
+if (process.env.NODE_ENV !== 'prod') {
+  require('dotenv').config();
+};
+
 const all = {
 	// Root path of server
-    root: path.normalize(__dirname + '/../..'),
+  root: path.normalize(__dirname + '/../..'),
 
 	// Server port
 	port: process.env.PORT || 3000,
 
 	// Server port
-    logDir: process.env.LOGDIR || '/local/content/mvs/logs',
+  logDir: process.env.LOGDIR || '/local/content/mvs/logs',
 
 	// Node environment (dev, test, stage, prod), must select one.
 	env: process.env.NODE_ENV || 'prod',
