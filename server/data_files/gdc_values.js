@@ -5571,7 +5571,7 @@
     {"nm":"Ill-defined sites within respiratory system","i_c":"C39.9","n_c":"C148338","term_type":"PT"},
     {"nm":"Intestinal tract, NOS","i_c":"C26.0","n_c":"C12736","term_type":"PT"},
     {"nm":"Intra-abdominal lymph nodes","i_c":"C77.2","n_c":"C12360","term_type":"PT"},
-    {"nm":"intrahepatic bile duct","i_c":"C22.1","n_c":"C12677","term_type":"PT"},
+    {"nm":"Intrahepatic bile duct","i_c":"C22.1","n_c":"C12677","term_type":"PT"},
     {"nm":"Intrathoracic lymph nodes","i_c":"C77.1","n_c":"C12359","term_type":"PT"},
     {"nm":"Islets of Langerhans","i_c":"C25.4","n_c":"C12608","term_type":"PT"},
     {"nm":"Isthmus uteri","i_c":"C54.0","n_c":"C12312","term_type":"PT"},
