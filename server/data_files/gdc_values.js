@@ -6345,7 +6345,7 @@
     {"nm":"Amelanotic melanoma","i_c":"8730/3","n_c":"C3802","term_type":"PT"},
     {"nm":"Ameloblastic carcinoma","i_c":"9270/3","n_c":"C7492","term_type":"SY"},
     {"nm":"Ameloblastic fibrodentinoma","i_c":"9271/0","n_c":"C66800","term_type":"PT"},
-    {"nm":"Ameloblastic fibrodentinosarcoma","i_c":"9290/3","n_c":"C173740","term_type":"SY"},
+    {"nm":"Ameloblastic fibrodentinosarcoma","i_c":"9290/3","n_c":"C173739","term_type":"SY"},
     {"nm":"Ameloblastic fibroma","i_c":"9330/0","n_c":"C4316","term_type":"PT"},
     {"nm":"Ameloblastic fibro-odontoma","i_c":"9290/0","n_c":"C3710","term_type":"PT"},
     {"nm":"Ameloblastic fibro-odontosarcoma","i_c":"9290/3","n_c":"C173740","term_type":"SY"},
