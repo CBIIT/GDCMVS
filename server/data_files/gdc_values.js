@@ -1069,7 +1069,7 @@
     {"nm":"Regressing nevus","i_c":"8723/0","n_c":"C7603","term_type":"SY"},
     {"nm":"Malignant melanoma, regressing","i_c":"8723/3","n_c":"C4228","term_type":"PT"},
     {"nm":"Neuronevus","i_c":"8725/0","n_c":"C4229","term_type":"PT"},
-    {"nm":"Magnocellular nevus","i_c":"8726/0","n_c":"C4230","term_type":"PT"},
+    {"nm":"Magnocellular nevus","i_c":"8726/0","n_c":"C9498","term_type":"PT"},
     {"nm":"Melanocytoma, NOS","i_c":"8726/0","n_c":"C9498","term_type":"RT"},
     {"nm":"Melanocytoma, eyeball","i_c":"8726/0","n_c":"C4230","term_type":"SY"},
     {"nm":"Dysplastic nevus","i_c":"8727/0","n_c":"C3694","term_type":"PT"},
