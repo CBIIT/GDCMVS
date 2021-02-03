@@ -40,7 +40,7 @@ const all = {
     'treatment', 'slide', 'sample', 'read_group', 'portion', 'analyte', 'aliquot', 'slide_image', 'analysis_metadata',
     'clinical_supplement', 'experiment_metadata', 'pathology_detail', 'pathology_report', 'run_metadata', 'biospecimen_supplement',
     'submitted_aligned_reads', 'submitted_genomic_profile', 'submitted_methylation_beta_value', 'submitted_tangent_copy_number',
-    'submitted_unaligned_reads', 'data_release', 'root'
+    'submitted_unaligned_reads', 'data_release', 'root', 'masked_somatic_mutation', 'masked_methylation_array', 'rna_expression_workflow'
   ],
 
   // GDC drugs properties
