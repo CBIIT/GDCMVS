@@ -754,6 +754,43 @@ const preloadSynonumsNcit = (req, res) => {
 	});
 };
 
+const updateSynonumsNcit = (req, res) => {
+	//take all the ncit code from api parameters, a list of ncit codes
+	//call EVS api to collect the rest of the NCIT related data
+
+	let ncit_codes = req.query.codes;
+	ncit_codes = ncit_codes.split(",");
+
+	caDSR.updateSynonyms(ncit_codes, function(){
+		//read ncit_details.js into memory as a json object
+
+		let code_data = fs.readFile("./server/data_files/ncit_details_tmp.js");
+		let ncit_details = fs.readFile("./server/data_files/ncit_details.js");
+
+		for(let code in ncit_details){
+			if(ncit_codes.indexOf(code) > -1){
+				let data = code_data[code];
+				fs.appendFile("./server/data_files/ncit_details_updated.js", JSON.stringify(data), err => {
+					if (err) return logger.error(err);
+				});
+			}
+			else{
+				//write ncit_details into new files called ncit_details_updated.js
+				let tmp = ncit_details[code];
+				fs.appendFile("./server/data_files/ncit_details_updated.js", JSON.stringify(tmp), err => {
+					if (err) return logger.error(err);
+				});
+			}
+		}
+
+		res.end('Success!!');
+	});
+	
+	
+	
+	
+};
+
 const loadSynonyms_continue = (req, res) => {
 	elastic.loadSynonyms_continue(result => {
 		if (result === "Success") {
@@ -1254,6 +1291,7 @@ module.exports = {
 	getGDCData,
 	searchICDO3Data,
 	preloadSynonumsNcit,
+	updateSynonumsNcit,
 	loadSynonyms_continue,
 	preloadSynonumsCtcae,
 	loadCtcaeSynonyms_continue,
