@@ -11,6 +11,9 @@ router.get('/suggest', controller.suggestion);
 router.get('/suggestMisSpelled', controller.suggestionMisSpelled);
 router.get('/gdcDictionaryVersion', controller.gdcDictionaryVersion);
 router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
+
+router.get('/updateSynonumsNcit', controller.updateSynonumsNcit);
+
 router.get('/loadNcitSynonymsContinue', controller.loadSynonyms_continue);
 router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
 router.get('/loadCtcaeSynonymsContinue', controller.loadCtcaeSynonyms_continue);
