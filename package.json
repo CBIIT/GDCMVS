@@ -30,7 +30,7 @@
     "express": "^4.17.1",
     "googleapis": "^54.1.0",
     "helmet": "^3.23.3",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.0",
