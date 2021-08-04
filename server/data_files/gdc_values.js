@@ -5593,7 +5593,6 @@
     {"nm":"Labium minus","i_c":"C51.1","n_c":"C12307","term_type":"PT"},
     {"nm":"Lacrimal gland","i_c":"C69.5","n_c":"C12346","term_type":"PT"},
     {"nm":"Laryngeal cartilage","i_c":"C32.3","n_c":"C12281","term_type":"PT"},
-    {"nm":"Laryngeal Commissure","i_c":"C32.0","n_c":"","term_type":"RT"},
     {"nm":"Larynx, NOS","i_c":"C32.9","n_c":"C12420","term_type":"PT"},
     {"nm":"Lateral floor of mouth","i_c":"C04.1","n_c":"","term_type":"PT"},
     {"nm":"Lateral wall of bladder","i_c":"C67.2","n_c":"C12333","term_type":"PT"},

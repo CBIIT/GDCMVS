@@ -55,7 +55,7 @@ const all = {
   ],
 
   // GDC searchable nodes
-  searchable_nodes:[
+  searchable_nodes: [
     'aggregated_somatic_mutation',
     'aligned_reads_index',
     'aligned_reads',
