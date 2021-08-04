@@ -9366,11 +9366,11 @@
         "Abdomen": "C12664",
         "Adrenal Gland": "C12666",
         "Ascites": "C2885",
-        "Bladder":"",
+        "Bladder": "",
         "Bone": "C12366",
         "Bone Marrow": "C12431",
         "Brain": "C12439",
-        "Bronchus":"",
+        "Bronchus": "",
         "Central Nervous System": "C12438",
         "Cerebrospinal Fluid": "C12692",
         "Colon": "C12382",
@@ -9379,7 +9379,7 @@
         "Esophagus": "C12389",
         "Gastrointestinal Tract": "C34082",
         "Groin": "C12726",
-        "Head, Face or Neck, NOS":"",
+        "Head, Face or Neck, NOS": "",
         "Heart": "C12727",
         "Kidney": "C12415",
         "Liver": "C12392",
@@ -9387,8 +9387,8 @@
         "Lymph Node, Axillary": "C12904",
         "Lymph Node, Inguinal": "C32801",
         "Lymph Node, NOS": "C12745",
-        "Lymph Node, Regional":"",
-        "Lymph Node, Subcarinal":"",
+        "Lymph Node, Regional": "",
+        "Lymph Node, Subcarinal": "",
         "Mediastinum": "C12748",
         "Neck": "C13063",
         "Omentum": "C33209",
@@ -11037,6 +11037,213 @@
         "MboI": "",
         "Unknown": "C17998",
         "Not Applicable": "C48660"
-    }
+    },
+    "data_file.aggregated_somatic_mutation.data_format": {
+        "MAF": "C172215",
+        "TSV": "C164049"
+    },
+    "data_file.aggregated_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "index_file.aligned_reads_index.data_category": {
+        "Sequencing Data": "C153329",
+        "Sequencing Reads": "C153349",
+        "Raw Sequencing Data": "C165232"
+    },
+    "data_file.aligned_reads.data_category": {
+        "Sequencing Reads": "C153349"
+    },
+    "data_file.aligned_reads.data_type": {
+        "Aligned Reads": "C164052"
+    },
+    "data_file.aligned_reads.data_format": {
+        "BAM": "C153249"
+    },
+    "data_file.aligned_reads.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "HiChIP": "C179435",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "scATAC-Seq": "C179458",
+        "scRNA-Seq": "C171152",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.aligned_reads.platform": {
+        "Complete Genomics": "C146815",
+        "Illumina": "C146817",
+        "Ion Torrent": "C125894",
+        "LS454": "C146809",
+        "Other": "C17649",
+        "PacBio": "C146819",
+        "SOLiD": "C146811"
+    },
+    "data_file.annotated_somatic_mutation.data_format": {
+        "MAF": "C172215",
+        "VCF": "C172216"
+    },
+    "data_file.annotated_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "clinical.clinical.gender": {
+        "female": "C16576",
+        "male": "C20197",
+        "unknown": "C17998",
+        "unspecified": "C38046"
+    },
+    "clinical.clinical.ethnicity": {
+        "hispanic or latino": "C17459",
+        "not hispanic or latino": "C41222"
+    },
+    "clinical.clinical.race": {
+        "not reported": "C43234",
+        "white": "C41261",
+        "american indian or alaska native": "C41259",
+        "black or african american": "C16352",
+        "asian": "C41260",
+        "native hawaiian or other pacific islander": "C41219",
+        "other": "C17649"
+    },
+    "clinical.clinical.vital_status": {
+        "alive": "C37987",
+        "dead": "C28554",
+        "lost to follow-up": "C48227"
+    },
+    "data_file.copy_number_estimate.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.copy_number_estimate.data_format": {
+        "TSV": "C164049",
+        "TXT": "C85873"
+    },
+    "data_file.copy_number_estimate.experimental_strategy": {
+        "Genotyping Array": "C165219",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.copy_number_estimate.platform": {
+        "Illumina": "C146817",
+        "Ion Torrent": "C125894"
+    },
+    "data_file.copy_number_segment.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.copy_number_segment.data_format": {
+        "TXT": "C85873"
+    },
+    "data_file.copy_number_segment.experimental_strategy": {
+        "Genotyping Array": "C165219",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.copy_number_segment.platform":{
+        "Illumina": "C146817"
+    },
+    "data_file.filtered_copy_number_segment.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.filtered_copy_number_segment.data_format": {
+        "TXT": "C85873"
+    },
+    "data_file.filtered_copy_number_segment.experimental_strategy": {
+        "Genotyping Array": "C165219"
+    },
+    "data_file.gene_expression.experimental_strategy": {
+        "RNA-Seq": "C124261"
+    },
+    "data_file.methylation_beta_value.data_type":{
+        "Methylation Beta Value": "C164051"
+    },
+    "data_file.methylation_beta_value.data_format":{
+        "TXT": "C85873"
+    },
+    "data_file.methylation_beta_value.experimental_strategy":{
+        "Methylation Array": "C165222"
+    },
+    "data_file.mirna_expression.data_format": {
+        "TSV": "C164049",
+        "TXT": "C85873"
+    },
+    "data_file.mirna_expression.experimental_strategy": {
+        "miRNA-Seq": "C156057"
+    },
+    "data_file.protein_expression.data_format": {
+        "TSV": "C164049"
+    },
+    "data_file.raw_methylation_array.data_category": {
+        "DNA Methylation": "C63328"
+    },
+    "data_file.raw_methylation_array.experimental_strategy": {
+        "Methylation Array": "C165222"
+    },
+    "data_file.secondary_expression_analysis.data_format": {
+        "TSV": "C164049"
+    },
 
+    "data_file.simple_germline_variation.data_format": {
+        "VCF": "C172216",
+        "TSV": ""
+    },
+    "data_file.simple_germline_variation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.simple_somatic_mutation.data_category": {
+        "Combined Nucleotide Variation": "C171155"
+    },
+    "data_file.simple_somatic_mutation.data_format": {
+        "VCF": "C172216"
+    },
+    "data_file.simple_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.structural_variation.data_format": {
+        "TSV": "C164049",
+        "TXT": "C85873",
+        "VCF": "C172216"
+    },
+    "data_file.structural_variation.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.submitted_genotyping_array.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.submitted_genotyping_array.experimental_strategy":{
+        "Genotyping Array": "C165219"
+    }
 }
