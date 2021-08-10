@@ -11170,6 +11170,29 @@
     "data_file.gene_expression.experimental_strategy": {
         "RNA-Seq": "C124261"
     },
+    "data_file.masked_methylation_array.data_category":{
+        "DNA Methylation":"C63328"
+    },
+    "data_file.masked_methylation_array.experimental_strategy":{
+        "Methylation Array":"C165222"
+    },
+    "data_file.masked_somatic_mutation.data_format":{
+        "MAF":"C172215",
+        "TSV":"C164049"
+    },
+    "data_file.masked_somatic_mutation.experimental_strategy":{
+        "ATAC-Seq":"C156056",
+        "Bisulfite-Seq":"C106054",
+        "ChIP-Seq":"C106049",
+        "miRNA-Seq":"C156057",
+        "RNA-Seq":"C124261",
+        "Targeted Sequencing":"C130177",
+        "WGS":"C101294",
+        "WXS":"C101295"
+    },
+    "data_file.methylation_beta_value.data_category":{
+        "DNA Methylation":"C63328"
+    },
     "data_file.methylation_beta_value.data_type":{
         "Methylation Beta Value": "C164051"
     },
