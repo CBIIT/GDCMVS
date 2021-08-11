@@ -11076,6 +11076,7 @@
         "scATAC-Seq": "C179458",
         "scRNA-Seq": "C171152",
         "Targeted Sequencing": "C130177",
+        "Validation": "",
         "WGS": "C101294",
         "WXS": "C101295"
     },
@@ -11140,6 +11141,7 @@
         "WXS": "C101295"
     },
     "data_file.copy_number_estimate.platform": {
+        "Affymetrix SNP 6.0": "",
         "Illumina": "C146817",
         "Ion Torrent": "C125894"
     },
@@ -11155,7 +11157,8 @@
         "WGS": "C101294",
         "WXS": "C101295"
     },
-    "data_file.copy_number_segment.platform":{
+    "data_file.copy_number_segment.platform": {
+        "Affymetrix SNP 6.0": "",
         "Illumina": "C146817"
     },
     "data_file.filtered_copy_number_segment.data_category": {
@@ -11167,20 +11170,29 @@
     "data_file.filtered_copy_number_segment.experimental_strategy": {
         "Genotyping Array": "C165219"
     },
-    "data_file.gene_expression.experimental_strategy": {
-        "RNA-Seq": "C124261"
+    "data_file.gene_expression.data_format": {
+        "CSV": "",
+        "HDF5": "",
+        "MEX": "",
+        "TSV":"C164049",
+        "TXT":"C85873"
     },
-    "data_file.masked_methylation_array.data_category":{
+    "data_file.gene_expression.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "scRNA-Seq": "",
+        "Total RNA-Seq": ""
+    },
+    "data_file.masked_methylation_array.data_category": {
         "DNA Methylation":"C63328"
     },
-    "data_file.masked_methylation_array.experimental_strategy":{
+    "data_file.masked_methylation_array.experimental_strategy": {
         "Methylation Array":"C165222"
     },
-    "data_file.masked_somatic_mutation.data_format":{
+    "data_file.masked_somatic_mutation.data_format": {
         "MAF":"C172215",
         "TSV":"C164049"
     },
-    "data_file.masked_somatic_mutation.experimental_strategy":{
+    "data_file.masked_somatic_mutation.experimental_strategy": {
         "ATAC-Seq":"C156056",
         "Bisulfite-Seq":"C106054",
         "ChIP-Seq":"C106049",
@@ -11190,19 +11202,20 @@
         "WGS":"C101294",
         "WXS":"C101295"
     },
-    "data_file.methylation_beta_value.data_category":{
+    "data_file.methylation_beta_value.data_category": {
         "DNA Methylation":"C63328"
     },
-    "data_file.methylation_beta_value.data_type":{
+    "data_file.methylation_beta_value.data_type": {
         "Methylation Beta Value": "C164051"
     },
-    "data_file.methylation_beta_value.data_format":{
+    "data_file.methylation_beta_value.data_format": {
         "TXT": "C85873"
     },
-    "data_file.methylation_beta_value.experimental_strategy":{
+    "data_file.methylation_beta_value.experimental_strategy": {
         "Methylation Array": "C165222"
     },
     "data_file.mirna_expression.data_format": {
+        "CSV": "",
         "TSV": "C164049",
         "TXT": "C85873"
     },
@@ -11219,9 +11232,9 @@
         "Methylation Array": "C165222"
     },
     "data_file.secondary_expression_analysis.data_format": {
+        "HDF5": "",
         "TSV": "C164049"
     },
-
     "data_file.simple_germline_variation.data_format": {
         "VCF": "C172216",
         "TSV": ""
@@ -11237,7 +11250,8 @@
         "WXS": "C101295"
     },
     "data_file.simple_somatic_mutation.data_category": {
-        "Combined Nucleotide Variation": "C171155"
+        "Combined Nucleotide Variation": "C171155",
+        "Simple Nucleotide Variation": ""
     },
     "data_file.simple_somatic_mutation.data_format": {
         "VCF": "C172216"
@@ -11253,6 +11267,11 @@
         "WXS": "C101295"
     },
     "data_file.structural_variation.data_format": {
+        "BEDPE": "",
+        "CSV": "",
+        "FASTA": "",
+        "GVF": "",
+        "JSON": "",
         "TSV": "C164049",
         "TXT": "C85873",
         "VCF": "C172216"
@@ -11266,7 +11285,7 @@
     "data_file.submitted_genotyping_array.data_category": {
         "Copy Number Variation": "C40207"
     },
-    "data_file.submitted_genotyping_array.experimental_strategy":{
+    "data_file.submitted_genotyping_array.experimental_strategy": {
         "Genotyping Array": "C165219"
     }
 }
