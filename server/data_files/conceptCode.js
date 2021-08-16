@@ -301,7 +301,7 @@
         "Anti-CD3/Anti-BCMA Bispecific Monoclonal Antibody JNJ-64007957": "C136823",
         "Anti-CD3/Anti-BCMA Bispecific Monoclonal Antibody PF-06863135": "C146860",
         "Anti-CD3/Anti-CD20 Trifunctional Bispecific Monoclonal Antibody FBTA05": "C95760",
-        "Anti-CD3/Anti-GPRC5D Bispecific Monoclonal Antibody JNJ-64407564": "C147534",
+        "Anti-CD3/Anti-GPRC5D Bispecific Monoclonal Antibody JNJ-64407564": "C171840",
         "Anti-CD3/CD20 Bispecific Antibody GEN3013": "C163022",
         "Anti-CD3/CD38 Bispecific Monoclonal Antibody AMG 424": "C153147",
         "Anti-CD30 Monoclonal Antibody MDX-1401": "C77886",
@@ -465,7 +465,7 @@
         "Anti-HER2-vc0101 ADC PF-06804103": "C141420",
         "Anti-HER2/Anti-CD3 Bispecific Monoclonal Antibody BTRC 4017A": "C156705",
         "Anti-HER2/Anti-CD3 Bispecific Monoclonal Antibody GBR 1302": "C142889",
-        "Anti-HER2/Anti-HER3 Bispecific Monoclonal Antibody MCLA-128": "C153211",
+        "Anti-HER2/Anti-HER3 Bispecific Monoclonal Antibody MCLA-128": "C152948",
         "Anti-HER2/Auristatin Payload Antibody-drug Conjugate XMT-1522": "C132112",
         "Anti-HER2/PBD-MA Antibody-drug Conjugate DHES0815A": "C155940",
         "Anti-HER3 Antibody-drug Conjugate U3 1402": "C136987",
@@ -518,7 +518,7 @@
         "Anti-Myeloma Monoclonal Antibody-DM4 Immunoconjugate BT-062": "C78840",
         "Anti-myostatin Monoclonal Antibody LY2495655": "C99640",
         "Anti-NaPi2b Monoclonal Antibody XMT-1535": "C147578",
-        "Anti-nectin-4 Monoclonal Antibody-Drug Conjugate AGS-22M6E": "C97916",
+        "Anti-nectin-4 Monoclonal Antibody-Drug Conjugate AGS-22M6E": "C114500",
         "Anti-Neuropilin-1 Monoclonal Antibody MNRP1685A": "C91728",
         "Anti-nf-P2X7 Antibody Ointment BIL-010t": "C124647",
         "Anti-Nucleolin Aptamer AS1411": "C91721",
@@ -830,7 +830,7 @@
         "Bcl-2 Inhibitor S65487": "C158510",
         "Bcl-Xs Adenovirus Vaccine": "C28860",
         "BCMA x CD3 T-cell Engaging Antibody CC-93269": "C156052",
-        "Bcr-Abl Kinase Inhibitor K0706": "C132173",
+        "Bcr-Abl Kinase Inhibitor K0706": "C174748",
         "Bcr-Abl Kinase Inhibitor PF-114": "C130033",
         "BCR-ABL/KIT/AKT/ERK Inhibitor HQP1351": "C165549",
         "Beauvericin": "C1011",
@@ -1144,7 +1144,7 @@
         "Chromomycin A3": "C895",
         "Chrysanthemum morifolium/Ganoderma lucidum/Glycyrrhiza glabra/Isatis indigotica/Panax pseudoginseng/Rabdosia rubescens/Scutellaria baicalensis/Serona repens Supplement": "C1828",
         "Cibisatamab": "C120097",
-        "Ciclopirox Prodrug CPX-POM": "C155886",
+        "Ciclopirox Prodrug CPX-POM": "C175786",
         "Cidan Herbal Capsule": "C118451",
         "Ciforadenant": "C125659",
         "Cilengitide": "C1834",
@@ -1284,7 +1284,7 @@
         "Daunorubicin": "C62091",
         "Daunorubicin Citrate": "C47471",
         "Daunorubicin Hydrochloride": "C1583",
-        "DEC-205/NY-ESO-1 Fusion Protein CDX-1401": "C84859",
+        "DEC-205/NY-ESO-1 Fusion Protein CDX-1401": "C170362",
         "Decitabine": "C981",
         "Defactinib": "C79809",
         "Defactinib Hydrochloride": "C128039",
@@ -1354,7 +1354,7 @@
         "Diphencyprone": "C28994",
         "Diphtheria Toxin Fragment-Interleukin-2 Fusion Protein E7777": "C126273",
         "Ditiocarb": "C432",
-        "DKK1-Neutralizing Monoclonal Antibody DKN-01": "C113331",
+        "DKK1-Neutralizing Monoclonal Antibody DKN-01": "C99123",
         "DM-CHOC-PEN": "C90539",
         "DM4-Conjugated Anti-Cripto Monoclonal Antibody BIIB015": "C77864",
         "DNA Interference Oligonucleotide PNT2258": "C92588",
@@ -1526,7 +1526,7 @@
         "Eribulin Mesylate": "C26644",
         "ERK 1/2 Inhibitor ASTX029": "C155785",
         "ERK Inhibitor CC-90003": "C119747",
-        "ERK Inhibitor GDC-0994": "C107241",
+        "ERK Inhibitor GDC-0994": "C170364",
         "ERK Inhibitor LTT462": "C126687",
         "ERK Inhibitor MK-8353": "C104045",
         "ERK1/2 Inhibitor ASN007": "C150248",
@@ -1613,7 +1613,7 @@
         "FGFR4 Inhibitor FGF401": "C120102",
         "FGFR4 Inhibitor H3B-6527": "C128862",
         "FGFR4 Inhibitor ICP-105": "C162852",
-        "Fibromun": "C94210",
+        "Fibromun": "C166939",
         "Ficlatuzumab": "C78844",
         "Figitumumab": "C52187",
         "Filanesib": "C68937",
@@ -1779,7 +1779,7 @@
         "HDAC Class I/IIb Inhibitor HG146": "C160706",
         "HDAC Inhibitor AR-42": "C116850",
         "HDAC inhibitor CG200745": "C94225",
-        "HDAC Inhibitor CHR-2845": "C82690",
+        "HDAC Inhibitor CHR-2845": "C152539",
         "HDAC Inhibitor CKD-581": "C148157",
         "HDAC Inhibitor CXD101": "C112177",
         "HDAC Inhibitor MPT0E028": "C120312",
@@ -1969,6 +1969,7 @@
         "Integrin alpha-2 Inhibitor E7820": "C61501",
         "Integrin Receptor Antagonist GLPG0187": "C96223",
         "Interferon": "C20493",
+        "Interferon Alfa-2B": "",
         "Interferon Alfa-N1": "C2220",
         "Interferon Alfa-N3": "C30136",
         "Interferon Alfacon-1": "C1766",
@@ -2092,6 +2093,7 @@
         "Leuprolide Mesylate Injectable Suspension": "C118363",
         "Leurubicin": "C81421",
         "Levetiracetam": "C47581",
+        "Levoleucovorin Calcium": "",
         "Levothyroxine": "C62080",
         "Levothyroxine Sodium": "C888",
         "Lexatumumab": "C64621",
@@ -2246,7 +2248,7 @@
         "MDM2 Antagonist RO6839921": "C114980",
         "MDM2 Inhibitor AMG-232": "C116624",
         "MDM2 Inhibitor BI 907828": "C156709",
-        "MDM2 Inhibitor KRT-232": "C156415",
+        "MDM2 Inhibitor KRT-232": "C116624",
         "MDM2/MDMX Inhibitor ALRN-6924": "C118669",
         "MDR Modulator CBT-1": "C67042",
         "Mechlorethamine": "C62056",
@@ -2337,6 +2339,7 @@
         "Mirabegron": "C90633",
         "Mirvetuximab Soravtansine": "C102566",
         "Misonidazole": "C657",
+        "Mistletoe Extract": "",
         "Mitindomide": "C29195",
         "Mitobronitol": "C659",
         "Mitochondrial Oxidative Phosphorylation Inhibitor ATR-101": "C111758",
@@ -2714,7 +2717,7 @@
         "Pan-FGFR Inhibitor LY2874455": "C139004",
         "Pan-FLT3/Pan-BTK Multi-kinase Inhibitor CG-806": "C162573",
         "pan-HER Kinase Inhibitor AC480": "C48380",
-        "Pan-IDH Mutant Inhibitor AG-881": "C122874",
+        "Pan-IDH Mutant Inhibitor AG-881": "C152914",
         "Pan-Mutant-IDH1 Inhibitor Bay-1436032": "C131690",
         "pan-PI3K Inhibitor CLR457": "C117230",
         "pan-PI3K/mTOR Inhibitor SF1126": "C85469",
@@ -2844,7 +2847,7 @@
         "Phytochlorin Sodium-Polyvinylpyrrolidone Complex": "C126802",
         "PI3K Alpha/Beta Inhibitor BAY1082439": "C103861",
         "PI3K Alpha/mTOR Inhibitor PWT33597 Mesylate": "C97915",
-        "PI3K Inhibitor ACP-319": "C118568",
+        "PI3K Inhibitor ACP-319": "C95891",
         "PI3K Inhibitor BGT226": "C74073",
         "PI3K Inhibitor GDC-0084": "C116877",
         "PI3K Inhibitor GDC0077": "C132166",
@@ -2931,7 +2934,7 @@
         "Poliglusam": "C157372",
         "Polo-like Kinase 1 Inhibitor GSK461364": "C70948",
         "Polo-like Kinase 1 Inhibitor MK1496": "C82389",
-        "Polo-like Kinase 1 Inhibitor NMS-1286937": "C88313",
+        "Polo-like Kinase 1 Inhibitor NMS-1286937": "C143162",
         "Polo-like Kinase 4 Inhibitor CFI-400945 Fumarate": "C111990",
         "Poly-alendronate Dextran-Guanidine Conjugate": "C101894",
         "Poly-gamma Glutamic Acid": "C106124",
@@ -3253,7 +3256,7 @@
         "SERD D-0502": "C156735",
         "SERD G1T48": "C150552",
         "SERD GDC-9545": "C147030",
-        "SERD SAR439859": "C140354",
+        "SERD SAR439859": "C174915",
         "SERD SHR9549": "C165550",
         "Serdemetan": "C77904",
         "Sergiolide": "C1763",
@@ -4465,8 +4468,8 @@
         "Zelavespib": "C101227",
         "Zirconium Zr 89 Panitumumab": "C156043",
         "Zorifertinib": "C118289",
-        "Zotatifin": "C105851",
-        "Zotiraciclib Citrate": "C28322",
+        "Zotatifin": "C165746",
+        "Zotiraciclib Citrate": "C105851",
         "CDK4/6 Inhibitor": "",
         "IGF-1R Inhibitor": "",
         "Progestational IUD": "",
@@ -4494,7 +4497,7 @@
         "PSR-Pseudoresponse": "C131142",
         "RD-Responsive Disease": "C165206",
         "RPD-Radiographic Progressive Disease": "C165208",
-        "RP-Response": "C50995",
+        "RP-Response": "C165206",
         "sCR-Stringent Complete Response": "C123614",
         "SD-Stable Disease": "C18213",
         "SPD-Surgical Progression": "",
@@ -4736,7 +4739,7 @@
         "Vulva": "C12408"
     },
     "clinical.demographic.cause_of_death": {
-        "Cancer Related": "C8278",
+        "Cancer Related": "C156427",
         "End-stage Renal Disease": "C9439",
         "Infection": "C26726",
         "Not Cancer Related": "C156428",
@@ -4955,6 +4958,8 @@
         "Stage IIC": "C27969",
         "Stage III": "C27970",
         "Stage IIIA": "C27977",
+        "Stage IIIA1": "",
+        "Stage IIIA2": "",
         "Stage IIIB": "C27978",
         "Stage IIIC": "C27982",
         "Stage IIIC1": "C95179",
@@ -5115,6 +5120,7 @@
         "Dilation and Curettage Procedure": "C15226",
         "Enucleation": "C48601",
         "Excisional Biopsy": "C15385",
+        "Exoresection": "",
         "Fine Needle Aspiration": "C15361",
         "Incisional Biopsy": "C15386",
         "Laparoscopy": "C16969",
@@ -5135,7 +5141,7 @@
         "Unknown": "C17998"
     },
     "clinical.follow_up.comorbidity": {
-        "Abnormal Glucose Level": "",
+        "Abnormal Glucose Level": "C179424",
         "Acute Renal Failure": "C26808",
         "Adenocarcinoma": "C2852",
         "Adenomatous Polyposis Coli": "C3339",
@@ -5184,6 +5190,7 @@
         "Cytomegalovirus (CMV)": "C53649",
         "Deep Vein Thrombosis / Thromboembolism": ["C49343", "C50713"],
         "Denys-Drash Syndrome": "C84668",
+        "Dermatomyosis": "",
         "Depression": "C2982",
         "Diabetes": "C2985",
         "Diabetes, Type II": "C26747",
@@ -5194,7 +5201,7 @@
         "Dyslipidemia": "C80385",
         "Eczema": "C3001",
         "Epilepsy": "C3020",
-        "Epstein-Barr Virus": "C14204",
+        "Epstein-Barr Virus": "C38759",
         "Familial Adenomatous Polyposis": "C3339",
         "Fanconi Anemia": "C62505",
         "Fibromyalgia": "C87497",
@@ -5220,6 +5227,7 @@
         "Hepatitis, Chronic": "C82978",
         "Hereditary Non-polyposis Colon Cancer": "C120083",
         "Herpes": "C155871",
+        "Herpes Zoster": "",
         "High Grade Liver Dysplastic Nodule": "C96768",
         "HIV / AIDS": "C2851",
         "Human Papillomavirus Infection": "C27851",
@@ -5297,6 +5305,7 @@
         "Turcot Syndrome": "C3938",
         "Tyrosinemia": "C98640",
         "Ulcerative Colitis": "C2952",
+        "Varicella Zoster Virus": "",
         "Wagr Syndrome": "C3718",
         "Unknown": "C17998",
         "Not Reported": "C43234"
@@ -5322,7 +5331,7 @@
         "PSR-Pseudoresponse": "C131142",
         "RD-Responsive Disease": "C165206",
         "RPD-Radiographic Progressive Disease": "C165208",
-        "RP-Response": "C50995",
+        "RP-Response": "C165206",
         "sCR-Stringent Complete Response": "C123614",
         "SD-Stable Disease": "C18213",
         "SPD-Surgical Progression": "",
@@ -5370,6 +5379,15 @@
         "Not Reported": "C43234",
         "Other": "C17649",
         "Unknown": "C17998"
+    },
+    "clinical.follow_up.hysterectomy_margins_involved": {
+        "Bladder": "C12414",
+        "Macroscopic Parametrium": "C179443",
+        "Microscopic Parametrium": "C179445",
+        "None": "C48621",
+        "Vagina": "C12407",
+        "Unknown": "C17998",
+        "Not Reported": "C43234"
     },
     "clinical.follow_up.progression_or_recurrence": {
         "No": "C49487",
@@ -5568,7 +5586,7 @@
         "Forearm": "C32628",
         "Forehead": "C89803",
         "Foreskin": "C33049",
-        "Frontal Cortex": "C12352",
+        "Frontal Cortex": "C177766",
         "Frontal Lobe": "C12352",
         "Fundus Of Stomach": "C12257",
         "Gallbladder": "C12377",
@@ -5656,7 +5674,7 @@
         "Nerve(s) Cranial": "C12700",
         "Not Allowed To Collect": "C141478",
         "Not Reported": "C43234",
-        "Occipital Cortex": "C12355",
+        "Occipital Cortex": "C177767",
         "Ocular Orbits": "C12347",
         "Omentum": "C33209",
         "Oral Cavity": "C12421",
@@ -5725,7 +5743,7 @@
         "Submandibular Gland": "C12233",
         "Supraglottis": "C12279",
         "Synovium": "C12473",
-        "Temporal Cortex": "C12353",
+        "Temporal Cortex": "C177768",
         "Tendon": "C13045",
         "Testis": "C12412",
         "Thigh": "C33763",
@@ -6012,7 +6030,7 @@
         "Dermal": "C25478",
         "Descending Colon": "C12268",
         "Diaphragm": "C12702",
-        "Distant Site": "",
+        "Distant Site": "C179433",
         "Duodenum": "C12263",
         "Ear": "C12394",
         "Ear Canal": "C12498",
@@ -6039,7 +6057,7 @@
         "Forearm": "C32628",
         "Forehead": "C89803",
         "Foreskin": "C33049",
-        "Frontal Cortex": "C12352",
+        "Frontal Cortex": "C177766",
         "Frontal Lobe": "C12352",
         "Fundus of Stomach": "C12257",
         "Gallbladder": "C12377",
@@ -6112,7 +6130,7 @@
         "Lymph Node(s) Submandibular": "C77650",
         "Lymph Node(s) Supraclavicular": "C12903",
         "Mandible": "C12290",
-        "Mantle": "",
+        "Mantle": "C12507",
         "Maxilla": "C26470",
         "Mediastinal Soft Tissue": "C164004",
         "Mediastinum": "C12748",
@@ -6129,7 +6147,7 @@
         "Nerve": "C12466",
         "Nerve(s) Cranial": "C12700",
         "Not Reported": "C43234",
-        "Occipital Cortex": "C12355",
+        "Occipital Cortex": "C177767",
         "Ocular Orbits": "C12347",
         "Omentum": "C33209",
         "Oral Cavity": "C12421",
@@ -6158,15 +6176,15 @@
         "Pleura": "C12469",
         "Popliteal Fossa": "C103222",
         "Pouch": "C43200",
-        "Primary Tumor Field": "",
-        "Primary tumor site": "",
+        "Primary Tumor Field": "C179450",
+        "Primary tumor site": "C179451",
         "Prostate": "C12410",
         "Prostate Bed": "C90348",
         "Prostate, Seminal Vesicles and Lymph Nodes": "",
         "Pylorus": "C12260",
         "Rectosigmoid Junction": "C54188",
         "Rectum": "C12390",
-        "Regional Site": "",
+        "Regional Site": "C179457",
         "Retina": "C12343",
         "Retro-Orbital Region": "C54155",
         "Retroperitoneum": "C12298",
@@ -6205,7 +6223,7 @@
         "Stomach - Mucosa Only": "C32656",
         "Subcutaneous Tissue": "C33645",
         "Synovium": "C12473",
-        "Temporal Cortex": "C12353",
+        "Temporal Cortex": "C177768",
         "Tendon": "C13045",
         "Testis": "C12412",
         "Thigh": "C33763",
@@ -7087,7 +7105,7 @@
         "Feature Elongation": "C148640",
         "Feature Truncation": "C148641",
         "Frameshift Variant": "C17354",
-        "Incomplete Terminal Codon Variant": "",
+        "Incomplete Terminal Codon Variant": "C179438",
         "Inframe Deletion": "C165225",
         "Inframe Insertion": "C165226",
         "Intergenic Variant": "C148642",
@@ -7156,6 +7174,7 @@
         "ANK1": "C84301",
         "APC": "C17567",
         "APOBEC3B": "C117001",
+        "AQP1": "",
         "AR": "C28539",
         "ARAF": "C18354",
         "ARHGAP26": "C97504",
@@ -7210,6 +7229,7 @@
         "BUB1B": "C95592",
         "C15orf65": "C98096",
         "CACNA1D": "C113769",
+        "CALB2": "",
         "CALR": "C95313",
         "CAMTA1": "C101440",
         "CANT1": "C97375",
@@ -7313,6 +7333,7 @@
         "DNAJB1": "C122560",
         "DNM2": "C102796",
         "DNMT3A": "C73652",
+        "DNTT": "",
         "DROSHA": "C25955",
         "DUX4L1": "C124048",
         "EBF1": "C80023",
@@ -7330,6 +7351,7 @@
         "EML4": "C71003",
         "EP300": "C26569",
         "EPAS1": "C104303",
+        "EPCAM": "",
         "EPHA3": "C18384",
         "EPHA7": "C111841",
         "EPS15": "C24369",
@@ -7404,6 +7426,7 @@
         "GATA1": "C28575",
         "GATA2": "C97552",
         "GATA3": "C75492",
+        "GCET1": "",
         "GLI1": "C24432",
         "GMPS": "C97522",
         "GNA11": "C89717",
@@ -7620,6 +7643,7 @@
         "PDGFB": "C18278",
         "PDGFRA": "C24666",
         "PDGFRB": "C24667",
+        "PDPN": "",
         "PER1": "C97721",
         "PGR": "C28656",
         "PHF6": "C101449",
@@ -7660,6 +7684,7 @@
         "PSIP1": "C20676",
         "PTCH1": "C18255",
         "PTEN": "C18256",
+        "PTGS2": "",
         "PTK6": "C24701",
         "PTPN11": "C26337",
         "PTPN13": "C104212",
@@ -8672,6 +8697,9 @@
     "clinical.molecular_test.antigen": {
         "CA19-9": "C327",
         "CEA": "C16384",
+        "FMC-7": "",
+        "Kappa, Surface": "",
+        "Lambda, Surface": "",
         "BCL6": "C26149",
         "CCND1": "C17988",
         "CD10": "C16836",
@@ -8757,6 +8785,7 @@
         "Illumina HiSeq 4000": "",
         "Illumina MiSeq": "",
         "Illumina NextSeq": "",
+        "Illumina NovaSeq 6000": "",
         "Ion Torrent PGM": "",
         "Ion Torrent Proton": "",
         "PacBio RS": "",
@@ -8784,11 +8813,11 @@
         "ATAC-Seq": "C156056",
         "Bisulfite-Seq": "C106054",
         "ChIP-Seq": "C106049",
-        "HiChIP": "",
-        "m6A RNA Methylation": "",
+        "HiChIP": "C179435",
+        "m6A RNA Methylation": "C179442",
         "miRNA-Seq": "C156057",
         "RNA-Seq": "C124261",
-        "scATAC-Seq": "",
+        "scATAC-Seq": "C179458",
         "scRNA-Seq": "C171152",
         "Targeted Sequencing": "C130177",
         "WGS": "C101294",
@@ -8842,6 +8871,7 @@
         "TruSeq Exome Enrichment - 62 Mb": "",
         "TruSeq RNA Exome": "",
         "TruSight Myeloid Sequencing Panel": "",
+        "Twist Human Comprehensive Exome": "",
         "Custom Personalis ACEcp VAREPOP-APOLLO Panel v2": "",
         "SureSelect Human All Exon v5 + UTR": "",
         "xGen Exome Research Panel v1.0": "",
@@ -8970,7 +9000,7 @@
         "Endoscopic Biopsy": "C15389",
         "Endoscopic Mucosal Resection (EMR)": "C103242",
         "Hand Assisted Laparoscopic Radical Nephrectomy": "C165179",
-        "Indeterminant": "",
+        "Indeterminant": "C48658",
         "Laparoscopic Biopsy": "C165180",
         "Laparoscopic Partial Nephrectomy": "C165181",
         "Laparoscopic Radical Nephrectomy": "C165182",
@@ -9054,6 +9084,7 @@
         "Mixed Adherent Suspension": "C174118",
         "Mononuclear Cells from Bone Marrow Normal": "C164011",
         "Next Generation Cancer Model": "C172295",
+        "Next Generation Cancer Model Expanded Under Non-conforming Conditions": "",
         "Primary Blood Derived Cancer - Peripheral Blood": "C164030",
         "Recurrent Blood Derived Cancer - Peripheral Blood": "C164017",
         "Primary Blood Derived Cancer - Bone Marrow": "C164015",
@@ -9334,9 +9365,11 @@
         "Abdomen": "C12664",
         "Adrenal Gland": "C12666",
         "Ascites": "C2885",
+        "Bladder": "",
         "Bone": "C12366",
         "Bone Marrow": "C12431",
         "Brain": "C12439",
+        "Bronchus": "",
         "Central Nervous System": "C12438",
         "Cerebrospinal Fluid": "C12692",
         "Colon": "C12382",
@@ -9345,6 +9378,7 @@
         "Esophagus": "C12389",
         "Gastrointestinal Tract": "C34082",
         "Groin": "C12726",
+        "Head, Face or Neck, NOS": "",
         "Heart": "C12727",
         "Kidney": "C12415",
         "Liver": "C12392",
@@ -9352,6 +9386,8 @@
         "Lymph Node, Axillary": "C12904",
         "Lymph Node, Inguinal": "C32801",
         "Lymph Node, NOS": "C12745",
+        "Lymph Node, Regional": "",
+        "Lymph Node, Subcarinal": "",
         "Mediastinum": "C12748",
         "Neck": "C13063",
         "Omentum": "C33209",
@@ -9414,16 +9450,20 @@
         "8070/33": "",
         "8140/33": "",
         "8240/6": "",
+        "8246/6": "",
         "8249/6": "",
         "8310/6": "",
         "8311/6": "",
         "8370/1": "",
+        "8380/6": "",
         "8441/6": "",
+        "8461/6": "",
         "8471/1": "",
         "8482/6": "",
         "8500/6": "",
         "8521/1": "",
         "8522/1": "",
+        "8522/6": "",
         "8720/6": "",
         "8800/6": "",
         "8801/6": "",
@@ -9543,8 +9583,8 @@
         "Thiazolidinedione": "C98241",
         "Unknown": "C17998",
         "Diet": "C15383",
-        "Injected Insulin": "",
-        "Oral Hypoglycemic": ""
+        "Injected Insulin": "C179441",
+        "Oral Hypoglycemic": "C179448"
     },
     "clinical.follow_up.karnofsky_performance_status": {
         "0": "C105720",
@@ -9588,7 +9628,7 @@
         "Surgically Treated": "C15329"
     },
     "clinical.follow_up.risk_factor": {
-        "Abnormal Glucose Level": "",
+        "Abnormal Glucose Level": "C179424",
         "Adenosis (Atypical Adenomatous Hyperplasia)": ["C120861","C5665"],
         "Alcohol Consumption": "C16273",
         "Alcoholic Liver Disease": "C34783",
@@ -9635,6 +9675,7 @@
         "Cyst(s)": "C2978",
         "Cytomegalovirus (CMV)": "C53649",
         "Denys-Drash Syndrome": "C84668",
+        "Dermatomyosis": "",
         "Diabetes, NOS": "C2985",
         "Diabetes, Type I": "C2986",
         "Diabetes, Type II": "C26747",
@@ -9642,10 +9683,10 @@
         "Diverticulitis": "C26752",
         "Eczema": "C3001",
         "Endometriosis": "C3014",
-        "Endosalpingiosis": "C40121",
+        "Endosalpingiosis": "C179646",
         "Epithelial Dysplasia": "C8366",
         "Epithelial Hyperplasia": "",
-        "Epstein-Barr Virus": "C14204",
+        "Epstein-Barr Virus": "C38759",
         "Escherichia coli": "C34594",
         "Familial Adenomatous Polyposis": "C3339",
         "Fanconi Anemia": "C62505",
@@ -9673,6 +9714,7 @@
         "Hereditary Papillary Renal Cell Carcinoma": "C9222",
         "Hereditary Prostate Cancer": "C103817",
         "Hereditary Renal Cell Carcinoma": "C39789",
+        "Herpes Zoster": "",
         "High Grade Dysplasia": "C156083",
         "High-grade Prostatic Intraepithelial Neoplasia (PIN)": "C5541",
         "HIV": "C14219",
@@ -9730,6 +9772,7 @@
         "Tumor-associated Lymphoid Proliferation": "C171150",
         "Turcot Syndrome": "C3938",
         "Undescended Testis": "C12326",
+        "Varicella Zoster Virus": "",
         "Vascular Disease": "C35117",
         "Vision Changes": "C157424",
         "Von Hippel-Lindau Syndrome": "C3105",
@@ -9786,11 +9829,11 @@
         "ATAC-Seq": "C156056",
         "Bisulfite-Seq": "C106054",
         "ChIP-Seq": "C106049",
-        "HiChIP": "",
-        "m6A RNA Methylation": "",
+        "HiChIP": "C179435",
+        "m6A RNA Methylation": "C179442",
         "miRNA-Seq": "C156057",
         "RNA-Seq": "C124261",
-        "scATAC-Seq": "",
+        "scATAC-Seq": "C179458",
         "scRNA-Seq": "C171152",
         "Targeted Sequencing": "C130177",
         "WGS": "C101294",
@@ -9809,7 +9852,6 @@
         "ATAC-Seq": "C156056",
         "Bisulfite-Seq": "C106054",
         "ChIP-Seq": "C106049",
-        "Low Pass WGS": "C165220",
         "miRNA-Seq": "C156057",
         "RNA-Seq": "C124261",
         "WXS": "C101295"
@@ -9827,11 +9869,11 @@
         "ATAC-Seq": "C156056",
         "Bisulfite-Seq": "C106054",
         "ChIP-Seq": "C106049",
-        "HiChIP": "",
-        "m6A RNA Methylation": "",
+        "HiChIP": "C179435",
+        "m6A RNA Methylation": "C179442",
         "miRNA-Seq": "C156057",
         "RNA-Seq": "C124261",
-        "scATAC-Seq": "",
+        "scATAC-Seq": "C179458",
         "scRNA-Seq": "C171152",
         "Targeted Sequencing": "C130177",
         "WGS": "C101294",
@@ -9862,7 +9904,7 @@
         "Embryonic Tissue": "C12950",
         "Feces": "C13234",
         "Granulocyte": "C12530",
-        "Involved Tissue, NOS": "",
+        "Involved Tissue, NOS": "C18009",
         "Muscle Tissue": "C12435",
         "Nerve Tissue": "C13052",
         "Not Reported": "C43234",
@@ -9874,7 +9916,7 @@
         "Skin": "C12470",
         "Soft Tissue": "C12471",
         "Tissue, NOS": "C12801",
-        "Uninvolved Tissue, NOS": "",
+        "Uninvolved Tissue, NOS": "C162623",
         "Unknown": "C17998",
         "Urine": "C13283"
     },
@@ -9886,15 +9928,21 @@
         "B-cell genotyping": "C171142",
         "Basophil": "C64470",
         "Beta 2 Microglobulin": "C81980",
+        "BG8": "",
         "Blood Urea Nitrogen": "C61019",
         "Calcium": "C64488",
         "Cellularity": "C111153",
         "Chromogranin A": "C122108",
         "Chromogranin B": "C174116",
+        "Circulating Endothelial Cells": "",
         "Circulating Tumor Cells": "C96593",
         "C-Reactive Protein": "C64548",
         "Creatinine": "C64547",
+        "Cytokeratin 5": "",
+        "Cytokeratin 6": "",
+        "Dopamine-Secreting": "",
         "Eosinophil": "C64550",
+        "Epinephrine-Secreting": "",
         "Epstein-Barr Virus": "C171143",
         "Gamma-Enolase": "C116205",
         "Glucose": "C105585",
@@ -9913,9 +9961,14 @@
         "Lymphocytes": "C51949",
         "M Protein": "C92291",
         "Metamyelocytes": "C74615",
+        "Metanephrine-Secreting": "",
+        "Methoxytyramine-Secreting": "",
+        "Microsatellite Instability": "",
         "Myeloblasts": "C74632",
         "Myelocytes": "C74662",
         "Neutrophil Bands": "C64830",
+        "Norepinephrine-Secreting": "",
+        "Normetanephrine-Secreting": "",
         "Not Reported": "C43234",
         "Platelets": "C51951",
         "Prolymphocytes": "C74620",
@@ -9925,6 +9978,8 @@
         "Serum Free Immunoglobulin Light Chain, Kappa": "C98730",
         "Serum Free Immunoglobulin Light Chain, Lambda": "C98732",
         "Serum Free Immunoglobulin Light Chain, NOS": "C147376",
+        "Serum Mesothelin": "",
+        "TAG-72": "",
         "Testosterone": "C74793",
         "Total Bilirubin": "C38037",
         "Total Protein": "C61033",
@@ -10017,15 +10072,15 @@
         "Y": ""
     },
     "biospecimen.analyte.experimental_protocol_type": {
-        "aDNA Preparation Type": "",
-        "Allprep FFPE DNA": "",
-        "Allprep RNA Extraction": "",
-        "Chemical Lysis DNA Extraction": "",
+        "aDNA Preparation Type": "C179426",
+        "Allprep FFPE DNA": "C179428",
+        "Allprep RNA Extraction": "C179430",
+        "Chemical Lysis DNA Extraction": "C179431",
         "Genomplex": "C128787",
-        "HighPure miRNA (Allprep DNA) FFPE RNA": "",
-        "mirVana (Allprep DNA) RNA": "",
+        "HighPure miRNA (Allprep DNA) FFPE RNA": "C179436",
+        "mirVana (Allprep DNA) RNA": "C179446",
         "nRNA - Melanoma Protocol": "",
-        "Pre-extracted DNA received by TSS": "",
+        "Pre-extracted DNA received by TSS": "C179449",
         "Repli-G": "C128788",
         "Repli-G X": "C156439",
         "Total RNA": "C163995"
@@ -10073,6 +10128,7 @@
         "61": "C156443",
         "85": "",
         "86": "",
+        "87": "",
         "99": ""
     },
     "biospecimen.sample.tumor_code_id": {
@@ -10111,8 +10167,8 @@
         "Not Reported": "C43234"
     },
     "clinical.diagnosis.igcccg_stage": {
-        "Good Prognosis": "",
-        "Intermediate Prognosis": "",
+        "Good Prognosis": ["C177313", "C177310"],
+        "Intermediate Prognosis": ["C177314", "C177311"],
         "Poor Prognosis": "",
         "Not Reported": "C43234",
         "Unknown": "C17998"
@@ -10254,6 +10310,7 @@
     },
     "data_file.slide_image.data_format": {
         "JPEG": "C48230",
+        "JPEG 2000": "",
         "TIFF": "C70631",
         "SVS": "C172214"
     },
@@ -10594,6 +10651,7 @@
     },
     "clinical.exposure.exposure_type": {
         "Marijuana": "C26659",
+        "Radiation": "",
         "Smoke": "C164057",
         "Tobacco": "C891",
         "Wood Dust": "C174115"
@@ -10655,9 +10713,8 @@
         "Not Reported": "C43234"
     },
     "clinical.follow_up.hormonal_contraceptive_type": {
-        "Current User": "",
-        "Former User": "",
-        "Never Used": "",
+        "Progestin": "C179455",
+        "Progestin and Estrogen": "C179456",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10669,9 +10726,9 @@
         "Not Reported": "C43234"
     },
     "clinical.follow_up.hormone_replacement_therapy_type": {
-        "Estrogen only": "",
-        "Progesterone and Estrogen": "",
-        "Progesterone only": "",
+        "Estrogen only": "C179434",
+        "Progesterone and Estrogen": "C179452",
+        "Progesterone only": "C179453",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10863,7 +10920,7 @@
         "Not Reported": "C43234"
     },
     "clinical.pathology_detail.lymph_node_involvement": {
-        "Indeterminant": "",
+        "Indeterminant": "C48658",
         "Negative": "C36174",
         "Positive": "C27296",
         "Unknown": "C17998",
@@ -10876,9 +10933,9 @@
         "Not Reported": "C43234"
     },
     "clinical.pathology_detail.margin_status": {
-        "Involved": "",
-        "Uninvolved": "",
-        "Indeterminant": "",
+        "Involved": "C48620",
+        "Uninvolved": "C48621",
+        "Indeterminant": "C48658",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10889,10 +10946,10 @@
         "Not Reported": "C43234"
     },
     "clinical.pathology_detail.morphologic_architectural_pattern": {
-        "Cohesive": "",
+        "Cohesive": "C179432",
         "Cribiform": "C35920",
         "Micropapillary": "C36181",
-        "Non-cohesive": "",
+        "Non-cohesive": "C179447",
         "Papillary Renal Cell": "",
         "Papillary, NOS": "C35911",
         "Solid": "C36182",
@@ -10941,7 +10998,7 @@
     },
     "clinical.pathology_detail.transglottic_extension": {
         "Absent": "C38757",
-        "Present": "C160996",
+        "Present": "C25626",
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
@@ -10979,6 +11036,255 @@
         "MboI": "",
         "Unknown": "C17998",
         "Not Applicable": "C48660"
+    },
+    "data_file.aggregated_somatic_mutation.data_format": {
+        "MAF": "C172215",
+        "TSV": "C164049"
+    },
+    "data_file.aggregated_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "index_file.aligned_reads_index.data_category": {
+        "Sequencing Data": "C153329",
+        "Sequencing Reads": "C153349",
+        "Raw Sequencing Data": "C165232"
+    },
+    "data_file.aligned_reads.data_category": {
+        "Sequencing Reads": "C153349"
+    },
+    "data_file.aligned_reads.data_type": {
+        "Aligned Reads": "C164052"
+    },
+    "data_file.aligned_reads.data_format": {
+        "BAM": "C153249"
+    },
+    "data_file.aligned_reads.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "HiChIP": "C179435",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "scATAC-Seq": "C179458",
+        "scRNA-Seq": "C171152",
+        "Targeted Sequencing": "C130177",
+        "Validation": "",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.aligned_reads.platform": {
+        "Complete Genomics": "C146815",
+        "Illumina": "C146817",
+        "Ion Torrent": "C125894",
+        "LS454": "C146809",
+        "Other": "C17649",
+        "PacBio": "C146819",
+        "SOLiD": "C146811"
+    },
+    "data_file.annotated_somatic_mutation.data_format": {
+        "MAF": "C172215",
+        "VCF": "C172216"
+    },
+    "data_file.annotated_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "clinical.clinical.gender": {
+        "female": "C16576",
+        "male": "C20197",
+        "unknown": "C17998",
+        "unspecified": "C38046"
+    },
+    "clinical.clinical.ethnicity": {
+        "hispanic or latino": "C17459",
+        "not hispanic or latino": "C41222"
+    },
+    "clinical.clinical.race": {
+        "not reported": "C43234",
+        "white": "C41261",
+        "american indian or alaska native": "C41259",
+        "black or african american": "C16352",
+        "asian": "C41260",
+        "native hawaiian or other pacific islander": "C41219",
+        "other": "C17649"
+    },
+    "clinical.clinical.vital_status": {
+        "alive": "C37987",
+        "dead": "C28554",
+        "lost to follow-up": "C48227"
+    },
+    "data_file.copy_number_estimate.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.copy_number_estimate.data_format": {
+        "TSV": "C164049",
+        "TXT": "C85873"
+    },
+    "data_file.copy_number_estimate.experimental_strategy": {
+        "Genotyping Array": "C165219",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.copy_number_estimate.platform": {
+        "Affymetrix SNP 6.0": "",
+        "Illumina": "C146817",
+        "Ion Torrent": "C125894"
+    },
+    "data_file.copy_number_segment.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.copy_number_segment.data_format": {
+        "TXT": "C85873"
+    },
+    "data_file.copy_number_segment.experimental_strategy": {
+        "Genotyping Array": "C165219",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.copy_number_segment.platform": {
+        "Affymetrix SNP 6.0": "",
+        "Illumina": "C146817"
+    },
+    "data_file.filtered_copy_number_segment.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.filtered_copy_number_segment.data_format": {
+        "TXT": "C85873"
+    },
+    "data_file.filtered_copy_number_segment.experimental_strategy": {
+        "Genotyping Array": "C165219"
+    },
+    "data_file.gene_expression.data_format": {
+        "CSV": "",
+        "HDF5": "",
+        "MEX": "",
+        "TSV":"C164049",
+        "TXT":"C85873"
+    },
+    "data_file.gene_expression.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "scRNA-Seq": "",
+        "Total RNA-Seq": ""
+    },
+    "data_file.masked_methylation_array.data_category": {
+        "DNA Methylation":"C63328"
+    },
+    "data_file.masked_methylation_array.experimental_strategy": {
+        "Methylation Array":"C165222"
+    },
+    "data_file.masked_somatic_mutation.data_format": {
+        "MAF":"C172215",
+        "TSV":"C164049"
+    },
+    "data_file.masked_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq":"C156056",
+        "Bisulfite-Seq":"C106054",
+        "ChIP-Seq":"C106049",
+        "miRNA-Seq":"C156057",
+        "RNA-Seq":"C124261",
+        "Targeted Sequencing":"C130177",
+        "WGS":"C101294",
+        "WXS":"C101295"
+    },
+    "data_file.methylation_beta_value.data_category": {
+        "DNA Methylation":"C63328"
+    },
+    "data_file.methylation_beta_value.data_type": {
+        "Methylation Beta Value": "C164051"
+    },
+    "data_file.methylation_beta_value.data_format": {
+        "TXT": "C85873"
+    },
+    "data_file.methylation_beta_value.experimental_strategy": {
+        "Methylation Array": "C165222"
+    },
+    "data_file.mirna_expression.data_format": {
+        "CSV": "",
+        "TSV": "C164049",
+        "TXT": "C85873"
+    },
+    "data_file.mirna_expression.experimental_strategy": {
+        "miRNA-Seq": "C156057"
+    },
+    "data_file.protein_expression.data_format": {
+        "TSV": "C164049"
+    },
+    "data_file.raw_methylation_array.data_category": {
+        "DNA Methylation": "C63328"
+    },
+    "data_file.raw_methylation_array.experimental_strategy": {
+        "Methylation Array": "C165222"
+    },
+    "data_file.secondary_expression_analysis.data_format": {
+        "HDF5": "",
+        "TSV": "C164049"
+    },
+    "data_file.simple_germline_variation.data_format": {
+        "VCF": "C172216",
+        "TSV": ""
+    },
+    "data_file.simple_germline_variation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.simple_somatic_mutation.data_category": {
+        "Combined Nucleotide Variation": "C171155",
+        "Simple Nucleotide Variation": ""
+    },
+    "data_file.simple_somatic_mutation.data_format": {
+        "VCF": "C172216"
+    },
+    "data_file.simple_somatic_mutation.experimental_strategy": {
+        "ATAC-Seq": "C156056",
+        "Bisulfite-Seq": "C106054",
+        "ChIP-Seq": "C106049",
+        "miRNA-Seq": "C156057",
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.structural_variation.data_format": {
+        "BEDPE": "",
+        "CSV": "",
+        "FASTA": "",
+        "GVF": "",
+        "JSON": "",
+        "TSV": "C164049",
+        "TXT": "C85873",
+        "VCF": "C172216"
+    },
+    "data_file.structural_variation.experimental_strategy": {
+        "RNA-Seq": "C124261",
+        "Targeted Sequencing": "C130177",
+        "WGS": "C101294",
+        "WXS": "C101295"
+    },
+    "data_file.submitted_genotyping_array.data_category": {
+        "Copy Number Variation": "C40207"
+    },
+    "data_file.submitted_genotyping_array.experimental_strategy": {
+        "Genotyping Array": "C165219"
     }
-
 }
