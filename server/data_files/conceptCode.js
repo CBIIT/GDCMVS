@@ -5777,7 +5777,6 @@
         "Wrist": "C33894"
     },
     "clinical.diagnosis.tissue_or_organ_of_origin": {
-        "Laryngeal commissure": "",
         "Not Reported": "C43234",
         "Unknown": "C17998"
     },
