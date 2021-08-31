@@ -672,6 +672,8 @@ properties:
       - Other
       - Pharmaceutical Therapy, NOS
       - Pleurodesis
+      - Pleurodesis, Talc
+      - Pleurodesis, NOS
       - Radiation Therapy, NOS
       - Radiation, 2D Conventional
       - Radiation, 3D Conformal
@@ -5303,7 +5305,7 @@ properties:
       Androgen Receptor Inhibitor EPI-7386:
         $ref:
           - "_terms_enum.yaml#/androgen_receptor_inhibitor_epi7386/common"
-      Androgen Receptor/Glucocorticoid Receptor  Antagonist CB-03-10:
+      Androgen Receptor/Glucocorticoid Receptor Antagonist CB-03-10:
         $ref:
           - "_terms_enum.yaml#/androgen_receptorglucocorticoid_receptor__antagonist_cb0310/common"
       Anhydrous Enol-oxaloacetate:
@@ -6032,7 +6034,7 @@ properties:
       EGFR Inhibitor TY-9591:
         $ref:
           - "_terms_enum.yaml#/egfr_inhibitor_ty9591/common"
-      EGFR Mutant-selective  Inhibitor TQB3804:
+      EGFR Mutant-selective Inhibitor TQB3804:
         $ref:
           - "_terms_enum.yaml#/egfr_mutantselective__inhibitor_tqb3804/common"
       EGFR/EGFRvIII Inhibitor WSD0922-FU:
@@ -6380,7 +6382,7 @@ properties:
       Lipid Nanoparticle Encapsulating Glutathione S-transferase P siRNA NBF-006:
         $ref:
           - "_terms_enum.yaml#/lipid_nanoparticle_encapsulating_glutathione_stransferase_p_sirna_nbf006/common"
-      Liposomal Bcl-2 Antisense Oligonucleotide  BP1002:
+      Liposomal Bcl-2 Antisense Oligonucleotide BP1002:
         $ref:
           - "_terms_enum.yaml#/liposomal_bcl2_antisense_oligonucleotide__bp1002/common"
       Liposome-encapsulated TAAs mRNA Vaccine W_ova1:
