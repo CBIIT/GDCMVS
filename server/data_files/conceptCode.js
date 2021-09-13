@@ -5445,6 +5445,8 @@
         "Other": "C17649",
         "Pharmaceutical Therapy, NOS": "C15986",
         "Pleurodesis": "C66899",
+        "Pleurodesis, Talc": "",
+        "Pleurodesis, Nos": "",
         "Radiation Therapy, NOS": "C15313",
         "Radiation, 2D Conventional": "C165189",
         "Radiation, 3D Conformal": "C16035",
