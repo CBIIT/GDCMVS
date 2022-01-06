@@ -494,6 +494,11 @@ const exportDelta = (req, res) => {
 						temp_data.n_c_pv = "";
 						temp_data.i_c = "";
 						temp_data.i_c_pv = "";
+						let cnp = category+'.'+node+'.'+property;
+						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
+							temp_data.n_c = cc[cnp][temp_data.value_new];
+							temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+						}
 						data.push(temp_data);
 					});
 				} else if (new_p_array[key_p].deprecated_enum && new_p_array[key_p].new_enum) {
@@ -510,6 +515,11 @@ const exportDelta = (req, res) => {
 						temp_data.n_c_pv = "";
 						temp_data.i_c = "";
 						temp_data.i_c_pv = "";
+						let cnp = category+'.'+node+'.'+property;
+						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
+							temp_data.n_c = cc[cnp][temp_data.value_new];
+							temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+						}
 						data.push(temp_data);
 					});
 				}
@@ -521,6 +531,9 @@ const exportDelta = (req, res) => {
 
 			//checking properties in new data
 			for (let key_p in new_p_array) {
+				if(key_p === 'additional_pathology_findings'){
+					debugger;
+				}
 				let category =  new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
@@ -542,6 +555,11 @@ const exportDelta = (req, res) => {
 							temp_data.n_c_pv = "";
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
+							let cnp = category+'.'+node+'.'+property;
+							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
+								temp_data.n_c = cc[cnp][temp_data.value_new];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+							}
 							data.push(temp_data);
 						});
 					} else if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
@@ -558,6 +576,11 @@ const exportDelta = (req, res) => {
 							temp_data.n_c_pv = "";
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
+							let cnp = category+'.'+node+'.'+property;
+							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
+								temp_data.n_c = cc[cnp][temp_data.value_new];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+							}
 							data.push(temp_data);
 						});
 					}
@@ -628,6 +651,10 @@ const exportDelta = (req, res) => {
 								});
 							}
 							temp_data.value_new = em;
+							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
+								temp_data.n_c = cc[cnp][temp_data.value_new];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+							}
 							data.push(temp_data);
 						});
 					}
@@ -789,6 +816,10 @@ const exportDelta = (req, res) => {
 								temp_data.n_c = cc[cnp][temp_data.value_old];
 								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
 							}
+							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
+								temp_data.n_c = cc[cnp][temp_data.value_new];
+								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+							}
 							if(icdo3_prop.indexOf(temp_data.p) !== -1){
 								gdc_values[cnp].forEach(val => {
 									if(val.nm === temp_data.value_old){
@@ -830,6 +861,9 @@ const exportDelta = (req, res) => {
 			}
 			// checking properties in old data
 			for (let key_p in old_p_array) {
+				if(key_p === 'additional_pathology_findings'){
+					debugger;
+				}
 				let category =  new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
