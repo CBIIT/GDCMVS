@@ -11300,8 +11300,8 @@
         "MAGETAB": "C82937"
     },
     "data_file.archive.data_type": {
-        "TCGA DCC Archive": "C184807",
-        "TARGET DCC Archive": "C184808"
+        "TCGA DCC Archive": "C184808",
+        "TARGET DCC Archive": "C184807"
     },
     "clinical.clinical.gender": {
         "female": "C16576",
@@ -11555,14 +11555,14 @@
         "WGS": "C101294",
         "WXS": "C101295"
     },
-    "data_file.somatic_mutation_index.data_category": {
+    "index_file.somatic_mutation_index.data_category": {
         "Simple Nucleotide Variation": "C97927",
         "Somatic Structural Variation": "C184801"
     },
-    "data_file.somatic_mutation_index.data_type": {
+    "index_file.somatic_mutation_index.data_type": {
         "Somatic Mutation Index": "C184800"
     },
-    "data_file.somatic_mutation_index.data_format": {
+    "index_file.somatic_mutation_index.data_format": {
         "TBI": "C184806"
     },
     "data_file.structural_variation.data_category": {
