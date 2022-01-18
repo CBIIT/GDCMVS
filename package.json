@@ -1,6 +1,6 @@
 {
   "name": "gdcmvs",
-  "version": "v2.2.8",
+  "version": "v2.2.9",
   "description": "GDC Metadata Validation Services",
   "main": "app.js",
   "scripts": {
