@@ -126,7 +126,7 @@
         "ALK Inhibitor": "C141136",
         "ALK Inhibitor ASP3026": "C116727",
         "ALK Inhibitor PLB 1003": "C148533",
-        "ALK Inhibitor RO5424802": "C105615",
+        "ALK Inhibitor RO5424802": "C101790",
         "ALK Inhibitor WX-0593": "C154279",
         "ALK-2 Inhibitor TP-0184": "C156729",
         "ALK-FAK Inhibitor CEP-37440": "C111685",
@@ -566,7 +566,7 @@
         "Anti-PD-L1 Monoclonal Antibody MDX-1105": "C78852",
         "Anti-PD-L1 Monoclonal Antibody MSB2311": "C155931",
         "Anti-PD-L1 Monoclonal Antibody SHR-1316": "C148535",
-        "Anti-PD-L1 Monoclonal Antibody TG-1501": "C158095",
+        "Anti-PD-L1 Monoclonal Antibody TG-1501": "C151947",
         "Anti-PD-L1 Monoclonal Antibody ZKAB001": "C162504",
         "Anti-PD-L1/4-1BB Bispecific Antibody INBRX-105": "C159978",
         "Anti-PD-L1/CD137 Bispecific Antibody MCLA-145": "C160772",
@@ -4470,10 +4470,10 @@
         "Zorifertinib": "C118289",
         "Zotatifin": "C165746",
         "Zotiraciclib Citrate": "C105851",
-        "CDK4/6 Inhibitor": "",
-        "IGF-1R Inhibitor": "",
-        "Progestational IUD": "",
-        "Giloralimab": "",
+        "CDK4/6 Inhibitor": "C116938",
+        "IGF-1R Inhibitor": "C184764",
+        "Progestational IUD": "C184790",
+        "Giloralimab": "C139553",
         "Vosilasarm": "C137950"
     },
     "clinical.treatment.route_of_administration": {
@@ -4628,7 +4628,7 @@
         "Mesonephromas": "C4295",
         "Mesothelial Neoplasms": "C3786",
         "Miscellaneous Bone Tumors": "C9343",
-        "Miscellaneous Tumors": "",
+        "Miscellaneous Tumors": "C102883",
         "Mucoepidermoid Neoplasms": "",
         "Myelodysplastic Syndromes": "C3247",
         "Myeloid Leukemias": "C3172",
@@ -4642,8 +4642,8 @@
         "Not Reported": "C43234",
         "Odontogenic Tumors": "C3286",
         "Osseous and Chondromatous Neoplasms": "",
-        "Other Hematologic Disorders": "",
-        "Other Leukemias": "",
+        "Other Hematologic Disorders": "C184783",
+        "Other Leukemias": "C184784",
         "Paragangliomas and Glomus Tumors": "",
         "Plasma Cell Tumors": "C4665",
         "Precursor Cell Lymphoblastic Lymphoma": "C9360",
@@ -5206,7 +5206,7 @@
         "Diabetes": "C2985",
         "Diabetes, Type II": "C26747",
         "Diabetic Neuropathy": "C26748",
-        "Diet Controlled Diabetes": "",
+        "Diet Controlled Diabetes": "C184754",
         "Diverticulitis": "C26752",
         "DVT/PE": ["C49343","C50713"],
         "Dyslipidemia": "C80385",
@@ -5251,8 +5251,9 @@
         "Hypospadias": "C40341",
         "Hypothyroidism": "C26800",
         "Inflammatory Bowel Disease": "C3138",
-        "Insulin Controlled Diabetes": "",
+        "Insulin Controlled Diabetes": "C184766",
         "Interstitial Pneumontis or ARDS": ["C3353", "C27006"],
+        "Intraductal Papillary Mucinous Neoplasm": "C38342",
         "Iron Overload": "C78393",
         "Ischemic Heart Disease": "C50625",
         "ITP": "C3446",
@@ -5260,7 +5261,7 @@
         "Kidney Disease": "C3149",
         "Li-Fraumeni Syndrome": "C3476",
         "Liver Cirrhosis (Liver Disease)": "C2951",
-        "Liver Toxicity (Non-Infectious)": "",
+        "Liver Toxicity (Non-Infectious)": "C184773",
         "Low Grade Liver Dysplastic Nodule": "C96770",
         "Lupus": "C27153",
         "Lymphocytic Meningitis": "C174114",
@@ -5278,9 +5279,9 @@
         "Osteoarthritis": "C3293",
         "Osteoporosis or Osteopenia": ["C3298", "C50910"],
         "Other": "C17649",
-        "Other Cancer Within 5 Years": "",
-        "Other Nonmalignant Systemic Disease": "",
-        "Other Pulmonary Complications": "",
+        "Other Cancer Within 5 Years": "C184782",
+        "Other Nonmalignant Systemic Disease": "C184785",
+        "Other Pulmonary Complications": "C184786",
         "Pain (Various)": "C3303",
         "Pancreatitis": "C3306",
         "Peptic Ulcer (Ulcer)": "C3318",
@@ -5295,7 +5296,7 @@
         "Pulmonary Fibrosis": "C26869",
         "Pulmonary Hemorrhage": "C78578",
         "Renal Dialysis": "C15248",
-        "Renal Failure (Requiring Dialysis)": "",
+        "Renal Failure (Requiring Dialysis)": "C184791",
         "Renal Insufficiency": "C4376",
         "Rheumatoid Arthritis": "C2884",
         "Rheumatologic Disease": "C27204",
@@ -5472,8 +5473,8 @@
         "Other": "C17649",
         "Pharmaceutical Therapy, NOS": "C15986",
         "Pleurodesis": "C66899",
-        "Pleurodesis, Talc": "",
-        "Pleurodesis, Nos": "",
+        "Pleurodesis, Talc": "C178422",
+        "Pleurodesis, Nos": "C66899",
         "Radiation Therapy, NOS": "C15313",
         "Radiation, 2D Conventional": "C165189",
         "Radiation, 3D Conformal": "C16035",
@@ -7186,11 +7187,11 @@
         "mcg/mL": "C64572",
         "mg/dL": "C67015",
         "mg/L": "C64572",
-        "mm^2": "",
+        "mm^2": "C65104",
         "mmol/L": "C64387",
-        "mU/mol Hb": "",
-        "ng/mL": "",
-        "percent": "",
+        "mU/mol Hb": "C184780",
+        "ng/mL": "C67306",
+        "percent": "C48570",
         "U/g Hb": "C105522",
         "U/mL": "C77607",
         "U/L": "C67456",
@@ -8749,8 +8750,8 @@
         "CA19-9": "C327",
         "CEA": "C16384",
         "FMC-7": "C38896",
-        "Kappa, Surface": "",
-        "Lambda, Surface": "",
+        "Kappa, Surface": "C184770",
+        "Lambda, Surface": "C184771",
         "BCL6": "C26149",
         "CCND1": "C17988",
         "CD10": "C16836",
@@ -9063,7 +9064,7 @@
         "Open Partial Nephrectomy": "C165186",
         "Open Radical Nephrectomy": "C165187",
         "Open Radical Prostatectomy": "C165188",
-        "Other Surgical Resection": "",
+        "Other Surgical Resection": "C184787",
         "Right Hemicolectomy": "C51623",
         "Thoracoscopic Biopsy": "C163997",
         "Tonsillectomy": "C51679",
@@ -9135,7 +9136,7 @@
         "Mixed Adherent Suspension": "C174118",
         "Mononuclear Cells from Bone Marrow Normal": "C164011",
         "Next Generation Cancer Model": "C172295",
-        "Next Generation Cancer Model Expanded Under Non-conforming Conditions": "",
+        "Next Generation Cancer Model Expanded Under Non-conforming Conditions": "C184781",
         "Primary Blood Derived Cancer - Peripheral Blood": "C164030",
         "Recurrent Blood Derived Cancer - Peripheral Blood": "C164017",
         "Primary Blood Derived Cancer - Bone Marrow": "C164015",
@@ -9154,7 +9155,7 @@
         "In Situ Neoplasms": "C36118",
         "Neoplasms of Uncertain and Unknown Behavior": "C65157",
         "Blood Derived Liquid Biopsy": "C135727",
-        "Expanded Next Generation Cancer Model": ""
+        "Expanded Next Generation Cancer Model": "C184757"
     },
     "biospecimen.sample.tissue_type": {
         "Not Reported": "C43234",
@@ -9177,20 +9178,20 @@
         "Osteosarcoma (OS)": "C9145",
         "Rhabdomyosarcoma": "C3359",
         "Wilms tumor (WT)": "C3267",
-        "Non cancerous tissue": "",
+        "Non cancerous tissue": "C166238",
         "Diffuse Large B-Cell Lymphoma (DLBCL)": "C8851",
         "Lung Cancer (all types)": "C4878",
         "Cervical Cancer (all types)": "C9039",
         "Anal Cancer (all types)": "C9291",
-        "Induction Failure AML (AML-IF)": "",
+        "Induction Failure AML (AML-IF)": "C184765",
         "Clear cell sarcoma of the kidney (CCSK)": "C4264",
         "Rhabdoid tumor (kidney) (RT)": "C8715",
         "CNS, ependymoma": "C3017",
         "CNS, glioblastoma (GBM)": "C3058",
-        "CNS, rhabdoid tumor": "",
+        "CNS, rhabdoid tumor": "C184751",
         "CNS, low grade glioma (LGG)": "C132067",
         "CNS, medulloblastoma": "C3222",
-        "CNS, other": "",
+        "CNS, other": "C184750",
         "NHL, anaplastic large cell lymphoma": "C3720",
         "NHL, Burkitt lymphoma (BL)": "C2912",
         "Soft tissue sarcoma, non-rhabdomyosarcoma": "C9306"
@@ -9772,7 +9773,7 @@
         "Human Papillomavirus Infection": "C27851",
         "Hypospadias": "C40341",
         "Inflammation": "C3137",
-        "Inflammation, Hyperkeratosis": "C5541",
+        "Inflammation, Hyperkeratosis": ["C3137","C5541"],
         "Intestinal Metaplasia": "C8360",
         "Iron Overload": "C78393",
         "Li-Fraumeni Syndrome": "C3476",
@@ -9897,6 +9898,11 @@
         "Genomic Profiling": "C94411",
         "Combined Nucleotide Variation": "C171155"
     },
+    "data_file.submitted_genomic_profile.data_type": {
+        "FoundationOne Report": "C184758",
+        "GENIE Report": "C184760",
+        "Raw CGI Variant": "C184794"
+    },
     "data_file.submitted_genomic_profile.experimental_strategy": {
         "Targeted Sequencing": "C130177",
         "WGS": "C101294",
@@ -9989,8 +9995,8 @@
         "Circulating Tumor Cells": "C96593",
         "C-Reactive Protein": "C64548",
         "Creatinine": "C64547",
-        "Cytokeratin 5": "",
-        "Cytokeratin 6": "",
+        "Cytokeratin 5": "C122859",
+        "Cytokeratin 6": "C122858",
         "Dopamine-Secreting": "C103871",
         "Eosinophil": "C64550",
         "Epinephrine-Secreting": "C103869",
@@ -10029,7 +10035,7 @@
         "Serum Free Immunoglobulin Light Chain, Kappa": "C98730",
         "Serum Free Immunoglobulin Light Chain, Lambda": "C98732",
         "Serum Free Immunoglobulin Light Chain, NOS": "C147376",
-        "Serum Mesothelin": "",
+        "Serum Mesothelin": "C184798",
         "TAG-72": "C106505",
         "Testosterone": "C74793",
         "Total Bilirubin": "C38037",
@@ -10114,12 +10120,12 @@
         "D": "C449",
         "E": "",
         "G": "C128787",
-        "H": "",
+        "H": "C179446",
         "R": "C812",
         "S": "",
         "T": "C163995",
         "W": "C128788",
-        "X": "",
+        "X": "C156439",
         "Y": ""
     },
     "biospecimen.analyte.experimental_protocol_type": {
@@ -10140,27 +10146,27 @@
         "D": "C449",
         "E": "",
         "G": "C128787",
-        "H": "",
+        "H": "C179446",
         "R": "C812",
         "S": "",
         "T": "C163995",
         "W": "C128788",
-        "X": "",
+        "X": "C156439",
         "Y": ""
     },
     "biospecimen.sample.sample_type_id": {
-        "01": "",
-        "02": "",
+        "01": "C8509",
+        "02": "C4798",
         "03": "C164030",
         "04": "C164017",
         "05": "C156441",
         "06": "C156440",
         "07": "C156440",
-        "08": "",
+        "08": "C172293",
         "09": "C164015",
         "10": "C41067",
         "11": "C164014",
-        "12": "",
+        "12": "C172264",
         "13": "C163993",
         "14": "C84513",
         "15": "",
@@ -10361,7 +10367,7 @@
     },
     "data_file.slide_image.data_format": {
         "JPEG": "C48230",
-        "JPEG 2000": "",
+        "JPEG 2000": "C184768",
         "TIFF": "C70631",
         "SVS": "C172214"
     },
@@ -10415,7 +10421,7 @@
     },
     "metadata_file.analysis_metadata.data_format": {
         "MAGE-TAB": "C82937",
-        "SRA XML": "",
+        "SRA XML": "C184804",
         "SDRF": "C172211",
         "IDF": "C172212",
         "ADF": "C172213"
@@ -10428,12 +10434,18 @@
     "metadata_file.experiment_metadata.data_type": {
         "Experiment Metadata": "C165216"
     },
+    "metadata_file.experiment_metadata.data_format": {
+        "SRA XML": "C184804"
+    },
     "metadata_file.run_metadata.data_category": {
         "Sequencing Data": "C153329",
         "Raw Sequencing Data": "C165232"
     },
     "metadata_file.run_metadata.data_type": {
         "Run Metadata": "C165214"
+    },
+    "metadata_file.run_metadata.data_format": {
+        "SRA XML": "C184804"
     },
     "case.case.consent_type": {
         "Consent by Death": "C172262",
@@ -10446,9 +10458,9 @@
         "review": "C42729",
         "submitted": "C25695",
         "processing": "C48177",
-        "processed": "",
+        "processed": "C184788",
         "closed": "C49070",
-        "legacy": ""
+        "legacy": "C184772"
     },
     "clinical.demographic.country_of_residence_at_enrollment": {
         "Afghanistan": "C16267",
@@ -10777,6 +10789,9 @@
         "Unknown": "C17998",
         "Not Reported": "C43234"
     },
+    "clinical.follow_up.history_of_tumor_type": {
+        "Phenochromocytoma or Paraganglioma": "C185075"
+    },
     "clinical.follow_up.hormonal_contraceptive_type": {
         "Progestin": "C179455",
         "Progestin and Estrogen": "C179456",
@@ -10863,7 +10878,7 @@
         "Not Reported": "C43234"
     },
     "clinical.follow_up.undescended_testis_corrected_method": {
-        "Spontaneous Descent": "",
+        "Spontaneous Descent": "C184803",
         "Orchiopexy": "C111066",
         "Hormones": "C15445",
         "Testis Removed": "C15288",
@@ -10935,53 +10950,53 @@
         "root": "C172256"
     },
     "clinical.pathology_detail.additional_pathology_findings": {
-        "Adenomyosis": "",
+        "Adenomyosis": "C6996",
         "Atrophic endometrium": "",
-        "Atypical hyperplasia/Endometrial intraepithelial neoplasia (EIN)": "",
-        "Autoimmune atrophic chronic gastritis": "",
-        "Asbestos bodies": "",
-        "Benign endocervical polyp": "",
+        "Atypical hyperplasia/Endometrial intraepithelial neoplasia (EIN)": "C27789",
+        "Autoimmune atrophic chronic gastritis": "C156076",
+        "Asbestos bodies": "C36015",
+        "Benign endocervical polyp": "C34584",
         "Bilateral ovaries with endometriotic cyst and surface adhesions": "",
-        "Carcinoma in situ": "",
-        "Cirrhosis": "",
-        "Clostridioides difficile (c. diff)": "",
-        "Colonization; bacterial": "",
-        "Colonization; fungal": "",
-        "Cyst(s)": "",
+        "Carcinoma in situ": "C2917",
+        "Cirrhosis": "C2951",
+        "Clostridioides difficile (c. diff)": "C180523",
+        "Colonization; bacterial": "C171138",
+        "Colonization; fungal": "C82980",
+        "Cyst(s)": "C2978",
         "Diffuse and early nodular diabetic glomerulosclerosis": "",
-        "Dysplasia; high grade": "",
-        "Dysplasia; low grade": "",
+        "Dysplasia; high grade": "C156083",
+        "Dysplasia; low grade": "C156084",
         "Endometrial polyp": "",
-        "Endometriosis": "",
+        "Endometriosis": "C3014",
         "Endometroid carcinoma with local mucinous differentiation": "",
-        "Endosalpingiosis": "",
-        "Epithelial dysplasia": "",
+        "Endosalpingiosis": "C179646",
+        "Epithelial dysplasia": "C8366",
         "Epithelial hyperplasia": "",
         "Gallbladder adenomyomatosis": "",
-        "Glomerular disease": "",
-        "Hyperkeratosis": "",
-        "Inflammation": "",
-        "Intestinal metaplasia": "",
+        "Glomerular disease": "C35605",
+        "Hyperkeratosis": "C35541",
+        "Inflammation": "C3137",
+        "Intestinal metaplasia": "C8360",
         "Keratinizing dysplasia; mild": "",
         "Keratinizing dysplasia; moderate": "",
         "Keratinizing dysplasia; severe (carcinoma in situ)": "",
-        "Leiomyoma": "",
+        "Leiomyoma": "C3157",
         "Leiomyomata w/ degenerative changes": "",
         "Nonkeratinizing dysplasia; mild": "",
         "Nonkeratinizing dysplasia; moderate": "",
         "Nonkeratinizing dysplasia; severe (carcinoma in situ)": "",
-        "Other": "",
+        "Other": "C17649",
         "PD-L1 CPS (223C LDT) - 20%": "",
-        "Platinum-resistant": "",
+        "Platinum-resistant": "C147558",
         "Pleural plaque": "",
-        "Pulmonary interstitial fibrosis": "",
-        "Sialadenitis": "",
-        "Sinonasal papilloma": "",
-        "Squamous metaplasia": "",
-        "Squamous papilloma; solitary": "",
-        "Squamous papillomatosis": "",
+        "Pulmonary interstitial fibrosis": "C26869",
+        "Sialadenitis": "C26882",
+        "Sinonasal papilloma": "C4117",
+        "Squamous metaplasia": "C3237",
+        "Squamous papilloma; solitary": "C3712",
+        "Squamous papillomatosis": "C9009",
         "Tubular (papillary) adenoma(s)": "",
-        "Tumor-associated lymphoid proliferation": "",
+        "Tumor-associated lymphoid proliferation": "C171150",
         "Tumor has rough spikey edges": ""
     },
     "clinical.pathology_detail.anaplasia_present": {
@@ -11192,6 +11207,12 @@
         "Unknown": "C17998",
         "Not Applicable": "C48660"
     },
+    "data_file.aggregated_somatic_mutation.data_category": {
+        "Simple Nucleotide Variation": "C97927"
+    },
+    "data_file.aggregated_somatic_mutation.data_type": {
+        "Aggregated Somatic Mutation": "C184741"
+    },
     "data_file.aggregated_somatic_mutation.data_format": {
         "MAF": "C172215",
         "TSV": "C164049"
@@ -11210,6 +11231,9 @@
         "Sequencing Data": "C153329",
         "Sequencing Reads": "C153349",
         "Raw Sequencing Data": "C165232"
+    },
+    "index_file.aligned_reads_index.data_type": {
+        "Aligned Reads Index": "C184742"
     },
     "data_file.aligned_reads.data_category": {
         "Sequencing Reads": "C153349"
@@ -11247,6 +11271,13 @@
         "PacBio": "C146819",
         "SOLiD": "C146811"
     },
+    "data_file.annotated_somatic_mutation.data_category": {
+        "Simple Nucleotide Variation": "C97927"
+    },
+    "data_file.annotated_somatic_mutation.data_type": {
+        "Annotated Somatic Mutation": "C184746",
+        "Masked Annotated Somatic Mutation": "C184775"
+    },
     "data_file.annotated_somatic_mutation.data_format": {
         "MAF": "C172215",
         "VCF": "C172216"
@@ -11265,8 +11296,12 @@
         "Archive": "C156018"
     },
     "data_file.archive.data_format": {
-        "TARGZ": "",
+        "TARGZ": "C184805",
         "MAGETAB": "C82937"
+    },
+    "data_file.archive.data_type": {
+        "TCGA DCC Archive": "C184808",
+        "TARGET DCC Archive": "C184807"
     },
     "clinical.clinical.gender": {
         "female": "C16576",
@@ -11295,6 +11330,11 @@
     "data_file.copy_number_estimate.data_category": {
         "Copy Number Variation": "C40207"
     },
+    "data_file.copy_number_estimate.data_type": {
+        "Gene Level Copy Number": "C181336",
+        "Gene Level Copy Number Scores": "C184759",
+        "Cohort Level Copy Number Scores": "C184752"
+    },
     "data_file.copy_number_estimate.data_format": {
         "TSV": "C164049",
         "TXT": "C85873"
@@ -11313,6 +11353,11 @@
     "data_file.copy_number_segment.data_category": {
         "Copy Number Variation": "C40207"
     },
+    "data_file.copy_number_segment.data_type": {
+        "Allele-specific Copy Number Segment": "C184745",
+        "Copy Number Segment": "C184744",
+        "Masked Copy Number Segment": "C184776"
+    },
     "data_file.copy_number_segment.data_format": {
         "TXT": "C85873"
     },
@@ -11329,6 +11374,10 @@
     "data_file.filtered_copy_number_segment.data_category": {
         "Copy Number Variation": "C40207"
     },
+    "data_file.filtered_copy_number_segment.data_type": {
+        "Copy Number Segment": "C184744",
+        "Masked Copy Number Segment": "C184776"
+    },
     "data_file.filtered_copy_number_segment.data_format": {
         "TXT": "C85873"
     },
@@ -11338,10 +11387,16 @@
     "data_file.gene_expression.data_category": {
         "Transcriptome Profiling": "C153194"
     },
+    "data_file.gene_expression.data_type": {
+        "Exon Expression Quantification": "C184756",
+        "Gene Expression Quantification": "C135484",
+        "Isoform Expression Quantification": "C184767",
+        "Splice Junction Quantification": "C184802"
+    },
     "data_file.gene_expression.data_format": {
-        "CSV": "",
-        "HDF5": "",
-        "MEX": "",
+        "CSV": "C182456",
+        "HDF5": "C184763",
+        "MEX": "C184778",
         "TSV": "C164049",
         "TXT": "C85873"
     },
@@ -11357,8 +11412,20 @@
     "data_file.masked_methylation_array.data_category": {
         "DNA Methylation": "C63328"
     },
+    "data_file.masked_methylation_array.data_format": {
+        "IDAT": "C184762"
+    },
+    "data_file.masked_methylation_array.data_type": {
+        "Masked Intensities": "C184774"
+    },
     "data_file.masked_methylation_array.experimental_strategy": {
         "Methylation Array": "C165222"
+    },
+    "data_file.masked_somatic_mutation.data_category": {
+        "Simple Nucleotide Variation": "C97927"
+    },
+    "data_file.masked_somatic_mutation.data_type": {
+        "Masked Somatic Mutation": "C184777"
     },
     "data_file.masked_somatic_mutation.data_format": {
         "MAF": "C172215",
@@ -11389,8 +11456,13 @@
     "data_file.mirna_expression.data_category": {
         "Transcriptome Profiling": "C153194"
     },
+    "data_file.mirna_expression.data_type": {
+        "Isoform Expression Quantification": "C184767",
+        "miRNA Expression Quantification": "C184779",
+        "Supplementary Files": "C60763"
+    },
     "data_file.mirna_expression.data_format": {
-        "CSV": "",
+        "CSV": "C182456",
         "TSV": "C164049",
         "TXT": "C85873"
     },
@@ -11406,8 +11478,20 @@
     "data_file.protein_expression.data_format": {
         "TSV": "C164049"
     },
+    "data_file.protein_expression.experimental_strategy": {
+        "Reverse Phase Protein Array": "C184797"
+    },
+    "data_file.protein_expression.platform": {
+        "RPPA": "C184797"
+    },
     "data_file.raw_methylation_array.data_category": {
         "DNA Methylation": "C63328"
+    },
+    "data_file.raw_methylation_array.data_type": {
+        "Raw Intensities": "C184793"
+    },
+    "data_file.raw_methylation_array.data_format": {
+        "IDAT": "C184762"
     },
     "data_file.raw_methylation_array.experimental_strategy": {
         "Methylation Array": "C165222"
@@ -11419,12 +11503,22 @@
     "data_file.secondary_expression_analysis.data_category": {
         "Transcriptome Profiling": "C153194"
     },
+    "data_file.secondary_expression_analysis.data_type": {
+        "Differential Gene Expression": "C184755",
+        "Single Cell Analysis": "C184799"
+    },
     "data_file.secondary_expression_analysis.data_format": {
-        "HDF5": "",
+        "HDF5": "C184763",
         "TSV": "C164049"
     },
     "data_file.secondary_expression_analysis.experimental_strategy": {
         "scRNA-Seq": "C171152"
+    },
+    "data_file.simple_germline_variation.data_category": {
+        "Simple Nucleotide Variation": "C97927"
+    },
+    "data_file.simple_germline_variation.data_type": {
+        "Simple Germline Variation": "C17666"
     },
     "data_file.simple_germline_variation.data_format": {
         "VCF": "C172216",
@@ -11442,7 +11536,11 @@
     },
     "data_file.simple_somatic_mutation.data_category": {
         "Combined Nucleotide Variation": "C171155",
-        "Simple Nucleotide Variation": ""
+        "Simple Nucleotide Variation": "C97927"
+    },
+    "data_file.simple_somatic_mutation.data_type": {
+        "Raw CGI Variant": "C184794",
+        "Raw Simple Somatic Mutation": "C184795"
     },
     "data_file.simple_somatic_mutation.data_format": {
         "VCF": "C172216"
@@ -11457,12 +11555,31 @@
         "WGS": "C101294",
         "WXS": "C101295"
     },
+    "index_file.somatic_mutation_index.data_category": {
+        "Simple Nucleotide Variation": "C97927",
+        "Somatic Structural Variation": "C184801"
+    },
+    "index_file.somatic_mutation_index.data_type": {
+        "Somatic Mutation Index": "C184800"
+    },
+    "index_file.somatic_mutation_index.data_format": {
+        "TBI": "C184806"
+    },
+    "data_file.structural_variation.data_category": {
+        "Somatic Structural Variation": "C184801",
+        "Structural Variation": "C2950"
+    },
+    "data_file.structural_variation.data_type": {
+        "Structural Alteration": "C2950",
+        "Structural Rearrangement": "C36541",
+        "Transcript Fusion": "C184809"
+    },
     "data_file.structural_variation.data_format": {
-        "BEDPE": "",
-        "CSV": "",
+        "BEDPE": "C184749",
+        "CSV": "C182456",
         "FASTA": "C47845",
-        "GVF": "",
-        "JSON": "",
+        "GVF": "C184761",
+        "JSON": "C184769",
         "TSV": "C164049",
         "TXT": "C85873",
         "VCF": "C172216"
@@ -11476,7 +11593,13 @@
     "data_file.submitted_genotyping_array.data_category": {
         "Copy Number Variation": "C40207"
     },
+    "data_file.submitted_genotyping_array.data_type": {
+        "Raw Intensities": "C184793"
+    },
     "data_file.submitted_genotyping_array.experimental_strategy": {
         "Genotyping Array": "C165219"
+    },
+    "analysis.alignment_workflow.type": {
+        "alignment_workflow": "C184743"
     }
 }
