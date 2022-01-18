@@ -531,9 +531,6 @@ const exportDelta = (req, res) => {
 
 			//checking properties in new data
 			for (let key_p in new_p_array) {
-				if(key_p === 'additional_pathology_findings'){
-					debugger;
-				}
 				let category =  new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
@@ -861,9 +858,6 @@ const exportDelta = (req, res) => {
 			}
 			// checking properties in old data
 			for (let key_p in old_p_array) {
-				if(key_p === 'additional_pathology_findings'){
-					debugger;
-				}
 				let category =  new_data[key].category && new_data[key].category === 'administrative' ? 'case' : new_data[key].category;
 				let node = new_data[key].id;
 				let property = key_p;
