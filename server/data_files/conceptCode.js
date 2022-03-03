@@ -9197,7 +9197,7 @@
         "Soft tissue sarcoma, non-rhabdomyosarcoma": "C9306"
     },
     "biospecimen.sample.tumor_descriptor": {
-        "Metastatic": "C3261",
+        "Metastatic": "C40557",
         "NOS": "C19594",
         "Not Applicable": "C48660",
         "Premalignant": "C36032",
