@@ -110,9 +110,9 @@ export const vsRender = (items, keyword) => {
               data.s.forEach(s => {
                 if (s.ts !== 'NCI') return;
                 let synObj = {};
-                synObj.termName = highlightSynObj[s.tn] ? highlightSynObj[s.tn] : s.tn;
-                synObj.termSource = s.ts;
-                synObj.termGroup = s.tg;
+                synObj.tn = highlightSynObj[s.tn] ? highlightSynObj[s.tn] : s.tn;
+                synObj.ts = s.ts;
+                synObj.tg = s.tg;
                 if (s.ts === 'PT' && preferredTerm === undefined) {
                   preferredTerm = s.tn;
                 }
@@ -192,7 +192,7 @@ const getAllValues = (data) => {
     hits.forEach(data => {
       let highlight = data.highlight;
       let highlightValue = ('enum.n' in highlight) || ('enum.n.have' in highlight) ? highlight['enum.n'] || highlight['enum.n.have'] : undefined;
-      let highlightSyn = ('enum.n_syn.s.termName' in highlight) || ('enum.n_syn.s.termName.have' in highlight) ? highlight['enum.n_syn.s.termName'] || highlight['enum.n_syn.s.termName.have'] : undefined;
+      let highlightSyn = ('enum.n_syn.s.tn' in highlight) || ('enum.n_syn.s.tn.have' in highlight) ? highlight['enum.n_syn.s.tn'] || highlight['enum.n_syn.s.tn.have'] : undefined;
       let highlightNC = ('enum.n_syn.n_c' in highlight) || ('enum.n_syn.n_c.have' in highlight) ? highlight['enum.n_syn.n_c'] || highlight['enum.n_syn.n_c.have'] : undefined;
       let highlightIC = ('enum.i_c.c' in highlight) || ('enum.i_c.have' in highlight) ? highlight['enum.i_c.c'] || highlight['enum.i_c.have'] : undefined;
       if (highlightValue !== undefined) {
@@ -232,9 +232,9 @@ const getAllValues = (data) => {
         let newSyn = [];
         data.s.forEach(s => {
           let synObj = {};
-          synObj.termName = highlightSynObj[s.termName] ? highlightSynObj[s.termName] : s.termName;
-          synObj.termSource = s.termSource;
-          synObj.termGroup = s.termGroup;
+          synObj.termName = highlightSynObj[s.tn] ? highlightSynObj[s.tn] : s.tn;
+          synObj.termSource = s.ts;
+          synObj.termGroup = s.tg;
           newSyn.push(synObj);
         });
         data.n_c = highlightNCObj[data.n_c] ? highlightNCObj[data.n_c] : data.n_c;

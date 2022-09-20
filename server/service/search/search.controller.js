@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('yamljs');
 const xlsx = require('node-xlsx');
-//const Excel = require("exceljs");
+// const Excel = require("exceljs");
 const _ = require('lodash');
 const shared = require('./shared');
 const folderPath = path.join(__dirname, '..', '..', 'data');
@@ -304,7 +304,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		m.nested.query.query_string.fields = [];
 		
 		if (option.syn) {
-			m.nested.query.query_string.fields.push("enum.n_syn.s.termName");
+			m.nested.query.query_string.fields.push("enum.n_syn.s.tn");
 		}
 		m.nested.query.query_string.fields.push("enum.n_syn.n_c");
 		m.nested.query.query_string.fields.push("enum.n");
@@ -342,7 +342,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		m.nested.query.query_string.default_operator = "AND";
 
 		if (option.syn) {
-			m.nested.query.query_string.fields.push("enum.n_syn.s.termName.have");
+			m.nested.query.query_string.fields.push("enum.n_syn.s.tn.have");
 		}
 		m.nested.query.query_string.fields.push("enum.n_syn.n_c.have");
 		m.nested.query.query_string.fields.push("enum.n.have");
@@ -388,7 +388,7 @@ const generateQuery = (keyword, option, isBoolean) => {
 		if (option.syn) {
 			n = {};
 			n.match_phrase_prefix = {};
-			n.match_phrase_prefix["enum.n_syn.s.termName.have"] = keyword;
+			n.match_phrase_prefix["enum.n_syn.s.tn.have"] = keyword;
 			m.nested.query.bool.should.push(n);
 		}
 		n = {};
@@ -426,8 +426,8 @@ const generateHighlightInnerHits = () => {
 			"enum.n": {"number_of_fragments": 0},
 			"enum.n_syn.n_c.have": {"number_of_fragments": 0},
 			"enum.n_syn.n_c": {"number_of_fragments": 0},
-			"enum.n_syn.s.termName.have": {"number_of_fragments": 0},
-			"enum.n_syn.s.termName": {"number_of_fragments": 0},
+			"enum.n_syn.s.tn.have": {"number_of_fragments": 0},
+			"enum.n_syn.s.tn": {"number_of_fragments": 0},
 			"enum.i_c.have": {"number_of_fragments": 0},
 			"enum.i_c.c": {"number_of_fragments": 0}
 		}
