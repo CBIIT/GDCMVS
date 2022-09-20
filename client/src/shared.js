@@ -70,7 +70,7 @@ export const getAllSyn = (items) => {
     if (em.n_syn !== undefined) {
       em.all_syn = [];
       em.n_syn.forEach(syn => {
-        em.all_syn = em.all_syn.concat(syn.s.map(function (x) { return x.termName; }));
+        em.all_syn = em.all_syn.concat(syn.s.map(function (x) { return x.tn }));
       });
     }
   });
