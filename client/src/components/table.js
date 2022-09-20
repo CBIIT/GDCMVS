@@ -9,9 +9,9 @@ export const tableSynonyms = (syn) => {
       ${tHead(headerNcit)}
       ${syn.s.map((s) => `
         <tr>
-          <td class="table__td--term table__td--word-break">${s.termName}</td>
-          <td class="table__td--source">${s.termSource}</td>
-          <td class="table__td--type">${s.termGroup}</td>
+          <td class="table__td--term table__td--word-break">${s.tn}</td>
+          <td class="table__td--source">${s.ts}</td>
+          <td class="table__td--type">${s.tg}</td>
         </tr>
       `.trim()).join('')}
     </table>
@@ -24,9 +24,9 @@ export const tableSynonymsArray = (syn) => {
       ${tHead(headerNcit)}
       ${syn.map((s) => `
         <tr>
-          <td class="table__td--term table__td--word-break">${s.termName}</td>
-          <td class="table__td--source">${s.termSource}</td>
-          <td class="table__td--type">${s.termGroup}</td>
+          <td class="table__td--term table__td--word-break">${s.tn}</td>
+          <td class="table__td--source">${s.ts}</td>
+          <td class="table__td--type">${s.tg}</td>
         </tr>
       `.trim()).join('')}
     </table>
