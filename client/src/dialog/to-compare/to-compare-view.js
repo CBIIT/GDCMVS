@@ -168,9 +168,9 @@ export const showCompareResult = (items, option, keywordCase) => {
 
                           ${match.s.map((syn) => `
                             <tr>
-                              <td class="table__td--term">${syn.termName.replace(regKey, '<b>$&</b>')}</td>
-                              <td class="table__td--source">${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                              <td class="table__td--type">${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
+                              <td class="table__td--term">${syn.tn.replace(regKey, '<b>$&</b>')}</td>
+                              <td class="table__td--source">${syn.ts !== undefined && syn.ts !== null ? syn.ts : ``}</td>
+                              <td class="table__td--type">${syn.tg !== undefined && syn.tg !== null ? syn.tg : ``}</td>
                             </tr>
                           `.trim()).join('')}
                         </table>
@@ -226,29 +226,29 @@ export const showCompareResult = (items, option, keywordCase) => {
                             ${syn.s.map((s) => `
                               ${option.synonyms === false && option.partial === false ? `
                                 <tr>
-                                  <td class="table__td--term">${s.termName}</td>
-                                  <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                  <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                  <td class="table__td--term">${s.tn}</td>
+                                  <td class="table__td--source">${s.ts !== undefined && s.ts !== null ? s.ts : ``}</td>
+                                  <td class="table__td--type">${s.tg !== undefined && s.tg !== null ? s.tg : ``}</td>
                                 </tr>
                               ` : `
                                 ${option.synonyms === true && option.partial === true ? `
                                   <tr>
-                                    <td class="table__td--term">${s.termName.replace(regKey, '<b>$&</b>')}</td>
-                                    <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                    <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                    <td class="table__td--term">${s.tn.replace(regKey, '<b>$&</b>')}</td>
+                                    <td class="table__td--source">${s.ts !== undefined && s.ts !== null ? s.ts : ``}</td>
+                                    <td class="table__td--type">${s.tg !== undefined && s.tg !== null ? s.tg : ``}</td>
                                   </tr>
                                 ` : `
-                                  ${option.synonyms === true && s.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
+                                  ${option.synonyms === true && s.ts.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
                                     <tr>
-                                      <td class="table__td--term"><b>${s.termName}<b></td>
-                                      <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                      <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                      <td class="table__td--term"><b>${s.tn}<b></td>
+                                      <td class="table__td--source">${s.ts !== undefined && s.ts !== null ? s.ts : ``}</td>
+                                      <td class="table__td--type">${s.tg !== undefined && s.tg !== null ? s.tg : ``}</td>
                                     </tr>
                                   ` : `
                                     <tr>
-                                      <td class="table__td--term">${s.termName}</td>
-                                      <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                      <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                      <td class="table__td--term">${s.tn}</td>
+                                      <td class="table__td--source">${s.ts !== undefined && s.ts !== null ? s.ts : ``}</td>
+                                      <td class="table__td--type">${s.tg !== undefined && s.tg !== null ? s.tg : ``}</td>
                                     </tr>
                                   `}
                                 `}

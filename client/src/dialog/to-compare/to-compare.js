@@ -322,7 +322,7 @@ const compareGDCvalues = (fromV, toV, option) => {
   let vMatched = [];
   toV.forEach(function (v) {
     vLowercase.push(v.n.trim().toLowerCase());
-    if (v.s && v.s.length > 0) v.s = v.s.map(function (x) { return { termName: x.termName.toLowerCase(), termSource: x.termSource, termGroup: x.termGroup }; });
+    if (v.s && v.s.length > 0) v.s = v.s.map(function (x) { return { tn: x.tn.toLowerCase(), ts: x.ts, tg: x.tg }; });
     if (v.all_syn && v.all_syn.length > 0) v.all_syn = v.all_syn.map(function (x) { return x.toLowerCase(); });
   });
 
@@ -356,7 +356,7 @@ const compareGDCvalues = (fromV, toV, option) => {
           }
           if (em.s) {
             em.s.forEach(s => {
-              if (s.termName.trim().toLowerCase() === tmp && checkerN.indexOf(toV[i].n) === -1) {
+              if (s.tn.trim().toLowerCase() === tmp && checkerN.indexOf(toV[i].n) === -1) {
                 text.push(toV[i]);
                 checkerN.push(toV[i].n);
                 vMatched.push(i);
@@ -421,7 +421,7 @@ const compareGDCvalues = (fromV, toV, option) => {
             }
             if (em.s) {
               em.s.forEach(syn => {
-                if (syn.termName.indexOf(tmp) !== -1 && checkerN.indexOf(toV[i].n) === -1) {
+                if (syn.tn.indexOf(tmp) !== -1 && checkerN.indexOf(toV[i].n) === -1) {
                   text.push(toV[i]);
                   checkerN.push(toV[i].n);
                   vMatched.push(i);
@@ -483,7 +483,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
         em.n_syn.forEach(nSyn => {
           if (nSyn.s === undefined) return;
           nSyn.s.forEach(x => {
-            if (x.termName.trim().toLowerCase() === tmp) {
+            if (x.tn.trim().toLowerCase() === tmp) {
               if (checkerNC[nSyn.n_c] === undefined) {
                 checkerNC[nSyn.n_c] = [];
                 checkerNC[nSyn.n_c].push(x);
@@ -495,7 +495,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
         });
       } else if (em.s !== undefined && em.n_syn === undefined) {
         em.s.forEach(x => {
-          if (x.termName.trim().toLowerCase() === tmp) {
+          if (x.tn.trim().toLowerCase() === tmp) {
             if (checkerNC[em.n_c] === undefined) {
               checkerNC[em.n_c] = [];
               checkerNC[em.n_c].push(x);
@@ -514,9 +514,9 @@ const getMatchedSynonyms = (text, tmp, option) => {
       if (em.n_syn !== undefined && em.s === undefined) {
         em.n_syn.forEach(nSyn => {
           if (nSyn.s === undefined) return;
-          nSyn.s = nSyn.s.map(x => { return { termName: x.termName.toLowerCase(), termGroup: x.termGroup, termSource: x.termSource }; });
+          nSyn.s = nSyn.s.map(x => { return { tn: x.tn.toLowerCase(), tg: x.tg, ts: x.ts }; });
           nSyn.s.forEach(tmpSyn => {
-            let sIdx = tmpSyn.termName.indexOf(tmp);
+            let sIdx = tmpSyn.tn.indexOf(tmp);
             if (sIdx >= 0) {
               if (checkerNC[nSyn.n_c] === undefined) {
                 checkerNC[nSyn.n_c] = [];
@@ -528,9 +528,9 @@ const getMatchedSynonyms = (text, tmp, option) => {
           });
         });
       } else if (em.s !== undefined && em.n_syn === undefined) {
-        em.s = em.s.map(x => { return { termName: x.termName.toLowerCase(), termGroup: x.termGroup, termSource: x.termSource }; });
+        em.s = em.s.map(x => { return { tn: x.tn.toLowerCase(), tg: x.tg, ts: x.ts }; });
         em.s.forEach(tmpSyn => {
-          let sIdx = tmpSyn.termName.indexOf(tmp);
+          let sIdx = tmpSyn.tn.indexOf(tmp);
           if (sIdx >= 0) {
             if (checkerNC[em.n_c] === undefined) {
               checkerNC[em.n_c] = [];
@@ -567,7 +567,7 @@ const downloadCompareCVS = (items) => {
           if (syn.s.length !== 0) {
             csv += tmpIndex === 0 ? '\n"","","","' + syn.n_c + '",' : '"","","","' + syn.n_c + '",';
             syn.s.forEach(function (s) {
-              csv += '"' + s.termName + '",';
+              csv += '"' + s.tn + '",';
             });
             csv += '\n';
             newLine = false;
@@ -580,7 +580,7 @@ const downloadCompareCVS = (items) => {
       if (item.s.length !== 0) {
         csv += '"' + item.n_c + '",';
         item.s.forEach(function (s) {
-          csv += '"' + s.termName + '",';
+          csv += '"' + s.tn + '",';
         });
         csv += '\n';
         newLine = false;
