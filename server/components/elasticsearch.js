@@ -572,13 +572,24 @@ const bulkIndex = next => {
     result.enum.forEach(item => {
       if (item.i_c !== undefined) { // If it has icdo3 code.
         if (item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined) {
-          all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
-          if (item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-          if (item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
-        } else if (all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1) {
-          if (item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-          if (item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
-          if (item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+          all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] };
+          if (item.n_c !== undefined && item.n_c !== '') {
+            item.n_c.forEach((nc, i) => {
+              all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c[i]);
+              all_icdo3_syn[item.i_c.c].n_syn.push({ n_c: item.n_c[i], s: item.s[i] });
+              all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s[i]);
+            });
+          }
+        } else if (all_icdo3_syn[item.i_c.c] !== undefined) {
+          if (item.n_c !== undefined && item.n_c !== '') {
+            item.n_c.forEach((nc, i) => {
+              if (all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c[i]) === -1) {
+                all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c[i]);
+                all_icdo3_syn[item.i_c.c].n_syn.push({ n_c: item.n_c[i], s: item.s[i] });
+                all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s[i]);
+              }
+            });
+          }
         }
       } else { // If it doesn't have icdo3 code
         if (item.n_c !== undefined && item.n_c !== '') {
@@ -604,6 +615,8 @@ const bulkIndex = next => {
         item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
         delete item.n_c;
         delete item.s;
+        delete item.ap;
+        delete item.def;
       }
       if (all_icdo3_enums[item.i_c.c]) {
         item.ic_enum = [];
