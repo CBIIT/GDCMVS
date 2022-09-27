@@ -113,7 +113,7 @@ export const vsRender = (items, keyword) => {
                 synObj.tn = highlightSynObj[s.tn] ? highlightSynObj[s.tn] : s.tn;
                 synObj.ts = s.ts;
                 synObj.tg = s.tg;
-                if (s.ts === 'PT' && preferredTerm === undefined) {
+                if (s.tg === 'PT' && preferredTerm === undefined) {
                   preferredTerm = s.tn;
                 }
                 newSyn.push(synObj);
