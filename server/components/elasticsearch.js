@@ -642,9 +642,9 @@ const bulkIndex = next => {
   });
 
   allProperties.forEach(ap => {
-    if (ap.cde && ap.property_desc) { // ADD CDE ID to all property description.
-      ap.property_desc = ap.property_desc + " (CDE ID - " + ap.cde.id + ")"
-    }
+    // if (ap.cde && ap.property_desc) { // ADD CDE ID to all property description.
+    //   ap.property_desc = ap.property_desc + " (CDE ID - " + ap.cde.id + ")"
+    // }
     let doc = extend(ap, {});
     doc.id = ap.property + "/" + ap.node + "/" + ap.category;
     propertyBody.push({
