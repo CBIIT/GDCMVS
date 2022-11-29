@@ -591,10 +591,6 @@ const bulkIndex = next => {
               }
             }
         }
-        // delete item.n_c;
-        // delete item.s;
-        // delete item.ap;
-        // delete item.def;
       } else { // If it doesn't have icdo3 code
         if (item.n_c !== undefined && item.n_c !== '') {
           item.n_syn = [];
