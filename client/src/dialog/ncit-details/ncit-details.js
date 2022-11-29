@@ -12,7 +12,7 @@ const ncitDetails = (uid) => {
     let tmp = {};
     let sym = [];
     tmp.code = item.code;
-    tmp.name = item.preferredName;
+    tmp.name = item.pname;
     tmp.definition = item.defs.length ? item.defs.find(function (defs) { return defs.defSource === 'NCI'; }).description : undefined;
     sym = item.syns.filter(s => s.termSource === 'NCI');
     tmp.s = sortSynonyms(sym);
