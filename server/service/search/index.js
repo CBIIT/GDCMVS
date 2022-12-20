@@ -15,10 +15,11 @@ router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
 router.get('/updateSynonumsNcit', controller.updateSynonumsNcit);
 
 router.get('/loadNcitSynonymsContinue', controller.loadSynonyms_continue);
-router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
-router.get('/loadCtcaeSynonymsContinue', controller.loadCtcaeSynonyms_continue);
-router.get('/preloadCadsrData', controller.preloadCadsrData);
-router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
+// router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
+// router.get('/loadCtcaeSynonymsContinue', controller.loadCtcaeSynonyms_continue);
+// router.get('/preloadCadsrData', controller.preloadCadsrData);
+// router.get('/preloadCadsrDataType', controller.preloadDataTypeFromCaDSR);
+// router.get('/updateGDCDataMappings', controller.updateGDCDataMappings);
 router.get('/getPV', controller.getPV);
 router.get('/parseExcel', controller.parseExcel);
 router.get('/Unmapped', controller.Unmapped);
