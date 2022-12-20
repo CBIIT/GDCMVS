@@ -3,10 +3,9 @@ const template = (props, options) => {
     <div class="container table__container">
       <div class="table__thead row table__thead--padding-right">
         <div class="table__th col-xs-2">Category / Node</div>
-        <div class="table__th col-xs-2">Property</div>
-        <div class="table__th col-xs-4">Description</div>
+        <div class="table__th col-xs-3">Property</div>
+        <div class="table__th col-xs-5">Description</div>
         <div class="table__th col-xs-2">GDC Property Values</div>
-        <div class="table__th col-xs-2">caDSR CDE Reference</div>
       </div>
       <div class="table__body table__body--overflow row" style="max-height: ${options.height}px;">
         <div class="col-xs-12">
@@ -24,12 +23,12 @@ const template = (props, options) => {
                 </li>
               </ul>
             </div>
-            <div class="table__td col-xs-2 table__td--word-break">
+            <div class="table__td col-xs-3 table__td--word-break">
               <a href="https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=${item.node}&anchor=${item.property.replace(/<b>/g, '').replace(/<\/b>/g, '')}" target="_blank">
                 ${item.property}
               </a>
             </div>
-            ${item.property_desc !== undefined ? `<div class="table__td col-xs-4">${item.property_desc}</div>` : ``}
+            ${item.property_desc !== undefined ? `<div class="table__td col-xs-5">${item.property_desc}</div>` : ``}
             <div class="table__td col-xs-2">
             ${item.enum !== undefined ? `
               <a class="getGDCTerms" href="#" data-ref="${item.id}">See All Values</a><br>
@@ -37,11 +36,6 @@ const template = (props, options) => {
             ` : `
               ${item.type !== undefined ? `type: ${item.type}` : ``}
             `}
-            </div>
-            <div class="table__td col-xs-2">
-              ${item.cdeId !== undefined ? `
-                <a class="table-td-link" href="${item.cdeUrl}" target="_blank">CDE ID - ${item.cdeId}</a>
-              ` : ``}
             </div>
           </div>
         `.trim()).join('')}
