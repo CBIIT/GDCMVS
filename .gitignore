@@ -6,3 +6,4 @@ gdc-docs
 geckodriver.exe
 .env
 .vscode
+.local

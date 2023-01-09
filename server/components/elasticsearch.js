@@ -21,7 +21,6 @@ const shared = require('../service/search/shared');
 const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
 var cdeData = '';
-var gdc_values = {};
 var allProperties = [];
 
 var esClient = new elasticsearch.Client({
@@ -69,7 +68,7 @@ const parseRefYaml = (ref, termsJson, defJson) => {
   }
 };
 
-const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
+const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
   let doc = {};
   let propsRaw = fileJson.properties;
   // correct properties format
@@ -115,54 +114,40 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
         entry = extend(entry, entryRaw);
       }
     }
-    if(fileJson.category === 'administrative') fileJson.category = 'case';
+    if (fileJson.category === 'administrative') fileJson.category = 'case';
     let prop_full_name = fileJson.category + '.' + fileJson.id + '.' + prop;
     // add conceptcode
-    if (prop_full_name in conceptCode) {
-      let cc = conceptCode[prop_full_name];
+    if (prop_full_name in gdc_values) {
+      let values = gdc_values[prop_full_name];
       let enums = [];
       entry.syns = [];
       // add additionalProperties
-      for (var s in cc) {
-        enums.push(s);
+
+      values.forEach((value) => {
+        enums.push(value.nm);
         let tmp = {};
-        tmp.pv = s;
-        tmp.pvc = cc[s];
-        if (Array.isArray(cc[s])) {
-          tmp.syn = [];
-          tmp.aprop = [];
-          tmp.definitions = [];
-          cc[s].forEach((s, i) => {
-            tmp.definitions.push(tmp.pvc[i] !== '' && syns[tmp.pvc[i]] !== undefined && syns[tmp.pvc[i]].definitions !== undefined ? syns[tmp.pvc[i]].definitions : []);
-            tmp.syn.push(tmp.pvc[i] !== '' && syns[tmp.pvc[i]] ? syns[tmp.pvc[i]].synonyms : []);
-            tmp.aprop.push(tmp.pvc[i] !== '' && syns[tmp.pvc[i]] && syns[tmp.pvc[i]].additionalProperties !== undefined ? syns[tmp.pvc[i]].additionalProperties : []);
+        tmp.pv = value.nm;
+        tmp.pvc = value.n_c;
+
+        tmp.syn = [];
+        tmp.aprop = [];
+        tmp.definitions = [];
+
+        tmp.code = value.i_c !== '' ? value.i_c : undefined;
+        tmp.term_type = value.term_type !== '' ? value.term_type : undefined;
+        if (value.n_c !== undefined && value.n_c !== '') {
+          value.n_c.forEach((ncit, index) => {
+            tmp.definitions.push(tmp.pvc[index] !== '' && syns[tmp.pvc[index]] !== undefined && syns[tmp.pvc[index]].definitions !== undefined ? syns[tmp.pvc[index]].definitions : []);
+            tmp.syn.push(tmp.pvc[index] !== '' && syns[tmp.pvc[index]] ? syns[tmp.pvc[index]].synonyms : []);
+            tmp.aprop.push(tmp.pvc[index] !== '' && syns[tmp.pvc[index]] && syns[tmp.pvc[index]].additionalProperties !== undefined ? syns[tmp.pvc[index]].additionalProperties : []);
           });
-        } else {
-          tmp.definitions = tmp.pvc !== '' && syns[tmp.pvc] !== undefined && syns[tmp.pvc].definitions !== undefined ? syns[tmp.pvc].definitions : [];
-          tmp.syn = tmp.pvc !== '' && syns[tmp.pvc] ? syns[tmp.pvc].synonyms : [];
-          tmp.aprop = tmp.pvc !== '' && syns[tmp.pvc] && syns[tmp.pvc].additionalProperties !== undefined ? syns[tmp.pvc].additionalProperties : [];
         }
         entry.syns.push(tmp);
-      }
+      });
+
       if (entry.enum === undefined) {
         entry.enum = enums;
       }
-    }
-    // check extra gdc values
-    if (prop_full_name in gdc_values) {
-      let enums = [];
-      let obj = gdc_values[prop_full_name];
-      obj.forEach(v => {
-        let tmp = {};
-        tmp.pv = v.nm;
-        tmp.code = v.i_c;
-        tmp.pvc = v.n_c;
-        tmp.syn = tmp.pvc !== '' && syns[tmp.pvc] ? syns[tmp.pvc].synonyms : [];
-        tmp.term_type = v.term_type;
-        entry.syns.push(tmp);
-        enums.push(v.nm);
-      });
-      entry.enum = enums;
     }
     doc.properties.push(entry);
 
@@ -236,7 +221,7 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
       }
     } else {
       // has gdc synonyms
-      if ((prop_full_name in conceptCode) || (prop_full_name in gdc_values)) {
+      if ((prop_full_name in gdc_values)) {
         p.enum = [];
         entry.syns.forEach(item => {
           let tmp = {};
@@ -283,7 +268,6 @@ const helper = (fileJson, termsJson, defJson, conceptCode, syns) => {
                 for (let i = start; i <= end; i++) {
                   ts.push(i);
                 }
-
               } else if (item.code.indexOf('/') >= 0) {
                 // check if it has '/' in the code
                 let idx = item.code.indexOf('/');
@@ -373,7 +357,7 @@ const bulkIndex = next => {
   });
   
   let ccode = shared.readConceptCode();
-  gdc_values = shared.readGDCValues();
+  let gdc_values = shared.readGDCValues();
   let syns = shared.readNCItDetails();
 
   cdeData = shared.readCDEData();
@@ -395,7 +379,7 @@ const bulkIndex = next => {
             delete fileJson.properties[keys];
           }
         }
-        helper(fileJson, termsJson, defJson, ccode, syns);
+        helper(fileJson, termsJson, defJson, gdc_values, syns);
       }
 
     }
@@ -477,9 +461,9 @@ const bulkIndex = next => {
   // type ahead for ICDO3 codes
   if (gdc_values) {
     for (let key in gdc_values) {
-      gdc_values[key].forEach(values => {
+      gdc_values[key].forEach((values) => {
         let icdo3_code = values.i_c;
-        let ncit_code = values.n_c;
+        let ncit_codes = values.n_c;
         if (icdo3_code !== "") {
           let em = icdo3_code.toString().trim().toLowerCase();
           if (em in allTerm) {
@@ -494,23 +478,24 @@ const bulkIndex = next => {
             allTerm[em] = t;
           }
         }
-        if (ncit_code !== "") {
-          let em = ncit_code.toString().trim().toLowerCase();
-          if (em in allTerm) {
-            // if exist, then check if have the same type
-            let t = allTerm[em];
-            if (t.indexOf("ncit code") == -1) {
+        if (ncit_codes !== "") {
+          ncit_codes.forEach((ncit) => {
+            let em = ncit.toString().trim().toLowerCase();
+            if (em in allTerm) {
+              // if exist, then check if have the same type
+              let t = allTerm[em];
+              if (t.indexOf("ncit code") == -1) {
+                t.push("ncit code");
+              }
+            } else {
+              let t = [];
               t.push("ncit code");
+              allTerm[em] = t;
             }
-          } else {
-            let t = [];
-            t.push("ncit code");
-            allTerm[em] = t;
-          }
+          });
         }
       });
     }
-
   }
   for (var term in allTerm) {
     let doc = {};
@@ -588,29 +573,30 @@ const bulkIndex = next => {
     result.enum.forEach(item => {
       if (item.i_c !== undefined) { // If it has icdo3 code.
         if (item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined) {
-          all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c !== "" ? [item.n_c] : [], all_syn: [] };
-          if (item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-          if (item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
-        } else if (all_icdo3_syn[item.i_c.c] !== undefined && all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(item.n_c) === -1) {
-          if (item.n_c !== "") all_icdo3_syn[item.i_c.c].n_syn.push({n_c: item.n_c, s: item.s});
-          if (item.n_c !== "" && item.s !== undefined) all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s);
-          if (item.n_c !== "") all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c);
+          all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.lenght !== 0 ? item.n_c : [], all_syn: [] };
+          if (item.n_c !== undefined && item.n_c !== '') {
+            item.n_c.forEach((nc, i) => {
+              all_icdo3_syn[item.i_c.c].n_syn.push({ n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i] });
+              all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s[i]);
+            });
+          }
+        } else if (all_icdo3_syn[item.i_c.c] !== undefined) {
+            if (item.n_c !== undefined && item.n_c !== '') {
+              if (item.n_c.every(n_c => all_icdo3_syn[item.i_c.c].checker_n_c.indexOf(n_c) === -1)){
+                item.n_c.forEach((nc, i) => {
+                  all_icdo3_syn[item.i_c.c].n_syn.push({ n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i] });
+                  all_icdo3_syn[item.i_c.c].checker_n_c.push(item.n_c[i]);
+                  all_icdo3_syn[item.i_c.c].all_syn = all_icdo3_syn[item.i_c.c].all_syn.concat(item.s[i]);
+                });
+              }
+            }
         }
       } else { // If it doesn't have icdo3 code
-        if (item.n_c !== undefined && item.n_c !== "") {
+        if (item.n_c !== undefined && item.n_c !== '') {
           item.n_syn = [];
-          if (Array.isArray(item.n_c) && Array.isArray(item.s)) {
-            item.n_c.forEach((nc, i) => {
-              item.n_syn.push({n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i]});
-            });
-          } else {
-            item.n_syn.push({n_c: item.n_c, s: item.s, ap: item.ap, def: item.def});
-          }
-          delete item.n_c;
-          delete item.s;
-          delete item.ap;
-          delete item.def;
-        } else if (item.n_c !== undefined && item.n_c === "") {
+          item.n_c.forEach((nc, i) => {
+            item.n_syn.push({ n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i] });
+          });
           delete item.n_c;
           delete item.s;
           delete item.ap;
@@ -619,6 +605,7 @@ const bulkIndex = next => {
       }
     });
   });
+
   allProperties.forEach(result => {
     if (result.enum === undefined) return;
     result.enum.forEach(item => {
@@ -628,6 +615,8 @@ const bulkIndex = next => {
         item.n_syn = all_icdo3_syn[item.i_c.c].n_syn.length > 0 ? all_icdo3_syn[item.i_c.c].n_syn : undefined;
         delete item.n_c;
         delete item.s;
+        delete item.ap;
+        delete item.def;
       }
       if (all_icdo3_enums[item.i_c.c]) {
         item.ic_enum = [];
@@ -666,9 +655,6 @@ const bulkIndex = next => {
   });
 
   allProperties.forEach(ap => {
-    if (ap.cde && ap.property_desc) { // ADD CDE ID to all property description.
-      ap.property_desc = ap.property_desc + " (CDE ID - " + ap.cde.id + ")"
-    }
     let doc = extend(ap, {});
     doc.id = ap.property + "/" + ap.node + "/" + ap.category;
     propertyBody.push({
