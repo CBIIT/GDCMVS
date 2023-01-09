@@ -152,26 +152,24 @@ const loadDataType = (ids, next)  => {
 
 const loadSynonyms = next => {
 	let ncitids = [];
-	//load concept codes
-	let concept = shared.readConceptCode();
-	//load ICD-0 codes
-	let icdo = shared.readGDCValues();
-	for (let cc in concept) {
-		let dict = concept[cc];
-		for (let v in dict) {
-			if (dict[v] !== "" && ncitids.indexOf(dict[v]) == -1) {
-				ncitids.push(dict[v]);
-			}
-		}
-	}
-	for (let ic in icdo) {
-		let arr = icdo[ic];
-		arr.forEach(dict => {
-			if (dict.n_c !== "" && ncitids.indexOf(dict.n_c) == -1) {
-				ncitids.push(dict.n_c);
+
+	//load GDC Values codes
+	let gdc_values = shared.readGDCValues();
+
+	for(let cnp in gdc_values){
+		let enums = gdc_values[cnp];
+		enums.forEach(em => {
+			let ncitCode = em.n_c;
+			if(ncitCode !== undefined && ncitCode !== ''){
+				ncitCode.forEach((code) => {
+					if(ncitids.indexOf(code) === -1){
+						ncitids.push(code);
+					}
+				});
 			}
 		});
 	}
+
 	let ncit = [];
 
 	ncitids.forEach(id => {
@@ -181,7 +179,7 @@ const loadSynonyms = next => {
 	});
 	//get data
 	if(ncit.length > 0){
-		fs.truncate('./server/data_files/ncit_details.js', 0, () => {
+		fs.truncate('./server/data_files/ncit_details_new.js', 0, () => {
 			console.log('ncit_details.js truncated')
 		});
 		// let new_ncit = spliceArray(ncit, 1000);
@@ -210,155 +208,44 @@ const updateSynonyms = (ncitids, next) => {
 	}
 };
 
-// const loadNcitSynonyms_continue = next => {
-// 	let ncitids = [];
-// 	let synonyms = shared.readNCItDetails();
-// 	//load concept codes
-// 	let cc = shared.readConceptCode();
-// 	let gdc_values = shared.readGDCValues();
-// 	for (let c in cc) {
-// 		let vs = cc[c];
-// 		for (let v in vs) {
-// 			let codes = vs[v]; // [Cxxxxxx, cEEEEEE]
-// 			if (Array.isArray(codes)) {
-// 				codes.forEach((code) => {
-// 					if (!(code in synonyms)) {
-// 						if (ncitids.indexOf(code) == -1) {
-// 							ncitids.push(code);
-// 						}
-// 					} else {
-// 						logger.debug("in the synonyms:" + code);
-// 					}
-// 				});
-// 			} else {
-// 				if (!(codes in synonyms)) {
-// 					if (ncitids.indexOf(codes) == -1) {
-// 						ncit.push(codes);
-// 					}
-// 				} else {
-// 					logger.debug("in the synonyms:" + codes);
-// 				}
-// 			}
-// 		}
-// 	}
-
-
-
-
-// 	for(let cnp in gdc_values){
-// 		let enums = gdc_values[cnp];
-// 		enums.forEach(em => {
-// 			//let n_c = em.n_c;
-
-// 			let codes = em.n_c;
-
-// 			if (Array.isArray(codes)) {
-// 				codes.forEach((code) => {
-// 					if (!(code in synonyms)) {
-// 						if (ncitids.indexOf(code) == -1) {
-// 							ncitids.push(code);
-// 						}
-// 					} else {
-// 						logger.debug("in the synonyms:" + code);
-// 					}
-// 				});
-// 			} else {
-// 				if (!(codes in synonyms)) {
-// 					if (ncitids.indexOf(codes) == -1) {
-// 						ncit.push(codes);
-// 					}
-// 				} else {
-// 					logger.debug("in the synonyms:" + codes);
-// 				}
-// 			}
-
-
-
-
-
-// 			// if(ncitids.indexOf(n_c) === -1){
-// 			// 	ncitids.push(n_c);
-// 			// }
-// 		});
-// 	}
-// 	// let ncit = [];
-// 	// ncitids.forEach(id => {
-// 	// 	if (Array.isArray(id)) {
-// 	// 		id.forEach((code) => {
-// 	// 			if (!(code in synonyms)) {
-// 	// 				if (code.indexOf('E') === -1 && ncit.indexOf(code) == -1) {
-// 	// 					ncit.push(code);
-// 	// 				}
-// 	// 			} else {
-// 	// 				logger.debug("in the synonyms:" + id);
-// 	// 			}
-// 	// 		});
-// 	// 	} else {
-// 	// 		if (!(id in synonyms)) {
-// 	// 			if (id.indexOf('E') === -1) {
-// 	// 				ncit.push(id);
-// 	// 			}
-// 	// 		} else {
-// 	// 			logger.debug("in the synonyms:" + id);
-// 	// 		}
-// 	// 	}
-// 	// });
-// 	if(ncitids.length > 0){
-// 		synchronziedLoadSynonmysfromNCIT(ncitids, 0, data => {
-// 			return next(data);
-// 		});
-// 	}else{
-// 		logger.debug('Already up to date');
-// 		return next('Success');
-// 	}
-// };
-
 const loadNcitSynonyms_continue = next => {
 	let ncitids = [];
 	let synonyms = shared.readNCItDetails();
-	//load concept codes
-	let cc = shared.readConceptCode();
 	let gdc_values = shared.readGDCValues();
-	for (let c in cc) {
-		let vs = cc[c];
-		for (let v in vs) {
-			let code = vs[v];
-			if (code !== "" && ncitids.indexOf(code) == -1) {
-				ncitids.push(code);
-			}
-		}
-	}
+
 	for(let cnp in gdc_values){
 		let enums = gdc_values[cnp];
 		enums.forEach(em => {
-			let n_c = em.n_c;
-			if(ncitids.indexOf(n_c) === -1){
-				ncitids.push(n_c);
+			let ncitCode = em.n_c;
+			if(ncitCode !== undefined && ncitCode !== ''){
+				ncitCode.forEach((code) => {
+					if(ncitids.indexOf(code) === -1){
+						ncitids.push(code);
+					}
+				});
 			}
 		});
 	}
 	let ncit = [];
-	ncitids.forEach(id => {
-		if (Array.isArray(id)) {
-			id.forEach((id) => {
-				if (!(id in synonyms)) {
-					if (id.indexOf('E') === -1) {
-						ncit.push(id);
-					}
-				} else {
-					logger.debug("in the synonyms:" + id);
-				}
-			});
-		} else {
-			if (!(id in synonyms)) {
-				if (id.indexOf('E') === -1) {
-					ncit.push(id);
-				}
-			} else {
-				logger.debug("in the synonyms:" + id);
+	// ncitids.forEach(code => {
+	// 		if (!(code in synonyms)) {
+	// 			if (code.indexOf('E') === -1) {
+	// 				ncit.push(code);
+	// 			}
+	// 		} else {
+	// 			logger.debug("in the synonyms:" + code);
+	// 		}
+	// });
+
+
+	ncitids.forEach(code => {
+		if (!(code in synonyms)) {
+			if (ncit.indexOf(code) === -1) {
+				ncit.push(code);
 			}
 		}
 	});
+
 	if(ncit.length > 0){
 		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
 			return next(data);
@@ -371,20 +258,20 @@ const loadNcitSynonyms_continue = next => {
 
 const spliceArray = (inputArray, chunkSize) => {
 	var R = [];
-  for (var i=0,len=inputArray.length; i<len; i+=chunkSize)
-    R.push(inputArray.slice(i,i+chunkSize));
-  return R;
+	for (var i=0,len=inputArray.length; i<len; i+=chunkSize)
+		R.push(inputArray.slice(i,i+chunkSize));
+	return R;
 }
 
 const getDataURL = async url => {
 	try {
-	  const response = await fetch(url);
-	  const json = await response.json();
-	  return json;
+		const response = await fetch(url);
+		const json = await response.json();
+		return json;
 	} catch (error) {
-	  console.log(error);
+		console.log(error);
 	}
-  };
+	};
 
 const synchronziedLoadSynonmysfromNCITTEST = (ncitids, idx, next) => {
 	if (idx >= ncitids.length) {
