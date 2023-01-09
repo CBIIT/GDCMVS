@@ -1261,6 +1261,90 @@ const Unmapped = (req, res) => {
 	res.send("Success");
 }
 
+const updateGDCDataMappings = async (req, res) => {
+	/*
+		let file_path = path.join(
+			__dirname,
+			"..",
+			"..",
+			"excel_mapping",
+			"New_Mapping.xlsx"
+		);
+		let output_file_path = path.join(
+			__dirname,
+			"..",
+			"..",
+			"data_files",
+			"gdc_values_updated.js"
+		);
+		let current_mappings = shared.readGDCValues();
+		const workbook = new Excel.Workbook();
+		await workbook.xlsx.readFile(file_path.replace(/\\/g, "/"));
+		let worksheet = workbook.worksheets[0];
+		worksheet.eachRow(function (row, rowNumber) {
+			let item = row.values;
+			if (rowNumber > 1) {
+				let category = item[1] == undefined || item[1] == null ? "" : item[1];
+				let node = item[2] == undefined || item[2] == null ? "" : item[2];
+				let property = item[3] == undefined || item[3] == null ? "" : item[3];
+				let value = item[4] == undefined || item[4] == null ? "" : item[4];
+				let ncit = item[5] == undefined || item[5] == null ? "" : item[5];
+				let icdo = item[7] == undefined || item[7] == null ? "" : item[7];
+				let icdo_s = item[8] == undefined || item[8] == null ? "" : item[8];
+				let prop_id = category + "." + node + "." + property;
+				if (!(prop_id in current_mappings)) {
+					current_mappings[prop_id] = [];
+				}
+				//"nm":"Neoplasm, benign","i_c":"8000/0","n_c":"C3677","term_type":"PT"
+				let found = false;
+				current_mappings[prop_id].forEach((value_entry) => {
+					if (value_entry.nm == value.trim()) {
+						found = true;
+						if (ncit != "") {
+							value_entry.n_c = ncit.split("|");
+						}
+						if (icdo != "") {
+							value_entry.i_c = icdo;
+						}
+						if (icdo_s != "") {
+							value_entry.i_c_s = icdo_s.split("|");
+						}
+					}
+				});
+				if (!found) {
+					let entry = {};
+					entry.nm = value;
+					if (ncit == "") {
+						entry.n_c = "";
+					} else {
+						entry.n_c = ncit.split("|");
+					}
+					if (icdo != "") {
+						entry.i_c = icdo;
+					} else {
+						entry.i_c = "";
+					}
+					if (icdo_s != "") {
+						entry.i_c_s = icdo_s.split("|");
+					} else {
+						entry.i_c_s = "";
+					}
+					entry.term_type = "PT";
+					current_mappings[prop_id].push(entry);
+				}
+			}
+		});
+		fs.writeFileSync(
+			output_file_path,
+			JSON.stringify(current_mappings),
+			(err) => {
+				if (err) return logger.error(err);
+			}
+		);
+		res.json({ result: "success" });
+	*/
+	};
+
 const gitClone = (req, res) => {
 	let url = 'https://github.com/NCI-GDC/gdcdictionary.git';
 	let directory = 'tmp_data';
@@ -1301,6 +1385,7 @@ module.exports = {
 	parseExcel,
 	preloadDataTypeFromCaDSR,
 	Unmapped,
+	updateGDCDataMappings,
 	gitClone,
 	gdcDictionaryVersion
 };
