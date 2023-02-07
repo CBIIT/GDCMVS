@@ -193,7 +193,7 @@ const exportMapping = (req, res) => {
 							tmp_data.t_t = map.term_type;
 						  }
 						  for(let code of map.n_c){
-							tmp_data.ncit_v.push(ncit_details[code] !== undefined ? ncit_details[code].pname : '');
+							tmp_data.ncit_v.push(ncit_details[code] !== undefined ? ncit_details[code].preferredName : '');
 						  }
 						  tmp_data.ncit_v = Array.isArray(tmp_data.ncit_v) ? tmp_data.ncit_v.join('|') : tmp_data.ncit_v;
 						}
