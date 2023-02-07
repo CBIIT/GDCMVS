@@ -315,7 +315,6 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 					tmp[ncitids[idx]].synonyms = [];
 					let checker_arr = [];
 					d.synonyms.forEach(data => {
-						// if(checker_arr.indexOf((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase()) !== -1) return;
 						if (checker_arr.indexOf((data.name + "@#$" + data.termType + "@#$" + data.source).trim().toLowerCase()) !== -1) return;
 
 						let obj = {};
@@ -332,7 +331,6 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 						}
 
 						checker_arr.push((data.name + "@#$" + data.termType + "@#$" + data.source).trim().toLowerCase());
-						// checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
 					});
 					if (d.properties !== undefined) {
 						tmp[ncitids[idx]].additionalProperties = [];
