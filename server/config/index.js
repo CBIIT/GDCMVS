@@ -72,6 +72,7 @@ const all = {
     'center',
     'clinical_supplement',
     'clinical',
+    'copy_number_auxiliary_file',
     'copy_number_estimate',
     'copy_number_liftover_workflow',
     'copy_number_segment',
