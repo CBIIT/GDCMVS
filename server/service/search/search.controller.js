@@ -13,6 +13,7 @@ const _ = require('lodash');
 const shared = require('./shared');
 const folderPath = path.join(__dirname, '..', '..', 'data');
 // const git = require('nodegit');
+// const Excel = require('exceljs');
 var cdeData = {};
 var gdcData = {};
 
@@ -785,10 +786,6 @@ const updateSynonumsNcit = (req, res) => {
 
 		res.end('Success!!');
 	});
-	
-	
-	
-	
 };
 
 const loadSynonyms_continue = (req, res) => {
@@ -1329,7 +1326,7 @@ const updateGDCDataMappings = async (req, res) => {
 					} else {
 						entry.i_c_s = "";
 					}
-					entry.term_type = "PT";
+					entry.term_type = "";
 					current_mappings[prop_id].push(entry);
 				}
 			}
