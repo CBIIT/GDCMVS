@@ -298,7 +298,7 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 		return;
 	}
 	let syn = [];
-	https.get(config.NCIt_url[4] + ncitids[idx], (rsp) => {
+	https.get(config.NCIt_url[6] + ncitids[idx], (rsp) => {
 		let html = '';
 		rsp.on('data', (dt) => {
 			html += dt;
@@ -309,25 +309,34 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 				if (d.synonyms !== undefined) {
 					let tmp = {}
 					tmp[ncitids[idx]] = {};
-					tmp[ncitids[idx]].preferredName = d.preferredName;
+					tmp[ncitids[idx]].preferredName = d.name;
 					tmp[ncitids[idx]].code = d.code;
 					tmp[ncitids[idx]].definitions = d.definitions;
 					tmp[ncitids[idx]].synonyms = [];
 					let checker_arr = [];
 					d.synonyms.forEach(data => {
-						if(checker_arr.indexOf((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase()) !== -1) return;
+						if (checker_arr.indexOf((data.name + "@#$" + data.termType + "@#$" + data.source).trim().toLowerCase()) !== -1) return;
+
 						let obj = {};
-						obj.termName = data.termName;
-						obj.termGroup = data.termGroup;
-						obj.termSource = data.termSource;
-						tmp[ncitids[idx]].synonyms.push(obj);
-						checker_arr.push((data.termName+"@#$"+data.termGroup+"@#$"+data.termSource).trim().toLowerCase());
+						obj.termName = data.name;
+						obj.termGroup = data.termType;
+						obj.termSource = data.source;
+						//only keep NCI synonyms
+						if (obj.termSource == "NCI") {
+							if (obj.termGroup == "PT") {
+								tmp[ncitids[idx]].synonyms.unshift(obj);
+							} else {
+								tmp[ncitids[idx]].synonyms.push(obj);
+							}
+						}
+
+						checker_arr.push((data.name + "@#$" + data.termType + "@#$" + data.source).trim().toLowerCase());
 					});
-					if (d.additionalProperties !== undefined) {
+					if (d.properties !== undefined) {
 						tmp[ncitids[idx]].additionalProperties = [];
-						d.additionalProperties.forEach(data => {
+						d.properties.forEach(data => {
 							let obj = {};
-							obj.name = data.name;
+							obj.name = data.type;
 							obj.value = data.value;
 							tmp[ncitids[idx]].additionalProperties.push(obj);
 						});
@@ -348,9 +357,8 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 			if (ncitids.length == idx) {
 				return next('Success');
 			} else {
-				return next("NCIT finished number: " + idx + " of " + ncitids.length + "\n");
+				return next("NCIT finished number: " + idx + " of " + ncitids.length + " : " + ncitids[idx] +"\n");
 			}
-
 		});
 
 	}).on('error', (e) => {
