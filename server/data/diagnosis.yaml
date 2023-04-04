@@ -7553,8 +7553,10 @@ properties:
       - B lymphoblastic leukemia/lymphoma, NOS
       - B-ALL
       - B-cell lymphocytic leukemia/small lymphocytic lymphoma
-      - B-cell lymphoma, unclassifiable, with features intermediate between diffuse large B-cell lymphoma and Burkitt lymphoma
-      - B-cell lymphoma, unclassifiable, with features intermediate between diffuse large B-cell lymphoma and classical Hodgkin lymphoma
+      - B-cell lymphoma, unclassifiable, with features intermediate between diffuse
+        large B-cell lymphoma and Burkitt lymphoma
+      - B-cell lymphoma, unclassifiable, with features intermediate between diffuse
+        large B-cell lymphoma and classical Hodgkin lymphoma
       - Balloon cell melanoma
       - Balloon cell nevus
       - BALT lymphoma
@@ -7965,7 +7967,8 @@ properties:
       - Embryonal tumor with multilayered rosettes C19MC-altered
       - Embryonal tumor with multilayered rosettes, NOS
       - Embryonal tumor with rhabdoid features
-      - Encapsulated follicular variant of papillary thyroid carcinoma, NOS (EFVPTC, NOS)
+      - Encapsulated follicular variant of papillary thyroid carcinoma, NOS (EFVPTC,
+        NOS)
       - Encapsulated papillary carcinoma
       - Encapsulated papillary carcinoma with invasion
       - Enchondroma
@@ -8433,7 +8436,8 @@ properties:
       - Intraductal papillary adenocarcinoma with invasion
       - Intraductal papillary adenocarcinoma, NOS
       - Intraductal papillary carcinoma
-      - Intraductal papillary mucinous neoplasm (IPMN) with an associated invasive carcinoma
+      - Intraductal papillary mucinous neoplasm (IPMN) with an associated invasive
+        carcinoma
       - Intraductal papillary mucinous neoplasm with an associated invasive carcinoma
       - Intraductal papillary mucinous neoplasm with high grade dysplasia
       - Intraductal papillary neoplasm with associated invasive carcinoma
@@ -8479,7 +8483,8 @@ properties:
       - Intravascular leiomyomatosis
       - Invasive carcinoma of no special type
       - Invasive carcinoma, NST
-      - Invasive encapsulated follicular variant of papillary thyroid carcinoma (invasive EFVPTC)
+      - Invasive encapsulated follicular variant of papillary thyroid carcinoma (invasive
+        EFVPTC)
       - Invasive fibroma
       - Invasive hydatidiform mole
       - Invasive lobular carcinoma
@@ -9067,8 +9072,10 @@ properties:
       - Nodular melanoma
       - Non-Hodgkin lymphoma, NOS
       - Non-invasive EFVPTC
-      - Non-invasive encapsulated follicular variant of papillary thyroid carcinoma (non-invasive EFVPTC)
-      - Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)
+      - Non-invasive encapsulated follicular variant of papillary thyroid carcinoma
+        (non-invasive EFVPTC)
+      - Non-invasive follicular thyroid neoplasm with papillary-like nuclear features
+        (NIFTP)
       - Non-invasive FTP
       - Non-invasive low grade serous carcinoma
       - Non-invasive mammary carcinoma
@@ -9083,9 +9090,11 @@ properties:
       - Noninfiltrating intraductal papillary adenocarcinoma
       - Noninfiltrating intraductal papillary carcinoma
       - Noninvasive pancreatobiliary papillary neoplasm with high grade dysplasia
-      - Noninvasive pancreatobiliary papillary neoplasm with high grade intraepithelial neoplasia
+      - Noninvasive pancreatobiliary papillary neoplasm with high grade intraepithelial
+        neoplasia
       - Noninvasive pancreatobiliary papillary neoplasm with low grade dysplasia
-      - Noninvasive pancreatobiliary papillary neoplasm with low grade intraepithelial neoplasia
+      - Noninvasive pancreatobiliary papillary neoplasm with low grade intraepithelial
+        neoplasia
       - Nonlipid reticuloendotheliosis
       - Nonpigmented nevus
       - NUT carcinoma
@@ -9152,7 +9161,8 @@ properties:
       - Pancreatic endocrine tumor, nonfunctioning
       - Pancreatic endocrine tumor, NOS
       - Pancreatic microadenoma
-      - Pancreatic peptide and pancreatic peptide-like peptide within terminal tyrosine amide producing tumor
+      - Pancreatic peptide and pancreatic peptide-like peptide within terminal tyrosine
+        amide producing tumor
       - Pancreatobiliary neoplasm, non-invasive
       - Pancreatobiliary-type carcinoma
       - Pancreatoblastoma
@@ -9186,7 +9196,8 @@ properties:
       - Papillary mucinous cystadenoma, borderline malignancy
       - Papillary mucinous cystadenoma, NOS
       - Papillary mucinous tumor of low malignant potential
-      - Papillary neoplasm, pancreatobiliary-type, with high grade intraepithelial neoplasia
+      - Papillary neoplasm, pancreatobiliary-type, with high grade intraepithelial
+        neoplasia
       - Papillary pseudomucinous cystadenocarcinoma
       - Papillary pseudomucinous cystadenoma, borderline malignancy
       - Papillary pseudomucinous cystadenoma, NOS
@@ -9243,7 +9254,8 @@ properties:
       - Peripheral neuroectodermal tumor
       - Peripheral odontogenic fibroma
       - Peripheral primitive neuroectodermal tumor, NOS
-      - Peripheral T-cell lymphoma, AILD (Angioimmunoblastic Lymphadenopathy with Dysproteinemia)
+      - Peripheral T-cell lymphoma, AILD (Angioimmunoblastic Lymphadenopathy with
+        Dysproteinemia)
       - Peripheral T-cell lymphoma, large cell
       - Peripheral T-cell lymphoma, NOS
       - Peripheral T-cell lymphoma, pleomorphic medium and large cell
@@ -9347,7 +9359,8 @@ properties:
       - Primary cutaneous CD30+ large T-cell lymphoma
       - Primary cutaneous CD30+ T-cell lymphoproliferative disorder
       - Primary cutaneous CD4-positive small/medium T-cell lymphoma
-      - Primary cutaneous CD8-positive aggressive epidermotropic cytotoxic T-cell lymphoma
+      - Primary cutaneous CD8-positive aggressive epidermotropic cytotoxic T-cell
+        lymphoma
       - Primary cutaneous DLBCL, leg type
       - Primary cutaneous follicle centre lymphoma
       - Primary cutaneous gamma-delta T-cell lymphoma
@@ -9505,7 +9518,8 @@ properties:
       - Sertoli cell tumor with lipid storage
       - Sertoli cell tumor, NOS
       - Sertoli-Leydig cell tumor of intermediate differentiation
-      - Sertoli-Leydig cell tumor, intermediate differentiation, with heterologous elements
+      - Sertoli-Leydig cell tumor, intermediate differentiation, with heterologous
+        elements
       - Sertoli-Leydig cell tumor, NOS
       - Sertoli-Leydig cell tumor, poorly differentiated
       - Sertoli-Leydig cell tumor, poorly differentiated, with heterologous elements
@@ -17983,113 +17997,115 @@ properties:
   sites_of_involvement:
     $ref:
       - "_terms.yaml#/sites_of_involvement/common"
-    enum:
-      - Abdomen
-      - Abdominal Peritoneum
-      - Adrenal gland, NOS
-      - Adnexa
-      - Anus, NOS
-      - Appendix
-      - Bladder, NOS
-      - Bone, NOS
-      - Bone marrow
-      - Brain, Brain stem
-      - Brain, Cerebellum, NOS
-      - Brain, Cerebrum
-      - Brain, Frontal lobe
-      - Brain, NOS
-      - Brain, Occipital lobe
-      - Brain, Parietal
-      - Brain, Temporal lobe
-      - Brain, Ventricle, NOS
-      - Breast, NOS
-      - Bronchus
-      - Buccal mucosa
-      - Central Lung
-      - Central nervous system
-      - Cerebrospinal fluid
-      - Cervix
-      - Chest wall
-      - Colon, NOS
-      - Diaphragm
-      - Ear
-      - Epididymis
-      - Esophagus
-      - Eye
-      - Fallopian Tube, Left
-      - Fallopian Tube, NOS
-      - Fallopian Tube, Right
-      - Gallbladder
-      - Gastrosplenic Ligament
-      - Heart
-      - Kidney, Lower Pole
-      - Kidney, NOS
-      - Kidney, Middle
-      - Kidney, Upper Pole
-      - Larynx, NOS
-      - Leptomeninges
-      - Liver
-      - Lower lobe, lung
-      - Lung, NOS
-      - Lymph node, NOS
-      - Mandible
-      - Maxilla
-      - Mediastinal soft tissue
-      - Mesentery
-      - Mesothelium
-      - Middle lobe, lung
-      - Mouth
-      - Nasopharynx
-      - Nasal soft tissue
-      - Neck
-      - Ocular orbits
-      - Omentum
-      - Oropharynx
-      - Other
-      - Ovary, Left
-      - Ovary, NOS
-      - Ovary, Right
-      - Pancreas
-      - Parametrium, Left
-      - Parametrium, Right
-      - Parotid gland
-      - Pelvic Lymph Node(s)
-      - Pelvic Peritoneum
-      - Pelvis
-      - Pericardium
-      - Perineum
-      - Peri-aortic Lymph Node(s)
-      - Peri-orbital soft tissue
-      - Peripheral blood
-      - Peripheral Lung
-      - Peripheral nervous system
-      - Peritoneum, NOS
-      - Pleura
-      - Prostate
-      - Rectum
-      - Retroperitoneum
-      - Salivary gland
-      - Sigmoid colon
-      - Sinus
-      - Skin
-      - Small intestine
-      - Soft tissue
-      - Spleen
-      - Stomach
-      - Testes
-      - Thorax, NOS
-      - Thyroid
-      - Tongue
-      - Tonsil
-      - Trachea
-      - Transplanted kidney
-      - Transverse colon
-      - Upper lobe, lung
-      - Uterus
-      - Unknown
-      - Vagina
-      - Vertebrae
-      - Not Reported
+    type: array
+    items:
+      enum:
+        - Abdomen
+        - Abdominal Peritoneum
+        - Adrenal gland, NOS
+        - Adnexa
+        - Anus, NOS
+        - Appendix
+        - Bladder, NOS
+        - Bone, NOS
+        - Bone marrow
+        - Brain, Brain stem
+        - Brain, Cerebellum, NOS
+        - Brain, Cerebrum
+        - Brain, Frontal lobe
+        - Brain, NOS
+        - Brain, Occipital lobe
+        - Brain, Parietal
+        - Brain, Temporal lobe
+        - Brain, Ventricle, NOS
+        - Breast, NOS
+        - Bronchus
+        - Buccal mucosa
+        - Central Lung
+        - Central nervous system
+        - Cerebrospinal fluid
+        - Cervix
+        - Chest wall
+        - Colon, NOS
+        - Diaphragm
+        - Ear
+        - Epididymis
+        - Esophagus
+        - Eye
+        - Fallopian Tube, Left
+        - Fallopian Tube, NOS
+        - Fallopian Tube, Right
+        - Gallbladder
+        - Gastrosplenic Ligament
+        - Heart
+        - Kidney, Lower Pole
+        - Kidney, NOS
+        - Kidney, Middle
+        - Kidney, Upper Pole
+        - Larynx, NOS
+        - Leptomeninges
+        - Liver
+        - Lower lobe, lung
+        - Lung, NOS
+        - Lymph node, NOS
+        - Mandible
+        - Maxilla
+        - Mediastinal soft tissue
+        - Mesentery
+        - Mesothelium
+        - Middle lobe, lung
+        - Mouth
+        - Nasopharynx
+        - Nasal soft tissue
+        - Neck
+        - Ocular orbits
+        - Omentum
+        - Oropharynx
+        - Other
+        - Ovary, Left
+        - Ovary, NOS
+        - Ovary, Right
+        - Pancreas
+        - Parametrium, Left
+        - Parametrium, Right
+        - Parotid gland
+        - Pelvic Lymph Node(s)
+        - Pelvic Peritoneum
+        - Pelvis
+        - Pericardium
+        - Perineum
+        - Peri-aortic Lymph Node(s)
+        - Peri-orbital soft tissue
+        - Peripheral blood
+        - Peripheral Lung
+        - Peripheral nervous system
+        - Peritoneum, NOS
+        - Pleura
+        - Prostate
+        - Rectum
+        - Retroperitoneum
+        - Salivary gland
+        - Sigmoid colon
+        - Sinus
+        - Skin
+        - Small intestine
+        - Soft tissue
+        - Spleen
+        - Stomach
+        - Testes
+        - Thorax, NOS
+        - Thyroid
+        - Tongue
+        - Tonsil
+        - Trachea
+        - Transplanted kidney
+        - Transverse colon
+        - Upper lobe, lung
+        - Uterus
+        - Unknown
+        - Vagina
+        - Vertebrae
+        - Not Reported
     enumDef:
       Kidney, Lower Pole:
         $ref:
@@ -19700,17 +19716,19 @@ properties:
   weiss_assessment_findings:
     $ref:
       - "_terms.yaml#/weiss_assessment_findings/common"
-    enum:
-      - Atypical Mitotic Figures
-      - Cytoplasm presence <= to 25%
-      - Diffuse Architecture
-      - Invasion of Tumor Capsule
-      - Mitotic Rate > 5/50 HPF
-      - Necrosis
-      - Nuclear Grade III or IV
-      - Sinusoid Invasion
-      - Venous Invasion
-      - Not Reported
+    type: array
+    items:
+      enum:
+        - Atypical Mitotic Figures
+        - Cytoplasm presence <= to 25%
+        - Diffuse Architecture
+        - Invasion of Tumor Capsule
+        - Mitotic Rate > 5/50 HPF
+        - Necrosis
+        - Nuclear Grade III or IV
+        - Sinusoid Invasion
+        - Venous Invasion
+        - Not Reported
 
   weiss_assessment_score:
     $ref:

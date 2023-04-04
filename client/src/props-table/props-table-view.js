@@ -32,7 +32,8 @@ const template = (props, options) => {
             <div class="table__td col-xs-2">
             ${item.enum !== undefined ? `
               <a class="getGDCTerms" href="#" data-ref="${item.id}">See All Values</a><br>
-              <a class="toCompare" href="#" data-ref="${item.id}"> Compare with User List</a>
+              <a class="toCompare" href="#" data-ref="${item.id}"> Compare with User List</a><br>
+              ${item.type !== undefined ? `type: ${item.type}` : ``}
             ` : `
               ${item.type !== undefined ? `type: ${item.type}` : ``}
             `}

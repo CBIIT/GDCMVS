@@ -853,10 +853,12 @@ properties:
   tumor_level_prostate:
     $ref:
       - "_terms.yaml#/tumor_level_prostate/common"
-    enum:
-      - Apex
-      - Middle
-      - Base
+    type: array
+    items:
+      enum:
+        - Apex
+        - Middle
+        - Base
 
   tumor_thickness:
     $ref:

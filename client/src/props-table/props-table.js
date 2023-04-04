@@ -35,7 +35,7 @@ export default (items, keyword) => {
     propObj.id = source.id;
     propObj.property = highlightPropertyObj[source.property] ? highlightPropertyObj[source.property] : source.property;
     propObj.property_desc = highlightPropertyDescObj[source.property] ? highlightPropertyDescObj[source.property] : source.property_desc;
-    if (source.type !== undefined && source.type !== '' && source.type !== 'enum') propObj.type = source.type;
+    if (source.type !== undefined && source.type !== '') propObj.type = source.type;
     if (source.enum !== undefined) propObj.enum = source.enum;
     if (source.cde !== undefined) {
       propObj.cdeId = highlightCdeIdObj[source.cde.id] ? highlightCdeIdObj[source.cde.id] : source.cde.id;
