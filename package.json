@@ -55,7 +55,7 @@
     "node-excel-export": "^1.4.4",
     "node-xlsx": "^0.15.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "selenium-webdriver": "^3.5.0",
+    "selenium-webdriver": "^4.8.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12"
