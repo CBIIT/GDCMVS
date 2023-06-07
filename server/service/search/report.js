@@ -262,7 +262,7 @@ const preProcess = (searchable_nodes, data) => {
 				if (p[key].enum) {
 					let enums = p[key].enum;
 					for (let k in enums) {
-						enums[k] = enums[k].replace('\n', ' ').replace('  ', ' ');
+						enums[k] = enums[k].toString().replace('\n', ' ').replace('  ', ' ');
 					}
 				}
 			}
