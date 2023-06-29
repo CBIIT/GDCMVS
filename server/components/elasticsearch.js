@@ -84,7 +84,7 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     // remove break line break in dictionary
     if (entryRaw.enum !== undefined && entryRaw.enum.length > 0) {
       for (let key in entryRaw.enum) {
-        entryRaw.enum[key] = entryRaw.enum[key].replace('\n', ' ').replace('  ', ' ');
+        entryRaw.enum[key] = entryRaw.enum[key].toString().replace('\n', ' ').replace('  ', ' ');
       }
     }
     // checking type array structure
