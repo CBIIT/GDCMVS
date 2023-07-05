@@ -254,6 +254,21 @@ const preProcess = (searchable_nodes, data) => {
 		}
 	}
 
+	// remove break line and spaces from enums
+	for (let key1 in data) {
+		if (data[key1].properties) {
+			let p = data[key1].properties;
+			for (let key in p) {
+				if (p[key].enum) {
+					let enums = p[key].enum;
+					for (let k in enums) {
+						enums[k] = enums[k].toString().replace('\n', ' ').replace('  ', ' ');
+					}
+				}
+			}
+		}
+	}
+
 	// remove deprecated_enum from enums
 	for (let key1 in data) {
 		if (data[key1].properties) {
@@ -261,6 +276,18 @@ const preProcess = (searchable_nodes, data) => {
 			for (let key in p) {
 				if (p[key].deprecated_enum && p[key].enum) {
 					p[key].new_enum = _.differenceWith(p[key].enum, p[key].deprecated_enum, _.isEqual);
+				}
+			}
+		}
+	}
+
+	// Update type array enums
+	for (let key1 in data) {
+		if (data[key1].properties) {
+			let p = data[key1].properties;
+			for (let key in p) {
+				if (p[key].items !== undefined && p[key].type === 'array') {
+					p[key].enum = p[key].items.enum;
 				}
 			}
 		}
@@ -302,35 +329,8 @@ const exportDelta = (req, res) => {
 	let old_data = {};
 	let new_data = {};
 	let gdc_values = shared.readGDCValues();
-	let cc = shared.readConceptCode();
 	let ncit_pv = shared.readNCItDetails();
-	let i_c_data = {};
-	gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
-		if(data.nm !== data.i_c){
-			if(i_c_data[data.i_c] === undefined){
-				i_c_data[data.i_c] = {
-					ncit_pv: [],
-					n_c: [],
-					nm: []
-				}
-				if(data.n_c) i_c_data[data.i_c].n_c.push(data.n_c);
-				if(data.nm) i_c_data[data.i_c].nm.push(data.nm);
-				if(ncit_pv[data.n_c]){
-					i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
-				}
-			}else{
-				if(data.n_c && i_c_data[data.i_c].n_c.indexOf(data.n_c) === -1){
-					i_c_data[data.i_c].n_c.push(data.n_c);
-					if(ncit_pv[data.n_c]){
-						i_c_data[data.i_c].ncit_pv.push(ncit_pv[data.n_c].preferredName);
-					}
-				}
-				if(data.nm && i_c_data[data.i_c].nm.indexOf(data.nm) === -1){
-					i_c_data[data.i_c].nm.push(data.nm);
-				}
-			}
-		}
-	});
+
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
 			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
@@ -365,14 +365,27 @@ const exportDelta = (req, res) => {
 						temp_data.value_old = "no match";
 						temp_data.value_new = em;
 						temp_data.n_c = "";
-						temp_data.n_c_pv = "";
+						temp_data.n_c_pv = [];
 						temp_data.i_c = "";
 						temp_data.i_c_pv = "";
-						let cnp = category+'.'+node+'.'+property;
-						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
-							temp_data.n_c = cc[cnp][temp_data.value_new];
-							temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+						// let cnp = category+'.'+node+'.'+property;
+						let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+						let map = mappings.find(({ nm }) => nm === em);
+
+						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && map !== undefined){
+						  temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+						  if(map.i_c !== undefined && map.i_c !== ''){
+								temp_data.i_c = map.i_c;
+								temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+								// temp_data.t_t = map.term_type;
+						  }
+						  for(let code of map.n_c){
+								temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+						  }
+						  temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 						}
+
 						data.push(temp_data);
 					});
 				} else if (new_p_array[key_p].deprecated_enum && new_p_array[key_p].new_enum) {
@@ -386,19 +399,31 @@ const exportDelta = (req, res) => {
 						temp_data.value_old = "no match";
 						temp_data.value_new = em;
 						temp_data.n_c = "";
-						temp_data.n_c_pv = "";
+						temp_data.n_c_pv = [];
 						temp_data.i_c = "";
 						temp_data.i_c_pv = "";
-						let cnp = category+'.'+node+'.'+property;
-						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
-							temp_data.n_c = cc[cnp][temp_data.value_new];
-							temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+
+						let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+						let map = mappings.find(({ nm }) => nm === em);
+						
+						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && map !== undefined){
+						  temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+						  if(map.i_c !== undefined && map.i_c !== ''){
+								temp_data.i_c = map.i_c;
+								temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+								// temp_data.t_t = map.term_type;
+						  }
+						  for(let code of map.n_c){
+								temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+						  }
+						  temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 						}
 						data.push(temp_data);
 					});
 				}
 			}
-		} else if (new_data[key] && new_data[key]) {
+		} else if (old_data[key] && new_data[key]) {
 			// node exists in both old and new data
 			let new_p_array = new_data[key].properties;
 			let old_p_array = old_data[key].properties;
@@ -423,14 +448,27 @@ const exportDelta = (req, res) => {
 							temp_data.value_old = "no match";
 							temp_data.value_new = em;
 							temp_data.n_c = "";
-							temp_data.n_c_pv = "";
+							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							let cnp = category+'.'+node+'.'+property;
-							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
-								temp_data.n_c = cc[cnp][temp_data.value_new];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+
+							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+							let map = mappings.find(({ nm }) => nm === em);
+
+							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && map !== undefined){
+								temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+								if(map.i_c !== undefined && map.i_c !== ''){
+									temp_data.i_c = map.i_c;
+									temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+									// temp_data.t_t = map.term_type;
+								}
+								for(let code of map.n_c){
+									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+								}
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 							}
+
 							data.push(temp_data);
 						});
 					} else if (new_p_array[property].deprecated_enum && new_p_array[property].new_enum) {
@@ -444,14 +482,27 @@ const exportDelta = (req, res) => {
 							temp_data.value_old = "no match";
 							temp_data.value_new = em;
 							temp_data.n_c = "";
-							temp_data.n_c_pv = "";
+							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							let cnp = category+'.'+node+'.'+property;
-							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
-								temp_data.n_c = cc[cnp][temp_data.value_new];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
+
+							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+							let map = mappings.find(({ nm }) => nm === em);
+
+							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && map !== undefined){
+								temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+								if(map.i_c !== undefined && map.i_c !== ''){
+									temp_data.i_c = map.i_c;
+									temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+									// temp_data.t_t = map.term_type;
+								}
+								for(let code of map.n_c){
+									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+								}
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 							}
+
 							data.push(temp_data);
 						});
 					}
@@ -479,53 +530,29 @@ const exportDelta = (req, res) => {
 								temp_data.value_old = "no match";
 							}
 							temp_data.n_c = "";
-							temp_data.n_c_pv = "";
+							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							let cnp = category+'.'+node+'.'+property;
-							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
-								temp_data.n_c = cc[cnp][temp_data.value_old];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+
+							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+							let map = mappings.find(({ nm }) => nm === em);
+							
+							if(temp_data.value_old !== "no match" && map !== undefined){
+								temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+								if(map.i_c !== undefined && map.i_c !== ''){
+									temp_data.i_c = map.i_c;
+									temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+									// temp_data.t_t = map.term_type;
+								}
+								for(let code of map.n_c){
+									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+								}
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 							}
-							if(icdo3_prop.indexOf(temp_data.p) !== -1){
-								gdc_values[cnp].forEach(val => {
-									if(val.nm === temp_data.value_old){
-										temp_data.n_c = val.n_c;
-										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
-										temp_data.i_c = val.i_c;
-										temp_data.i_c_pv = val.nm;
-									}
-								});
-							}
-							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
-								temp_data.i_c = temp_data.value_old;
-								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
-									if(index === 0){
-										temp_data.n_c += tmp_result;
-									}else{
-										temp_data.n_c += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.n_c_pv += tmp_result;
-									}else{
-										temp_data.n_c_pv += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.i_c_pv += tmp_result;
-									}else{
-										temp_data.i_c_pv += ' | ' + tmp_result;
-									} 
-								});
-							}
+
 							temp_data.value_new = em;
-							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
-								temp_data.n_c = cc[cnp][temp_data.value_new];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
-							}
+
 							data.push(temp_data);
 						});
 					}
@@ -547,48 +574,27 @@ const exportDelta = (req, res) => {
 								temp_data.value_old = em;
 								temp_data.value_new = "no match";
 								temp_data.n_c = "";
-								temp_data.n_c_pv = "";
+								temp_data.n_c_pv = [];
 								temp_data.i_c = "";
 								temp_data.i_c_pv = "";
-								let cnp = category+'.'+node+'.'+property;
-								if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
-									temp_data.n_c = cc[cnp][temp_data.value_old];
-									temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+
+								let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+								let map = mappings.find(({ nm }) => nm === em);
+								
+								if(temp_data.value_old !== "no match" && map !== undefined){
+									temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+									if(map.i_c !== undefined && map.i_c !== ''){
+										temp_data.i_c = map.i_c;
+										temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+										// temp_data.t_t = map.term_type;
+									}
+									for(let code of map.n_c){
+										temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+									}
+									temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 								}
-								if(icdo3_prop.indexOf(temp_data.p) !== -1){
-									gdc_values[cnp].forEach(val => {
-										if(val.nm === temp_data.value_old){
-											temp_data.n_c = val.n_c;
-											temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
-											temp_data.i_c = val.i_c;
-											temp_data.i_c_pv = val.nm;
-										}
-									});
-								}
-								if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
-									temp_data.i_c = temp_data.value_old;
-									i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
-										if(index === 0){
-											temp_data.n_c += tmp_result;
-										}else{
-											temp_data.n_c += ' | ' + tmp_result;
-										} 
-									});
-									i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
-										if(index === 0){
-											temp_data.n_c_pv += tmp_result;
-										}else{
-											temp_data.n_c_pv += ' | ' + tmp_result;
-										} 
-									});
-									i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
-										if(index === 0){
-											temp_data.i_c_pv += tmp_result;
-										}else{
-											temp_data.i_c_pv += ' | ' + tmp_result;
-										} 
-									});
-								}
+
 								data.push(temp_data);
 							}
 						});
@@ -611,48 +617,27 @@ const exportDelta = (req, res) => {
 								temp_data.value_old = em;
 								temp_data.value_new = "no match";
 								temp_data.n_c = "";
-								temp_data.n_c_pv = "";
+								temp_data.n_c_pv = [];
 								temp_data.i_c = "";
 								temp_data.i_c_pv = "";
-								let cnp = category+'.'+node+'.'+property;
-								if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
-									temp_data.n_c = cc[cnp][temp_data.value_old];
-									temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+
+								let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+								let map = mappings.find(({ nm }) => nm === em);
+								
+								if(temp_data.value_old !== "no match" && map !== undefined){
+									temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+									if(map.i_c !== undefined && map.i_c !== ''){
+										temp_data.i_c = map.i_c;
+										temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+										// temp_data.t_t = map.term_type;
+									}
+									for(let code of map.n_c){
+										temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+									}
+									temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 								}
-								if(icdo3_prop.indexOf(temp_data.p) !== -1){
-									gdc_values[cnp].forEach(val => {
-										if(val.nm === temp_data.value_old){
-											temp_data.n_c = val.n_c;
-											temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
-											temp_data.i_c = val.i_c;
-											temp_data.i_c_pv = val.nm;
-										}
-									});
-								}
-								if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
-									temp_data.i_c = temp_data.value_old;
-									i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
-										if(index === 0){
-											temp_data.n_c += tmp_result;
-										}else{
-											temp_data.n_c += ' | ' + tmp_result;
-										} 
-									});
-									i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
-										if(index === 0){
-											temp_data.n_c_pv += tmp_result;
-										}else{
-											temp_data.n_c_pv += ' | ' + tmp_result;
-										} 
-									});
-									i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
-										if(index === 0){
-											temp_data.i_c_pv += tmp_result;
-										}else{
-											temp_data.i_c_pv += ' | ' + tmp_result;
-										} 
-									});
-								}
+
 								data.push(temp_data);
 							}
 						});
@@ -679,52 +664,27 @@ const exportDelta = (req, res) => {
 							}
 							temp_data.value_new = em;
 							temp_data.n_c = "";
-							temp_data.n_c_pv = "";
+							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							let cnp = category+'.'+node+'.'+property;
-							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
-								temp_data.n_c = cc[cnp][temp_data.value_old];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+
+							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+							let map = mappings.find(({ nm }) => nm === em);
+							
+							if(temp_data.value_old !== "no match" && map !== undefined){
+								temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+								if(map.i_c !== undefined && map.i_c !== ''){
+									temp_data.i_c = map.i_c;
+									temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+									// temp_data.t_t = map.term_type;
+								}
+								for(let code of map.n_c){
+									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+								}
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 							}
-							if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && cc[cnp] && cc[cnp][temp_data.value_new]){
-								temp_data.n_c = cc[cnp][temp_data.value_new];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_new]] ? ncit_pv[cc[cnp][temp_data.value_new]].preferredName : "";
-							}
-							if(icdo3_prop.indexOf(temp_data.p) !== -1){
-								gdc_values[cnp].forEach(val => {
-									if(val.nm === temp_data.value_old){
-										temp_data.n_c = val.n_c;
-										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
-										temp_data.i_c = val.i_c;
-										temp_data.i_c_pv = val.nm;
-									}
-								});
-							}
-							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
-								temp_data.i_c = temp_data.value_old;
-								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
-									if(index === 0){
-										temp_data.n_c += tmp_result;
-									}else{
-										temp_data.n_c += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.n_c_pv += tmp_result;
-									}else{
-										temp_data.n_c_pv += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.i_c_pv += tmp_result;
-									}else{
-										temp_data.i_c_pv += ' | ' + tmp_result;
-									} 
-								});
-							}
+
 							data.push(temp_data);
 						});
 					}
@@ -749,48 +709,28 @@ const exportDelta = (req, res) => {
 							temp_data.value_old = em;
 							temp_data.value_new = "no match";
 							temp_data.n_c = "";
-							temp_data.n_c_pv = "";
+							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							let cnp = category+'.'+node+'.'+property;
-							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
-								temp_data.n_c = cc[cnp][temp_data.value_old];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+							// let cnp = category+'.'+node+'.'+property;
+
+							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+							let map = mappings.find(({ nm }) => nm === em);
+							
+							if(temp_data.value_old !== "no match" && map !== undefined){
+								temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+								if(map.i_c !== undefined && map.i_c !== ''){
+									temp_data.i_c = map.i_c;
+									temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+									// temp_data.t_t = map.term_type;
+								}
+								for(let code of map.n_c){
+									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+								}
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 							}
-							if(icdo3_prop.indexOf(temp_data.p) !== -1){
-								gdc_values[cnp].forEach(val => {
-									if(val.nm === temp_data.value_old){
-										temp_data.n_c = val.n_c;
-										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
-										temp_data.i_c = val.i_c;
-										temp_data.i_c_pv = val.nm;
-									}
-								});
-							}
-							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
-								temp_data.i_c = temp_data.value_old;
-								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
-									if(index === 0){
-										temp_data.n_c += tmp_result;
-									}else{
-										temp_data.n_c += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.n_c_pv += tmp_result;
-									}else{
-										temp_data.n_c_pv += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.i_c_pv += tmp_result;
-									}else{
-										temp_data.i_c_pv += ' | ' + tmp_result;
-									} 
-								});
-							}
+
 							data.push(temp_data);
 						});
 					} else if (old_p_array[key_p].deprecated_enum && old_p_array[key_p].new_enum) {
@@ -804,48 +744,30 @@ const exportDelta = (req, res) => {
 							temp_data.value_old = em;
 							temp_data.value_new = "no match";
 							temp_data.n_c = "";
-							temp_data.n_c_pv = "";
+							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							let cnp = category+'.'+node+'.'+property;
-							if(temp_data.value_old !== "no match" && cc[cnp] && cc[cnp][temp_data.value_old]){
-								temp_data.n_c = cc[cnp][temp_data.value_old];
-								temp_data.n_c_pv = ncit_pv[cc[cnp][temp_data.value_old]] ? ncit_pv[cc[cnp][temp_data.value_old]].preferredName : "";
+							// let cnp = category+'.'+node+'.'+property;
+
+
+
+							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
+
+							let map = mappings.find(({ nm }) => nm === em);
+							
+							if(temp_data.value_old !== "no match" && map !== undefined){
+								temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+								if(map.i_c !== undefined && map.i_c !== ''){
+									temp_data.i_c = map.i_c;
+									temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+									// temp_data.t_t = map.term_type;
+								}
+								for(let code of map.n_c){
+									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
+								}
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
 							}
-							if(icdo3_prop.indexOf(temp_data.p) !== -1){
-								gdc_values[cnp].forEach(val => {
-									if(val.nm === temp_data.value_old){
-										temp_data.n_c = val.n_c;
-										temp_data.n_c_pv = ncit_pv[val.n_c] ? ncit_pv[val.n_c].preferredName : "";
-										temp_data.i_c = val.i_c;
-										temp_data.i_c_pv = val.nm;
-									}
-								});
-							}
-							if(property === 'morphology' && temp_data.value_old !== "no match" && i_c_data[temp_data.value_old]){
-								temp_data.i_c = temp_data.value_old;
-								i_c_data[temp_data.value_old].n_c.forEach((tmp_result, index) => { 
-									if(index === 0){
-										temp_data.n_c += tmp_result;
-									}else{
-										temp_data.n_c += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].ncit_pv.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.n_c_pv += tmp_result;
-									}else{
-										temp_data.n_c_pv += ' | ' + tmp_result;
-									} 
-								});
-								i_c_data[temp_data.value_old].nm.forEach((tmp_result, index) => {
-									if(index === 0){
-										temp_data.i_c_pv += tmp_result;
-									}else{
-										temp_data.i_c_pv += ' | ' + tmp_result;
-									} 
-								});
-							}
+
 							data.push(temp_data);
 						});
 					}
