@@ -81,6 +81,17 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     let entry = {};
     let p = {};
     let entryRaw = propsRaw[prop];
+    // remove break line break in dictionary
+    if (entryRaw.enum !== undefined && entryRaw.enum.length > 0) {
+      for (let key in entryRaw.enum) {
+        entryRaw.enum[key] = entryRaw.enum[key].toString().replace('\n', ' ').replace('  ', ' ');
+      }
+    }
+    // checking type array structure
+    if (entryRaw.items !== undefined) {
+      entryRaw.enum = entryRaw.items.enum;
+      delete entryRaw.items;
+    }
     if (prop === '$ref') {
       let idx = entryRaw[0].indexOf('/');
       entry.property = entryRaw[0].substr(idx + 1);
@@ -223,71 +234,79 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
       // has gdc synonyms
       if ((prop_full_name in gdc_values)) {
         p.enum = [];
-        entry.syns.forEach(item => {
+        entry.enum.forEach(item => {
           let tmp = {};
-          if (item.term_type) {
-            tmp.term_type = item.term_type;
-          }
-          tmp.n = item.pv;
-          if (item.code !== undefined) {
-            tmp.i_c = {};
-            tmp.i_c.c = item.code;
-            let ts = [];
+          let syn = entry.syns.find(s => s.pv === item);
 
-            if (item.code.indexOf('C') >= 0) {
-              // ICD-O-3 code with C
-              // check if it's a range in level 2
-              if (item.code.indexOf('-') >= 0) {
-                let r = item.code.split('-');
-                let start = parseInt(r[0].substr(1));
-                let end = parseInt(r[1].substr(1));
-                for (let i = start; i <= end; i++) {
-                  if (i < 10) {
-                    ts.push('C0' + i);
-                  } else {
-                    ts.push('C' + i);
-                  }
-                }
-              } else if (item.code.indexOf('.') >= 0) {
-                // check if it has '/' in the code
-                let idx = item.code.indexOf('.');
-                let l2 = item.code.substr(0, idx);
-                let l3 = item.code;
-                ts.push(l2);
-                ts.push(l3);
-              } else {
-                ts.push(item.code);
-              }
-            } else {
-              // regular ICD-O-3 code
-              // check if it's a range in level 2
-              if (item.code.indexOf('-') >= 0) {
-                let r = item.code.split('-');
-                let start = parseInt(r[0]);
-                let end = parseInt(r[1]);
-                for (let i = start; i <= end; i++) {
-                  ts.push(i);
-                }
-              } else if (item.code.indexOf('/') >= 0) {
-                // check if it has '/' in the code
-                let idx = item.code.indexOf('/');
-                let l3 = item.code.substr(0, idx);
-                let l4 = item.code;
-                let l2 = l3.substr(0, l3.length - 1);
-                ts.push(l2);
-                ts.push(l3);
-                ts.push(l4);
-              } else {
-                ts.push(item.code);
-              }
+          if (syn !== undefined) {
+            if (syn.term_type) {
+              tmp.term_type = syn.term_type;
             }
+            tmp.n = syn.pv;
+            if (syn.code !== undefined) {
+              tmp.i_c = {};
+              tmp.i_c.c = syn.code;
+              let ts = [];
 
-            tmp.i_c.have = ts;
+              if (syn.code.indexOf('C') >= 0) {
+                // ICD-O-3 code with C
+                // check if it's a range in level 2
+                if (syn.code.indexOf('-') >= 0) {
+                  let r = syn.code.split('-');
+                  let start = parseInt(r[0].substr(1));
+                  let end = parseInt(r[1].substr(1));
+                  for (let i = start; i <= end; i++) {
+                    if (i < 10) {
+                      ts.push('C0' + i);
+                    } else {
+                      ts.push('C' + i);
+                    }
+                  }
+                } else if (syn.code.indexOf('.') >= 0) {
+                  // check if it has '/' in the code
+                  let idx = syn.code.indexOf('.');
+                  let l2 = syn.code.substr(0, idx);
+                  let l3 = syn.code;
+                  ts.push(l2);
+                  ts.push(l3);
+                } else {
+                  ts.push(syn.code);
+                }
+              } else {
+                // regular ICD-O-3 code
+                // check if it's a range in level 2
+                if (syn.code.indexOf('-') >= 0) {
+                  let r = syn.code.split('-');
+                  let start = parseInt(r[0]);
+                  let end = parseInt(r[1]);
+                  for (let i = start; i <= end; i++) {
+                    ts.push(i);
+                  }
+                } else if (syn.code.indexOf('/') >= 0) {
+                  // check if it has '/' in the code
+                  let idx = syn.code.indexOf('/');
+                  let l3 = syn.code.substr(0, idx);
+                  let l4 = syn.code;
+                  let l2 = l3.substr(0, l3.length - 1);
+                  ts.push(l2);
+                  ts.push(l3);
+                  ts.push(l4);
+                } else {
+                  ts.push(syn.code);
+                }
+              }
+
+              tmp.i_c.have = ts;
+              tmp.i_c.have = ts;
+              tmp.i_c.have = ts;
+            }
+            tmp.n_c = syn.pvc;
+            tmp.s = syn.syn;
+            tmp.ap = syn.aprop;
+            tmp.def = syn.definitions;
+          } else {
+            tmp.n = item;
           }
-          tmp.n_c = item.pvc;
-          tmp.s = item.syn;
-          tmp.ap = item.aprop;
-          tmp.def = item.definitions;
           p.enum.push(tmp);
         });
       } else {
@@ -303,7 +322,17 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     }
     // property type
     if (entry.enum !== undefined && entry.enum.length > 0) {
-      p.type = 'enum';
+      if (entry.type === 'array') {
+        p.type = 'array';
+      } else {
+        p.type = 'enum';
+      }
+    } else if (entry.type === undefined && entry.oneOf !== undefined && entry.oneOf.length > 0) {
+      let types = [];
+      entry.oneOf.forEach(elem => {
+        types.push(elem.type);
+      });
+      p.type = types.join(' | ');
     } else {
       let type = typeof (entry.type);
       let isArray = Array.isArray(entry.type);
@@ -381,16 +410,14 @@ const bulkIndex = next => {
         }
         helper(fileJson, termsJson, defJson, gdc_values, syns);
       }
-
     }
-
   });
   let gdc_data = {};
   fs.readdirSync(folderPath).forEach(file => {
     gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
   });
   gdc_data = report.preProcess(searchable_nodes, gdc_data);
-  // let gdc_drugs = report.preProcess(drugs_properties, gdc_data);
+
   // build suggestion index
   let suggestionBody = [];
 
@@ -431,6 +458,22 @@ const bulkIndex = next => {
               }
             });
           }
+        }
+        if (prop_data.items !== undefined) {
+          prop_data.items.enum.forEach(enm => {
+            let em = enm.toString().trim().toLowerCase();
+            if (em in allTerm) {
+              // if exist, then check if have the same type
+              let t = allTerm[em];
+              if (t.indexOf("value") == -1) {
+                t.push("value");
+              }
+            } else {
+              let t = [];
+              t.push("value");
+              allTerm[em] = t;
+            }
+          });
         }
       }
     }
@@ -515,7 +558,14 @@ const bulkIndex = next => {
   for (let conceptCode in syns) {
     let doc = {};
     doc.id = conceptCode.toString();
-    doc.data = syns[conceptCode];
+
+    doc.data = {};
+    doc.data.additionalProperties = syns[conceptCode].additionalProperties !== undefined ? syns[conceptCode].additionalProperties : [];
+    doc.data.code = syns[conceptCode].code !== undefined ? syns[conceptCode].code : '';
+    doc.data.definitions = syns[conceptCode].definitions !== undefined ? syns[conceptCode].definitions : [];
+    doc.data.synonyms = syns[conceptCode].synonyms !== undefined ? syns[conceptCode].synonyms : [];
+    doc.data.preferredName = syns[conceptCode].preferredName !== undefined ? syns[conceptCode].preferredName : '';
+
     ncitDetail.push({
       index: {
         _index: config.ncitDetails,
