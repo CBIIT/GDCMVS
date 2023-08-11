@@ -131,7 +131,7 @@ export const vsRender = (items, keyword) => {
               }
               if (data.ap !== undefined && data.ap.length !== 0) {
                 data.ap = data.ap.filter((aps) => {
-                  return aps.name === 'CAS_Registry' || aps.name === 'FDA_UNII_Code' || aps.name === 'NSC_Code';
+                  return aps.name === 'CAS_Registry' || aps.name === 'FDA_UNII_Code' || aps.name === 'NSC Number';
                 });
               }
             });
