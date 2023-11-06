@@ -97,6 +97,7 @@ const all = {
     'mirna_expression_workflow',
     'mirna_expression',
     'molecular_test',
+    'other_clinical_attribute',
     'pathology_detail',
     'pathology_report',
     'portion',
