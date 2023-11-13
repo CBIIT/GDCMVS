@@ -23,7 +23,7 @@
   right: 160px;
   top: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: 40;
 }
 
 .search-bar__option {
