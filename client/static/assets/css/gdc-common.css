@@ -28,7 +28,7 @@ html, body {
 }
 
 body {
-  padding-top: 64px;
+  /* padding-top: 64px; */
   position: relative;
   font-size: 1.4rem;
 }
@@ -241,7 +241,7 @@ code {
   margin: 0 auto 0 auto;
   width: 100%;
   height: 64px;
-  z-index: 999;
+  z-index: 49;
 }
 
 .navbar-default:before {
@@ -250,7 +250,7 @@ code {
   width: 100%;
   position: absolute;
   top: 0px;
-  z-index: 1000;
+  z-index: 50;
 }
 
 .navbar-default .background-container {
