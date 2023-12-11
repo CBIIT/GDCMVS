@@ -29,7 +29,7 @@ export const onResize = ($docsContainer, $parentContainer, $mainContainer) => {
 export const setHeight = ($docsContainer, $parentContainer, $mainContainer) => {
   $docsContainer.attr('style', 'margin-top: ' + (headerHeight - 54) + 'px !important');
   $parentContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
-  $mainContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 12) + 'px)');
+  $mainContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
 };
 
 export const errorNotification = (status, errorThrown) => {
