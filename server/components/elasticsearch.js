@@ -892,6 +892,14 @@ const loadSynonyms = next => {
   });
 }
 
+const loadNcitSynonyms_list = next => {
+  caDSR.loadNcitSynonyms_list(data => {
+    return next(data);
+  });
+}
+
+exports.loadNcitSynonyms_list = loadNcitSynonyms_list;
+
 exports.loadSynonyms = loadSynonyms;
 
 const loadSynonyms_continue = next => {
