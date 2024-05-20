@@ -269,18 +269,6 @@ const preProcess = (searchable_nodes, data) => {
 		}
 	}
 
-	// remove deprecated_enum from enums
-	for (let key1 in data) {
-		if (data[key1].properties) {
-			let p = data[key1].properties;
-			for (let key in p) {
-				if (p[key].deprecated_enum && p[key].enum) {
-					p[key].new_enum = _.differenceWith(p[key].enum, p[key].deprecated_enum, _.isEqual);
-				}
-			}
-		}
-	}
-
 	// Update type array enums
 	for (let key1 in data) {
 		if (data[key1].properties) {
@@ -288,6 +276,18 @@ const preProcess = (searchable_nodes, data) => {
 			for (let key in p) {
 				if (p[key].items !== undefined && p[key].type === 'array') {
 					p[key].enum = p[key].items.enum;
+				}
+			}
+		}
+	}
+
+	// remove deprecated_enum from enums
+	for (let key1 in data) {
+		if (data[key1].properties) {
+			let p = data[key1].properties;
+			for (let key in p) {
+				if (p[key].deprecated_enum && p[key].enum) {
+					p[key].new_enum = _.differenceWith(p[key].enum, p[key].deprecated_enum, _.isEqual);
 				}
 			}
 		}
