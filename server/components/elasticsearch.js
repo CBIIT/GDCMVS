@@ -402,9 +402,6 @@ const bulkIndex = next => {
         logger.debug(folderPath + '/' + file);
         for (let keys in fileJson.properties) {
           if (fileJson.properties[keys].deprecated_enum) {
-            if (keys === 'sites_of_involvement') {
-              debugger;
-            }
             if (fileJson.properties[keys]?.items) {
               fileJson.properties[keys].items.enum = _.differenceWith(fileJson.properties[keys].items.enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
             } else {
