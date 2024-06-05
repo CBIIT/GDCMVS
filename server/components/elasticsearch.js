@@ -402,7 +402,14 @@ const bulkIndex = next => {
         logger.debug(folderPath + '/' + file);
         for (let keys in fileJson.properties) {
           if (fileJson.properties[keys].deprecated_enum) {
-            fileJson.properties[keys].enum = _.differenceWith(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
+            if (keys === 'sites_of_involvement') {
+              debugger;
+            }
+            if (fileJson.properties[keys]?.items) {
+              fileJson.properties[keys].items.enum = _.differenceWith(fileJson.properties[keys].items.enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
+            } else {
+              fileJson.properties[keys].enum = _.differenceWith(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
+            }
           }
           if (fileJson.deprecated && deprecated_properties.indexOf(fileJson.category + "." + fileJson.id + "." + keys) !== -1) {
             delete fileJson.properties[keys];
