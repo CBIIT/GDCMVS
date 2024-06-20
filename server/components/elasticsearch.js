@@ -209,6 +209,8 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     if (entry.description === undefined) {
       if (entry.termDef !== undefined && entry.termDef.description !== undefined) {
         p.property_desc = entry.termDef.description;
+      } else {
+        p.property_desc = '';
       }
     } else {
       p.property_desc = entry.description;
