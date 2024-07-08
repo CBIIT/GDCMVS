@@ -183,7 +183,7 @@ const loadSynonyms = next => {
 			console.log('ncit_details.js truncated')
 		});
 		// let new_ncit = spliceArray(ncit, 1000);
-		synchronziedLoadSynonmysfromNCIT(ncit, 0, data => {
+		synchronziedLoadSynonmysfromNCIT2Update(ncit, 0, data => {
 			return next(data);
 		});
 	}else{
@@ -201,6 +201,20 @@ const updateSynonyms = (ncitids, next) => {
 		// let new_ncit = spliceArray(ncit, 1000);
 		synchronziedLoadSynonmysfromNCIT_4_update(ncitids, 0, () =>{
 			return next();
+		});
+	}else{
+		logger.debug('Already up to date');
+		return next('Success');
+	}
+};
+
+
+const loadNcitSynonyms_list = next => {
+	let ncit = [];
+
+	if(ncit.length > 0){
+		synchronziedLoadSynonmysfromNCIT2Update(ncit, 0, data => {
+			return next(data);
 		});
 	}else{
 		logger.debug('Already up to date');
@@ -354,6 +368,79 @@ const synchronziedLoadSynonmysfromNCIT = (ncitids, idx, next) => {
 			syns[ncitids[idx]] = syn;
 			idx++;
 			synchronziedLoadSynonmysfromNCIT(ncitids, idx, next);
+			if (ncitids.length == idx) {
+				return next('Success');
+			} else {
+				return next("NCIT finished number: " + idx + " of " + ncitids.length + " : " + ncitids[idx] +"\n");
+			}
+		});
+
+	}).on('error', (e) => {
+		logger.debug(e);
+	});
+};
+
+const synchronziedLoadSynonmysfromNCIT2Update = (ncitids, idx, next) => {
+	if (idx >= ncitids.length) {
+		return;
+	}
+	let syn = [];
+	https.get(config.NCIt_url[6] + ncitids[idx], (rsp) => {
+		let html = '';
+		rsp.on('data', (dt) => {
+			html += dt;
+		});
+		rsp.on('end', () => {
+			if (html.trim() !== '') {
+				let d = JSON.parse(html);
+				if (d.synonyms !== undefined) {
+					let tmp = {}
+					tmp[ncitids[idx]] = {};
+					tmp[ncitids[idx]].preferredName = d.name;
+					tmp[ncitids[idx]].code = d.code;
+					tmp[ncitids[idx]].definitions = d.definitions;
+					tmp[ncitids[idx]].synonyms = [];
+					let checker_arr = [];
+					d.synonyms.forEach(data => {
+						if (checker_arr.indexOf((data.name + "@#$" + data.termType + "@#$" + data.source).trim().toLowerCase()) !== -1) return;
+
+						let obj = {};
+						obj.termName = data.name;
+						obj.termGroup = data.termType;
+						obj.termSource = data.source;
+						//only keep NCI synonyms
+						if (obj.termSource == "NCI") {
+							if (obj.termGroup == "PT") {
+								tmp[ncitids[idx]].synonyms.unshift(obj);
+							} else {
+								tmp[ncitids[idx]].synonyms.push(obj);
+							}
+						}
+
+						checker_arr.push((data.name + "@#$" + data.termType + "@#$" + data.source).trim().toLowerCase());
+					});
+					if (d.properties !== undefined) {
+						tmp[ncitids[idx]].additionalProperties = [];
+						d.properties.forEach(data => {
+							let obj = {};
+							obj.name = data.type;
+							obj.value = data.value;
+							tmp[ncitids[idx]].additionalProperties.push(obj);
+						});
+					}
+					let str = {};
+					str[ncitids[idx]] = syns;
+					fs.appendFile("./server/data_files/ncit_details_new.js", JSON.stringify(tmp), err => {
+						if (err) return logger.error(err);
+					});
+				} else {
+					logger.debug("!!!!!!!!!!!! no synonyms for " + ncitids[idx]);
+				}
+
+			}
+			syns[ncitids[idx]] = syn;
+			idx++;
+			synchronziedLoadSynonmysfromNCIT2Update(ncitids, idx, next);
 			if (ncitids.length == idx) {
 				return next('Success');
 			} else {
@@ -617,6 +704,7 @@ module.exports = {
 	loadSynonyms,
 	updateSynonyms,
 	loadSynonymsCtcae,
+	loadNcitSynonyms_list,
 	loadNcitSynonyms_continue,
 	loadCtcaeSynonyms_continue,
 	getData,
