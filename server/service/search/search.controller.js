@@ -788,6 +788,18 @@ const updateSynonumsNcit = (req, res) => {
 	});
 };
 
+
+const loadSynonyms_list = (req, res) => {
+	elastic.loadNcitSynonyms_list(result => {
+		if (result === "Success") {
+			copyToSynonymsJS();
+			res.end('Success!!');
+		} else {
+			res.write(result);
+		}
+	});
+};
+
 const loadSynonyms_continue = (req, res) => {
 	elastic.loadSynonyms_continue(result => {
 		if (result === "Success") {
@@ -1373,6 +1385,7 @@ module.exports = {
 	searchICDO3Data,
 	preloadSynonumsNcit,
 	updateSynonumsNcit,
+	loadSynonyms_list,
 	loadSynonyms_continue,
 	preloadSynonumsCtcae,
 	loadCtcaeSynonyms_continue,
