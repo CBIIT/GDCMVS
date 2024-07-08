@@ -14,6 +14,7 @@ router.get('/preloadSynonumsNcit', controller.preloadSynonumsNcit);
 
 router.get('/updateSynonumsNcit', controller.updateSynonumsNcit);
 
+router.get('/loadNcitSynonymslist', controller.loadSynonyms_list);
 router.get('/loadNcitSynonymsContinue', controller.loadSynonyms_continue);
 // router.get('/preloadSynonumsCtcae', controller.preloadSynonumsCtcae);
 // router.get('/loadCtcaeSynonymsContinue', controller.loadCtcaeSynonyms_continue);

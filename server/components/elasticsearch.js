@@ -209,6 +209,8 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     if (entry.description === undefined) {
       if (entry.termDef !== undefined && entry.termDef.description !== undefined) {
         p.property_desc = entry.termDef.description;
+      } else {
+        p.property_desc = '';
       }
     } else {
       p.property_desc = entry.description;
@@ -402,7 +404,11 @@ const bulkIndex = next => {
         logger.debug(folderPath + '/' + file);
         for (let keys in fileJson.properties) {
           if (fileJson.properties[keys].deprecated_enum) {
-            fileJson.properties[keys].enum = _.differenceWith(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
+            if (fileJson.properties[keys].items) {
+              fileJson.properties[keys].items.enum = _.differenceWith(fileJson.properties[keys].items.enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
+            } else {
+              fileJson.properties[keys].enum = _.differenceWith(fileJson.properties[keys].enum, fileJson.properties[keys].deprecated_enum, _.isEqual);
+            }
           }
           if (fileJson.deprecated && deprecated_properties.indexOf(fileJson.category + "." + fileJson.id + "." + keys) !== -1) {
             delete fileJson.properties[keys];
@@ -891,6 +897,14 @@ const loadSynonyms = next => {
     return next(data);
   });
 }
+
+const loadNcitSynonyms_list = next => {
+  caDSR.loadNcitSynonyms_list(data => {
+    return next(data);
+  });
+}
+
+exports.loadNcitSynonyms_list = loadNcitSynonyms_list;
 
 exports.loadSynonyms = loadSynonyms;
 
