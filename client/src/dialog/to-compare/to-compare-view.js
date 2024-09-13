@@ -1,6 +1,7 @@
 import { tableSynonyms, tableIcdo3 } from '../../components/table';
 
 export const headerTemplate = `
+  <div class="gdcmvs">
   <div class="dialog__header">
     <div class="dialog__titlebar">
       <span id="ui-id-4" class="ui-dialog-title">Compare Your Values with GDC Values</span>
@@ -38,10 +39,11 @@ export const headerTemplate = `
       </div>
     </div>
   </div>
+  </div>
 `;
 
 export const bodyTemplate = `
-  <div id="compare_dialog" class="compare_dialog">
+  <div id="compare_dialog" class="gdcmvs compare_dialog">
     <div id="compare_form" class="compare-form">
       <div id="cp_top" class="compare-form__top">
         <div id="cp_left" class="compare-form__left">
@@ -62,6 +64,7 @@ export const bodyTemplate = `
 `;
 
 export const footerTemplate = `
+<div class="gdcmvs">
   <div id="cp_bottom" class="compare-form__bottom">
     <button id="compare" class="btn btn-default compare-form__button">Compare</button>
     <button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>
@@ -73,6 +76,7 @@ export const footerTemplate = `
         <div id="pagination-matched" class="dialog__pagination"></div>
       </div>
     </div>
+  </div>
   </div>
 `;
 
