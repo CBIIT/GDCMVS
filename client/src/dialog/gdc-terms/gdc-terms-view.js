@@ -1,6 +1,7 @@
 import { tableSynonyms, tableIcdo3 } from '../../components/table';
 
 export const headerTemplate = (targetsLength, icdo, itemsLength) => `
+<div class="gdcmvs">
 <div class="dialog__header">
   <div class="dialog__titlebar">
     <span id="ui-id-4" class="ui-dialog-title">GDC Values</span>
@@ -43,10 +44,12 @@ export const headerTemplate = (targetsLength, icdo, itemsLength) => `
     </div>
   </div>
 </div>
+</div>
 `;
 
 export const listTemplate = (items, icdo, keywordCase) => {
   return `${items.length !== 0 ? `
+    <div class="gdcmvs">
     <div id="gdc-syn-data-list" class="table__container">
       <div class="table__body row">
         <div id="gdc-syn-container" class="col-xs-12">
@@ -97,17 +100,22 @@ export const listTemplate = (items, icdo, keywordCase) => {
         </div>
       </div>
     </div>
+    </div>
   ` : `
-    <div  class="dialog__indicator">
-      <div class="dialog__indicator-content">
-        Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
+    <div class="gdcmvs">
+      <div  class="dialog__indicator">
+        <div class="dialog__indicator-content">
+          Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
+        </div>
       </div>
     </div>
   `} `;
 };
 
 export const footerTemplate = `
+<div class="gdcmvs">
 <div class="dialog__footer">
   <div id="pagination-container" class="dialog__pagination"></div>
+</div>
 </div>
 `;
