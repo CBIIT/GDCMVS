@@ -33,6 +33,12 @@ a:hover, a:focus {
   color: inherit;
 }
 
+.navbar > .container .navbar-brand {
+  width: 365px;
+  padding-top: 1.3rem;
+  padding-bottom: 1.3rem;
+}
+
 /* Checkbox */
 .checkbox__label {
   margin-left: 20px;
