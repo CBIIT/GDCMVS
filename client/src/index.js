@@ -80,6 +80,8 @@ window.onload = () => {
     tabsEvents($root);
     vsEvents($root);
     dialogEvents($root, $body);
+
+    $.scrollUp();
   };
 
   init();
