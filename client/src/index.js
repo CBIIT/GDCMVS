@@ -36,41 +36,41 @@ window.onload = () => {
       $suggestBox.hide();
     });
 
-    $search.click(() => {
+    $search.on('click', () => {
       search.clickSearch($keywords, $root, $suggestBox, $gdcLoadingIcon);
     });
 
-    $keywords.keypress((event) => {
+    $keywords.on('keypress', (event) => {
       search.enterSearch(event, $keywords, $search);
     });
 
-    $keywords.keydown((event) => {
+    $keywords.on('keydown', (event) => {
       search.selectSuggestion(event, $suggestBox);
     });
 
-    $keywords.bind('input', (event) => {
+    $keywords.on('input', (event) => {
       search.suggest(event, $keywords, $searchClear, $suggestBox, $searchOptionsBox);
     });
 
-    $document.click((event) => {
+    $document.on('click', (event) => {
       search.removeBox(event, $suggestBox);
     });
 
-    $searchClear.click((event) => {
+    $searchClear.on('click', (event) => {
       search.clearSearch(event, $keywords, $searchOptionsBox);
     });
 
-    $searchBooleanOptions.click((event) => {
+    $searchBooleanOptions.on('click', (event) => {
       search.booleanOptions(event, $keywords);
     });
 
     setHeight($docsContainer, $parentContainer, $mainContainer);
 
-    $window.scroll(() => {
+    $window.on('scroll', () => {
       onScroll($window);
     });
 
-    $window.resize(() => {
+    $window.on('resize', () => {
       onResize($docsContainer, $parentContainer, $mainContainer);
       dialogsOnResize($window);
     });
@@ -80,6 +80,8 @@ window.onload = () => {
     tabsEvents($root);
     vsEvents($root);
     dialogEvents($root, $body);
+
+    $.scrollUp();
   };
 
   init();
