@@ -17,7 +17,7 @@ export const bodyTemplate = (item) => `
         <p><b>Definition:</b> ${item.definition}</p>
       ` : ``}
       <p><b>NCI Thesaurus Code:</b>
-        <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code=${item.code}" target="_blank">${item.code}</a>
+        <a href="https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/${item.code}" target="_blank">${item.code}</a>
       </p>
       ${item.s.length !== 0 ? `
         <p><b>Synonyms &amp; Abbreviations:</b></p>
@@ -28,7 +28,7 @@ export const bodyTemplate = (item) => `
         ${tableAProperties(item)}
       ` : ``}  
       <p>
-        <a href="https://ncit.nci.nih.gov/ncitbrowser/pages/concept_details.jsf?dictionary=NCI_Thesaurus&code=${item.code}" target="_blank">more details</a>
+        <a href="https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/${item.code}" target="_blank">more details</a>
       </p>
     </div>
   </div>
