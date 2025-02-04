@@ -8,8 +8,9 @@
     "run-some-test": "node tests/skipTest.js && node tests/runSomeTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "test": "node tests/convert.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
-    "build": "webpack --config webpack/webpack.prod.config.js --mode=production",
-    "watch": "webpack --watch --config webpack/webpack.dev.config.js --mode=development --devtool=eval-source-map",
+    "build-webpack": "webpack --config webpack/webpack.prod.config.js --mode=production",
+    "build": "rspack --config webpack/rspack.dev.config.js --mode=production",
+    "watch": "rspack --watch --config webpack/rspack.dev.config.js --mode=development --devtool=eval-source-map",
     "gdcdocs": "webpack --config webpack/webpack.docs.config.js --mode=production",
     "start": "node app.js"
   },
@@ -41,23 +42,14 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^3.6.0",
-    "eslint": "^7.4.0",
-    "eslint-loader": "^4.0.2",
-    "filemanager-webpack-plugin": "^2.0.5",
-    "mini-css-extract-plugin": "^0.9.0",
+    "@rspack/cli": "^1.2.2",
+    "@rspack/core": "^1.2.2",
+    "@rspack/dev-server": "^1.0.10",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.19.0",
     "mocha": "^8.0.1",
     "node-excel-export": "^1.4.4",
     "node-xlsx": "^0.15.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "selenium-webdriver": "^3.5.0",
-    "style-loader": "^1.2.1",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12"
+    "selenium-webdriver": "^3.5.0"
   }
 }
