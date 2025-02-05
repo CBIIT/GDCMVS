@@ -8,7 +8,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const yaml = require('yamljs');
-const xlsx = require('node-xlsx');
+// const xlsx = require('node-xlsx');
 const _ = require('lodash');
 const shared = require('./shared');
 const folderPath = path.join(__dirname, '..', '..', 'data');
@@ -997,166 +997,166 @@ const getNCItInfo = (req, res) => {
 };
 
 const parseExcel = (req, res) => {
-	var folderPathMapping = path.join(__dirname, '..', '..', 'excel_mapping');
-	let concept = shared.readConceptCode();
-	let all_gdc_values = shared.readGDCValues();
-	fs.readdirSync(folderPathMapping).forEach(file => {
-		if (file.indexOf('.xlsx') !== -1) {
-			var dataParsed = [];
-			var obj = xlsx.parse(folderPathMapping + '/' + file);
-			obj.forEach(sheet => {
-				var worksheet = sheet.data;
+	// var folderPathMapping = path.join(__dirname, '..', '..', 'excel_mapping');
+	// let concept = shared.readConceptCode();
+	// let all_gdc_values = shared.readGDCValues();
+	// fs.readdirSync(folderPathMapping).forEach(file => {
+	// 	if (file.indexOf('.xlsx') !== -1) {
+	// 		var dataParsed = [];
+	// 		var obj = xlsx.parse(folderPathMapping + '/' + file);
+	// 		obj.forEach(sheet => {
+	// 			var worksheet = sheet.data;
 
-				for (var n = 1; n < worksheet.length; n++) {
-					var row = worksheet[n];
-					let temp_data = {};
-					if (row.length > 0) {
-						if (row[0]) {
-							temp_data.category = row[0];
-						} else {
-							temp_data.category = "";
-						}
-						if (row[1]) {
-							temp_data.node = row[1];
-						} else {
-							temp_data.node = "";
-						}
-						if (row[2]) {
-							temp_data.property = row[2];
-						} else {
-							temp_data.property = "";
-						}
-						if (row[3]) {
-							temp_data.value = row[3];
-						} else {
-							temp_data.value = "";
-						}
-						if (row[5]) {
-							temp_data.ncit_code = row[5];
-						} else {
-							temp_data.ncit_code = "";
-						}
-						if (row[6]) {
-							temp_data.icdo3_code = row[6];
-							if (row[7]) {
-								temp_data.icdo3_term = row[7];
-							} else {
-								temp_data.icdo3_term = "";
-							}
-							if(row[8]){
-								temp_data.term_type = row[8];
-							} else {
-								temp_data.term_type = "";
-							}
-						}
-						dataParsed.push(temp_data);
-					}
-				}
-			});
+	// 			for (var n = 1; n < worksheet.length; n++) {
+	// 				var row = worksheet[n];
+	// 				let temp_data = {};
+	// 				if (row.length > 0) {
+	// 					if (row[0]) {
+	// 						temp_data.category = row[0];
+	// 					} else {
+	// 						temp_data.category = "";
+	// 					}
+	// 					if (row[1]) {
+	// 						temp_data.node = row[1];
+	// 					} else {
+	// 						temp_data.node = "";
+	// 					}
+	// 					if (row[2]) {
+	// 						temp_data.property = row[2];
+	// 					} else {
+	// 						temp_data.property = "";
+	// 					}
+	// 					if (row[3]) {
+	// 						temp_data.value = row[3];
+	// 					} else {
+	// 						temp_data.value = "";
+	// 					}
+	// 					if (row[5]) {
+	// 						temp_data.ncit_code = row[5];
+	// 					} else {
+	// 						temp_data.ncit_code = "";
+	// 					}
+	// 					if (row[6]) {
+	// 						temp_data.icdo3_code = row[6];
+	// 						if (row[7]) {
+	// 							temp_data.icdo3_term = row[7];
+	// 						} else {
+	// 							temp_data.icdo3_term = "";
+	// 						}
+	// 						if(row[8]){
+	// 							temp_data.term_type = row[8];
+	// 						} else {
+	// 							temp_data.term_type = "";
+	// 						}
+	// 					}
+	// 					dataParsed.push(temp_data);
+	// 				}
+	// 			}
+	// 		});
 
-			for (let dp in dataParsed) {
-				if (dataParsed[dp].icdo3_code) {
-					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let icdo = shared.readGDCValues();
-					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
-					if (icdo[category_node_property]) {
-						//If some of the mapping exists for this category.node.property
-						var temp_obj = {
-							nm: dataParsed[dp].icdo3_term,
-							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code,
-							term_type: dataParsed[dp].term_type
-						};
-						if (!mappingExists(icdo[category_node_property], temp_obj)) {
-							logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
-							icdo[category_node_property].push(temp_obj);
-						}
+	// 		for (let dp in dataParsed) {
+	// 			if (dataParsed[dp].icdo3_code) {
+	// 				//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
+	// 				let icdo = shared.readGDCValues();
+	// 				let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+	// 				if (icdo[category_node_property]) {
+	// 					//If some of the mapping exists for this category.node.property
+	// 					var temp_obj = {
+	// 						nm: dataParsed[dp].icdo3_term,
+	// 						i_c: dataParsed[dp].icdo3_code,
+	// 						n_c: dataParsed[dp].ncit_code,
+	// 						term_type: dataParsed[dp].term_type
+	// 					};
+	// 					if (!mappingExists(icdo[category_node_property], temp_obj)) {
+	// 						logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
+	// 						icdo[category_node_property].push(temp_obj);
+	// 					}
 
-					} else {
-						//If no mapping exists for this category.node.property	
-						icdo[category_node_property] = [];
-						var temp_obj = {
-							nm: dataParsed[dp].icdo3_term,
-							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code,
-							term_type: dataParsed[dp].term_type
-						};
-						icdo[category_node_property].push(temp_obj);
-					}
-					//write changes to file
-					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
-						if (err) return logger.error(err);
-					});
+	// 				} else {
+	// 					//If no mapping exists for this category.node.property	
+	// 					icdo[category_node_property] = [];
+	// 					var temp_obj = {
+	// 						nm: dataParsed[dp].icdo3_term,
+	// 						i_c: dataParsed[dp].icdo3_code,
+	// 						n_c: dataParsed[dp].ncit_code,
+	// 						term_type: dataParsed[dp].term_type
+	// 					};
+	// 					icdo[category_node_property].push(temp_obj);
+	// 				}
+	// 				//write changes to file
+	// 				fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
+	// 					if (err) return logger.error(err);
+	// 				});
 
-				} else {
-					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
-					let c_n_p = all_gdc_values[category_node_property];
-					delete all_gdc_values[category_node_property];
-					if (c_n_p) {
-						all_gdc_values[category_node_property] = [];
-						c_n_p.forEach(prop_values => {
-							if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
-								prop_values.n_c = dataParsed[dp].ncit_code;
-							}
-							all_gdc_values[category_node_property].push(prop_values);
-						});
+	// 			} else {
+	// 				let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+	// 				let c_n_p = all_gdc_values[category_node_property];
+	// 				delete all_gdc_values[category_node_property];
+	// 				if (c_n_p) {
+	// 					all_gdc_values[category_node_property] = [];
+	// 					c_n_p.forEach(prop_values => {
+	// 						if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
+	// 							prop_values.n_c = dataParsed[dp].ncit_code;
+	// 						}
+	// 						all_gdc_values[category_node_property].push(prop_values);
+	// 					});
 
-					}
+	// 				}
 
-					var cc = {};
-					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
-					if (concept[category_node_property]) {
-						//If category.node.property already exists in the conceptCode.js file, then delete it.
-						//delete concept[category_node_property]
-						var temp_cc = {};
-						for (let temp_dp in dataParsed) {
-							if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-								if (dataParsed[temp_dp].ncit_code) {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
-									}
-								} else {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: ""
-									}
-								}
-								Object.assign(concept[category_node_property], temp_cc[category_node_property]);
-							}
-						}
-					} else {
-						var helper_cc = {};
-						helper_cc[category_node_property] = {}
-						var temp_cc = {};
-						for (let temp_dp in dataParsed) {
-							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+	// 				var cc = {};
+	// 				//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
+	// 				if (concept[category_node_property]) {
+	// 					//If category.node.property already exists in the conceptCode.js file, then delete it.
+	// 					//delete concept[category_node_property]
+	// 					var temp_cc = {};
+	// 					for (let temp_dp in dataParsed) {
+	// 						if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+	// 							if (dataParsed[temp_dp].ncit_code) {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+	// 								}
+	// 							} else {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: ""
+	// 								}
+	// 							}
+	// 							Object.assign(concept[category_node_property], temp_cc[category_node_property]);
+	// 						}
+	// 					}
+	// 				} else {
+	// 					var helper_cc = {};
+	// 					helper_cc[category_node_property] = {}
+	// 					var temp_cc = {};
+	// 					for (let temp_dp in dataParsed) {
+	// 						if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
 
-								if (dataParsed[temp_dp].ncit_code) {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
-									}
-								} else {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: ""
-									}
-								}
-								Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
-							}
-						}
-						cc = helper_cc;
-					}
-					Object.assign(concept, cc);
-					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
-						if (err) return logger.error(err);
-						logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
-					});
-				}
-			}
+	// 							if (dataParsed[temp_dp].ncit_code) {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+	// 								}
+	// 							} else {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: ""
+	// 								}
+	// 							}
+	// 							Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
+	// 						}
+	// 					}
+	// 					cc = helper_cc;
+	// 				}
+	// 				Object.assign(concept, cc);
+	// 				fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
+	// 					if (err) return logger.error(err);
+	// 					logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
+	// 				});
+	// 			}
+	// 		}
 
-		}
-	});
-	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
-		if (err) return logger.error(err);
-	});
+	// 	}
+	// });
+	// fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
+	// 	if (err) return logger.error(err);
+	// });
 	// removeDeprecated();
 	res.json({
 		"status": "success",
