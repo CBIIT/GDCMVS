@@ -553,7 +553,7 @@ const bulkIndex = next => {
     suggestionBody.push({
       index: {
         _index: config.suggestionName,
-        _type: 'suggestions',
+        _type: '_doc',
         _id: doc.id
       }
     });
@@ -575,7 +575,7 @@ const bulkIndex = next => {
     ncitDetail.push({
       index: {
         _index: config.ncitDetails,
-        _type: 'props',
+        _type: '_doc',
         _id: doc.id
       }
     });
@@ -716,7 +716,7 @@ const bulkIndex = next => {
     propertyBody.push({
       index: {
         _index: config.index_p,
-        _type: 'props',
+        _type: '_doc',
         _id: doc.id
       }
     });

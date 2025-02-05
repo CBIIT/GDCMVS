@@ -456,122 +456,126 @@ const indexing = (req, res) => {
 	let config_property = {};
 	config_property.index = config.index_p;
 	config_property.body = {
-		"settings": {
-			"number_of_shards": 10, 
-			"max_inner_result_window": 10000000,
-			"max_result_window": 10000000,
-			"analysis": {
-				"analyzer": {
-					"case_insensitive": {
-						"tokenizer": "keyword",
-						"filter": ["lowercase", "whitespace_remove"]
+		settings: {
+			number_of_shards: 10, 
+			max_inner_result_window: 10000000,
+			max_result_window: 10000000,
+			analysis: {
+				analyzer: {
+					case_insensitive: {
+						tokenizer: "keyword",
+						filter: ["lowercase", "whitespace_remove"]
 					},
-					"my_standard": {
-						"tokenizer": "standard",
-						"char_filter": ["my_filter"],
-						"filter": ["lowercase","whitespace_remove"]
+					my_standard: {
+						tokenizer: "standard",
+						char_filter: ["my_filter"],
+						filter: ["lowercase","whitespace_remove"]
 					},
-					"my_ngram": {
-						"tokenizer": "ngram_tokenizer",
-						"char_filter": ["my_filter"],
-						"filter": ["lowercase","whitespace_remove"]
+					// "my_ngram": {
+					// 	"tokenizer": "ngram_tokenizer",
+					// 	"char_filter": ["my_filter"],
+					// 	"filter": ["lowercase","whitespace_remove"]
+					// }
+					my_whitespace: {
+						tokenizer: "whitespace",
+						//char_filter: ["my_filter"],
+						//filter: ["lowercase", "whitespace_remove"],
+						filter: ["lowercase"],
+					  },
+				},
+				char_filter: {
+					my_filter: {
+						type: "mapping",
+						mappings: ["_=>-"]
 					}
 				},
-				"char_filter": {
-					"my_filter": {
-						"type": "mapping",
-						"mappings": ["_=>-"]
+				filter: {
+					whitespace_remove: {
+						type: "pattern_replace",
+						pattern: "[_-]",
+						replacement: " "
 					}
 				},
-				"filter": {
-					"whitespace_remove": {
-						"type": "pattern_replace",
-						"pattern": "[_-]",
-						"replacement": " "
-					}
-				},
-				"tokenizer": {
-					"ngram_tokenizer": {
-						"type": "nGram",
-						"min_gram": "2",
-						"token_chars": ["letter", "digit", "symbol"]
-					}
-				}
+				// "tokenizer": {
+				// 	"ngram_tokenizer": {
+				// 		"type": "nGram",
+				// 		"min_gram": "2",
+				// 		"token_chars": ["letter", "digit", "symbol"]
+				// 	}
+				// }
 			}
 		},
-		"mappings": {
-			"props": {
-				"properties": {
-					"id": {
-						"type": "keyword"
+		mappings: {
+			properties: {
+				"id": {
+					"type": "keyword"
+				},
+				"category": {
+					"type": "keyword"
+				},
+				"node": {
+					"type": "keyword"
+				},
+				"property": {
+					"type": "text",
+					"fields": {
+						"have": {
+							"type": "text",
+							"analyzer": "my_whitespace"
+						}
 					},
-					"category": {
-						"type": "keyword"
-					},
-					"node": {
-						"type": "keyword"
-					},
-					"property": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text",
-								"analyzer": "my_standard"
-							}
+					"analyzer": "case_insensitive"
+				},
+				"enum":{
+					"type": "nested",
+					"properties": {
+						"n": {
+							"type": "text",
+							"fields": {
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
+								}
+							},
+							"analyzer": "case_insensitive"
 						},
-						"analyzer": "case_insensitive"
-					},
-					"enum":{
-						"type": "nested",
-						"properties": {
-							"n": {
-								"type": "text",
-								"fields": {
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
-								},
-								"analyzer": "case_insensitive"
+						"n_syn.s.termName": {
+							"type": "text",
+							"fields": {
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
+								}
 							},
-							"n_syn.s.termName": {
-								"type": "text",
-								"fields": {
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
-								},
-								"analyzer": "case_insensitive"
+							"analyzer": "case_insensitive"
+						},
+						"n_syn.n_c": {
+							"type": "text",
+							"fields": {
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
+								}
 							},
-							"n_syn.n_c": {
-								"type": "text",
-								"fields": {
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
+							"analyzer": "case_insensitive"
+						},
+						"i_c":{
+							"properties": {
+								"c": {
+									"type": "text",
+									"analyzer": "case_insensitive"
 								},
-								"analyzer": "case_insensitive"
-							},
-							"i_c":{
-								"properties": {
-									"c": {
-										"type": "text",
-										"analyzer": "case_insensitive"
-									},
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
 								}
 							}
 						}
-					},
-					"cde.id": {
-						"type": "text",
-						"analyzer": "case_insensitive"
 					}
+				},
+				"cde.id": {
+					"type": "text",
+					"analyzer": "case_insensitive"
 				}
 			}
 		}
@@ -581,16 +585,14 @@ const indexing = (req, res) => {
 	let config_suggestion = {};
 	config_suggestion.index = config.suggestionName;
 	config_suggestion.body = {
-		"mappings": {
-			"suggestions": {
-				"properties": {
-					"id": {
-						"type": "completion",
-						"max_input_length": 100,
-						"analyzer": "standard",
-						"search_analyzer": "standard",
-						"preserve_separators": false
-					}
+		mappings: {
+			properties: {
+				id: {
+					type: "completion",
+					max_input_length: 100,
+					analyzer: "standard",
+					search_analyzer: "standard",
+					preserve_separators: false
 				}
 			}
 		}
@@ -599,24 +601,22 @@ const indexing = (req, res) => {
 	let config_ncitDetails = {};
 	config_ncitDetails.index = config.ncitDetails;
 	config_ncitDetails.body = {
-		"mappings": {
-			"props": {
-				"properties": {
-					"id": {
-						"type": "keyword"
-					},
-					"preferred_name": {
-						"type": "text"
-					},
-					"code": {
-						"type": "text"
-					},
-					"synonyms": {
-						"type": "text"
-					},
-					"definitions": {
-						"type": "text"
-					}
+		mappings: {
+			properties: {
+				"id": {
+					"type": "keyword"
+				},
+				"preferred_name": {
+					"type": "text"
+				},
+				"code": {
+					"type": "text"
+				},
+				"synonyms": {
+					"type": "text"
+				},
+				"definitions": {
+					"type": "text"
 				}
 			}
 		}
