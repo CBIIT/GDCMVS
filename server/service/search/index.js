@@ -47,6 +47,4 @@ router.get('/all/data', controller.searchICDO3Data);
 router.get('/all/p', controller.searchP);
 router.get('/p/local/vs', controller.getGDCData);
 
-// router.get('/manageSheet', sheet.manageSheets);
-
 module.exports = router;
