@@ -8,9 +8,8 @@
     "run-some-test": "node tests/skipTest.js && node tests/runSomeTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "test": "node tests/convert.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
     "skip-test": "node tests/skipTest.js && mocha tests/output_js_tests/ --reporter xunit --reporter-options output=tests/output_js_tests/e2e_results.xml",
-    "build-webpack": "webpack --config webpack/webpack.prod.config.js --mode=production",
-    "build": "rspack --config webpack/rspack.dev.config.js --mode=production",
-    "watch": "rspack --watch --config webpack/rspack.dev.config.js --mode=development --devtool=eval-source-map",
+    "watch": "vite build --watch",
+    "build": "vite build",
     "gdcdocs": "webpack --config webpack/webpack.docs.config.js --mode=production",
     "start": "node app.js"
   },
@@ -42,14 +41,11 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@rspack/cli": "^1.2.2",
-    "@rspack/core": "^1.2.2",
-    "@rspack/dev-server": "^1.0.10",
-    "css-loader": "^7.1.2",
     "eslint": "^9.19.0",
     "mocha": "^8.0.1",
     "node-excel-export": "^1.4.4",
     "node-xlsx": "^0.15.0",
-    "selenium-webdriver": "^3.5.0"
+    "selenium-webdriver": "^3.5.0",
+    "vite": "^2.9.18"
   }
 }

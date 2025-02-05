@@ -1,3 +1,9 @@
+@import url(./dialog/dialog.css);
+@import url(./dict-table/dict-table.css);
+@import url(./search-bar/search-bar.css);
+@import url(./tabs/tabs.css);
+@import url(./values-table/values-table.css);
+
 body {
   min-width: 970px;
 }
@@ -476,9 +482,3 @@ a:hover, a:focus {
     transform: translate3d(-50%, -100%, 0);
   }
 }
-
-@import url(./dialog/dialog.css);
-@import url(./dict-table/dict-table.css);
-@import url(./search-bar/search-bar.css);
-@import url(./tabs/tabs.css);
-@import url(./values-table/values-table.css);
