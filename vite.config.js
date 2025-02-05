@@ -1,11 +1,7 @@
 import { defineConfig } from 'vite';
-// import swc from 'vite-plugin-swc';
 import path from 'path';
 
 export default defineConfig({
-//   plugins: [
-//     swc() // SWC for JS/TS transpilation
-//   ],
   build: {
     outDir: path.resolve(__dirname, './client/static/dist'), // Output directory
     rollupOptions: {
