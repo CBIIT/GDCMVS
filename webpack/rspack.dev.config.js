@@ -1,9 +1,12 @@
 const path = require('path');
-const { rspack } = require('@rspack/core');
+const { CssExtractRspackPlugin } = require('@rspack/core');
 
 module.exports = {
   entry: {
-    main: ['./client/src/index.js', './client/src/style.css']
+    main: [
+      './client/src/index.js',
+      './client/src/style.css'
+    ]
   },
   output: {
     filename: 'bundle.js',
@@ -23,10 +26,10 @@ module.exports = {
       // CSS
       {
         test: /\.css$/,
-        use: [rspack.CssExtractRspackPlugin.loader, 'css-loader'],
+        use: [CssExtractRspackPlugin.loader, 'css-loader'],
         type: 'javascript/auto'
       }
     ]
   },
-  plugins: [new rspack.CssExtractRspackPlugin({ filename: 'styles.css' })]
+  plugins: [new CssExtractRspackPlugin({ filename: 'styles.css' })]
 };
