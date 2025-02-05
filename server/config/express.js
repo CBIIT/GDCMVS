@@ -31,7 +31,7 @@ module.exports = app => {
   app.set('viewPath', 'client');
 
   if (env === 'development') {
-    app.use(morgan('development'));
+    app.use(morgan('dev'));
   } else if (env === 'prod' || env === 'test') {
     let logDirectory = config.logDir;
 
@@ -39,7 +39,7 @@ module.exports = app => {
     fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
     // create a rotating write stream
-    var accessLogStream = rfs.createStream('access.log', {
+    const accessLogStream = rfs.createStream('access.log', {
       interval: '1d', // rotate daily
       path: logDirectory
     });
