@@ -30,8 +30,8 @@ module.exports = app => {
   app.use(express.static(path.join(config.root, 'client/static')));
   app.set('viewPath', 'client');
 
-  if (env === 'dev') {
-    app.use(morgan('dev'));
+  if (env === 'development') {
+    app.use(morgan('development'));
   } else if (env === 'prod' || env === 'test') {
     let logDirectory = config.logDir;
 
