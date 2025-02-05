@@ -1,5 +1,3 @@
-'use strict';
-
 var express = require('express');
 var config = require('./server/config');
 var logger = require('./server/components/logger');
