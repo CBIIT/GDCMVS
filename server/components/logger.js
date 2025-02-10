@@ -15,7 +15,6 @@ const customFormat = printf(({ level, message, timestamp }) => {
 // Create the logger
 const logger = createLogger({
   // Set the default log level
-  level: 'warn',
   format: combine(
     timestamp(),
     colorize(), // Colorize the output
@@ -32,7 +31,7 @@ const logger = createLogger({
     ), // Log to the console
     new DailyRotateFile({
       level: 'warn',
-      filename: 'mvs-%DATE%.log', // Log file name pattern
+      filename: 'mvs-%DATE%-warning.log', // Log file name pattern
       dirname: config.logDir, // Directory where log files are stored
       datePattern: 'YYYY-MM-DD', // Date pattern for rotating logs
       maxFiles: '14d' // Keep logs for 14 days
