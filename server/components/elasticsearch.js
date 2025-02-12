@@ -6,7 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const elasticsearch = require('elasticsearch');
+const elasticsearch = require('@elastic/elasticsearch');
 const yaml = require('yamljs');
 const config = require('../config');
 const config_dev = require('../config/development');
@@ -23,8 +23,8 @@ var allTerm = {};
 var cdeData = '';
 var allProperties = [];
 
-var esClient = new elasticsearch.Client({
-  host: config_dev.elasticsearch.host,
+const esClient = new elasticsearch.Client({
+  node: config_dev.elasticsearch.host,
   log: config_dev.elasticsearch.log,
   requestTimeout: config_dev.elasticsearch.timeout
 });
@@ -69,6 +69,17 @@ const parseRefYaml = (ref, termsJson, defJson) => {
 };
 
 const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
+
+
+  // Add error handler
+  esClient.ping({
+    requestTimeout: 1000
+  }).then(() => {
+    console.log('Elasticsearch cluster is up');
+  }).catch(error => {
+    console.error('Elasticsearch cluster is down:', error);
+  });
+
   let doc = {};
   let propsRaw = fileJson.properties;
   // correct properties format
@@ -821,23 +832,36 @@ const suggest = (index, suggest, next) => {
 
 exports.suggest = suggest;
 
-const createIndexes = (params, next) => {
-  esClient.indices.create(params[0], (err_2, result_2) => {
-    if (err_2) {
-      logger.error(err_2);
-      next(err_2);
-    } else {
-      esClient.indices.create(params[1], (err_3, result_3) => {
-        if (err_3) {
-          logger.error(err_3);
-          next(err_3);
-        } else {
-          logger.debug("have built property and suggestion indexes.");
-          next(result_3);
-        }
-      });
+const createIndexes = async (params) => {
+
+  // Loop through the array of index names and create each index
+  for (const index of params) {
+
+    // Extract the index name from the index object
+    const indexName = index.index;
+
+    try {
+
+      // Check if the index already exists
+      const indexExists = await esClient.indices.exists({ index: indexName });
+      if (indexExists) {
+        logger.warn(`[WARNING] Index "${indexName}" already exists. Skipping index creation.`);
+        return; // Index already exists, no need to create again
+      }
+
+      const createIndexResponse = await esClient.indices.create(index);
+
+      if (createIndexResponse.acknowledged) {
+        console.log(`[INFO] Index "${indexName}" created successfully!`);
+      } else {
+        console.warn(`[WARNING] Index "${indexName}" creation was acknowledged as false, but no error was thrown. Check Elasticsearch logs.`);
+      }
+
+    } catch (indexCreationError) {
+      logger.error(`[ERROR] Failed to create index "${indexName}". Index creation process will continue for other indices.`, indexCreationError);
+      // Continue to the next index even if one fails.
     }
-  });
+  }
 }
 
 exports.createIndexes = createIndexes;
