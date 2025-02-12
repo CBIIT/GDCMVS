@@ -450,7 +450,7 @@ const generateHighlight = () => {
 	return highlight;
 }
 
-const indexing = (req, res) => {
+const indexing = async (req, res) => {
 	let configs = [];
 	//config property index
 	let config_property = {};
@@ -622,17 +622,23 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_ncitDetails);
-	elastic.createIndexes(configs, result => {
-		if (result.acknowledged === undefined) {
-			return handleError.error(res, result);
-		}
-		elastic.bulkIndex(data => {
-			if (data.property_indexed === undefined) {
-				return handleError.error(res, data);
-			}
-			return res.status(200).json(data);
-		});
-	});
+
+
+	await elastic.createIndexes(configs);
+	await elastic.bulkIndex();
+
+
+	// elastic.createIndexes(configs, result => {
+	// 	if (result.acknowledged === undefined) {
+	// 		return handleError.error(res, result);
+	// 	}
+	// 	elastic.bulkIndex(data => {
+	// 		if (data.property_indexed === undefined) {
+	// 			return handleError.error(res, data);
+	// 		}
+	// 		return res.status(200).json(data);
+	// 	});
+	// });
 };
 
 const getDataFromCDE = (req, res) => {
