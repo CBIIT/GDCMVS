@@ -34,7 +34,7 @@ function vitePluginCompressTemplateComponents() {
 
         // Replace template components with compressed content
         transformedCode = transformedCode.replace(
-          /<template-[a-z-]+>([^]+)<\/template-[a-z-]+>/g,
+          /`([\s]*<template-[\w-]+>[\s\S]*?<\/template-[\w-]+>[\s]*)`/g,
           (match, content) => {
             // Compress the content by removing unnecessary whitespace
             const compressedContent = content
