@@ -1,4 +1,5 @@
 import { tableSynonyms, tableIcdo3 } from '../../components/table';
+import { highlightMatch } from '../../shared';
 
 export const headerTemplate = `
   <template-to-compare-header>
@@ -132,7 +133,7 @@ export const listTemplate = (items, keywordCase) => {
 
 export const showCompareResult = (items, option, keywordCase) => {
   return `
-    <templates-to-compare-result>
+    <template-to-compare-result>
       ${items.length > 0 ? `
         <div id="cp_result_table" class="table__container table__container--margin-bottom">
           <div class="table__body row">
@@ -153,7 +154,15 @@ export const showCompareResult = (items, option, keywordCase) => {
                     <div class="table__td table__gdc-match table__td--slim col-xs-6">
                       <div class="row">
                         <div class="col-xs-10">
-                          ${item.n !== '' && option.partial === true ? item.n.replace(regKey, "<b>$&</b>") : `${item.n !== '' && item.n.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : ``) ? `<b>${item.n}</b>` : `${item.n === '' ? `<span style="color:red;">--</span>` : `${item.n}`}`}`}
+                         ${
+                            item.n !== '' 
+                              ? option.partial === true 
+                                ? highlightMatch(item.n, regKey) 
+                                : item.match !== undefined && item.n.trim().toLowerCase() === item.match.trim().toLowerCase() 
+                                  ? `<b>${item.n}</b>` 
+                                  : item.n 
+                              : '<span style="color:red;">--</span>'
+                          }
                         </div>
                         <div class="col-xs-2 table__right">
                           ${item.n_syn.length !== 0 ? `
@@ -180,7 +189,7 @@ export const showCompareResult = (items, option, keywordCase) => {
 
                                     ${match.s.map((syn) => `
                                       <tr>
-                                        <td class="table__td--term">${syn.termName.replace(regKey, '<b>$&</b>')}</td>
+                                        <td class="table__td--term">${highlightMatch(syn.termName, regKey)}</td>
                                         <td class="table__td--source">${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
                                         <td class="table__td--type">${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
                                       </tr>
@@ -245,7 +254,7 @@ export const showCompareResult = (items, option, keywordCase) => {
                                         ` : `
                                           ${option.synonyms === true && option.partial === true ? `
                                             <tr>
-                                              <td class="table__td--term">${s.termName.replace(regKey, '<b>$&</b>')}</td>
+                                              <td class="table__td--term">${highlightMatch(s.termName, regKey)}</td>
                                               <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
                                               <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
                                             </tr>
@@ -292,6 +301,6 @@ export const showCompareResult = (items, option, keywordCase) => {
           </div>
         </div>
       `}
-    </templates-to-compare-result>
+    </template-to-compare-result>
   `;
 };
