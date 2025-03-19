@@ -32,14 +32,14 @@ export const setHeight = ($docsContainer, $parentContainer, $mainContainer) => {
   $mainContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
 };
 
-export const errorNotification = (status, errorThrown) => {
+export const errorNotification = (errorMessage) => {
   if (notificationOn === true) return;
   notificationOn = true;
   // close progress bar
   $('#gdc-loading-icon').fadeOut('fast');
   // show the notification alert error
   const $alertError = $('#alert-error');
-  $alertError.text('Error ' + status + ': ' + errorThrown);
+  $alertError.text(errorMessage);
   $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
   setTimeout(() => {
     $alertError.removeClass('alert__show');
