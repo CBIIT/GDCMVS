@@ -547,7 +547,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
 };
 
 const downloadCompareCVS = (items) => {
-  let csv = 'User Defined Values, Matched GDC Values, ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,\n';
+  let csv = 'User Defined Values, Matched GDC Values, ICDO3 code, NCIt code, ICDO3 Strings/Synonyms,' + '\n';
   items.forEach((item, i) => {
     let newLine = true;
     let match = item.match;
