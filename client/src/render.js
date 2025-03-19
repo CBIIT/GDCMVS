@@ -22,21 +22,24 @@ const render = ($root, keyword, options, items) => {
       dtHtml.len = 0;
     }
     if (dtHtml.len === 0 && psHtml.len === 0 && vsHtml.len === 0) {
-      html = `<div class="indicator">
-        <div class="indicator__content">
-          <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
-          <div class="indicator__card">
-            <div class="indicator__suggestion">
-              <p class="indicator__suggestion-p">Suggestion:</p>
-              <ul>
-                <li>Make sure all words are spelled correctly.</li>
-                <li>Try different keywords.</li>
-                <li>Try more general keywords.</li>
-              </ul>
+      html = `
+        <template-indicator>
+            <div class="indicator">
+            <div class="indicator__content">
+              <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
+              <div class="indicator__card">
+                <div class="indicator__suggestion">
+                  <p class="indicator__suggestion-p">Suggestion:</p>
+                  <ul>
+                    <li>Make sure all words are spelled correctly.</li>
+                    <li>Try different keywords.</li>
+                    <li>Try more general keywords.</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>`;
+        </template-indicator>`;
     } else {
       if (options.activeTab === 0) {
         vsHtml.active = true;
@@ -48,34 +51,38 @@ const render = ($root, keyword, options, items) => {
       html = tabsRender(dtHtml, psHtml, vsHtml, keyword);
     }
   } else if (options.error === true) {
-    html = `<div class="indicator">
-      <div class="indicator__content indicator--has-error">
-        <p>Please, enter a valid keyword!</p>
+    html = `<template-indicator>
+      <div class="indicator">
+        <div class="indicator__content indicator--has-error">
+          <p>Please, enter a valid keyword!</p>
+        </div>
       </div>
-    </div>`;
+    </template-indicator>`;
   } else {
     apiSuggestMisSpelled(keyword, (results) => {
-      html = `<div class="indicator">
-        <div class="indicator__content">
-          <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
-          <div class="indicator__card">
-          ${results.length !== 0 ? `<p class="indicator__mean">
-            <span class="indicator__mean-span">Did you mean:</span><br>
-            ${results.map((result, index) => `
-              ${index !== 0 ? `,` : ''}
-              <a href="#" class="indicator__suggest-term">${result.id}</a>
-            `.trim()).join('')}<p>` : ''}
-            <div class="indicator__suggestion">
-              <p class="indicator__suggestion-p">Suggestion:</p>
-              <ul>
-                <li>Make sure all words are spelled correctly.</li>
-                <li>Try different keywords.</li>
-                <li>Try more general keywords.</li>
-              </ul>
+      html = `<template-indicator>
+        <div class="indicator">
+          <div class="indicator__content">
+            <p>Sorry, no results found for keyword: <span class="indicator__term">${keyword}</span></p>
+            <div class="indicator__card">
+            ${results.length !== 0 ? `<p class="indicator__mean">
+              <span class="indicator__mean-span">Did you mean:</span><br>
+              ${results.map((result, index) => `
+                ${index !== 0 ? `,` : ''}
+                <a href="#" class="indicator__suggest-term">${result.id}</a>
+              `.trim()).join('')}<p>` : ''}
+              <div class="indicator__suggestion">
+                <p class="indicator__suggestion-p">Suggestion:</p>
+                <ul>
+                  <li>Make sure all words are spelled correctly.</li>
+                  <li>Try different keywords.</li>
+                  <li>Try more general keywords.</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>`;
+      </template-indicator>`;
 
       $root.html(html);
 

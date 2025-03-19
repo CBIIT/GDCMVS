@@ -47,7 +47,7 @@ export default (items, keyword) => {
   let html = '';
   if (props.length === 0) {
     let searchedKeyword = $('#keywords').val();
-    html = '<div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' + searchedKeyword + '</span></div></div>';
+    html = '<template-indicator><div class="indicator"><div class="indicator__content">Sorry, no results found for keyword: <span class="indicator__term">' + searchedKeyword + '</span></div></div></template-indicator>';
   } else {
     let offset = $('#root').offset().top;
     let h = window.innerHeight - offset - 310;
