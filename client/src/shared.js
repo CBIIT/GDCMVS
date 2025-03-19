@@ -211,3 +211,16 @@ export const getHighlightObj = (highlight) => {
   }
   return highlightObj;
 };
+
+export const highlightMatch = (text, regKey) => {
+  const parts = text.split(regKey);
+  const matches = text.match(regKey) || [];
+  let result = "";
+  for (let i = 0; i < parts.length; i++) {
+    result += parts[i];
+    if (i < matches.length) {
+      result += `<b>${matches[i]}</b>`;
+    }
+  }
+  return result;
+}
