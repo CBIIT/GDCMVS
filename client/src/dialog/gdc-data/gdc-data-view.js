@@ -30,73 +30,71 @@ export const headerTemplate = (target, icdo, itemsLength) => `
 `;
 
 export const bodyTemplate = (target, icdo, items) => `
-  <template-gdc-data-body>
-    <div id="gdc_data">
-      ${icdo !== false ? `
-        <div class="table__container">
-          <div id="gdc-data-list" class="table__body row gdc-data-list" tabindex="0">
-            <div class="col-xs-12">
-              ${target !== null && target !== undefined ? `
-                ${items.map((item) => `
-                  ${item.n === target ? `
-                    <div class="table__row row gdc-data__item--show" id="gdc_data_match">
-                      <div class="table__td table__td--slim col-xs-4">${item.n}</div>
-                      <div class="table__td table__td--slim col-xs-3">${item.i_c ? `${item.i_c.c}` : ``}</div>
-                      <div class="table__td table__td--slim col-xs-5">
-                        ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
-                      </div>
-                    </div>
-                  ` : `
-                    <div class="table__row row gdc-data__item--hide">
-                      <div class="table__td table__td--slim col-xs-4">${item.n}</div>
-                      <div class="table__td table__td--slim col-xs-3">${item.i_c ? `${item.i_c.c}` : ``}</div>
-                      <div class="table__td table__td--slim col-xs-5">
-                        ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
-                      </div>
-                    </div>
-                  `}
-                `.trim()).join('')}
-              ` : `
-                ${items.map((item) => `
-                  <div class="table__row row">
+  <template-gdc-data-body id="gdc_data">
+    ${icdo !== false ? `
+      <div class="table__container">
+        <div id="gdc-data-list" class="table__body row gdc-data-list" tabindex="0">
+          <div class="col-xs-12">
+            ${target !== null && target !== undefined ? `
+              ${items.map((item) => `
+                ${item.n === target ? `
+                  <div class="table__row row gdc-data__item--show" id="gdc_data_match">
                     <div class="table__td table__td--slim col-xs-4">${item.n}</div>
                     <div class="table__td table__td--slim col-xs-3">${item.i_c ? `${item.i_c.c}` : ``}</div>
                     <div class="table__td table__td--slim col-xs-5">
                       ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
                     </div>
                   </div>
-                `.trim()).join('')}
-              `}
-            </div>
+                ` : `
+                  <div class="table__row row gdc-data__item--hide">
+                    <div class="table__td table__td--slim col-xs-4">${item.n}</div>
+                    <div class="table__td table__td--slim col-xs-3">${item.i_c ? `${item.i_c.c}` : ``}</div>
+                    <div class="table__td table__td--slim col-xs-5">
+                      ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
+                    </div>
+                  </div>
+                `}
+              `.trim()).join('')}
+            ` : `
+              ${items.map((item) => `
+                <div class="table__row row">
+                  <div class="table__td table__td--slim col-xs-4">${item.n}</div>
+                  <div class="table__td table__td--slim col-xs-3">${item.i_c ? `${item.i_c.c}` : ``}</div>
+                  <div class="table__td table__td--slim col-xs-5">
+                    ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
+                  </div>
+                </div>
+              `.trim()).join('')}
+            `}
           </div>
         </div>
-      ` : `
-        <div class=" table__container table__container--blank">
-          <div id="gdc-data-list" class="table__body row gdc-data-list" tabindex="0">
-            <div class="col-xs-12">
-              ${target !== null && target !== undefined ? `
-                ${items.map((item) => `
-                  ${item.n === target ? `
-                    <div class="row gdc-data__item--show" id="gdc_data_match">
-                      <div class="table__td table__td--xslim col-xs-12">${item.n}</div>
-                    </div>
-                  ` : `
-                    <div class="row gdc-data__item--hide">
-                      <div class="table__td table__td--xslim col-xs-12">${item.n}</div>
-                    </div>
-                  `}
-                `.trim()).join('')}
-              ` : `
-                ${items.map((item) => `
-                  <div class="row">
+      </div>
+    ` : `
+      <div class=" table__container table__container--blank">
+        <div id="gdc-data-list" class="table__body row gdc-data-list" tabindex="0">
+          <div class="col-xs-12">
+            ${target !== null && target !== undefined ? `
+              ${items.map((item) => `
+                ${item.n === target ? `
+                  <div class="row gdc-data__item--show" id="gdc_data_match">
                     <div class="table__td table__td--xslim col-xs-12">${item.n}</div>
                   </div>
-                `.trim()).join('')}
-              `}
-            </div>
+                ` : `
+                  <div class="row gdc-data__item--hide">
+                    <div class="table__td table__td--xslim col-xs-12">${item.n}</div>
+                  </div>
+                `}
+              `.trim()).join('')}
+            ` : `
+              ${items.map((item) => `
+                <div class="row">
+                  <div class="table__td table__td--xslim col-xs-12">${item.n}</div>
+                </div>
+              `.trim()).join('')}
+            `}
           </div>
         </div>
-      `}
-    </div>
+      </div>
+    `}
   </template-gdc-data-body>
 `;
