@@ -269,7 +269,7 @@ const compare = (gv) => {
         if (isAnimated) $('#gdc-loading-icon').show();
 
         setTimeout(() => {
-          const items = showCompareResult(vs, gv, options);
+          const items = compareGDCvalues(vs, gv, options);
           $('#compare-matched').data('compareResult', items);
           $('#compare-matched').data('options', options);
 

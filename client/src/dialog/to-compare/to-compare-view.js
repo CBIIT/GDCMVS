@@ -44,25 +44,22 @@ export const headerTemplate = `
 `;
 
 export const bodyTemplate = `
-  <template-to-compare-body>
-    <div id="compare_dialog" class="compare_dialog">
-      <div id="compare_form" class="compare-form">
-        <div id="cp_top" class="compare-form__top">
-          <div id="cp_left" class="compare-form__left">
-          <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
-          <div id="cp_middle" class="compare-form__middle"></div>
-          <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values"></div>
-
-          <div class="compare-form__menu">
-            <div id="cp_massage" class="compare-form__message"></div>
-            <div class= "compare-form__pagination">
-              <div id="pagination-compare" class="dialog__pagination"></div>
-            </div>
+  <template-to-compare-body id="compare_dialog" class="compare_dialog">
+    <div id="compare_form" class="compare-form">
+      <div id="cp_top" class="compare-form__top">
+        <div id="cp_left" class="compare-form__left">
+        <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
+        <div id="cp_middle" class="compare-form__middle"></div>
+        <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values"></div>
+        <div class="compare-form__menu">
+          <div id="cp_massage" class="compare-form__message"></div>
+          <div class= "compare-form__pagination">
+            <div id="pagination-compare" class="dialog__pagination"></div>
           </div>
         </div>
       </div>
-      <div id="compare_result" class="compare_result" style="display: none;"></div>
     </div>
+    <div id="compare_result" class="compare_result" style="display: none;"></div>
   </template-to-compare-body>
 `;
 
