@@ -6,6 +6,7 @@
 }
 .ui-dialog .ui-dialog-content {
   padding: 0;
+  display: block;
 }
 .ui-widget.ui-widget-content {
   font-size: 1.3rem;
