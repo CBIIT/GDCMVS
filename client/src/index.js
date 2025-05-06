@@ -1,5 +1,5 @@
 import * as search from './search-bar/search-bar';
-import { onResize, onScroll, setHeight, dialogsOnResize } from './shared';
+import { onResize, onScroll, dialogsOnResize } from './shared';
 import { dtEvents } from './dict-table/dict-table';
 import { vsEvents } from './values-table/values-table';
 import { tabsEvents } from './tabs/tabs';
@@ -64,7 +64,7 @@ window.onload = () => {
       search.booleanOptions(event, $keywords);
     });
 
-    setHeight($docsContainer, $parentContainer, $mainContainer);
+    // setHeight($docsContainer, $parentContainer, $mainContainer);
 
     $window.on('scroll', () => {
       onScroll($window);
