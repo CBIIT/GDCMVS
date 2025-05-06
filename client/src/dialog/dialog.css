@@ -309,10 +309,10 @@
   margin: 0;
 }
 
-.gdc-data__item--show,
+/* .gdc-data__item--show,
 .gdc-term__item--show {
   display: block;
-}
+} */
 
 .gdc-data__item--hide,
 .gdc-term__item--hide {

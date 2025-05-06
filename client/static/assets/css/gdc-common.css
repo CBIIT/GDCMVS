@@ -28,7 +28,7 @@ html, body {
 }
 
 body {
-  /* padding-top: 64px; */
+  padding-top: 64px;
   position: relative;
   font-size: 1.4rem;
 }
@@ -235,12 +235,12 @@ code {
 }
 
 .navbar-default {
-  background: transparent;
+  /* background: transparent; */
   margin-bottom: 1rem;
   padding: 6px 0 0 0;
   margin: 0 auto 0 auto;
   width: 100%;
-  height: 64px;
+  /* height: 64px; */
   z-index: 49;
 }
 

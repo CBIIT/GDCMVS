@@ -8,7 +8,6 @@ body {
 }
 
 .main-container {
-  padding-bottom: 127px;
   font-size: 1.3rem;
 }
 
@@ -20,7 +19,7 @@ body {
 
 footer {
   margin: 0;
-  position: absolute;
+  /* position: absolute; */
   bottom: 0;
 }
 
@@ -109,12 +108,12 @@ a:hover, a:focus {
 
 .table__container {
   font-size: 1.3rem;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .table__container--margin-bottom {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
 .table__body--overflow {
