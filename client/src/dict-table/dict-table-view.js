@@ -2,13 +2,13 @@ const template = (dictionary, options) => {
   return `
     <div class="container table__container">
       <div class="table__thead row">
-        <div class="col-xs-4">
+        <div class="col-4">
           <div class="table__th">Name</div>
         </div>
-        <div class="col-xs-4">
+        <div class="col-4">
           <div class="table__th">Description</div>
         </div>
-        <div class="col-xs-4">
+        <div class="col-4">
           <div class="table__th table__th--right">
             <div class="checkbox checkbox-th">
               <label class="checkbox__label">
@@ -25,12 +25,12 @@ const template = (dictionary, options) => {
         </div>
       </div>
       <div class="table__body table__body--overflow row" style="max-height: ${options.height}px;">
-        <div class="col-xs-12">
+        <div class="col-12">
           <ul id="treeview" class="treeview">
             ${dictionary.map((category) => `
               <li class="treeview__${category.type} treeview__parent">
                 <div class="treeview__row row">
-                  <div class="treeview__col col-xs-4">
+                  <div class="treeview__col col-4">
                     <span class="treeview__indenter">
                       <a href="#" class="treeview__toggle" aria-label="expand">
                         <i class="fa fa-angle-down"></i>
@@ -40,13 +40,13 @@ const template = (dictionary, options) => {
                       ${category.category} ${category.length !== undefined ? `(${category.length})` : ``}
                     </a>
                   </div>
-                  <div class="treeview__col col-xs-8"></div>
+                  <div class="treeview__col col-8"></div>
                 </div>
                 <ul class="treeview__ul">
                   ${category.nodes.map((node) => `
                     <li class="treeview__${node.type} treeview__parent">
                       <div class="treeview__row row">
-                        <div class="treeview__col col-xs-4">
+                        <div class="treeview__col col-4">
                           <span class="treeview__indenter">
                             <a href="#" class="treeview__toggle" aria-label="expand">
                               <i class="fa fa-angle-down"></i>
@@ -56,13 +56,13 @@ const template = (dictionary, options) => {
                             ${node.node} ${node.length !== undefined ? `(${node.length})` : ``}
                           </a>
                         </div>
-                        <div class="treeview__col col-xs-8">${node.node_desc}</div>
+                        <div class="treeview__col col-8">${node.node_desc}</div>
                       </div>
                       <ul class="treeview__ul">
                       ${node.properties.map((property) => `
                         <li class="treeview__${property.type} treeview__parent">
                           <div class="treeview__row row">
-                            <div class="treeview__col col-xs-4">
+                            <div class="treeview__col col-4">
                               <span class="treeview__indenter">
                                 ${property.hl_values.length !== 0 || property.all_values.length !== 0 ? `
                                   <a href="#" class="treeview__toggle" aria-label="expand">
@@ -74,15 +74,15 @@ const template = (dictionary, options) => {
                                 ${property.property} ${property.length !== undefined ? `(${property.length})` : ``}
                               </a>
                             </div>
-                            <div class="treeview__col col-xs-8">${property.property_desc}</div>
+                            <div class="treeview__col col-8">${property.property_desc}</div>
                           </div>
                           <ul class="treeview__ul treeview__ul--hl">
                           ${property.hl_values.length !== 0 ? `
                             ${property.hl_values.map((value) => `
                               <li class="treeview__value">
                                 <div class="treeview__row row">
-                                  <div class="treeview__col col-xs-4">${value}</div>
-                                  <div class="treeview__col col-xs-8"></div>
+                                  <div class="treeview__col col-4">${value}</div>
+                                  <div class="treeview__col col-8"></div>
                                 </div>
                               </li>
                             `.trim()).join('')}
@@ -93,8 +93,8 @@ const template = (dictionary, options) => {
                             ${property.all_values.map((value) => `
                               <li class="treeview__value">
                                 <div class="treeview__row row">
-                                  <div class="treeview__col col-xs-4">${value}</div>
-                                  <div class="treeview__col col-xs-8"></div>
+                                  <div class="treeview__col col-4">${value}</div>
+                                  <div class="treeview__col col-8"></div>
                                 </div>
                               </li>
                             `.trim()).join('')}

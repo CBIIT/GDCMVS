@@ -58,7 +58,6 @@
   margin:0 5px 0 -15px;
   color: #acacac;
   transform: rotate(45deg);
-  position: absolute;
 }
 
 .table__row--toggle {
