@@ -21,7 +21,7 @@ export const headerTemplate = `
         </label>
       </div>
       <div class="input-group dialog__input-group">
-        <span id="compare-input-icon" class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+        <span id="compare-input-icon" class="input-group-text"><i class="fa fa-search"></i></span>
         <input id="compare-input" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
         <input id="compare-matched" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search" style="display: none;">
       </div>

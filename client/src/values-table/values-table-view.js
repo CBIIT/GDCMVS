@@ -10,7 +10,7 @@ const template = (values, options) => {
       <div class="col-9">
         <div class="table__thead row">
           <div class="table__th col-12">Matched GDC Values
-            <a class="table__tooltip tooltip-target" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
+            <a class="table__tooltip tooltip-target" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-placement="bottom" data-trigger="hover"
               title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property.">
               <i class="fa fa-info-circle"></i>
             </a>
@@ -64,8 +64,8 @@ const template = (values, options) => {
                           <ul class="nav nav-tabs nav-tabs-gdc" role="tablist">
 
                           ${value.ic_enum !== undefined && value.n_syn !== undefined ? `
-                            <li role="presentation" class="active">
-                              <a href="#tab-${value.i_c.id}" aria-controls="${value.i_c.c}" role="tab" data-toggle="tab">
+                            <li role="presentation">
+                              <a href="#tab-${value.i_c.id}" class="active" aria-controls="${value.i_c.c}" role="tab" data-bs-toggle="tab">
                                 ${`${value.i_c.c} (ICD-O-3)`.substring(0, 34)}
                               </a>
                             </li>
@@ -74,8 +74,8 @@ const template = (values, options) => {
                           ${(value.n_syn !== undefined && value.n_syn.length !== 0 && value.ic_enum !== undefined) || (value.n_syn !== undefined && value.n_syn.length > 1 && value.ic_enum === undefined) ? `
 
                             ${value.n_syn.map((syn, i) => `
-                              <li role="presentation" class="${value.ic_enum === undefined && i === 0 ? `active` : ``}">
-                                <a href="#tab-${syn.id}" aria-controls="${syn.n_c}" role="tab" data-toggle="tab">
+                              <li role="presentation">
+                                <a href="#tab-${syn.id}" class="${value.ic_enum === undefined && i === 0 ? `active` : ``}" aria-controls="${syn.n_c}" role="tab" data-bs-toggle="tab">
                                   ${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.substring(0, 34)}${`${syn.n_c} (NCIt) ${syn.pt !== undefined ? `${syn.pt}` : ``}`.length >= 34 ? `...` : ``}
                                 </a>
                               </li>
@@ -90,7 +90,7 @@ const template = (values, options) => {
                     <div class="tab-content">
 
                       ${value.ic_enum !== undefined ? `
-                        <div role="tabpanel" class="tab-pane tab-pane-gdc active" id="tab-${value.i_c.id}">
+                        <div role="tabpanel" class="tab-pane tab-pane-gdc active show" id="tab-${value.i_c.id}">
                           <div class="row table__td">
                             <div class="col-12">${value.i_c.c} (ICD-O-3)</div>
                           </div>
@@ -105,7 +105,7 @@ const template = (values, options) => {
                       ${value.n_syn !== undefined && value.n_syn.length !== 0 ? `
 
                         ${value.n_syn.map((syn, i) => `
-                          <div role="tabpanel" class="tab-pane tab-pane-gdc${value.ic_enum === undefined && i === 0 ? ` active` : ``}" id="tab-${syn.id}">
+                          <div role="tabpanel" class="tab-pane tab-pane-gdc${value.ic_enum === undefined && i === 0 ? ` active show` : ``}" id="tab-${syn.id}">
                             <div class="row table__td">
                               <div class="col-12">
                                 <b>NCI Thesaurus Code:</b> <a class="getNCITDetails" href="#" data-uid="${syn.n_c}">${syn.n_c}</a>
@@ -127,7 +127,7 @@ const template = (values, options) => {
                               ${syn.s.length >= 25 ? `
                               <div class="col-8 table__right">
                                 <div class="input-group dialog__input-group">
-                                  <span class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+                                  <span class="input-group-text"><i class="fa fa-search"></i></span>
                                   <input id="drug-${syn.id}" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
                                 </div>
                               </div>
