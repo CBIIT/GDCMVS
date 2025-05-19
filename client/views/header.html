@@ -9,10 +9,9 @@
 
   <title>GDC Metadata Validation Services</title>
 
-  <link href="./assets/css/bootstrap-custom.css" rel="stylesheet">
+  <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
   <link href="./assets/css/font-awesome-4.5.css" rel="stylesheet">
   <link href="./assets/css/base.css" rel="stylesheet">
-  <link href="./assets/css/gdc-common.css" rel="stylesheet">
 
   <!-- GDCMVS CSS-->
   <link rel="stylesheet" type="text/css" href="./lib/css/jquery-ui.min.css" />
@@ -35,59 +34,45 @@
       </div>
     </section>
 
-    <div class="navbar navbar-default" role="navigation" aria-label="Site Navigation">
-
-      <div class="container">
-        <!-- Collapsed navigation -->
-        <div>
-          <!-- Main title -->
-          <a class="navbar-brand" href="/gdc/" title="NIH National Cancer Institute GDC Metadata Validation Services">
-            <img src="./assets/img/nih-header-logo-color.png" alt="NIH National Cancer Institute GDC Metadata Validation Services">
-            <span class="hidden">NIH National Cancer Institute GDC Metadata Validation Services</span>
-          </a>
-          <!-- Expander button -->
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-
-        <!-- Expanded navigation -->
-        <div class="navbar-collapse collapse">
-          <!-- Main navigation -->
-          <ul class="nav navbar-nav nav-full">
-            <li class="active">
-              <a class="active" href="/gdc/" title="API">Home</a>
+    <nav class="navbar navbar-default navbar-expand-lg bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/gdc/" title="NIH National Cancer Institute GDC Metadata Validation Services">
+          <img src="./assets/img/nih-header-logo-color.png" alt="NIH National Cancer Institute GDC Metadata Validation Services">
+          <span class="d-none">NIH National Cancer Institute GDC Metadata Validation Services</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="/gdc/" title="API">Home</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/" title="API" target="_blank">API</a>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/" title="API" target="_blank">API</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/getting_started/" title="Data Portal" target="_blank">Data Portal</a>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/getting_started/" title="Data Portal" target="_blank">Data Portal</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Checklist/" title="Data Submission Portal" target="_blank">Data Submission Portal</a>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Checklist/" title="Data Submission Portal" target="_blank">Data Submission Portal</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/" title="Data Transfer Tool" target="_blank">Data Transfer Tool</a>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/" title="Data Transfer Tool" target="_blank">Data Transfer Tool</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/Data_Dictionary/" title="Data Dictionary" target="_blank">Data Dictionary</a>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/Data_Dictionary/" title="Data Dictionary" target="_blank">Data Dictionary</a>
+            </li class="nav-item">
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/Data/Introduction/" title="Data" target="_blank">Data</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/Data/Introduction/" title="Data" target="_blank">Data</a>
+            <li class="nav-item">
+              <a class="nav-link" href="https://docs.gdc.cancer.gov/Encyclopedia/" title="Encyclopedia" target="_blank">Encyclopedia</a>
             </li>
-            <li>
-              <a href="https://docs.gdc.cancer.gov/Encyclopedia/" title="Encyclopedia" target="_blank">Encyclopedia</a>
-            </li>
-
-            <li class="menu-bar"></li>
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
 
     <div id="docs-container" class="container">
       <div data-current-page="GDCMVS" id="body">
