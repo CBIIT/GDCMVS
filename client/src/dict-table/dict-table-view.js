@@ -19,7 +19,7 @@ const template = (dictionary, options) => {
                 </span> Show all values
               </label>
             </div>
-            <button type="button" id="trs_toggle" class="btn btn-th" data-toggle="button" aria-pressed="false" autocomplete="off">
+            <button type="button" id="trs_toggle" class="btn btn-th" data-bs-toggle="button" aria-pressed="false" autocomplete="off">
               <i class="btn-th__icon fa fa-angle-down"></i> Expand All
             </button>
           </div>

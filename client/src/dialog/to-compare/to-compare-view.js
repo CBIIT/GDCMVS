@@ -23,7 +23,7 @@ export const headerTemplate = `
         </label>
       </div>
       <div class="input-group dialog__input-group">
-        <span id="compare-input-icon" class="input-group-addon dialog__input-addon"><i class="fa fa-search"></i></span>
+        <span id="compare-input-icon" class="input-group-text"><i class="fa fa-search"></i></span>
         <input id="compare-input" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
         <input id="compare-matched" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search" style="display: none;">
       </div>
@@ -131,107 +131,50 @@ export const listTemplate = (items, keywordCase) => {
 export const showCompareResult = (items, option, keywordCase) => {
   return `
     <template-to-compare-result>
-    ${items.length > 0 ? `
-      <div id="cp_result_table" class="table__container table__container--margin-bottom">
-        <div class="table__body row">
-          <div class="col-12">
+      ${items.length > 0 ? `
+        <div id="cp_result_table" class="table__container table__container--margin-bottom">
+          <div class="table__body row">
+            <div class="col-12">
 
-          ${items.map((item, i) => {
-            let regKey = new RegExp(item.match, 'ig');
-            return `
-              ${item.match !== undefined && i !== 0 && items[i - 1].match !== items[i].match ? `<div class="table__hr"></div>` : ``}
-              ${item.match === undefined && i !== 0 ? `<div class="table__hr"></div>` : ``}
-              <div class="row">
-                <div class="table__td table__td--slim col-6">
-                  ${item.match !== undefined && i !== 0 && items[i - 1].match !== items[i].match ? item.match : ``}
-                  ${item.match !== undefined && i === 0 ? item.match : ``}
-                  ${item.match === undefined ? `<span style="color:red;">--</span>` : ``}
-                </div>
-                ${item.n_syn !== undefined ? `
-                  <div class="table__td table__gdc-match table__td--slim col-6">
-                    <div class="row">
-                      <div class="col-10">
-                        ${
-                          item.n !== '' 
-                            ? option.partial === true 
-                              ? highlightMatch(item.n, regKey) 
-                              : item.match !== undefined && item.n.trim().toLowerCase() === item.match.trim().toLowerCase() 
-                                ? `<b>${item.n}</b>` 
-                                : item.n 
-                            : '<span style="color:red;">--</span>'
-                        }
-                      </div>
-                      <div class="col-2 table__right">
-                        ${item.n_syn.length !== 0 ? `
-                          <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
-                        ` : ``}
-                      </div>
-                    </div>
-
-                    ${item.matched_s !== undefined && item.matched_s.length !== 0 ? `
-                      <div class="compare-form__matched">
-                        ${item.matched_s.map((match) => `
-                          <div class="row table__td">
-                            <div class="col-3">${match.n_c} (NCIt)</div>
-                            <div class="col-9">
-                              ${match.s !== undefined ? `
-                                <table class="table table-striped">
-                                  <thead>
-                                    <tr>
-                                      <th class="table__th--term">Term</th>
-                                      <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
-                                      <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
-                                    </tr>
-                                  </thead>
-
-                                  ${match.s.map((syn) => `
-                                    <tr>
-                                      <td class="table__td--term">${highlightMatch(syn.termName, regKey)}</td>
-                                      <td class="table__td--source">${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
-                                      <td class="table__td--type">${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
-                                    </tr>
-                                  `.trim()).join('')}
-                                </table>
-                              ` : ``}
-                            </div>
-                          </div>
-                        `.trim()).join('')}
-                      </div>
-                    ` : ``}
-
-                    <div class="compare-form__synm" style="display: none;">
-
-                      ${item.i_c !== undefined ? `
-                        <div class="row table__td">
-                          <div class="col-3">${item.i_c.c} (ICD-O-3)</div>
-                          <div class="col-9">
-                            <table class="table table-striped">
-                              <thead>
-                                <tr>
-                                  <th class="table__th--term">Term</th>
-                                  <th class="table__th--source">Source</th>
-                                  <th class="table__th--type">Type</th>
-                                </tr>
-                              </thead>
-                              ${item.ic_enum.map((icEnum) => `
-                                <tr>
-                                  <td class="table__td--term">${icEnum.n}</td>
-                                  <td class="table__td--source">ICD-O-3</td>
-                                  <td class="table__td--type">${icEnum.term_type}</td>
-                                </tr>
-                              `.trim()).join('')}
-                            </table>
-                          </div>
+            ${items.map((item, i) => {
+              let regKey = new RegExp(item.match, 'ig');
+              return `
+                ${item.match !== undefined && i !== 0 && items[i - 1].match !== items[i].match ? `<div class="table__hr"></div>` : ``}
+                ${item.match === undefined && i !== 0 ? `<div class="table__hr"></div>` : ``}
+                <div class="row">
+                  <div class="table__td table__td--slim col-6">
+                    ${item.match !== undefined && i !== 0 && items[i - 1].match !== items[i].match ? item.match : ``}
+                    ${item.match !== undefined && i === 0 ? item.match : ``}
+                    ${item.match === undefined ? `<span style="color:red;">--</span>` : ``}
+                  </div>
+                  ${item.n_syn !== undefined ? `
+                    <div class="table__td table__gdc-match table__td--slim col-6">
+                      <div class="row">
+                        <div class="col-10">
+                         ${
+                            item.n !== '' 
+                              ? option.partial === true 
+                                ? highlightMatch(item.n, regKey) 
+                                : item.match !== undefined && item.n.trim().toLowerCase() === item.match.trim().toLowerCase() 
+                                  ? `<b>${item.n}</b>` 
+                                  : item.n 
+                              : '<span style="color:red;">--</span>'
+                          }
                         </div>
-                      ` : ``}
+                        <div class="col-2 table__right">
+                          ${item.n_syn.length !== 0 ? `
+                            <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
+                          ` : ``}
+                        </div>
+                      </div>
 
-                      ${item.n_syn.length !== 0 ? `
-                        ${item.n_syn.map((syn) => `
-                          ${syn.s !== undefined && syn.s.length !== 0 ? `
+                      ${item.matched_s !== undefined && item.matched_s.length !== 0 ? `
+                        <div class="compare-form__matched">
+                          ${item.matched_s.map((match) => `
                             <div class="row table__td">
-                              <div class="col-3">${syn.n_c} (NCIt)</div>
+                              <div class="col-3">${match.n_c} (NCIt)</div>
                               <div class="col-9">
-                                ${syn.s !== undefined ? `
+                                ${match.s !== undefined ? `
                                   <table class="table table-striped">
                                     <thead>
                                       <tr>
@@ -241,63 +184,120 @@ export const showCompareResult = (items, option, keywordCase) => {
                                       </tr>
                                     </thead>
 
-                                    ${syn.s.map((s) => `
-                                      ${option.synonyms === false && option.partial === false ? `
-                                        <tr>
-                                          <td class="table__td--term">${s.termName}</td>
-                                          <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                          <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                                        </tr>
-                                      ` : `
-                                        ${option.synonyms === true && option.partial === true ? `
-                                          <tr>
-                                            <td class="table__td--term">${highlightMatch(s.termName, regKey)}</td>
-                                            <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                            <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                                          </tr>
-                                        ` : `
-                                          ${option.synonyms === true && s.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
-                                            <tr>
-                                              <td class="table__td--term"><b>${s.termName}<b></td>
-                                              <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                              <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                                            </tr>
-                                          ` : `
-                                            <tr>
-                                              <td class="table__td--term">${s.termName}</td>
-                                              <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
-                                              <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
-                                            </tr>
-                                          `}
-                                        `}
-                                      `}
+                                    ${match.s.map((syn) => `
+                                      <tr>
+                                        <td class="table__td--term">${highlightMatch(syn.termName, regKey)}</td>
+                                        <td class="table__td--source">${syn.termSource !== undefined && syn.termSource !== null ? syn.termSource : ``}</td>
+                                        <td class="table__td--type">${syn.termGroup !== undefined && syn.termGroup !== null ? syn.termGroup : ``}</td>
+                                      </tr>
                                     `.trim()).join('')}
                                   </table>
                                 ` : ``}
                               </div>
                             </div>
-                          ` : ``}
-                        `.trim()).join('')}
+                          `.trim()).join('')}
+                        </div>
                       ` : ``}
+
+                      <div class="compare-form__synm" style="display: none;">
+
+                        ${item.i_c !== undefined ? `
+                          <div class="row table__td">
+                            <div class="col-3">${item.i_c.c} (ICD-O-3)</div>
+                            <div class="col-9">
+                              <table class="table table-striped">
+                                <thead>
+                                  <tr>
+                                    <th class="table__th--term">Term</th>
+                                    <th class="table__th--source">Source</th>
+                                    <th class="table__th--type">Type</th>
+                                  </tr>
+                                </thead>
+                                ${item.ic_enum.map((icEnum) => `
+                                  <tr>
+                                    <td class="table__td--term">${icEnum.n}</td>
+                                    <td class="table__td--source">ICD-O-3</td>
+                                    <td class="table__td--type">${icEnum.term_type}</td>
+                                  </tr>
+                                `.trim()).join('')}
+                              </table>
+                            </div>
+                          </div>
+                        ` : ``}
+
+                        ${item.n_syn.length !== 0 ? `
+                          ${item.n_syn.map((syn) => `
+                            ${syn.s !== undefined && syn.s.length !== 0 ? `
+                              <div class="row table__td">
+                                <div class="col-3">${syn.n_c} (NCIt)</div>
+                                <div class="col-9">
+                                  ${syn.s !== undefined ? `
+                                    <table class="table table-striped">
+                                      <thead>
+                                        <tr>
+                                          <th class="table__th--term">Term</th>
+                                          <th class="table__th--source"><a class="getSourceDetails" href="#">Source</a></th>
+                                          <th class="table__th--type"><a class="getTypeDetails" href="#">Type</a></th>
+                                        </tr>
+                                      </thead>
+
+                                      ${syn.s.map((s) => `
+                                        ${option.synonyms === false && option.partial === false ? `
+                                          <tr>
+                                            <td class="table__td--term">${s.termName}</td>
+                                            <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                                            <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                          </tr>
+                                        ` : `
+                                          ${option.synonyms === true && option.partial === true ? `
+                                            <tr>
+                                              <td class="table__td--term">${highlightMatch(s.termName, regKey)}</td>
+                                              <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                                              <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                            </tr>
+                                          ` : `
+                                            ${option.synonyms === true && s.termName.trim().toLowerCase() === (item.match !== undefined ? item.match.trim().toLowerCase() : false) ? `
+                                              <tr>
+                                                <td class="table__td--term"><b>${s.termName}<b></td>
+                                                <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                                                <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                              </tr>
+                                            ` : `
+                                              <tr>
+                                                <td class="table__td--term">${s.termName}</td>
+                                                <td class="table__td--source">${s.termSource !== undefined && s.termSource !== null ? s.termSource : ``}</td>
+                                                <td class="table__td--type">${s.termGroup !== undefined && s.termGroup !== null ? s.termGroup : ``}</td>
+                                              </tr>
+                                            `}
+                                          `}
+                                        `}
+                                      `.trim()).join('')}
+                                    </table>
+                                  ` : ``}
+                                </div>
+                              </div>
+                            ` : ``}
+                          `.trim()).join('')}
+                        ` : ``}
+                      </div>
                     </div>
-                  </div>
-                ` : `
-                  <div class="table__td table__td--slim col-6">${item.n}</div>
-                `}
-              </div>
-              ${items.length - 1 === i ? `<div class="table__hr"></div>` : ``}
-            `.trim();
-          }).join('')}
+                  ` : `
+                    <div class="table__td table__td--slim col-6">${item.n}</div>
+                  `}
+                </div>
+                ${items.length - 1 === i ? `<div class="table__hr"></div>` : ``}
+              `.trim();
+            }).join('')}
+            </div>
           </div>
         </div>
-      </div>
-    ` : `
-      <div  class="dialog__indicator">
-        <div class="dialog__indicator-content">
-          Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
+      ` : `
+        <div  class="dialog__indicator">
+          <div class="dialog__indicator-content">
+            Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
+          </div>
         </div>
-      </div>
-    `}
+      `}
     </template-to-compare-result>
   `;
 };

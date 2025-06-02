@@ -26,7 +26,7 @@
 }
 
 .tab-nav__btn {
-  padding: .15em 1em;
+  padding: .30em 1em;
   min-width: 12.2em;
   box-shadow: none !important;
   border: 1px solid #2079BB;
@@ -51,7 +51,7 @@
   color: #fff !important;
 }
 
-.tab-nav__li.active .tab-nav__btn{
+.tab-nav__li .tab-nav__btn.active{
   background-color: #2079BB;
   color: #fff !important;
 }
