@@ -2,12 +2,12 @@ import { tableSynonyms, tableAdditionalProperties } from '../../components/table
 
 export const headerTemplate = `
   <template-ncit-details-header>
-  <div class="dialog__header">
-    <div class="dialog__titlebar">
-      <span id="ui-id-4" class="ui-dialog-title">NCIt Terms & Properties</span>
-      <button type="button" id="close_ncit_details" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
+    <div class="dialog__header">
+      <div class="dialog__titlebar">
+        <span id="ui-id-4" class="ui-dialog-title">NCIt Terms & Properties</span>
+        <button type="button" id="close_ncit_details" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
+      </div>
     </div>
-  </div>
   </template-ncit-details-header>
 `;
 

@@ -3,127 +3,127 @@ import { highlightMatch } from '../../shared';
 
 export const headerTemplate = `
   <template-to-compare-header>
-  <div class="dialog__header">
-    <div class="dialog__titlebar">
-      <span id="ui-id-4" class="ui-dialog-title">Compare Your Values with GDC Values</span>
-      <button type="button" id="close_to_compare" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
+    <div class="dialog__header">
+      <div class="dialog__titlebar">
+        <span id="ui-id-4" class="ui-dialog-title">Compare Your Values with GDC Values</span>
+        <button type="button" id="close_to_compare" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
 
-      <div class="checkbox ui-checkbox">
-        <label class="checkbox__label checkbox__label--height">
-          <input id="compare_filter" class="checkbox__input" type="checkbox" value="" checked>
-          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Partial match
-        </label>
-        <label class="checkbox__label checkbox__label--height">
-          <input id="compare_synonyms" class="checkbox__input" type="checkbox" value="" checked>
-          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms
-        </label>
-        <label class="checkbox__label checkbox__label--height">
-          <input id="compare_unmatched" class="checkbox__input" type="checkbox" value="">
-          <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Unmatched Values
-        </label>
+        <div class="checkbox ui-checkbox">
+          <label class="checkbox__label checkbox__label--height">
+            <input id="compare_filter" class="checkbox__input" type="checkbox" value="" checked>
+            <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Partial match
+          </label>
+          <label class="checkbox__label checkbox__label--height">
+            <input id="compare_synonyms" class="checkbox__input" type="checkbox" value="" checked>
+            <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Synonyms
+          </label>
+          <label class="checkbox__label checkbox__label--height">
+            <input id="compare_unmatched" class="checkbox__input" type="checkbox" value="">
+            <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show Unmatched Values
+          </label>
+        </div>
+        <div class="input-group dialog__input-group">
+          <span id="compare-input-icon" class="input-group-text"><i class="fa fa-search"></i></span>
+          <input id="compare-input" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
+          <input id="compare-matched" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search" style="display: none;">
+        </div>
+        <div id="compare_download" class="titlebar__container-btn" style="display: none;">
+          <button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download">
+            <i class="fa fa-download" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
-      <div class="input-group dialog__input-group">
-        <span id="compare-input-icon" class="input-group-text"><i class="fa fa-search"></i></span>
-        <input id="compare-input" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search">
-        <input id="compare-matched" type="text" class="form-control dialog__input" placeholder="Type at least 3 characters" aria-describedby="Search" style="display: none;">
-      </div>
-      <div id="compare_download" class="titlebar__container-btn" style="display: none;">
-        <button id="downloadCompareCVS" class="btn btn-primary compare-form__button compare-form__button--download" aria-label="Download" title="Download">
-          <i class="fa fa-download" aria-hidden="true"></i>
-        </button>
+      <div id="compare_thead" class="table__container">
+        <div class="table__thead row">
+          <div class="table__th col-6">User Defined Values</div>
+          <div class="table__th col-6">Matched GDC Values</div>
+        </div>
       </div>
     </div>
-    <div id="compare_thead" class="table__container">
-      <div class="table__thead row">
-        <div class="table__th col-6">User Defined Values</div>
-        <div class="table__th col-6">Matched GDC Values</div>
-      </div>
-    </div>
-  </div>
   </template-to-compare-header>
 `;
 
 export const bodyTemplate = `
   <template-to-compare-body id="compare_dialog" class="compare_dialog">
-  <div id="compare_form" class="compare-form">
-    <div id="cp_top" class="compare-form__top">
-      <div id="cp_left" class="compare-form__left">
-      <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
-      <div id="cp_middle" class="compare-form__middle"></div>
-      <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values"></div>
-      <div class="compare-form__menu">
-        <div id="cp_massage" class="compare-form__message"></div>
-        <div class= "compare-form__pagination">
-          <div id="pagination-compare" class="dialog__pagination"></div>
+    <div id="compare_form" class="compare-form">
+      <div id="cp_top" class="compare-form__top">
+        <div id="cp_left" class="compare-form__left">
+        <textarea id="cp_input" class="compare-form__textarea" rows="10" cols="20" placeholder="Input values line by line" autocomplete="off"></textarea></div>
+        <div id="cp_middle" class="compare-form__middle"></div>
+        <div id="cp_right" class="compare-form__right" tabindex="0" aria-label="gdc values"></div>
+        <div class="compare-form__menu">
+          <div id="cp_massage" class="compare-form__message"></div>
+          <div class= "compare-form__pagination">
+            <div id="pagination-compare" class="dialog__pagination"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div id="compare_result" class="compare_result" style="display: none;"></div>
+    <div id="compare_result" class="compare_result" style="display: none;"></div>
   </template-to-compare-body>
 `;
 
 export const footerTemplate = `
   <template-to-compare-footer>
-  <div id="cp_bottom" class="compare-form__bottom">
-    <button id="compare" class="btn btn-default compare-form__button">Compare</button>
-    <button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>
-    <div id="cp_bottom-matched" style="display: none;">
-      <div class="compare-form__button-content">
-        <button id="back2Compare" class="btn btn-default compare-form__button">Back</button>
-      </div>
-      <div class="compare-form__content-pagination">
-        <div id="pagination-matched" class="dialog__pagination"></div>
+    <div id="cp_bottom" class="compare-form__bottom">
+      <button id="compare" class="btn btn-default compare-form__button">Compare</button>
+      <button id="cancelCompare" class="btn btn-default compare-form__button compare-form__button--cancel">Cancel</button>
+      <div id="cp_bottom-matched" style="display: none;">
+        <div class="compare-form__button-content">
+          <button id="back2Compare" class="btn btn-default compare-form__button">Back</button>
+        </div>
+        <div class="compare-form__content-pagination">
+          <div id="pagination-matched" class="dialog__pagination"></div>
+        </div>
       </div>
     </div>
-  </div>
   </template-to-compare-footer>
 `;
 
 export const listTemplate = (items, keywordCase) => {
   return `
     <template-to-compare-list>
-    ${items.length > 0 ? `
-      ${items.map((item) => `
-        <div class="compare-form__values">
-          <div>
-            <div class="compare-form__value">${item.n}</div>
-            ${item.i_c !== undefined || item.n_syn !== undefined ? `
-              <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
-                <i class="fa fa-plus"></i>
-              </a>
-            ` : ``}
-          </div>
-          <div class="compare-form__synm" style="display: none;">
-          ${item.i_c !== undefined ? `
-            <div class="compare-form__i_c">
-              <div class="compare-form__ic_c">${item.i_c.c} (ICD-O-3)</div>
-              <div class="compare-form__ic_enum">
-                ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
-              </div>
-            </div>
-          ` : ``}
-          ${item.n_syn !== undefined ? `
-            ${item.n_syn.map((nSyn) => `
-              ${nSyn.s !== undefined && nSyn.s.length !== 0 ? `
-                <div class="compare-form__n_syn">
-                  <div class="compare-form__n_c">${nSyn.n_c} (NCIt)</div>
-                  <div class="compare-form__s">
-                    ${tableSynonyms(nSyn)}
-                  </div>
-                </div>
+      ${items.length > 0 ? `
+        ${items.map((item) => `
+          <div class="compare-form__values">
+            <div>
+              <div class="compare-form__value">${item.n}</div>
+              ${item.i_c !== undefined || item.n_syn !== undefined ? `
+                <a class="compare-form__toggle" href="#" aria-label="expand" title="expand" aria-expanded="false">
+                  <i class="fa fa-plus"></i>
+                </a>
               ` : ``}
-            `.trim()).join('')}
-          ` : ``}
+            </div>
+            <div class="compare-form__synm" style="display: none;">
+            ${item.i_c !== undefined ? `
+              <div class="compare-form__i_c">
+                <div class="compare-form__ic_c">${item.i_c.c} (ICD-O-3)</div>
+                <div class="compare-form__ic_enum">
+                  ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
+                </div>
+              </div>
+            ` : ``}
+            ${item.n_syn !== undefined ? `
+              ${item.n_syn.map((nSyn) => `
+                ${nSyn.s !== undefined && nSyn.s.length !== 0 ? `
+                  <div class="compare-form__n_syn">
+                    <div class="compare-form__n_c">${nSyn.n_c} (NCIt)</div>
+                    <div class="compare-form__s">
+                      ${tableSynonyms(nSyn)}
+                    </div>
+                  </div>
+                ` : ``}
+              `.trim()).join('')}
+            ` : ``}
+            </div>
+          </div>
+        `.trim()).join('')}` : `
+        <div  class="dialog__indicator">
+          <div class="dialog__indicator-content">
+            Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
           </div>
         </div>
-      `.trim()).join('')}` : `
-      <div  class="dialog__indicator">
-        <div class="dialog__indicator-content">
-          Sorry, no results found for keyword: <span class="dialog__indicator-term">${keywordCase}</span>
-        </div>
-      </div>
-    `}
+      `}
     </template-to-compare-list>
   `;
 };
