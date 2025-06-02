@@ -2,30 +2,30 @@ import { tableIcdo3 } from '../../components/table';
 
 export const headerTemplate = (target, icdo, itemsLength) => `
   <template-gdc-data-header>
-  <div class="dialog__header">
-    <div class="dialog__titlebar">
-      <span id="ui-id-4" class="ui-dialog-title">GDC Values</span>
-      <button type="button" id="close_gdc_data" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
-      <span class="ui-label">${itemsLength}</span>
-      ${target !== null && target !== undefined ? `
-        <div class="checkbox ui-checkbox">
-          <label class="checkbox__label checkbox__label--height">
-            <input id="show_all_gdc_data" class="checkbox__input" type="checkbox" value="">
-            <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values
-          </label>
+    <div class="dialog__header">
+      <div class="dialog__titlebar">
+        <span id="ui-id-4" class="ui-dialog-title">GDC Values</span>
+        <button type="button" id="close_gdc_data" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"></button>
+        <span class="ui-label">${itemsLength}</span>
+        ${target !== null && target !== undefined ? `
+          <div class="checkbox ui-checkbox">
+            <label class="checkbox__label checkbox__label--height">
+              <input id="show_all_gdc_data" class="checkbox__input" type="checkbox" value="">
+              <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span> Show all GDC values
+            </label>
+          </div>
+        ` : ``}
+      </div>
+      ${icdo !== false ? `
+        <div class="table__container">
+          <div class="table__thead row">
+            <div class="table__th col-4">GDC Term</div>
+            <div class="table__th col-3">ICD-O-3 Code</div>
+            <div class="table__th col-5">ICD-O-3 Term</div>
+          </div>
         </div>
       ` : ``}
     </div>
-    ${icdo !== false ? `
-      <div class="table__container">
-        <div class="table__thead row">
-          <div class="table__th col-4">GDC Term</div>
-          <div class="table__th col-3">ICD-O-3 Code</div>
-          <div class="table__th col-5">ICD-O-3 Term</div>
-        </div>
-      </div>
-    ` : ``}
-  </div>
   </template-gdc-data-header>
 `;
 
