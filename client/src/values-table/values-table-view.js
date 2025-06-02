@@ -11,7 +11,7 @@ const template = (values, options) => {
           <div class="col-9">
             <div class="table__thead row">
               <div class="table__th col-12">Matched GDC Values
-                <a class="table__tooltip tooltip-target" data-bs-toggle="tooltip" data-placement="bottom" data-trigger="hover"
+                <a class="table__tooltip tooltip-target" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-placement="bottom" data-trigger="hover"
                   title="Values that are found in the GDC dictionary and may be successfully submitted for the corresponding property.">
                   <i class="fa fa-info-circle"></i>
                 </a>
