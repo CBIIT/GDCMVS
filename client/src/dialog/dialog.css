@@ -5,8 +5,7 @@
   padding-top: 8em;
 }
 .ui-dialog .ui-dialog-content {
-  padding: 0;
-  display: block;
+  padding: .5rem;
 }
 .ui-widget.ui-widget-content {
   font-size: 1.3rem;
@@ -40,24 +39,9 @@
 }
 
 .dialog__input-group {
-  width: 280px;
+  width: 250px;
   display: inline-flex;
-  margin-left: 30px;
-}
-
-.dialog__input {
-  height: 2.1em;
-  border: 1px solid #dce4ec;
-  font-size: 14px;
-  padding: 5px 10px;
-}
-
-.dialog__input-addon {
-  width: 3em;
-  height: 2.1em;
-  padding: 7px 12px;
-  font-size: 14px;
-  display: inline-table;
+  margin-left: 20px;
 }
 
 .dialog__indicator {
@@ -310,10 +294,10 @@
   margin: 0;
 }
 
-.gdc-data__item--show,
+/* .gdc-data__item--show,
 .gdc-term__item--show {
   display: block;
-}
+} */
 
 .gdc-data__item--hide,
 .gdc-term__item--hide {

@@ -38,7 +38,7 @@ export const tabsEvents = ($root) => {
   });
 
   $root.tooltip({
-    selector: '[data-toggle="tooltip"]',
+    selector: '[data-bs-toggle="tooltip"]',
     delay: { 'show': 100, 'hide': 50 },
     placement: 'bottom',
     trigger: 'hover'
