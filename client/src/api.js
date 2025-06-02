@@ -1,5 +1,5 @@
 import { errorNotification } from './shared';
-const baseUrl = 'https://gdc-mvs.nci.nih.gov/gdc/search';
+const baseUrl = './search';
 
 export const apiSuggest = (value, callback) => {
   $.getJSON(`${baseUrl}/suggest?keyword=${value}`, (data) => {
