@@ -23,21 +23,21 @@ export const headerTemplate = (targetsLength, icdo, itemsLength) => `
     <div class="table__container">
       <div class="table__thead row">
         ${icdo === true ? `
-          <div class="table__th col-xs-2">GDC Value</div>
-          <div class="table__th col-xs-2">ICD-O-3 Code</div>
-          <div class="table__th col-xs-3">ICD-O-3 Term</div>
-          <div class="col-xs-5">
+          <div class="table__th col-2">GDC Value</div>
+          <div class="table__th col-2">ICD-O-3 Code</div>
+          <div class="table__th col-3">ICD-O-3 Term</div>
+          <div class="col-5">
             <div class="row">
-              <div class="table__th col-xs-4">NCIt Code</div>
-              <div class="table__th col-xs-8">NCIt Terms</div>
+              <div class="table__th col-4">NCIt Code</div>
+              <div class="table__th col-8">NCIt Terms</div>
             </div>
           </div>
         ` : `
-          <div class="table__th col-xs-5">GDC Value</div>
-          <div class="col-xs-7">
+          <div class="table__th col-5">GDC Value</div>
+          <div class="col-7">
             <div class="row">
-              <div class="table__th col-xs-4">NCIt Code</div>
-              <div class="table__th col-xs-8">NCIt Terms</div>
+              <div class="table__th col-4">NCIt Code</div>
+              <div class="table__th col-8">NCIt Terms</div>
             </div>
           </div>
         `}
@@ -52,24 +52,24 @@ export const listTemplate = (items, icdo, keywordCase) => `
     ${items.length !== 0 ? `
       <div id="gdc-syn-data-list" class="table__container">
         <div class="table__body row">
-          <div id="gdc-syn-container" class="col-xs-12">
+          <div id="gdc-syn-container" class="col-12">
             ${items.map((item, i) => `
             <div id="gdc_term_item" class="table__row row gdc-term__item--show">
               ${icdo ? `
-                <div class="table__td col-xs-2">${item.n}</div>
-                <div class="table__td col-xs-2">${item.i_c ? `${item.i_c.c}` : ``}</div>
-                <div class="table__td col-xs-3">
+                <div class="table__td col-2">${item.n}</div>
+                <div class="table__td col-2">${item.i_c ? `${item.i_c.c}` : ``}</div>
+                <div class="table__td col-3">
                   ${item.ic_enum !== undefined ? ` ${tableIcdo3(item)}` : ``}
                 </div>
-                <div class="col-xs-5">
+                <div class="col-5">
 
                 ${item.n_syn !== undefined ? `
                   ${item.n_syn.map((nSyn) => `
                   <div class="row">
-                    <div class="table__td col-xs-4">
+                    <div class="table__td col-4">
                       ${nSyn.n_c !== undefined && nSyn.n_c !== '' ? `<a class="getNCITDetails" href="#" data-uid="${nSyn.n_c}">${nSyn.n_c}</a>` : ``}
                     </div>
-                    <div name="syn_area" class="table__td col-xs-8">
+                    <div name="syn_area" class="table__td col-8">
                       ${tableSynonyms(nSyn)}
                     </div>
                   </div>
@@ -78,16 +78,16 @@ export const listTemplate = (items, icdo, keywordCase) => `
 
                 </div>
               ` : `
-                <div class="table__td col-xs-5">${item.n}</div>
-                <div class="col-xs-7">
+                <div class="table__td col-5">${item.n}</div>
+                <div class="col-7">
 
                   ${item.n_syn !== undefined ? `
                     ${item.n_syn.map((nSyn) => `
                       <div class="row">
-                        <div class="table__td col-xs-4">
+                        <div class="table__td col-4">
                           ${nSyn.n_c !== undefined && nSyn.n_c !== '' ? `<a class="getNCITDetails" href="#" data-uid="${nSyn.n_c}">${nSyn.n_c}</a>` : ``}
                         </div>
-                        <div name="syn_area" class="table__td col-xs-8">
+                        <div name="syn_area" class="table__td col-8">
                         ${tableSynonyms(nSyn)}
                         </div>
                       </div>
