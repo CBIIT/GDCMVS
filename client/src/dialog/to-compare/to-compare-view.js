@@ -35,8 +35,8 @@ export const headerTemplate = `
       </div>
       <div id="compare_thead" class="table__container">
         <div class="table__thead row">
-          <div class="table__th col-xs-6">User Defined Values</div>
-          <div class="table__th col-xs-6">Matched GDC Values</div>
+          <div class="table__th col-6">User Defined Values</div>
+          <div class="table__th col-6">Matched GDC Values</div>
         </div>
       </div>
     </div>
@@ -134,7 +134,7 @@ export const showCompareResult = (items, option, keywordCase) => {
       ${items.length > 0 ? `
         <div id="cp_result_table" class="table__container table__container--margin-bottom">
           <div class="table__body row">
-            <div class="col-xs-12">
+            <div class="col-12">
 
             ${items.map((item, i) => {
               let regKey = new RegExp(item.match, 'ig');
@@ -142,15 +142,15 @@ export const showCompareResult = (items, option, keywordCase) => {
                 ${item.match !== undefined && i !== 0 && items[i - 1].match !== items[i].match ? `<div class="table__hr"></div>` : ``}
                 ${item.match === undefined && i !== 0 ? `<div class="table__hr"></div>` : ``}
                 <div class="row">
-                  <div class="table__td table__td--slim col-xs-6">
+                  <div class="table__td table__td--slim col-6">
                     ${item.match !== undefined && i !== 0 && items[i - 1].match !== items[i].match ? item.match : ``}
                     ${item.match !== undefined && i === 0 ? item.match : ``}
                     ${item.match === undefined ? `<span style="color:red;">--</span>` : ``}
                   </div>
                   ${item.n_syn !== undefined ? `
-                    <div class="table__td table__gdc-match table__td--slim col-xs-6">
+                    <div class="table__td table__gdc-match table__td--slim col-6">
                       <div class="row">
-                        <div class="col-xs-10">
+                        <div class="col-10">
                          ${
                             item.n !== '' 
                               ? option.partial === true 
@@ -161,7 +161,7 @@ export const showCompareResult = (items, option, keywordCase) => {
                               : '<span style="color:red;">--</span>'
                           }
                         </div>
-                        <div class="col-xs-2 table__right">
+                        <div class="col-2 table__right">
                           ${item.n_syn.length !== 0 ? `
                             <a href="#" class="compare-form__toggle" aria-label="expand" title="expand" aria-expanded="false"><i class="fa fa-plus"></i></a>
                           ` : ``}
@@ -172,8 +172,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                         <div class="compare-form__matched">
                           ${item.matched_s.map((match) => `
                             <div class="row table__td">
-                              <div class="col-xs-3">${match.n_c} (NCIt)</div>
-                              <div class="col-xs-9">
+                              <div class="col-3">${match.n_c} (NCIt)</div>
+                              <div class="col-9">
                                 ${match.s !== undefined ? `
                                   <table class="table table-striped">
                                     <thead>
@@ -203,8 +203,8 @@ export const showCompareResult = (items, option, keywordCase) => {
 
                         ${item.i_c !== undefined ? `
                           <div class="row table__td">
-                            <div class="col-xs-3">${item.i_c.c} (ICD-O-3)</div>
-                            <div class="col-xs-9">
+                            <div class="col-3">${item.i_c.c} (ICD-O-3)</div>
+                            <div class="col-9">
                               <table class="table table-striped">
                                 <thead>
                                   <tr>
@@ -229,8 +229,8 @@ export const showCompareResult = (items, option, keywordCase) => {
                           ${item.n_syn.map((syn) => `
                             ${syn.s !== undefined && syn.s.length !== 0 ? `
                               <div class="row table__td">
-                                <div class="col-xs-3">${syn.n_c} (NCIt)</div>
-                                <div class="col-xs-9">
+                                <div class="col-3">${syn.n_c} (NCIt)</div>
+                                <div class="col-9">
                                   ${syn.s !== undefined ? `
                                     <table class="table table-striped">
                                       <thead>
@@ -282,7 +282,7 @@ export const showCompareResult = (items, option, keywordCase) => {
                       </div>
                     </div>
                   ` : `
-                    <div class="table__td table__td--slim col-xs-6">${item.n}</div>
+                    <div class="table__td table__td--slim col-6">${item.n}</div>
                   `}
                 </div>
                 ${items.length - 1 === i ? `<div class="table__hr"></div>` : ``}
