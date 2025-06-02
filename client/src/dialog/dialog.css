@@ -5,6 +5,7 @@
   padding-top: 8em;
 }
 .ui-dialog .ui-dialog-content {
+  display: block;
   padding: .5rem;
 }
 .ui-widget.ui-widget-content {
