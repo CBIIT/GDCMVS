@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const elasticsearch = require('elasticsearch');
-const yaml = require('yamljs');
+const yaml = require('js-yaml');
 const config = require('../config');
 const config_dev = require('../config/development');
 const logger = require('./logger');
@@ -54,7 +54,7 @@ const parseRefYaml = (ref, termsJson, defJson) => {
   let title = remmainingRef.split('/')[0];
   let titleValue = remmainingRef.split('/')[1];
   if (fileName.indexOf('.yaml') !== -1) {
-    let refJson = yaml.load(folderPath + '/' + fileName);
+    let refJson = yaml.load(fs.readFileSync(folderPath + '/' + fileName, 'utf8'));
     let tmp = refJson[title];
     data.enum = tmp[titleValue].enum;
     if (tmp[titleValue]) {
@@ -364,7 +364,7 @@ const bulkIndex = next => {
   let deprecated_enum = [];
   fs.readdirSync(folderPath).forEach(file => {
     if (file.indexOf('_') !== 0) {
-      let fileJson = yaml.load(folderPath + '/' + file);
+      let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
       if(fileJson.category === 'administrative') fileJson.category = 'case';
       let category = fileJson.category;
       let node = fileJson.id;
@@ -392,13 +392,13 @@ const bulkIndex = next => {
   let syns = shared.readNCItDetails();
 
   cdeData = shared.readCDEData();
-  var termsJson = yaml.load(folderPath + '/_terms.yaml');
-  var defJson = yaml.load(folderPath + '/_definitions.yaml');
+  let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
+  let defJson = yaml.load(fs.readFileSync(folderPath + '/_definitions.yaml', 'utf8'));
   extendDef(termsJson, defJson);
   // let bulkBody = [];
   fs.readdirSync(folderPath).forEach(file => {
     if (file.indexOf('_') !== 0) {
-      let fileJson = yaml.load(folderPath + '/' + file);
+      let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
       if(fileJson.category === 'administrative') fileJson.category = 'case';
       if (fileJson.category !== "TBD" && fileJson.id !== "metaschema" && searchable_nodes.indexOf(fileJson.id) !== -1) {
         logger.debug(folderPath + '/' + file);
@@ -420,7 +420,7 @@ const bulkIndex = next => {
   });
   let gdc_data = {};
   fs.readdirSync(folderPath).forEach(file => {
-    gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+    gdc_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
   });
   gdc_data = report.preProcess(searchable_nodes, gdc_data);
 
@@ -843,7 +843,7 @@ const createIndexes = (params, next) => {
 exports.createIndexes = createIndexes;
 
 const preloadDataFromCaDSR = next => {
-  let termsJson = yaml.load(folderPath + '/_terms.yaml');
+  let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
   let cdeDataJson = shared.readCDEData();
 
   let ids = [];
