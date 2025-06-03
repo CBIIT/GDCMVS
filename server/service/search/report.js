@@ -6,7 +6,7 @@ const config = require('../../config');
 const searchable_nodes = require('../../config').searchable_nodes;
 const fs = require('fs');
 const path = require('path');
-const yaml = require('yamljs');
+const yaml = require('js-yaml');
 const excel = require('node-excel-export');
 const _ = require('lodash');
 const xlsx = require('node-xlsx');
@@ -36,7 +36,7 @@ const exportAllValues = (req, res) => {
 	let new_data = {};
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
-			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+			new_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 		}
 	});
 	new_data = preProcess(searchable_nodes, new_data);
@@ -137,7 +137,7 @@ const exportMapping = (req, res) => {
 	let new_data = {};
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
-			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+			new_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 		}
 	});
 	new_data = preProcess(searchable_nodes, new_data);
@@ -294,7 +294,7 @@ const preProcess = (searchable_nodes, data) => {
 	}
 
 	// get all terms definition 
-	let term_definition = yaml.load(folderPath + '/_terms.yaml');
+	let term_definition = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
 
 	// get $ref for Property
 	for (let key1 in data) {
@@ -309,7 +309,7 @@ const preProcess = (searchable_nodes, data) => {
 							// let file_name = ref.split('#/')[0];
 							let ref_property = ref.split('#/')[1];
 							let prop = ref_property.split('/')[0];
-							// let term_definition = yaml.load(folderPath + '/' + file_name);
+							// let term_definition = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
 							if (term_definition[prop]) {
 								property_data.relation = term_definition[prop].common !== undefined ? term_definition[prop].common : term_definition[prop];
 							}
@@ -333,12 +333,12 @@ const exportDelta = (req, res) => {
 
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
-			new_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+			new_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 		}
 	});
 	fs.readdirSync(folderPath_old).forEach(file => {
 		if (file.indexOf('_') !== 0) {
-			old_data[file.replace('.yaml', '')] = yaml.load(folderPath_old + '/' + file);
+			old_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath_old + '/' + file, 'utf8'));
 		}
 	});
 

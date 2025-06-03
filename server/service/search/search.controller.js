@@ -7,7 +7,7 @@ const config = require('../../config');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const yaml = require('yamljs');
+const yaml = require('js-yaml');
 // const xlsx = require('node-xlsx');
 const _ = require('lodash');
 const shared = require('./shared');
@@ -936,7 +936,7 @@ const removeDeprecated = () => {
 	let deprecated_enum = [];
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
-			let fileJson = yaml.load(folderPath + '/' + file);
+			let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 			let category = fileJson.category;
 			let node = fileJson.id;
 
@@ -1180,7 +1180,7 @@ const Unmapped = (req, res) => {
 		let node = keys.split('.')[1];
 		let property = keys.split('.')[2];
 		if (fs.existsSync(folderPath + '/' + node + '.yaml')) {
-			let fileData = yaml.load(folderPath + '/' + node + '.yaml');
+			let fileData = yaml.load(fs.readFileSync(folderPath + '/' + node + '.yaml', 'utf8'));
 			if (fileData.properties[property]) {
 				let local_property = fileData.properties[property];
 				if (local_property.deprecated_enum) {
@@ -1244,7 +1244,7 @@ const Unmapped = (req, res) => {
 	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
 	let gdc_data = {};
 	fs.readdirSync(folderPath).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+		gdc_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 	});
 	let tmp_concept = shared.readConceptCode();
 	for (let keys in tmp_concept) {
