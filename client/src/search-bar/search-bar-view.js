@@ -1,3 +1,5 @@
+import './search-bar.css';
+
 const template = (results) => {
   return `
     <template-suggest>
