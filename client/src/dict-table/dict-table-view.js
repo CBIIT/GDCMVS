@@ -1,3 +1,5 @@
+import './dict-table.css';
+
 const template = (dictionary, options) => {
   return `
     <template-dict-table>

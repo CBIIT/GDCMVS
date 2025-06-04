@@ -6,8 +6,7 @@ export default defineConfig({
     outDir: path.resolve(__dirname, './client/static/dist'), // Output directory
     rollupOptions: {
       input: {
-        main: './client/src/index.js',
-        styles: './client/src/style.css' // Include CSS as a separate entry
+        main: './client/src/index.js', // Main entry point
       },
       output: {
         entryFileNames: 'bundle.js', // Output JS file
@@ -16,11 +15,6 @@ export default defineConfig({
     }
   },
   plugins: [vitePluginCompressTemplateComponents()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './client/src')
-    }
-  }
 });
 
 function vitePluginCompressTemplateComponents() {
