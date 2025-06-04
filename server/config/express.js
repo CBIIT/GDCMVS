@@ -3,7 +3,6 @@
 const express = require('express');
 const config = require('./index');
 const compression = require('compression');
-const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -18,11 +17,11 @@ module.exports = app => {
   app.engine('html', require('ejs').renderFile);
   app.set('view engine', 'html');
   app.use(compression());
-  app.use(bodyParser.urlencoded({
+  app.use(express.urlencoded({
     limit: '4mb', // 100kb default is too small
-    extended: false
+    extended: false // Keep this as false if you don't need nested objects
   }));
-  app.use(bodyParser.json({
+  app.use(express.json({
     limit: '4mb' // 100kb default is too small
   }));
   app.use(methodOverride());
