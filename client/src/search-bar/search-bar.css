@@ -14,7 +14,8 @@
 }
 
 .search-bar__input {
-  padding-right: 60px;
+  padding: 0.375rem 6.5rem 0.375rem 1.5rem;
+  font-size: 1.5rem;
 }
 
 .search-bar__options {
@@ -56,6 +57,7 @@
 .search-bar__btn:active {
   background-color: #788787;
   border-color: #788787;
+  color: #ffffff;
   outline: none;
 }
 .search-bar__input--has-error {
@@ -63,16 +65,23 @@
 }
 
 .search-bar__dropdown {
-  right: -15px;
+  /* right: -15px;
   left: auto;
   min-width: 85px;
+  text-align: center; */
   text-align: center;
+  --bs-dropdown-padding-y: 0.5rem;
+  --bs-dropdown-min-width: 10rem;
+  inset: 0px auto auto -30px !important;
 }
 
 .search-bar__dropdown > li > a {
-  line-height: 1.2em;
-  font-size: 0.9em;
+  line-height: 1.6em;
+  font-size: 1.3em;
   color: #3a3a3a;
+  display: inline-block;
+  width: 100%;
+
 }
 
 .search-bar__dropdown > li > a:hover,
