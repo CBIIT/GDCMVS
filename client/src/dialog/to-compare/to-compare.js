@@ -42,7 +42,7 @@ const toCompare = (uid) => {
           let previousKeyword = '';
           let previousMatchedKeyword = '';
 
-          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.8em').html(header);
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '8em').html(header);
           $(this).after(bottom);
 
           let target = $(this).parent();

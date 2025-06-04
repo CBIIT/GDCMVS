@@ -64,7 +64,7 @@ const GDCTerms = (uid, tgts) => {
         open: function () {
           let previousKeyword = '';
           // add new custom header
-          $(this).prev('.ui-dialog-titlebar').css('padding-top', '7.8em').html(header);
+          $(this).prev('.ui-dialog-titlebar').css('padding-top', '8em').html(header);
 
           let target = $(this).parent();
           if ((target.offset().top - getScrollTop()) < getHeaderOffset()) {
