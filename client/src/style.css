@@ -8,8 +8,8 @@ body {
 }
 
 .main-container {
-  padding-bottom: 127px;
   font-size: 1.3rem;
+  padding-bottom: 127px;
 }
 
 .info-content {
@@ -40,10 +40,19 @@ a:hover, a:focus {
 }
 
 /* Checkbox */
+.checkbox__container {
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
 .checkbox__label {
   margin-left: 20px;
   padding-left: 0 !important;
   position: relative;
+  line-height: 2.5rem;
 }
 
 .checkbox__label--padding {
@@ -60,6 +69,7 @@ a:hover, a:focus {
   height: 2em;
   float: left;
   margin-right: .5em;
+  cursor: pointer;
 }
 
 .checkbox__icon {
@@ -109,12 +119,12 @@ a:hover, a:focus {
 
 .table__container {
   font-size: 1.3rem;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .table__container--margin-bottom {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
 .table__body--overflow {
@@ -299,6 +309,10 @@ a:hover, a:focus {
   width: 15%;
 }
 
+.table__toggle {
+  padding: 0 .5rem;
+}
+
 .table__search-container {
   padding-top: 10px;
   padding-bottom: 0px;
@@ -389,7 +403,13 @@ a:hover, a:focus {
   margin: 0.8em 0;
 }
 
-.tooltip.bottom:after{
+.custom-tooltip .tooltip-arrow:before{
+  border-bottom-color: #cccccc !important;
+}
+
+/*
+
+.custom-tooltip .tooltip-arrow:after{
   position: absolute;
   top: 2px;
   left: 50%;
@@ -401,14 +421,22 @@ a:hover, a:focus {
   margin-left: -5px;
 }
 
-.tooltip.bottom .tooltip-arrow {
+.custom-tooltip .tooltip-arrow {
   border-bottom-color: #cccccc;
 }
+*/
 
-.tooltip-inner {
+.custom-tooltip .tooltip-inner {
   color: #3a3a3a;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+.custom-tooltip {
+  --bs-tooltip-bg: #fdfdfd;
+  --bs-tooltip-color: #3a3a3a; 
+  --bs-tooltip-font-size: 1.2rem;
+  --bs-tooltip-padding-x: 1rem
 }
 
 .pagination-footer {
