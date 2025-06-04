@@ -1,3 +1,5 @@
+import './tabs.css';
+
 const template = (options) => {
   return `
     <template-tabs>

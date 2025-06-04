@@ -1,4 +1,5 @@
 import { tableSynonyms, tableMoreSynonyms, tableAdditionalProperties, tableIcdo3 } from '../components/table';
+import './values-table.css';
 
 const template = (values, options) => {
   return `
