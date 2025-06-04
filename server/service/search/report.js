@@ -7,32 +7,14 @@ const searchable_nodes = require('../../config').searchable_nodes;
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
-const excel = require('node-excel-export');
+const exceljs = require('exceljs');
 const _ = require('lodash');
 const xlsx = require('node-xlsx');
 const shared = require('./shared');
 const folderPath = path.join(__dirname, '..', '..', 'data');
 
-const exportAllValues = (req, res) => {
-	let merges = [];
+const exportAllValues = async (req, res) => {
 	let data = [];
-	let heading = [
-		['Category', 'Node', 'Property', 'Value']
-	];
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		v: {
-			width: 200
-		}
-	};
 	let new_data = {};
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
@@ -71,69 +53,38 @@ const exportAllValues = (req, res) => {
 		}
 	}
 
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	);
-	res.attachment('All-Values-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
+	// Create new worksheet
+	const workbook = new exceljs.Workbook();
+	const worksheet = workbook.addWorksheet('Report');
 
+	// Add heading
+	worksheet.addRow(['Category', 'Node', 'Property', 'Value']);
+
+	// Add data rows
+	data.forEach(row => {
+		worksheet.addRow([row.c, row.n, row.p, row.v]);
+	});
+
+	// Set column widths
+	worksheet.columns = [
+		{ width: 30 },
+		{ width: 30 },
+		{ width: 30 },
+		{ width: 30 }
+	];
+
+	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	res.setHeader('Content-Disposition', 'attachment; filename=' + 'All-Values-' + new Date().toISOString() + '.xlsx');
+	await workbook.xlsx.write(res);
+	res.end();
 };
 
-const exportMapping = (req, res) => {
+const exportMapping = async (req, res) => {
 	let gdc_values = shared.readGDCValues();
 	let cdeData = shared.readCDEData();
 	let ncit_details = shared.readNCItDetails();
-	let merges = [];
+
 	let data = [];
-	let heading = [
-		['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','ICDO3 Code', 'ICDO3 Strings','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
-	];
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		v: {
-			width: 200
-		},
-		ncit_v: {
-			width: 200
-		},
-		ncit_c: {
-			width: 200
-		},
-		i_c:{
-			width: 200
-		},
-		i_c_s:{
-			width: 200
-		},
-		t_t:{
-			width: 200
-		},
-		cde_v: {
-			width: 200
-		},
-		cde_c: {
-			width: 200
-		},
-		cde_id: {
-			width: 200
-		}
-	};
 	let new_data = {};
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
@@ -186,17 +137,24 @@ const exportMapping = (req, res) => {
 						}
 						let map = mappings.find(({ nm }) => nm === em);
 						if(map !== undefined){
-						  tmp_data.ncit_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+						  tmp_data.ncit_c = map.n_c;
 						  if(map.i_c !== undefined && map.i_c !== ''){
 							tmp_data.i_c = map.i_c;
-							tmp_data.i_c_s = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
+							tmp_data.i_c_s = map.i_c_s;
 							tmp_data.t_t = map.term_type;
 						  }
 						  for(let code of map.n_c){
 							tmp_data.ncit_v.push(ncit_details[code] !== undefined ? ncit_details[code].preferredName : '');
 						  }
-						  tmp_data.ncit_v = Array.isArray(tmp_data.ncit_v) ? tmp_data.ncit_v.join('|') : tmp_data.ncit_v;
+						  tmp_data.ncit_v = tmp_data.ncit_v;
 						}
+
+						// Convert all array fields in tmp_data to string, or if empty string ""
+						Object.keys(tmp_data).forEach(key => {
+							if (Array.isArray(tmp_data[key])) {
+								data[key] = Array.isArray(data[key]) && data[key].length > 0 ? data[key].join('|') : "";
+							}
+						});
 
 						data.push(tmp_data);
 					})
@@ -204,20 +162,26 @@ const exportMapping = (req, res) => {
 			}
 		}
 	}
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	);
-	res.attachment('Report-' + new Date() + '.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
-	// res.send('Success');
+
+	// Create new worksheet
+	const workbook = new exceljs.Workbook();
+	const worksheet = workbook.addWorksheet('Report');
+
+	// Add heading
+	worksheet.addRow(['Category', 'Node', 'Property', 'GDC Values','NCIt PV','NCIt Code','ICDO3 Code', 'ICDO3 Strings','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']);
+
+	// Add data rows
+	data.forEach(row => {
+		worksheet.addRow([row.c, row.n, row.p, row.v, row.ncit_v, row.ncit_c, row.i_c, row.i_c_s, row.t_t, row.cde_v, row.cde_c, row.cde_id]);
+	});
+
+	// Set column widths
+	worksheet.columns = Array(12).fill({ width: 300 });
+
+	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	res.setHeader('Content-Disposition', 'attachment; filename=' + 'Report-' + new Date().toISOString() + '.xlsx');
+	await workbook.xlsx.write(res);
+	res.end();
 };
 
 const preProcess = (searchable_nodes, data) => {
@@ -322,28 +286,11 @@ const preProcess = (searchable_nodes, data) => {
 	return data;
 }
 
-const exportDelta = (req, res) => {
-	let icdo3_prop = ["primary_diagnosis", "site_of_resection_or_biopsy", "tissue_or_organ_of_origin", "progression_or_recurrence_anatomic_site"];
-	let data = [];
-	let folderPath_old = path.join(__dirname, '../..', 'data_old');
-	let old_data = {};
-	let new_data = {};
-	let gdc_values = shared.readGDCValues();
-	let ncit_pv = shared.readNCItDetails();
 
-	fs.readdirSync(folderPath).forEach(file => {
-		if (file.indexOf('_') !== 0) {
-			new_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
-		}
-	});
-	fs.readdirSync(folderPath_old).forEach(file => {
-		if (file.indexOf('_') !== 0) {
-			old_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath_old + '/' + file, 'utf8'));
-		}
-	});
+const generateDeltaDiffData  = (new_data, old_data, gdc_values, ncit_pv) => {
 
-	new_data = preProcess(searchable_nodes, new_data);
-	old_data = preProcess(searchable_nodes, old_data);
+	const data = []
+
 	//checking node in new data
 	for (let key in new_data) {
 		// If this node doesn't exists in old data
@@ -374,16 +321,16 @@ const exportDelta = (req, res) => {
 						let map = mappings.find(({ nm }) => nm === em);
 
 						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && map !== undefined){
-						  temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
-						  if(map.i_c !== undefined && map.i_c !== ''){
+							temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+							if(map.i_c !== undefined && map.i_c !== ''){
 								temp_data.i_c = map.i_c;
 								temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
 								// temp_data.t_t = map.term_type;
-						  }
-						  for(let code of map.n_c){
+							}
+							for(let code of map.n_c){
 								temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
-						  }
-						  temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+							}
+							temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 						}
 
 						data.push(temp_data);
@@ -408,16 +355,16 @@ const exportDelta = (req, res) => {
 						let map = mappings.find(({ nm }) => nm === em);
 						
 						if(temp_data.value_old === "no match" && temp_data.value_new !== "no match" && map !== undefined){
-						  temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
-						  if(map.i_c !== undefined && map.i_c !== ''){
+							temp_data.n_c = Array.isArray(map.n_c) ? map.n_c.join('|') : map.n_c;
+							if(map.i_c !== undefined && map.i_c !== ''){
 								temp_data.i_c = map.i_c;
 								temp_data.i_c_pv = Array.isArray(map.i_c_s) ? map.i_c_s.join('|') : map.i_c_s;
 								// temp_data.t_t = map.term_type;
-						  }
-						  for(let code of map.n_c){
+							}
+							for(let code of map.n_c){
 								temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
-						  }
-						  temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+							}
+							temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 						}
 						data.push(temp_data);
 					});
@@ -466,7 +413,7 @@ const exportDelta = (req, res) => {
 								for(let code of map.n_c){
 									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 								}
-								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 							}
 
 							data.push(temp_data);
@@ -500,7 +447,7 @@ const exportDelta = (req, res) => {
 								for(let code of map.n_c){
 									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 								}
-								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 							}
 
 							data.push(temp_data);
@@ -548,7 +495,7 @@ const exportDelta = (req, res) => {
 								for(let code of map.n_c){
 									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 								}
-								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 							}
 
 							temp_data.value_new = em;
@@ -592,7 +539,7 @@ const exportDelta = (req, res) => {
 									for(let code of map.n_c){
 										temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 									}
-									temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+									temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 								}
 
 								data.push(temp_data);
@@ -635,7 +582,7 @@ const exportDelta = (req, res) => {
 									for(let code of map.n_c){
 										temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 									}
-									temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+									temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 								}
 
 								data.push(temp_data);
@@ -682,7 +629,7 @@ const exportDelta = (req, res) => {
 								for(let code of map.n_c){
 									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 								}
-								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 							}
 
 							data.push(temp_data);
@@ -728,7 +675,7 @@ const exportDelta = (req, res) => {
 								for(let code of map.n_c){
 									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 								}
-								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 							}
 
 							data.push(temp_data);
@@ -747,9 +694,6 @@ const exportDelta = (req, res) => {
 							temp_data.n_c_pv = [];
 							temp_data.i_c = "";
 							temp_data.i_c_pv = "";
-							// let cnp = category+'.'+node+'.'+property;
-
-
 
 							let mappings = gdc_values[category + "." + node + "." + property] !== undefined ? gdc_values[category + "." + node + "." + property] : [];
 
@@ -765,7 +709,7 @@ const exportDelta = (req, res) => {
 								for(let code of map.n_c){
 									temp_data.n_c_pv.push(ncit_pv[code] !== undefined ? ncit_pv[code].preferredName : '');
 								}
-								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : tmp_data.n_c_pv;
+								temp_data.n_c_pv = Array.isArray(temp_data.n_c_pv) ? temp_data.n_c_pv.join('|') : temp_data.n_c_pv;
 							}
 
 							data.push(temp_data);
@@ -775,55 +719,54 @@ const exportDelta = (req, res) => {
 			}
 		}
 	}
-	let heading = [
-		['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'NCIt Code', 'NCIt PV', 'ICDO3 code', 'ICDO3 String']
-	];
-	let specification = {
-		c: {
-			width: 200,
-			displayName: 'Category'
-		},
-		n: {
-			width: 200,
-			displayName: 'Node'
-		},
-		p: {
-			width: 200,
-			displayName: 'Property'
-		},
-		value_old: {
-			width: 200,
-			displayName: 'Old GDC Dcitonary Value'
-		},
-		value_new: {
-			width: 200,
-			displayName: 'New GDC Dcitonary Value'
-		},
-		n_c: {
-			width: 200
-		},
-		n_c_pv: {
-			width: 200
-		},
-		i_c: {
-			width: 200
-		},
-		i_c_pv: {
-			width: 200
+
+	return data;
+}
+
+const exportDelta = async (req, res) => {
+	let icdo3_prop = ["primary_diagnosis", "site_of_resection_or_biopsy", "tissue_or_organ_of_origin", "progression_or_recurrence_anatomic_site"];
+	// let data = [];
+	let folderPath_old = path.join(__dirname, '../..', 'data_old');
+	let old_data = {};
+	let new_data = {};
+	let gdc_values = shared.readGDCValues();
+	let ncit_pv = shared.readNCItDetails();
+
+	fs.readdirSync(folderPath).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			new_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 		}
-	};
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				heading: heading,
-				name: 'Report', // <- Specify sheet name (optional) 
-				specification: specification, // <- Report specification 
-				data: data // <-- Report data 
-			}
-		]
-	);
-	res.attachment('Delta-' + new Date() + '.xlsx');
-	res.send(report);
+	});
+	fs.readdirSync(folderPath_old).forEach(file => {
+		if (file.indexOf('_') !== 0) {
+			old_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath_old + '/' + file, 'utf8'));
+		}
+	});
+
+	new_data = preProcess(searchable_nodes, new_data);
+	old_data = preProcess(searchable_nodes, old_data);
+
+	const data = generateDeltaDiffData(new_data, old_data, gdc_values, ncit_pv);
+
+	// Create new worksheet
+	const workbook = new exceljs.Workbook();
+	const worksheet = workbook.addWorksheet('Report');
+
+	// Add heading
+	worksheet.addRow(['Category', 'Node', 'Property', 'Old GDC Dcitonary Value', 'New GDC Dcitonary Value', 'NCIt Code', 'NCIt PV', 'ICDO3 code', 'ICDO3 String']);
+
+	// Add data rows
+	data.forEach(row => {
+		worksheet.addRow([row.c, row.n, row.p, row.value_old, row.value_new, row.n_c, row.n_c_pv, row.i_c, row.i_c_pv]);
+	});
+
+	// Set column widths
+	worksheet.columns = Array(12).fill({ width: 300 });
+
+	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	res.setHeader('Content-Disposition', 'attachment; filename=' + 'Delta-' + new Date().toISOString() + '.xlsx');
+	await workbook.xlsx.write(res);
+	res.end();
 	//res.send('Success!!!');
 }
 
@@ -915,330 +858,330 @@ const icdoMapping = (req, res) => {
 	res.send("Success");
 }
 
-const releaseNote = (req, res) => {
-	let merges = [];
-	let result_data = [];
-	let heading = [
-		['Category | Node | Property', 'Total GDC Values','# Values Mapped to ICD-O-3','# Values Mapped to NCIt']
-	];
-	let specification = {
+// const releaseNote = (req, res) => {
+// 	let merges = [];
+// 	let result_data = [];
+// 	let heading = [
+// 		['Category | Node | Property', 'Total GDC Values','# Values Mapped to ICD-O-3','# Values Mapped to NCIt']
+// 	];
+// 	let specification = {
 	
-		cnp: {
-			width: 200
-		},
-		v:{
-			width: 200
-		},
-		i:{
-			width: 200
-		},
-		s:{
-			width: 200
-		}
-	};
-	let query = {
-		"match_all": {}
-	};
-	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		data.forEach(hit => {
-			let source = hit._source;
-			if(source.enum === undefined) return;
-			let category = source.category;
-			let node = source.node;
-			let property = source.property;
-			let enums = source.enum;
-			let values_counter = enums.length;
-			let ic_counter = 0;
-			let syn_counter = 0;
-			enums.forEach(em => {
-				if(em.n_syn !== undefined) syn_counter++;
-				if(em.i_c !== undefined) ic_counter++;
-			});
-			let result_obj = {};
-			result_obj.cnp = category+"."+node+"."+property;
-			result_obj.v = values_counter;
-			result_obj.i = ic_counter;
-			result_obj.s = syn_counter;
-			result_data.push(result_obj);
-		});
-		const report = excel.buildExport(
-			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-				{
-					name: 'Report', // <- Specify sheet name (optional) 
-					heading: heading, // <- Raw heading array (optional) 
-					merges: merges, // <- Merge cell ranges 
-					specification: specification, // <- Report specification 
-					data: result_data // <-- Report data 
-				}
-			]
-		);
-		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-		res.send(report);
-	});	
-}
+// 		cnp: {
+// 			width: 200
+// 		},
+// 		v:{
+// 			width: 200
+// 		},
+// 		i:{
+// 			width: 200
+// 		},
+// 		s:{
+// 			width: 200
+// 		}
+// 	};
+// 	let query = {
+// 		"match_all": {}
+// 	};
+// 	elastic.query(config.index_p, query, null, result => {
+// 		if (result.hits === undefined) {
+// 			return handleError.error(res, result);
+// 		}
+// 		let data = result.hits.hits;
+// 		data.forEach(hit => {
+// 			let source = hit._source;
+// 			if(source.enum === undefined) return;
+// 			let category = source.category;
+// 			let node = source.node;
+// 			let property = source.property;
+// 			let enums = source.enum;
+// 			let values_counter = enums.length;
+// 			let ic_counter = 0;
+// 			let syn_counter = 0;
+// 			enums.forEach(em => {
+// 				if(em.n_syn !== undefined) syn_counter++;
+// 				if(em.i_c !== undefined) ic_counter++;
+// 			});
+// 			let result_obj = {};
+// 			result_obj.cnp = category+"."+node+"."+property;
+// 			result_obj.v = values_counter;
+// 			result_obj.i = ic_counter;
+// 			result_obj.s = syn_counter;
+// 			result_data.push(result_obj);
+// 		});
+// 		const report = excel.buildExport(
+// 			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+// 				{
+// 					name: 'Report', // <- Specify sheet name (optional) 
+// 					heading: heading, // <- Raw heading array (optional) 
+// 					merges: merges, // <- Merge cell ranges 
+// 					specification: specification, // <- Report specification 
+// 					data: result_data // <-- Report data 
+// 				}
+// 			]
+// 		);
+// 		res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+// 		res.send(report);
+// 	});	
+// }
 
-const exportMorphology = (req, res) => {
-	let merges = [];
-	let arr = [];
-	let heading = [
-		['Category', 'Node', 'Property', 'GDC Values','ICDO3 String','ICDO3 Code','NCIt PV','NCIt Code','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
-	];
+// const exportMorphology = (req, res) => {
+// 	let merges = [];
+// 	let arr = [];
+// 	let heading = [
+// 		['Category', 'Node', 'Property', 'GDC Values','ICDO3 String','ICDO3 Code','NCIt PV','NCIt Code','Term Type','CDE PV Meaning','CDE PV Meaning concept codes','CDE ID']
+// 	];
 	
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		v: {
-			width: 200
-		},
-		i_c_s:{
-			width: 200
-		},
-		i_c:{
-			width: 200
-		},
-		ncit_v: {
-			width: 200
-		},
-		ncit_c: {
-			width: 200
-		},
-		t_t:{
-			width: 200
-		},
-		cde_v: {
-			width: 200
-		},
-		cde_c: {
-			width: 200
-		},
-		cde_id: {
-			width: 200
-		}
-	};
+// 	let specification = {
+// 		c: {
+// 			width: 200
+// 		},
+// 		n: {
+// 			width: 200
+// 		},
+// 		p: {
+// 			width: 200
+// 		},
+// 		v: {
+// 			width: 200
+// 		},
+// 		i_c_s:{
+// 			width: 200
+// 		},
+// 		i_c:{
+// 			width: 200
+// 		},
+// 		ncit_v: {
+// 			width: 200
+// 		},
+// 		ncit_c: {
+// 			width: 200
+// 		},
+// 		t_t:{
+// 			width: 200
+// 		},
+// 		cde_v: {
+// 			width: 200
+// 		},
+// 		cde_c: {
+// 			width: 200
+// 		},
+// 		cde_id: {
+// 			width: 200
+// 		}
+// 	};
 
-	let all_gdc_values = shared.readGDCValues();
-	let cdeData = shared.readCDEData();
-	let cc = shared.readConceptCode();
-	let ncit_pv = shared.readNCItDetails();
+// 	let all_gdc_values = shared.readGDCValues();
+// 	let cdeData = shared.readCDEData();
+// 	let cc = shared.readConceptCode();
+// 	let ncit_pv = shared.readNCItDetails();
 
-	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
-		if(data.nm !== data.i_c){
-			let tmp_data = {};
-			tmp_data.c = 'Clinical';
-			tmp_data.n = 'Diagnosis';
-			tmp_data.p = 'Morphology';
-			tmp_data.v = data.i_c;
-			tmp_data.ncit_v = ncit_pv[data.n_c] && ncit_pv[data.n_c].preferredName ? ncit_pv[data.n_c].preferredName: '';
-			tmp_data.ncit_c = data.n_c;
-			tmp_data.cde_v = '';
-			tmp_data.cde_c = '';
-			tmp_data.cde_id = '3226275';
-			tmp_data.i_c = data.i_c;
-			tmp_data.i_c_s = data.nm;
-			tmp_data.t_t = data.term_type;
-			arr.push(tmp_data);
-		}
-	});
+// 	all_gdc_values["clinical.diagnosis.morphology"].forEach(data =>{
+// 		if(data.nm !== data.i_c){
+// 			let tmp_data = {};
+// 			tmp_data.c = 'Clinical';
+// 			tmp_data.n = 'Diagnosis';
+// 			tmp_data.p = 'Morphology';
+// 			tmp_data.v = data.i_c;
+// 			tmp_data.ncit_v = ncit_pv[data.n_c] && ncit_pv[data.n_c].preferredName ? ncit_pv[data.n_c].preferredName: '';
+// 			tmp_data.ncit_c = data.n_c;
+// 			tmp_data.cde_v = '';
+// 			tmp_data.cde_c = '';
+// 			tmp_data.cde_id = '3226275';
+// 			tmp_data.i_c = data.i_c;
+// 			tmp_data.i_c_s = data.nm;
+// 			tmp_data.t_t = data.term_type;
+// 			arr.push(tmp_data);
+// 		}
+// 	});
 
-	for(let val in cc['clinical.diagnosis.morphology']){
-		let tmp_data = {};
-			tmp_data.c = 'Clinical';
-			tmp_data.n = 'Diagnosis';
-			tmp_data.p = 'Morphology';
-			tmp_data.v = val;
-			tmp_data.ncit_v = cc["clinical.diagnosis.morphology"][val] && ncit_pv[cc["clinical.diagnosis.morphology"][val]] && ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName ? ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName: '';
-			tmp_data.ncit_c = cc["clinical.diagnosis.morphology"][val];
-			tmp_data.cde_v = '';
-			tmp_data.cde_c = '';
-			tmp_data.cde_id = '3226275';
-			tmp_data.i_c = '';
-			tmp_data.i_c_s = '';
-			tmp_data.t_t = '';
-			arr.push(tmp_data);
-	}
+// 	for(let val in cc['clinical.diagnosis.morphology']){
+// 		let tmp_data = {};
+// 			tmp_data.c = 'Clinical';
+// 			tmp_data.n = 'Diagnosis';
+// 			tmp_data.p = 'Morphology';
+// 			tmp_data.v = val;
+// 			tmp_data.ncit_v = cc["clinical.diagnosis.morphology"][val] && ncit_pv[cc["clinical.diagnosis.morphology"][val]] && ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName ? ncit_pv[cc["clinical.diagnosis.morphology"][val]].preferredName: '';
+// 			tmp_data.ncit_c = cc["clinical.diagnosis.morphology"][val];
+// 			tmp_data.cde_v = '';
+// 			tmp_data.cde_c = '';
+// 			tmp_data.cde_id = '3226275';
+// 			tmp_data.i_c = '';
+// 			tmp_data.i_c_s = '';
+// 			tmp_data.t_t = '';
+// 			arr.push(tmp_data);
+// 	}
 	
-	const report = excel.buildExport(
-		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-			{
-				name: 'Report', // <- Specify sheet name (optional) 
-				heading: heading, // <- Raw heading array (optional) 
-				merges: merges, // <- Merge cell ranges 
-				specification: specification, // <- Report specification 
-				data: arr // <-- Report data 
-			}
-		]
-	);
+// 	const report = excel.buildExport(
+// 		[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+// 			{
+// 				name: 'Report', // <- Specify sheet name (optional) 
+// 				heading: heading, // <- Raw heading array (optional) 
+// 				merges: merges, // <- Merge cell ranges 
+// 				specification: specification, // <- Report specification 
+// 				data: arr // <-- Report data 
+// 			}
+// 		]
+// 	);
 
-	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
-	res.send(report);
-	// res.send('Success');
-}
+// 	res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers) 
+// 	res.send(report);
+// 	// res.send('Success');
+// }
 
-const compareDataType = (req, res) => {
-	let merges = [];
-	let arr = [];
-	let heading = [
-		['Category', 'Node', 'Property', 'CDE ID', 'GDC Data Type', 'CDE Data Type']
-	];
-	let cdeDataType = shared.readCDEDataType();
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		cde_id: {
-			width: 200
-		},
-		dt_gdc: {
-			width: 200
-		},
-		dt_cde: {
-			width: 200
-		}
-	};
-	let query = {
-		"match_all": {}
-	};
-	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		data.forEach((result) => {
-			let source = result._source;
-			if(source.cde !== undefined && source.cde.id !== undefined && cdeDataType[source.cde.id] !== undefined && source.enum === undefined){
-				if(source.type.toString().toLowerCase() !== cdeDataType[source.cde.id].toLowerCase()){
-					let temp_data = {};
-					temp_data.c = source.category;
-					temp_data.n = source.node;
-					temp_data.p = source.name;
-					temp_data.cde_id = source.cde.id;
-					temp_data.dt_gdc = source.type;
-					temp_data.dt_cde = cdeDataType[source.cde.id];
-					arr.push(temp_data);
-				}
-			}
-		});
-		const report = excel.buildExport(
-			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-				{
-					name: 'Report', // <- Specify sheet name (optional) 
-					heading: heading, // <- Raw heading array (optional) 
-					merges: merges, // <- Merge cell ranges 
-					specification: specification, // <- Report specification 
-					data: arr // <-- Report data 
-				}
-			]
-		);
-		res.attachment('datatype-comparison.xlsx'); // This is sails.js specific (in general you need to set headers) 
-		res.send(report);
-	});
-}
+// const compareDataType = (req, res) => {
+// 	let merges = [];
+// 	let arr = [];
+// 	let heading = [
+// 		['Category', 'Node', 'Property', 'CDE ID', 'GDC Data Type', 'CDE Data Type']
+// 	];
+// 	let cdeDataType = shared.readCDEDataType();
+// 	let specification = {
+// 		c: {
+// 			width: 200
+// 		},
+// 		n: {
+// 			width: 200
+// 		},
+// 		p: {
+// 			width: 200
+// 		},
+// 		cde_id: {
+// 			width: 200
+// 		},
+// 		dt_gdc: {
+// 			width: 200
+// 		},
+// 		dt_cde: {
+// 			width: 200
+// 		}
+// 	};
+// 	let query = {
+// 		"match_all": {}
+// 	};
+// 	elastic.query(config.index_p, query, null, result => {
+// 		if (result.hits === undefined) {
+// 			return handleError.error(res, result);
+// 		}
+// 		let data = result.hits.hits;
+// 		data.forEach((result) => {
+// 			let source = result._source;
+// 			if(source.cde !== undefined && source.cde.id !== undefined && cdeDataType[source.cde.id] !== undefined && source.enum === undefined){
+// 				if(source.type.toString().toLowerCase() !== cdeDataType[source.cde.id].toLowerCase()){
+// 					let temp_data = {};
+// 					temp_data.c = source.category;
+// 					temp_data.n = source.node;
+// 					temp_data.p = source.name;
+// 					temp_data.cde_id = source.cde.id;
+// 					temp_data.dt_gdc = source.type;
+// 					temp_data.dt_cde = cdeDataType[source.cde.id];
+// 					arr.push(temp_data);
+// 				}
+// 			}
+// 		});
+// 		const report = excel.buildExport(
+// 			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+// 				{
+// 					name: 'Report', // <- Specify sheet name (optional) 
+// 					heading: heading, // <- Raw heading array (optional) 
+// 					merges: merges, // <- Merge cell ranges 
+// 					specification: specification, // <- Report specification 
+// 					data: arr // <-- Report data 
+// 				}
+// 			]
+// 		);
+// 		res.attachment('datatype-comparison.xlsx'); // This is sails.js specific (in general you need to set headers) 
+// 		res.send(report);
+// 	});
+// }
 
-const ttNotAssigned = (req, res) => {
-	let report_data = [];
-	let heading = [
-		['Category', 'Node', 'Property', 'Value', 'ICD-O-3', 'ICD-O-3 string with no term types']
-	];
-	let specification = {
-		c: {
-			width: 200
-		},
-		n: {
-			width: 200
-		},
-		p: {
-			width: 200
-		},
-		v: {
-			width: 200
-		},
-		ic: {
-			width: 200
-		},
-		ics: {
-			width: 200
-		}
-	};
-	const icdo3_property = [
-		'morphology', 
-		'primary_diagnosis', 
-		'tissue_or_organ_of_origin', 
-		'progression_or_recurrence_anatomic_site', 
-		'site_of_resection_or_biopsy'];
+// const ttNotAssigned = (req, res) => {
+// 	let report_data = [];
+// 	let heading = [
+// 		['Category', 'Node', 'Property', 'Value', 'ICD-O-3', 'ICD-O-3 string with no term types']
+// 	];
+// 	let specification = {
+// 		c: {
+// 			width: 200
+// 		},
+// 		n: {
+// 			width: 200
+// 		},
+// 		p: {
+// 			width: 200
+// 		},
+// 		v: {
+// 			width: 200
+// 		},
+// 		ic: {
+// 			width: 200
+// 		},
+// 		ics: {
+// 			width: 200
+// 		}
+// 	};
+// 	const icdo3_property = [
+// 		'morphology', 
+// 		'primary_diagnosis', 
+// 		'tissue_or_organ_of_origin', 
+// 		'progression_or_recurrence_anatomic_site', 
+// 		'site_of_resection_or_biopsy'];
 
-	let query = {
-		"match_all": {}
-	}
-	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
-			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
-		data.forEach(hit => {
-			let source = hit._source;
-			let category = source.category;
-			let node = source.node;
-			let property = source.property;
-			if(icdo3_property.indexOf(property) !== -1){
-				let enums = source.enum;
-				enums.forEach(em => {
-					if(em.ic_enum === undefined) return;
-					em.ic_enum.forEach(ic => {
-						if(ic.term_type === '*'){
-							let result_obj = {};
-							result_obj.c = category;
-							result_obj.n = node;
-							result_obj.p = property;
-							result_obj.v = em.n;
-							result_obj.ic = em.i_c.c;
-							result_obj.ics = ic.n;
-							report_data.push(result_obj);
-						}
-					});
-				});
-			}
-		});
-		const report = excel.buildExport(
-			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
-				{
-					name: 'Report', // <- Specify sheet name (optional) 
-					heading: heading, // <- Raw heading array (optional) 
-					specification: specification, // <- Report specification 
-					data: report_data // <-- Report data 
-				}
-			]
-		);
-		res.attachment('tt_not_assigned.xlsx'); // This is sails.js specific (in general you need to set headers) 
-		res.send(report);
-	});
-}
+// 	let query = {
+// 		"match_all": {}
+// 	}
+// 	elastic.query(config.index_p, query, null, result => {
+// 		if (result.hits === undefined) {
+// 			return handleError.error(res, result);
+// 		}
+// 		let data = result.hits.hits;
+// 		data.forEach(hit => {
+// 			let source = hit._source;
+// 			let category = source.category;
+// 			let node = source.node;
+// 			let property = source.property;
+// 			if(icdo3_property.indexOf(property) !== -1){
+// 				let enums = source.enum;
+// 				enums.forEach(em => {
+// 					if(em.ic_enum === undefined) return;
+// 					em.ic_enum.forEach(ic => {
+// 						if(ic.term_type === '*'){
+// 							let result_obj = {};
+// 							result_obj.c = category;
+// 							result_obj.n = node;
+// 							result_obj.p = property;
+// 							result_obj.v = em.n;
+// 							result_obj.ic = em.i_c.c;
+// 							result_obj.ics = ic.n;
+// 							report_data.push(result_obj);
+// 						}
+// 					});
+// 				});
+// 			}
+// 		});
+// 		const report = excel.buildExport(
+// 			[ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report 
+// 				{
+// 					name: 'Report', // <- Specify sheet name (optional) 
+// 					heading: heading, // <- Raw heading array (optional) 
+// 					specification: specification, // <- Report specification 
+// 					data: report_data // <-- Report data 
+// 				}
+// 			]
+// 		);
+// 		res.attachment('tt_not_assigned.xlsx'); // This is sails.js specific (in general you need to set headers) 
+// 		res.send(report);
+// 	});
+// }
 
 module.exports = {
-	releaseNote,
+	// releaseNote,
 	exportAllValues,
 	exportDelta,
 	exportMapping,
 	preProcess,
 	addTermType,
 	icdoMapping,
-	exportMorphology,
-	compareDataType,
-	ttNotAssigned
+	// exportMorphology,
+	// compareDataType,
+	// ttNotAssigned
 }
