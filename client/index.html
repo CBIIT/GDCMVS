@@ -1,6 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
 
-<%- include('views/header.html'); -%>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1024">
+    <link rel="canonical" href="https://gdc-mvs.nci.nih.gov/">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
 
-<%- include('views/body.html'); -%>
+    <title>GDC Metadata Validation Services</title>
+    <meta name="description" content="The GDC Metadata Validation Services (GDCMVS) is a web application that allows users to search and explore the GDC metadata dictionary.">
+    <meta name="keywords" content="GDC, MVS, Metadata Validation Services, GDCMVS, NCI, NIH, Cancer, Dictionary">
+    <meta name="author" content="National Cancer Institute, National Institutes of Health, U.S. Department of Health and Human Services">
 
-<%- include('views/footer.html'); -%>
+    <script src="https://assets.adobedtm.com/6a4249cd0a2c/785de09de161/launch-70d67a6a40a8.min.js" async></script>
+</head>
+
+<body>
+    <a class="skip-main" href="#main">Skip to main content</a>
+    <div class="parent-container">
+
+        <section class="alert mvs-site-alert mvs-site-alert--info" aria-label="Site Alert info Message" role="alert">
+            <div class="mvs-alert">
+                <div class="mvs-alert__body">
+                    <p style="margin: 0px;">The EVS website hosts biomedical terminologies that NCI does not own or
+                        control. Some of
+                        these sources may contain gender-related terminology that does not comply with Executive Order
+                        14168.</p>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navbar navbar-default navbar-expand-lg bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/gdc/"
+                    title="NIH National Cancer Institute GDC Metadata Validation Services">
+                    <img src="./static/nih-header-logo-color.png"
+                        alt="NIH National Cancer Institute GDC Metadata Validation Services">
+                    <span class="d-none">NIH National Cancer Institute GDC Metadata Validation Services</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/gdc/" title="API">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://docs.gdc.cancer.gov/API/Users_Guide/Getting_Started/"
+                                title="API" target="_blank">API</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/getting_started/"
+                                title="Data Portal" target="_blank">Data Portal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                href="https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Checklist/"
+                                title="Data Submission Portal" target="_blank">Data Submission Portal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
+                                title="Data Transfer Tool" target="_blank">Data Transfer Tool</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://docs.gdc.cancer.gov/Data_Dictionary/"
+                                title="Data Dictionary" target="_blank">Data Dictionary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://docs.gdc.cancer.gov/Data/Introduction/" title="Data"
+                                target="_blank">Data</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://docs.gdc.cancer.gov/Encyclopedia/" title="Encyclopedia"
+                                target="_blank">Encyclopedia</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div id="docs-container" class="container">
+            <div data-current-page="GDCMVS" id="body">
+                <div class="col-md-12 main-container" role="main" id="main" tabindex="-1" style="border-left: none;">
+
+                    <!-- GDCMVS APP -->
+
+                    <h1 class="d-none">GDC Metadata Validation Services</h1>
+                    <div class="search-box">
+                        <div class="search-bar">
+                            <span id="suggestWidth" class="suggest__width"></span>
+                            <div class="input-group search-bar__group">
+                                <input id="keywords" type="text" class="form-control search-bar__input"
+                                    aria-label="keywords" placeholder="Please enter keyword" autocomplete="off">
+
+                                <div id="search-bar-options" class="search-bar__options dropdown"
+                                    style="display: none;">
+                                    <a href="#" data-bs-toggle="dropdown" class="search-bar__option"
+                                        aria-label="boolean operators" aria-expanded="false"><i
+                                            class="fa fa-ellipsis-h"></i></a>
+                                    <ul class="dropdown-menu search-bar__dropdown">
+                                        <li><a class="search-bar__boolean" data-boolean="AND" href="#">AND</a></li>
+                                        <li><a class="search-bar__boolean" data-boolean="OR" href="#">OR</a></li>
+                                        <li><a class="search-bar__boolean" data-boolean="NOT" href="#">NOT</a></li>
+                                    </ul>
+                                    <a href="#" id="searchclear" class="search-bar__option"
+                                        aria-label="clear search bar"><i class="fa fa-times"></i></a>
+                                </div>
+                                <button id="search" class="btn search-bar__btn" type="button">Search</button>
+                            </div>
+                            <div class="suggest">
+                                <div id="suggestBox" class="suggest__listbox"></div>
+                            </div>
+                        </div>
+                        <div class="search-options">
+                            <div class="checkbox__container">
+                                <label class="checkbox__label checkbox__label--padding">
+                                    <input id="i_ematch" class="checkbox__input" type="checkbox" value="" tabindex="0">
+                                    <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span>Exact
+                                    match
+                                </label>
+                                <label class="checkbox__label">
+                                    <input id="i_desc" class="checkbox__input" type="checkbox" value="" tabindex="0">
+                                    <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span>
+                                    Property description
+                                </label>
+                                <label class="checkbox__label">
+                                    <input id="i_syn" class="checkbox__input" type="checkbox" value="" tabindex="0">
+                                    <span class="checkbox__btn"><i class="checkbox__icon fa fa-check"></i></span>
+                                    Synonyms
+                                </label>
+                            </div>
+                            <div class="ref-box">
+                                <a href="https://evsexplore.semantics.cancer.gov/evsexplore/welcome"
+                                    class="ref-box__link" target="_blank">Search in NCIt</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="gdc-loading-icon" class="loadingContainer" style="display: none;">
+                        <div class="spinParticleContainer">
+                            <div class="particle red"></div>
+                            <div class="particle grey other-particle"></div>
+                            <div class="particle blue other-other-particle"></div>
+                        </div>
+                        <div>Loading GDC Data...</div>
+                    </div>
+
+                    <!--  ROOT APP -->
+
+                    <div id="root"></div>
+
+                    <div id="info-content" class="info-content">
+                        <div id="unofficial-term"></div>
+                        <div id="version-content" class="version-content">GDC Dictionary Version</div>
+                    </div>
+                    <div id="alert-error" class="alert alert__error alert-info" role="alert">Error: Undefined</div>
+                    <div id="alert-suggest" class="alert alert__suggest alert-info" role="alert">
+                        Coming soon: users will be able to suggest new vocabulary terms to the GDC via this link.
+                    </div>
+
+                    <!-- END GDCMVS APP -->
+                </div>
+            </div>
+        </div>
+
+        <footer id="docs-footer">
+            <div class="row">
+                <div class="col-md-12 footer-caption" role="contentinfo">
+                    <div>
+                        <a href="https://portal.gdc.cancer.gov" target="_blank">Site Home</a>
+                        | <a href="http://www.cancer.gov/global/web/policies" target="_blank">Policies</a>
+                        | <a href="http://www.cancer.gov/global/web/policies/accessibility"
+                            target="_blank">Accessibility</a>
+                        | <a href="http://www.cancer.gov/global/web/policies/foia" target="_blank">FOIA</a>
+                        | <a href="https://www.hhs.gov/vulnerability-disclosure-policy" target="_blank">HHS
+                            Vulnerability
+                            Disclosure</a>
+                    </div>
+                    <div>
+                        <a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a>
+                        | <a href="http://www.nih.gov/" target="_blank">National Institutes of Health</a>
+                        | <a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a>
+                        | <a href="http://www.usa.gov/" target="_blank">USA.gov</a>
+                    </div>
+                    <div>
+                        NIH... Turning Discovery Into Health ®
+                    </div>
+
+                    <div class="version-caption">
+                        GDC Docs Version 1.0
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/index.js"></script>
+</body>
+
+</html>

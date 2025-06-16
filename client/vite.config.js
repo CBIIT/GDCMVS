@@ -2,17 +2,26 @@ import { defineConfig } from 'vite';
 import path from 'path';
 
 export default defineConfig({
+
+  // Configure the development server.
+  // server: {
+  //   port: 3001, // You can specify the port for the dev server (default is 5173)
+  //   open: true, // Automatically open the browser when the server starts
+  // },
+  publicDir: 'public',
   build: {
-    outDir: path.resolve(__dirname, './client/static/dist'), // Output directory
+    outDir: 'dist',
+    sourcemap: false, // Disable source maps for the builds
     rollupOptions: {
       input: {
-        main: './client/src/index.js', // Main entry point
+        main: './index.html', // Main entry point
       },
       output: {
-        entryFileNames: 'bundle.js', // Output JS file
-        assetFileNames: 'styles.css' // Output CSS file
+        entryFileNames: `assets/[name]-[hash].js`,
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       }
-    }
+    },
+    chunkSizeWarningLimit: 1000,
   },
   plugins: [vitePluginCompressTemplateComponents()],
 });
@@ -51,4 +60,4 @@ function vitePluginCompressTemplateComponents() {
       return null; // Return null for files that don't match the extensions
     }
   };
-}
+};

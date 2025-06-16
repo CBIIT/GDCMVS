@@ -1,7 +1,7 @@
 node_modules
 .DS_Store
 npm-debug.log
-client/static/dist
+client/dist
 gdc-docs
 geckodriver.exe
 .env

@@ -1,0 +1,30 @@
+{
+  "name": "gdcmvs-client",
+  "version": "v2.2.28",
+  "description": "GDC Metadata Validation Services",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "watch": "vite build --watch",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "CBIIT",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CBIIT/GDCMVS/tree/master/client"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.6",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.7.1",
+    "jquery-ui-dist": "^1.13.3",
+    "lodash": "^4.17.21",
+    "paginationjs": "^2.6.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
