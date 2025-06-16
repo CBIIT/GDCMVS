@@ -1,5 +1,6 @@
 import { errorNotification } from './shared';
-const baseUrl = './search';
+
+const baseUrl = import.meta.env.VITE_GDCMVS_API_URL || './search';
 
 export const apiSuggest = (value, callback) => {
   $.getJSON(`${baseUrl}/suggest?keyword=${value}`, (data) => {

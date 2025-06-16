@@ -1,3 +1,4 @@
+import { some } from 'lodash';
 import { headerTemplate, bodyTemplate, footerTemplate, listTemplate, showCompareResult } from './to-compare-view';
 import { apiGetGDCDataById } from '../../api';
 import { getHeaderOffset, getScrollTop, searchFilter, searchFilterCR, getAllSyn, sortAlphabetically } from '../../shared';
@@ -487,7 +488,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
               if (checkerNC[nSyn.n_c] === undefined) {
                 checkerNC[nSyn.n_c] = [];
                 checkerNC[nSyn.n_c].push(x);
-              } else if (checkerNC[nSyn.n_c] !== undefined && !_.some(checkerNC[nSyn.n_c], x)) {
+              } else if (checkerNC[nSyn.n_c] !== undefined && !some(checkerNC[nSyn.n_c], x)) {
                 checkerNC[nSyn.n_c].push(x);
               }
             }
@@ -499,7 +500,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
             if (checkerNC[em.n_c] === undefined) {
               checkerNC[em.n_c] = [];
               checkerNC[em.n_c].push(x);
-            } else if (checkerNC[em.n_c] !== undefined && !_.some(checkerNC[em.n_c], x)) {
+            } else if (checkerNC[em.n_c] !== undefined && !some(checkerNC[em.n_c], x)) {
               checkerNC[em.n_c].push(x);
             }
           }
@@ -521,7 +522,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
               if (checkerNC[nSyn.n_c] === undefined) {
                 checkerNC[nSyn.n_c] = [];
                 checkerNC[nSyn.n_c].push(tmpSyn);
-              } else if (checkerNC[nSyn.n_c] !== undefined && !_.some(checkerNC[nSyn.n_c], tmpSyn)) {
+              } else if (checkerNC[nSyn.n_c] !== undefined && !some(checkerNC[nSyn.n_c], tmpSyn)) {
                 checkerNC[nSyn.n_c].push(tmpSyn);
               }
             }
@@ -535,7 +536,7 @@ const getMatchedSynonyms = (text, tmp, option) => {
             if (checkerNC[em.n_c] === undefined) {
               checkerNC[em.n_c] = [];
               checkerNC[em.n_c].push(tmpSyn);
-            } else if (checkerNC[em.n_c] !== undefined && !_.some(checkerNC[em.n_c], tmpSyn)) {
+            } else if (checkerNC[em.n_c] !== undefined && !some(checkerNC[em.n_c], tmpSyn)) {
               checkerNC[em.n_c].push(tmpSyn);
             }
           }

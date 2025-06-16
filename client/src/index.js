@@ -1,10 +1,25 @@
+
+import './libs/jquery-global';
+
+import 'jquery-ui-dist/jquery-ui.min.js';
+import 'jquery-ui-dist/jquery-ui.min.css';
+
+import 'paginationjs/dist/pagination.min.js';
+import 'paginationjs/dist/pagination.css';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+import 'font-awesome/css/font-awesome.min.css';
+
+import './styles.css';
+
 import * as search from './search-bar/search-bar';
 import { onResize, onScroll, dialogsOnResize } from './shared';
 import { dtEvents } from './dict-table/dict-table';
 import { vsEvents } from './values-table/values-table';
 import { tabsEvents } from './tabs/tabs';
 import { dialogEvents } from './dialog/dialog';
-import './styles.css';
 
 window.onload = () => {
   const init = () => {
@@ -82,7 +97,7 @@ window.onload = () => {
     vsEvents($root);
     dialogEvents($root, $body);
 
-    $.scrollUp();
+    // $.scrollUp();
   };
 
   init();
