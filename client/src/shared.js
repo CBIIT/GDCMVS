@@ -1,3 +1,5 @@
+
+import { some } from 'lodash';
 let prevScrollOffset = 0;
 let headerHeight = $('.navbar .container').height();
 let headerOffset = headerHeight;
@@ -91,7 +93,7 @@ export const searchFilter = (items, keyword) => {
   JSON.parse(JSON.stringify(items)).forEach(item => {
     if (item.s !== undefined) {
       let tmpArr = item.s.map(function (s) { return s.termName.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
-      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+      if (tmpArr.indexOf(true) >= 0 && !some(newItem, item)) {
         newItem.push(item);
       }
     }
@@ -101,12 +103,12 @@ export const searchFilter = (items, keyword) => {
   JSON.parse(JSON.stringify(items)).forEach(item => {
     if (item.all_syn !== undefined) {
       let tmpArr = item.all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
-      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+      if (tmpArr.indexOf(true) >= 0 && !some(newItem, item)) {
         newItem.push(item);
       }
     } else if (item.i_c !== undefined && allIcdo3Syn[item.i_c.c] && allIcdo3Syn[item.i_c.c].all_syn) {
       let tmpArr = allIcdo3Syn[item.i_c.c].all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
-      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+      if (tmpArr.indexOf(true) >= 0 && !some(newItem, item)) {
         newItem.push(item);
       }
     }
@@ -160,7 +162,7 @@ export const searchFilterCR = (items, keyword) => {
   JSON.parse(JSON.stringify(items)).forEach(item => {
     if (item.s !== undefined) {
       let tmpArr = item.s.map(function (s) { return s.termName.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
-      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+      if (tmpArr.indexOf(true) >= 0 && !some(newItem, item)) {
         newItem.push(item);
       }
     }
@@ -170,12 +172,12 @@ export const searchFilterCR = (items, keyword) => {
   JSON.parse(JSON.stringify(items)).forEach(item => {
     if (item.all_syn !== undefined) {
       let tmpArr = item.all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
-      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+      if (tmpArr.indexOf(true) >= 0 && !some(newItem, item)) {
         newItem.push(item);
       }
     } else if (item.i_c !== undefined && allIcdo3Syn[item.i_c.c] && allIcdo3Syn[item.i_c.c].all_syn) {
       let tmpArr = allIcdo3Syn[item.i_c.c].all_syn.map(function (x) { return x.trim().toLowerCase(); }).map(function (s) { return s.indexOf(keyword) >= 0; });
-      if (tmpArr.indexOf(true) >= 0 && !_.some(newItem, item)) {
+      if (tmpArr.indexOf(true) >= 0 && !some(newItem, item)) {
         newItem.push(item);
       }
     }

@@ -13,9 +13,6 @@ const rfs = require('rotating-file-stream');
 module.exports = app => {
   let env = config.env;
 
-  app.set('views', config.root + '/client');
-  app.engine('html', require('ejs').renderFile);
-  app.set('view engine', 'html');
   app.use(compression());
   app.use(express.urlencoded({
     limit: '4mb', // 100kb default is too small
@@ -26,8 +23,10 @@ module.exports = app => {
   }));
   app.use(methodOverride());
   app.use(cookieParser());
-  app.use(express.static(path.join(config.root, 'client/static')));
-  app.set('viewPath', 'client');
+  
+  // Serve static files from dist
+  // app.use(express.static(path.join(config.root, 'client/static')));
+  app.use(express.static(path.join(config.root, 'client/dist')));
 
   if (env === 'development') {
     app.use(morgan('dev'));

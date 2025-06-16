@@ -4,9 +4,10 @@
 
 'use strict';
 
-var config = require('./server/config');
-var compression = require('compression');
-var helmet = require('helmet');
+const config = require('./server/config');
+const compression = require('compression');
+const path = require('path');
+const helmet = require('helmet');
 
 module.exports = function (app) {
 	app.use(compression());
@@ -27,11 +28,11 @@ module.exports = function (app) {
 
 	//put all the routers here
 	app.get('/', function (req, res) {
-		res.status(200).render(app.get('views') + '/index.html');
+		res.status(200).sendFile(path.join(config.root, 'client/dist/index.html'));
 	});
 
 	// All other routes should redirect to error page
 	app.get('*', function (req, res) {
-		res.status(404).sendFile(app.get('views') + '/404.html');
+		res.status(404).sendFile(path.join(config.root, 'client/dist/views/404.html'));
 	});
 };
