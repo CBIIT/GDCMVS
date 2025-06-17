@@ -3,15 +3,27 @@ import path from 'path';
 
 export default defineConfig({
 
+  // Base public path when served in production.
+  // base: '/',
+
+  // Project root directory.
+  root: './',
+
+  // Directory to serve static assets from during development.
+  publicDir: 'public',
+
   // Configure the development server.
   // server: {
+  //   host: '0.0.0.0', // Allow access from any IP address
   //   port: 3001, // You can specify the port for the dev server (default is 5173)
   //   open: true, // Automatically open the browser when the server starts
   // },
-  publicDir: 'public',
+
+  // Directory to output build files to.
   build: {
     outDir: 'dist',
     sourcemap: false, // Disable source maps for the builds
+    // Configure Rollup options
     rollupOptions: {
       input: {
         main: './index.html', // Main entry point
@@ -21,7 +33,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]',
       }
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 1000, // Set a higher limit for chunk size warnings
   },
   plugins: [vitePluginCompressTemplateComponents()],
 });
