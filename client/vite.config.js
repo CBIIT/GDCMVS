@@ -12,12 +12,20 @@ export default defineConfig({
   // Directory to serve static assets from during development.
   publicDir: 'public',
 
-  // Configure the development server.
-  // server: {
-  //   host: '0.0.0.0', // Allow access from any IP address
-  //   port: 3001, // You can specify the port for the dev server (default is 5173)
-  //   open: true, // Automatically open the browser when the server starts
-  // },
+  //Configure the development server.
+  server: {
+    host: '0.0.0.0', // Allow access from any IP address
+    port: 3000, // You can specify the port for the dev server (default is 5173)
+    open: true, // Automatically open the browser when the server starts
+    proxy: { 
+      // Proxy requests to the backend server
+      '/api': {
+        target: 'http://localhost:5000', // Change this to your backend server URL
+        changeOrigin: true, // Change the origin of the host header to the target URL
+        rewrite: (path) => path.replace(/^\/api/, ''), // Remove /api prefix from the request path
+      },
+    },
+  },
 
   // Directory to output build files to.
   build: {
@@ -33,7 +41,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]',
       }
     },
-    chunkSizeWarningLimit: 1000, // Set a higher limit for chunk size warnings
+    chunkSizeWarningLimit: 500, // Set a higher limit for chunk size warnings
   },
   plugins: [vitePluginCompressTemplateComponents()],
 });
