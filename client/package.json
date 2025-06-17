@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
+  "keywords": ["GDC", "MVS", "Metadata Validation Services", "GDCMVS", "NCI", "NIH", "Cancer", "Dictionary", "CBIIT"],
   "author": "CBIIT",
   "license": "ISC",
   "repository": {

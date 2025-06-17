@@ -124,43 +124,55 @@ const searchICDO3Data = (req, res) => {
 	}
 }
 
-const searchP = (req, res) => {
-	let isBoolean = false;
-	let keyword = req.query.keyword.trim().replace(/[\ ]+/g, " ");
-	let option = {};
-	if(req.query.options){
-		option.match = req.query.options.indexOf("exact") !== -1 ? "exact" : "partial";
-		option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
-		option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
-	}
-	else{
-		option = {
-			match: "partial",
-			syn: false,
-			desc: false
-		};
-	}
-	if (keyword.trim() === '') {
-		res.json([]);
-	} else {
-		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
-		let query = generateQuery(keyword, option, isBoolean);
-		let highlight = generateHighlight();
-		elastic.query(config.index_p, query, highlight, result => {
-			if (result.hits === undefined) {
-				return handleError.error(res, result);
-			}
-			let data = result.hits.hits;
-			data.forEach(entry => {
-				delete entry.sort;
-				delete entry._index;
-				delete entry._score;
-				delete entry._type;
-				delete entry._id;
-			});
-			res.json(data);
-		});
-	}
+const searchP = (req, res, next) => {
+  const isBoolean = false;
+  if (!req.query.keyword || typeof req.query.keyword !== 'string') {
+    res.json([]);
+  }
+  const keyword = req.query.keyword.trim().replace(/[\ ]+/g, ' ');
+
+  let option = {};
+  if (req.query.options) {
+    option.match = req.query.options.indexOf('exact') !== -1 ? 'exact' : 'partial';
+    option.syn = req.query.options.indexOf('syn') !== -1 ? true : false;
+    option.desc = req.query.options.indexOf('desc') !== -1 ? true : false;
+  } else {
+    option = {
+      match: 'partial',
+      syn: false,
+      desc: false
+    };
+  }
+
+  if (keyword === '') {
+    res.json([]);
+  }
+
+  if (
+    keyword.indexOf(' AND ') !== -1 ||
+    keyword.indexOf(' OR ') !== -1 ||
+    keyword.indexOf(' NOT ') !== -1
+  ) {
+	isBoolean = true;
+  }
+
+  const query = generateQuery(keyword, option, isBoolean);
+  const highlight = generateHighlight();
+  elastic.query(config.index_p, query, highlight, (result) => {
+    if (result.hits === undefined) {
+      return handleError.error(res, result);
+    }
+    const data = result.hits.hits;
+    data.forEach((entry) => {
+      delete entry.sort;
+      delete entry._index;
+      delete entry._score;
+      delete entry._type;
+      delete entry._id;
+    });
+    res.json(data);
+
+});
 };
 
 const searchAPI = (req, res) => {
