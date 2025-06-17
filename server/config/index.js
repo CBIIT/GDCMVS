@@ -10,7 +10,7 @@ const all = {
   root: path.resolve(__dirname, '../../'),
 
   // Server port
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 5000,
 
   // Server port
   logDir: process.env.LOGDIR || '/local/content/mvs/logs',
