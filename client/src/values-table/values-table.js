@@ -67,8 +67,11 @@ export const vsRender = (items, keyword) => {
   // options render
   let options = {};
   items.forEach(data => {
+    
     let enums = data.inner_hits.enum;
-    if (enums.hits.total !== 0) { // If the searched term is cde id.
+    let total = typeof enums.hits.total === 'object' ? enums.hits.total.value : enums.hits.total;
+    
+    if (total !== 0) {
       let enumHits = enums.hits.hits;
       let obj = {};
       obj.category = data._source.category;
