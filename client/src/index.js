@@ -64,8 +64,12 @@ window.onload = () => {
       search.selectSuggestion(event, $suggestBox);
     });
 
+    let debounceTimeout;
     $keywords.on('input', (event) => {
-      search.suggest(event, $keywords, $searchClear, $suggestBox, $searchOptionsBox);
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(() => {
+        search.suggest(event, $keywords, $searchClear, $suggestBox, $searchOptionsBox);
+      }, 500); // Adjust debounce delay as needed
     });
 
     $document.on('click', (event) => {
