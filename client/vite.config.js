@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import path from 'path';
 
 export default defineConfig({
-
   // Base public path when served in production.
   // base: '/',
 
@@ -17,14 +16,22 @@ export default defineConfig({
     host: '0.0.0.0', // Allow access from any IP address
     port: 3000, // You can specify the port for the dev server (default is 5173)
     open: true, // Automatically open the browser when the server starts
-    proxy: { 
+    proxy: {
       // Proxy requests to the backend server
       '/api': {
         target: 'http://localhost:5000', // Change this to your backend server URL
         changeOrigin: true, // Change the origin of the host header to the target URL
-        rewrite: (path) => path.replace(/^\/api/, ''), // Remove /api prefix from the request path
-      },
+        rewrite: (path) => path.replace(/^\/api/, '') // Remove /api prefix from the request path
+      }
     },
+    watch: {
+      ignored: [
+        '**/playwright-report/**',
+        '**/node_modules/**',
+        '**/test-results/**',
+        '**/tests/**'
+      ] // Ignore changes in these directories
+    }
   },
 
   // Directory to output build files to.
@@ -34,16 +41,16 @@ export default defineConfig({
     // Configure Rollup options
     rollupOptions: {
       input: {
-        main: './index.html', // Main entry point
+        main: './index.html' // Main entry point
       },
       output: {
         entryFileNames: `assets/[name]-[hash].js`,
-        assetFileNames: 'assets/[name]-[hash].[ext]',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
-    chunkSizeWarningLimit: 500, // Set a higher limit for chunk size warnings
+    chunkSizeWarningLimit: 500 // Set a higher limit for chunk size warnings
   },
-  plugins: [vitePluginCompressTemplateComponents()],
+  plugins: [vitePluginCompressTemplateComponents()]
 });
 
 function vitePluginCompressTemplateComponents() {
@@ -52,7 +59,6 @@ function vitePluginCompressTemplateComponents() {
     transform(code, id) {
       // Check if the file is a JavaScript file
       if (id.endsWith('.js')) {
-
         let transformedCode = code;
 
         // Replace template components with compressed content
@@ -80,4 +86,4 @@ function vitePluginCompressTemplateComponents() {
       return null; // Return null for files that don't match the extensions
     }
   };
-};
+}

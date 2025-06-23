@@ -7,3 +7,120 @@ geckodriver.exe
 .env
 .vscode
 .local
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+# 
+
+
+
+
+# Node.js / Yarn / NPM specific ignores
+# ------------------------------------
+# Dependencies
+node_modules/
+yarn-debug.log*
+.yarn/
+.pnp.js
+.pnp.cjs
+
+# Runtime data
+npm-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.eslintcache
+.parcel-cache
+.cache/
+/tmp
+
+# Environment variables
+# These files contain sensitive information and should NEVER be committed.
+# Make sure to set these variables in your deployment environment.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# Frontend (client/) specific ignores
+# -----------------------------------
+client/node_modules/
+client/dist/           # Vite build output
+client/.vite/          # Vite cache directory
+client/.env            # Frontend environment variables
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
+client/.env.*.local
+client/.env.*
+
+# Backend (server/) specific ignores
+# ----------------------------------
+server/node_modules/
+server/build/          # Backend build output (e.g., if transpiling TS to JS)
+server/dist/           # Another common build output directory
+server/.env            # Backend environment variables
+server/.env.local
+server/.env.development.local
+server/.env.test.local
+server/.env.production.local
+server/.env.*.local
+server/.env.*
+
+
+# Docker specific ignores
+# -----------------------
+# Ignore Docker-related temporary or sensitive files if they somehow appear at root.
+# Note: Dockerfiles themselves and .dockerignore files SHOULD be committed.
+.docker/
+.dockerignore_backup # Sometimes generated during updates
+
+# Playwright specific ignores
+# ---------------------------
+client/test-results/
+client/playwright-report/
+client/blob-report/
+client/playwright/.cache/
+client/.cache-playwright/
+
+# IDE specific ignores
+# --------------------
+.idea/                 # JetBrains IDEs (IntelliJ, WebStorm, PhpStorm)
+.vscode/               # VS Code (if you don't want to share workspace settings like launch.json)
+*.suo                    # Visual Studio user-specific settings
+*.user                   # Visual Studio user options
+*.sublime-project        # Sublime Text projects
+*.sublime-workspace      # Sublime Text workspaces
+*.history                # Common history files from various editors
+
+# Operating System specific files
+# -------------------------------
+.DS_Store              # macOS
+Thumbs.db              # Windows
+ehthumbs.db            # Windows
+Desktop.ini            # Windows
+
+# General ignores
+# ---------------
+*.log                  # Any log files
+*.bak                  # Backup files
+*.swp                  # Vim swap files
+*.swo                  # Vim swap files
+.DS_Store              # macOS directory service store
+.local
