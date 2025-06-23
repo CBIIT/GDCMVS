@@ -1,3 +1,0 @@
-<testsuite name="Mocha Tests" tests="1" failures="0" errors="0" skipped="0" timestamp="Thu, 05 Apr 2018 15:08:28 GMT" time="22.403">
-<testcase classname="search_blood.js" name="search_blood" time="22.4"/>
-</testsuite>
