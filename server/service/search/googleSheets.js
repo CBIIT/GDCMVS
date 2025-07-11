@@ -1,23 +1,6 @@
 const fs = require('fs');
 const readline = require('readline');
-const {google} = require('googleapis');
 const logger = require('../../components/logger');
-
-var manageSheets = function (req, res) {
-    // const SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
-    const TOKEN_PATH = 'token.json';
-    const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
-    const PRIVATE_KEY_PATH = 'privatekey.json';
-
-    // Load client secrets from a local file.
-    fs.readFile('credentials.json', (err, content) => {
-        if (err) return console.log('Error loading client secret file:', err);
-
-        // authorizeOAuth2(JSON.parse(content), TOKEN_PATH, SCOPES, listMajors);
-    });
-    authorize(PRIVATE_KEY_PATH, SCOPES, listMajors);
-    res.send("Success");
-}
 
 function listMajors(auth) {
     read_data(auth);
