@@ -1,1 +1,27 @@
+name: Deploy GDC_MVS
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Tier to deploy to"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+          - prod
 
+env:
+  APP: GDC-MVS
+  TZ: America/New_York
+  AWS_REGION: us-east-1
+  TASK_DEFINITION_TEMPLATE_PATH: aws
+  DOCKER_BUILDKIT: 1
+
+permissions:
+  id-token: write
+jobs:
+  Deploy:
+   
