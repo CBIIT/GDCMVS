@@ -616,6 +616,7 @@ npm run build
 npm start
 
 # 6. Create/update Elasticsearch index (in a new terminal, keep server running)
+# Optional : when new GDCMVS disctionary data is loaded or first time set up
 # Optional: Delete old indices first
 curl -X DELETE http://localhost:9200/_all
 # Build index
