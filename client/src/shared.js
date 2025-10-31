@@ -32,14 +32,14 @@ export const onResize = ($docsContainer, $parentContainer, $mainContainer) => {
 //   $mainContainer.attr('style', 'min-height: calc(100vh - ' + (headerHeight + 10) + 'px)');
 // };
 
-export const errorNotification = (status, errorThrown) => {
+export const errorNotification = (errorMessage) => {
   if (notificationOn === true) return;
   notificationOn = true;
   // close progress bar
   $('#gdc-loading-icon').fadeOut('fast');
   // show the notification alert error
   const $alertError = $('#alert-error');
-  $alertError.text('Error ' + status + ': ' + errorThrown);
+  $alertError.text(errorMessage);
   $alertError.css({ 'top': (getHeaderOffset() + 20) + 'px' }).addClass('alert__show');
   setTimeout(() => {
     $alertError.removeClass('alert__show');
@@ -211,3 +211,16 @@ export const getHighlightObj = (highlight) => {
   }
   return highlightObj;
 };
+
+export const highlightMatch = (text, regKey) => {
+  const parts = text.split(regKey);
+  const matches = text.match(regKey) || [];
+  let result = "";
+  for (let i = 0; i < parts.length; i++) {
+    result += parts[i];
+    if (i < matches.length) {
+      result += `<b>${matches[i]}</b>`;
+    }
+  }
+  return result;
+}

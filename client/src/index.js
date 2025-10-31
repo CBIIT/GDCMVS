@@ -4,6 +4,7 @@ import { dtEvents } from './dict-table/dict-table';
 import { vsEvents } from './values-table/values-table';
 import { tabsEvents } from './tabs/tabs';
 import { dialogEvents } from './dialog/dialog';
+import './styles.css';
 
 window.onload = () => {
   const init = () => {

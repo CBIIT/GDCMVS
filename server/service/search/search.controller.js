@@ -7,8 +7,8 @@ const config = require('../../config');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const yaml = require('yamljs');
-const xlsx = require('node-xlsx');
+const yaml = require('js-yaml');
+// const xlsx = require('node-xlsx');
 const _ = require('lodash');
 const shared = require('./shared');
 const folderPath = path.join(__dirname, '..', '..', 'data');
@@ -456,122 +456,126 @@ const indexing = (req, res) => {
 	let config_property = {};
 	config_property.index = config.index_p;
 	config_property.body = {
-		"settings": {
-			"number_of_shards": 10, 
-			"max_inner_result_window": 10000000,
-			"max_result_window": 10000000,
-			"analysis": {
-				"analyzer": {
-					"case_insensitive": {
-						"tokenizer": "keyword",
-						"filter": ["lowercase", "whitespace_remove"]
+		settings: {
+			number_of_shards: 10, 
+			max_inner_result_window: 10000000,
+			max_result_window: 10000000,
+			analysis: {
+				analyzer: {
+					case_insensitive: {
+						tokenizer: "keyword",
+						filter: ["lowercase", "whitespace_remove"]
 					},
-					"my_standard": {
-						"tokenizer": "standard",
-						"char_filter": ["my_filter"],
-						"filter": ["lowercase","whitespace_remove"]
+					my_standard: {
+						tokenizer: "standard",
+						char_filter: ["my_filter"],
+						filter: ["lowercase","whitespace_remove"]
 					},
-					"my_ngram": {
-						"tokenizer": "ngram_tokenizer",
-						"char_filter": ["my_filter"],
-						"filter": ["lowercase","whitespace_remove"]
+					// "my_ngram": {
+					// 	"tokenizer": "ngram_tokenizer",
+					// 	"char_filter": ["my_filter"],
+					// 	"filter": ["lowercase","whitespace_remove"]
+					// }
+					my_whitespace: {
+						tokenizer: "whitespace",
+						//char_filter: ["my_filter"],
+						//filter: ["lowercase", "whitespace_remove"],
+						filter: ["lowercase"],
+					  },
+				},
+				char_filter: {
+					my_filter: {
+						type: "mapping",
+						mappings: ["_=>-"]
 					}
 				},
-				"char_filter": {
-					"my_filter": {
-						"type": "mapping",
-						"mappings": ["_=>-"]
+				filter: {
+					whitespace_remove: {
+						type: "pattern_replace",
+						pattern: "[_-]",
+						replacement: " "
 					}
 				},
-				"filter": {
-					"whitespace_remove": {
-						"type": "pattern_replace",
-						"pattern": "[_-]",
-						"replacement": " "
-					}
-				},
-				"tokenizer": {
-					"ngram_tokenizer": {
-						"type": "nGram",
-						"min_gram": "2",
-						"token_chars": ["letter", "digit", "symbol"]
-					}
-				}
+				// "tokenizer": {
+				// 	"ngram_tokenizer": {
+				// 		"type": "nGram",
+				// 		"min_gram": "2",
+				// 		"token_chars": ["letter", "digit", "symbol"]
+				// 	}
+				// }
 			}
 		},
-		"mappings": {
-			"props": {
-				"properties": {
-					"id": {
-						"type": "keyword"
+		mappings: {
+			properties: {
+				"id": {
+					"type": "keyword"
+				},
+				"category": {
+					"type": "keyword"
+				},
+				"node": {
+					"type": "keyword"
+				},
+				"property": {
+					"type": "text",
+					"fields": {
+						"have": {
+							"type": "text",
+							"analyzer": "my_whitespace"
+						}
 					},
-					"category": {
-						"type": "keyword"
-					},
-					"node": {
-						"type": "keyword"
-					},
-					"property": {
-						"type": "text",
-						"fields": {
-							"have": {
-								"type": "text",
-								"analyzer": "my_standard"
-							}
+					"analyzer": "case_insensitive"
+				},
+				"enum":{
+					"type": "nested",
+					"properties": {
+						"n": {
+							"type": "text",
+							"fields": {
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
+								}
+							},
+							"analyzer": "case_insensitive"
 						},
-						"analyzer": "case_insensitive"
-					},
-					"enum":{
-						"type": "nested",
-						"properties": {
-							"n": {
-								"type": "text",
-								"fields": {
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
-								},
-								"analyzer": "case_insensitive"
+						"n_syn.s.termName": {
+							"type": "text",
+							"fields": {
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
+								}
 							},
-							"n_syn.s.termName": {
-								"type": "text",
-								"fields": {
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
-								},
-								"analyzer": "case_insensitive"
+							"analyzer": "case_insensitive"
+						},
+						"n_syn.n_c": {
+							"type": "text",
+							"fields": {
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
+								}
 							},
-							"n_syn.n_c": {
-								"type": "text",
-								"fields": {
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
+							"analyzer": "case_insensitive"
+						},
+						"i_c":{
+							"properties": {
+								"c": {
+									"type": "text",
+									"analyzer": "case_insensitive"
 								},
-								"analyzer": "case_insensitive"
-							},
-							"i_c":{
-								"properties": {
-									"c": {
-										"type": "text",
-										"analyzer": "case_insensitive"
-									},
-									"have": {
-										"type": "text",
-										"analyzer": "my_standard"
-									}
+								"have": {
+									"type": "text",
+									"analyzer": "my_whitespace"
 								}
 							}
 						}
-					},
-					"cde.id": {
-						"type": "text",
-						"analyzer": "case_insensitive"
 					}
+				},
+				"cde.id": {
+					"type": "text",
+					"analyzer": "case_insensitive"
 				}
 			}
 		}
@@ -581,16 +585,14 @@ const indexing = (req, res) => {
 	let config_suggestion = {};
 	config_suggestion.index = config.suggestionName;
 	config_suggestion.body = {
-		"mappings": {
-			"suggestions": {
-				"properties": {
-					"id": {
-						"type": "completion",
-						"max_input_length": 100,
-						"analyzer": "standard",
-						"search_analyzer": "standard",
-						"preserve_separators": false
-					}
+		mappings: {
+			properties: {
+				id: {
+					type: "completion",
+					max_input_length: 100,
+					analyzer: "standard",
+					search_analyzer: "standard",
+					preserve_separators: false
 				}
 			}
 		}
@@ -599,24 +601,22 @@ const indexing = (req, res) => {
 	let config_ncitDetails = {};
 	config_ncitDetails.index = config.ncitDetails;
 	config_ncitDetails.body = {
-		"mappings": {
-			"props": {
-				"properties": {
-					"id": {
-						"type": "keyword"
-					},
-					"preferred_name": {
-						"type": "text"
-					},
-					"code": {
-						"type": "text"
-					},
-					"synonyms": {
-						"type": "text"
-					},
-					"definitions": {
-						"type": "text"
-					}
+		mappings: {
+			properties: {
+				"id": {
+					"type": "keyword"
+				},
+				"preferred_name": {
+					"type": "text"
+				},
+				"code": {
+					"type": "text"
+				},
+				"synonyms": {
+					"type": "text"
+				},
+				"definitions": {
+					"type": "text"
 				}
 			}
 		}
@@ -936,7 +936,7 @@ const removeDeprecated = () => {
 	let deprecated_enum = [];
 	fs.readdirSync(folderPath).forEach(file => {
 		if (file.indexOf('_') !== 0) {
-			let fileJson = yaml.load(folderPath + '/' + file);
+			let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 			let category = fileJson.category;
 			let node = fileJson.id;
 
@@ -997,166 +997,166 @@ const getNCItInfo = (req, res) => {
 };
 
 const parseExcel = (req, res) => {
-	var folderPathMapping = path.join(__dirname, '..', '..', 'excel_mapping');
-	let concept = shared.readConceptCode();
-	let all_gdc_values = shared.readGDCValues();
-	fs.readdirSync(folderPathMapping).forEach(file => {
-		if (file.indexOf('.xlsx') !== -1) {
-			var dataParsed = [];
-			var obj = xlsx.parse(folderPathMapping + '/' + file);
-			obj.forEach(sheet => {
-				var worksheet = sheet.data;
+	// var folderPathMapping = path.join(__dirname, '..', '..', 'excel_mapping');
+	// let concept = shared.readConceptCode();
+	// let all_gdc_values = shared.readGDCValues();
+	// fs.readdirSync(folderPathMapping).forEach(file => {
+	// 	if (file.indexOf('.xlsx') !== -1) {
+	// 		var dataParsed = [];
+	// 		var obj = xlsx.parse(folderPathMapping + '/' + file);
+	// 		obj.forEach(sheet => {
+	// 			var worksheet = sheet.data;
 
-				for (var n = 1; n < worksheet.length; n++) {
-					var row = worksheet[n];
-					let temp_data = {};
-					if (row.length > 0) {
-						if (row[0]) {
-							temp_data.category = row[0];
-						} else {
-							temp_data.category = "";
-						}
-						if (row[1]) {
-							temp_data.node = row[1];
-						} else {
-							temp_data.node = "";
-						}
-						if (row[2]) {
-							temp_data.property = row[2];
-						} else {
-							temp_data.property = "";
-						}
-						if (row[3]) {
-							temp_data.value = row[3];
-						} else {
-							temp_data.value = "";
-						}
-						if (row[5]) {
-							temp_data.ncit_code = row[5];
-						} else {
-							temp_data.ncit_code = "";
-						}
-						if (row[6]) {
-							temp_data.icdo3_code = row[6];
-							if (row[7]) {
-								temp_data.icdo3_term = row[7];
-							} else {
-								temp_data.icdo3_term = "";
-							}
-							if(row[8]){
-								temp_data.term_type = row[8];
-							} else {
-								temp_data.term_type = "";
-							}
-						}
-						dataParsed.push(temp_data);
-					}
-				}
-			});
+	// 			for (var n = 1; n < worksheet.length; n++) {
+	// 				var row = worksheet[n];
+	// 				let temp_data = {};
+	// 				if (row.length > 0) {
+	// 					if (row[0]) {
+	// 						temp_data.category = row[0];
+	// 					} else {
+	// 						temp_data.category = "";
+	// 					}
+	// 					if (row[1]) {
+	// 						temp_data.node = row[1];
+	// 					} else {
+	// 						temp_data.node = "";
+	// 					}
+	// 					if (row[2]) {
+	// 						temp_data.property = row[2];
+	// 					} else {
+	// 						temp_data.property = "";
+	// 					}
+	// 					if (row[3]) {
+	// 						temp_data.value = row[3];
+	// 					} else {
+	// 						temp_data.value = "";
+	// 					}
+	// 					if (row[5]) {
+	// 						temp_data.ncit_code = row[5];
+	// 					} else {
+	// 						temp_data.ncit_code = "";
+	// 					}
+	// 					if (row[6]) {
+	// 						temp_data.icdo3_code = row[6];
+	// 						if (row[7]) {
+	// 							temp_data.icdo3_term = row[7];
+	// 						} else {
+	// 							temp_data.icdo3_term = "";
+	// 						}
+	// 						if(row[8]){
+	// 							temp_data.term_type = row[8];
+	// 						} else {
+	// 							temp_data.term_type = "";
+	// 						}
+	// 					}
+	// 					dataParsed.push(temp_data);
+	// 				}
+	// 			}
+	// 		});
 
-			for (let dp in dataParsed) {
-				if (dataParsed[dp].icdo3_code) {
-					//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
-					let icdo = shared.readGDCValues();
-					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
-					if (icdo[category_node_property]) {
-						//If some of the mapping exists for this category.node.property
-						var temp_obj = {
-							nm: dataParsed[dp].icdo3_term,
-							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code,
-							term_type: dataParsed[dp].term_type
-						};
-						if (!mappingExists(icdo[category_node_property], temp_obj)) {
-							logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
-							icdo[category_node_property].push(temp_obj);
-						}
+	// 		for (let dp in dataParsed) {
+	// 			if (dataParsed[dp].icdo3_code) {
+	// 				//If the excel file has icdo3 codes, save the difference in gdc_values.js file.
+	// 				let icdo = shared.readGDCValues();
+	// 				let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+	// 				if (icdo[category_node_property]) {
+	// 					//If some of the mapping exists for this category.node.property
+	// 					var temp_obj = {
+	// 						nm: dataParsed[dp].icdo3_term,
+	// 						i_c: dataParsed[dp].icdo3_code,
+	// 						n_c: dataParsed[dp].ncit_code,
+	// 						term_type: dataParsed[dp].term_type
+	// 					};
+	// 					if (!mappingExists(icdo[category_node_property], temp_obj)) {
+	// 						logger.info("new icdo3 mapping found " + JSON.stringify(temp_obj));
+	// 						icdo[category_node_property].push(temp_obj);
+	// 					}
 
-					} else {
-						//If no mapping exists for this category.node.property	
-						icdo[category_node_property] = [];
-						var temp_obj = {
-							nm: dataParsed[dp].icdo3_term,
-							i_c: dataParsed[dp].icdo3_code,
-							n_c: dataParsed[dp].ncit_code,
-							term_type: dataParsed[dp].term_type
-						};
-						icdo[category_node_property].push(temp_obj);
-					}
-					//write changes to file
-					fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
-						if (err) return logger.error(err);
-					});
+	// 				} else {
+	// 					//If no mapping exists for this category.node.property	
+	// 					icdo[category_node_property] = [];
+	// 					var temp_obj = {
+	// 						nm: dataParsed[dp].icdo3_term,
+	// 						i_c: dataParsed[dp].icdo3_code,
+	// 						n_c: dataParsed[dp].ncit_code,
+	// 						term_type: dataParsed[dp].term_type
+	// 					};
+	// 					icdo[category_node_property].push(temp_obj);
+	// 				}
+	// 				//write changes to file
+	// 				fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(icdo), err => {
+	// 					if (err) return logger.error(err);
+	// 				});
 
-				} else {
-					let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
-					let c_n_p = all_gdc_values[category_node_property];
-					delete all_gdc_values[category_node_property];
-					if (c_n_p) {
-						all_gdc_values[category_node_property] = [];
-						c_n_p.forEach(prop_values => {
-							if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
-								prop_values.n_c = dataParsed[dp].ncit_code;
-							}
-							all_gdc_values[category_node_property].push(prop_values);
-						});
+	// 			} else {
+	// 				let category_node_property = dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property;
+	// 				let c_n_p = all_gdc_values[category_node_property];
+	// 				delete all_gdc_values[category_node_property];
+	// 				if (c_n_p) {
+	// 					all_gdc_values[category_node_property] = [];
+	// 					c_n_p.forEach(prop_values => {
+	// 						if (dataParsed[dp].value === prop_values.nm && !prop_values.n_c) {
+	// 							prop_values.n_c = dataParsed[dp].ncit_code;
+	// 						}
+	// 						all_gdc_values[category_node_property].push(prop_values);
+	// 					});
 
-					}
+	// 				}
 
-					var cc = {};
-					//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
-					if (concept[category_node_property]) {
-						//If category.node.property already exists in the conceptCode.js file, then delete it.
-						//delete concept[category_node_property]
-						var temp_cc = {};
-						for (let temp_dp in dataParsed) {
-							if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
-								if (dataParsed[temp_dp].ncit_code) {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
-									}
-								} else {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: ""
-									}
-								}
-								Object.assign(concept[category_node_property], temp_cc[category_node_property]);
-							}
-						}
-					} else {
-						var helper_cc = {};
-						helper_cc[category_node_property] = {}
-						var temp_cc = {};
-						for (let temp_dp in dataParsed) {
-							if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+	// 				var cc = {};
+	// 				//If the excel file don't have icdo3 code, save the difference in conceptCode.js file.
+	// 				if (concept[category_node_property]) {
+	// 					//If category.node.property already exists in the conceptCode.js file, then delete it.
+	// 					//delete concept[category_node_property]
+	// 					var temp_cc = {};
+	// 					for (let temp_dp in dataParsed) {
+	// 						if (category_node_property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
+	// 							if (dataParsed[temp_dp].ncit_code) {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+	// 								}
+	// 							} else {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: ""
+	// 								}
+	// 							}
+	// 							Object.assign(concept[category_node_property], temp_cc[category_node_property]);
+	// 						}
+	// 					}
+	// 				} else {
+	// 					var helper_cc = {};
+	// 					helper_cc[category_node_property] = {}
+	// 					var temp_cc = {};
+	// 					for (let temp_dp in dataParsed) {
+	// 						if (dataParsed[dp].category + "." + dataParsed[dp].node + "." + dataParsed[dp].property === dataParsed[temp_dp].category + "." + dataParsed[temp_dp].node + "." + dataParsed[temp_dp].property) {
 
-								if (dataParsed[temp_dp].ncit_code) {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
-									}
-								} else {
-									temp_cc[category_node_property] = {
-										[dataParsed[temp_dp].value]: ""
-									}
-								}
-								Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
-							}
-						}
-						cc = helper_cc;
-					}
-					Object.assign(concept, cc);
-					fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
-						if (err) return logger.error(err);
-						logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
-					});
-				}
-			}
+	// 							if (dataParsed[temp_dp].ncit_code) {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: dataParsed[temp_dp].ncit_code
+	// 								}
+	// 							} else {
+	// 								temp_cc[category_node_property] = {
+	// 									[dataParsed[temp_dp].value]: ""
+	// 								}
+	// 							}
+	// 							Object.assign(helper_cc[category_node_property], temp_cc[category_node_property]);
+	// 						}
+	// 					}
+	// 					cc = helper_cc;
+	// 				}
+	// 				Object.assign(concept, cc);
+	// 				fs.writeFileSync("./server/data_files/conceptCode.js", JSON.stringify(concept), err => {
+	// 					if (err) return logger.error(err);
+	// 					logger.debug("adding new mapping in concept code " + JSON.stringify(temp_concept));
+	// 				});
+	// 			}
+	// 		}
 
-		}
-	});
-	fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
-		if (err) return logger.error(err);
-	});
+	// 	}
+	// });
+	// fs.writeFileSync("./server/data_files/gdc_values.js", JSON.stringify(all_gdc_values), err => {
+	// 	if (err) return logger.error(err);
+	// });
 	// removeDeprecated();
 	res.json({
 		"status": "success",
@@ -1180,7 +1180,7 @@ const Unmapped = (req, res) => {
 		let node = keys.split('.')[1];
 		let property = keys.split('.')[2];
 		if (fs.existsSync(folderPath + '/' + node + '.yaml')) {
-			let fileData = yaml.load(folderPath + '/' + node + '.yaml');
+			let fileData = yaml.load(fs.readFileSync(folderPath + '/' + node + '.yaml', 'utf8'));
 			if (fileData.properties[property]) {
 				let local_property = fileData.properties[property];
 				if (local_property.deprecated_enum) {
@@ -1244,7 +1244,7 @@ const Unmapped = (req, res) => {
 	//Remove old properties and values that don't exists in GDC Dictionary from conceptCode.js
 	let gdc_data = {};
 	fs.readdirSync(folderPath).forEach(file => {
-		gdc_data[file.replace('.yaml', '')] = yaml.load(folderPath + '/' + file);
+		gdc_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
 	});
 	let tmp_concept = shared.readConceptCode();
 	for (let keys in tmp_concept) {
