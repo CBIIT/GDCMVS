@@ -9,7 +9,7 @@ body {
 
 .main-container {
   font-size: 1.3rem;
-  padding-bottom: 127px;
+  padding-bottom: 123px;
 }
 
 .info-content {
@@ -680,9 +680,3 @@ a:hover, a:focus {
     transform: translate3d(-50%, -100%, 0);
   }
 }
-
-@import url(./dialog/dialog.css);
-@import url(./dict-table/dict-table.css);
-@import url(./search-bar/search-bar.css);
-@import url(./tabs/tabs.css);
-@import url(./values-table/values-table.css);
