@@ -21,6 +21,53 @@ jobs:
           role-to-assume: arn:aws:iam::688132009233:role/github_evstools_dev
           aws-region: us-east-1
 
+      - name: Verify EC2 instance status
+        run: |
+          set -x
+          INSTANCE_ID="i-08eb1556c6cd5e596"
+          echo "Checking EC2 instance status for $INSTANCE_ID..."
+          
+          INSTANCE_STATUS=$(aws ec2 describe-instances \
+            --instance-ids "$INSTANCE_ID" \
+            --query 'Reservations[0].Instances[0].[State.Name, InstanceId]' \
+            --output text 2>&1)
+          
+          if [ $? -ne 0 ]; then
+            echo "❌ Error: Failed to describe instance"
+            echo "$INSTANCE_STATUS"
+            exit 1
+          fi
+          
+          STATE=$(echo "$INSTANCE_STATUS" | awk '{print $1}')
+          FOUND_ID=$(echo "$INSTANCE_STATUS" | awk '{print $2}')
+          
+          if [ -z "$FOUND_ID" ] || [ "$FOUND_ID" != "$INSTANCE_ID" ]; then
+            echo "❌ Error: Instance $INSTANCE_ID not found"
+            exit 1
+          fi
+          
+          echo "Instance state: $STATE"
+          
+          if [ "$STATE" != "running" ]; then
+            echo "❌ Error: Instance is not running. Current state: $STATE"
+            echo "Please ensure the instance is running before attempting to restart the service."
+            exit 1
+          fi
+          
+          # Check if SSM agent is ready
+          echo "Checking SSM agent status..."
+          SSM_STATUS=$(aws ssm describe-instance-information \
+            --filters "Key=InstanceIds,Values=$INSTANCE_ID" \
+            --query 'InstanceInformationList[0].PingStatus' \
+            --output text 2>&1)
+          
+          if [ "$SSM_STATUS" == "Online" ]; then
+            echo "✅ SSM agent is online"
+          else
+            echo "⚠️  Warning: SSM agent status: $SSM_STATUS"
+            echo "The instance may not be ready for SSM commands yet."
+          fi
+
       - name: Restart Node.js service on EC2 via SSM
         run: |
           set -x
@@ -36,6 +83,11 @@ jobs:
           
           if [ -z "$COMMAND_ID" ] || [ "$COMMAND_ID" == "None" ]; then
             echo "❌ Error: Failed to send SSM command"
+            echo "This could be due to:"
+            echo "  - Instance not in a valid state (not running, SSM agent not ready)"
+            echo "  - IAM role doesn't have SSM permissions"
+            echo "  - SSM agent not installed or not running on the instance"
+            echo "  - Instance not in the same AWS account"
             exit 1
           fi
           
