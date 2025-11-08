@@ -49,9 +49,41 @@ jobs:
           echo "Instance state: $STATE"
           
           if [ "$STATE" != "running" ]; then
-            echo "❌ Error: Instance is not running. Current state: $STATE"
-            echo "Please ensure the instance is running before attempting to restart the service."
-            exit 1
+            if [ "$STATE" == "stopped" ]; then
+              echo "⚠️  Instance is stopped. Attempting to start it..."
+              aws ec2 start-instances --instance-ids "$INSTANCE_ID" --output text
+              
+              echo "Waiting for instance to start (this may take 30-60 seconds)..."
+              aws ec2 wait instance-running --instance-ids "$INSTANCE_ID"
+              
+              # Wait a bit more for SSM agent to come online
+              echo "Waiting for SSM agent to come online..."
+              MAX_WAIT=120
+              ELAPSED=0
+              while [ $ELAPSED -lt $MAX_WAIT ]; do
+                SSM_STATUS=$(aws ssm describe-instance-information \
+                  --filters "Key=InstanceIds,Values=$INSTANCE_ID" \
+                  --query 'InstanceInformationList[0].PingStatus' \
+                  --output text 2>/dev/null || echo "Unknown")
+                
+                if [ "$SSM_STATUS" == "Online" ]; then
+                  echo "✅ SSM agent is now online"
+                  break
+                fi
+                
+                echo "Waiting for SSM agent... (${ELAPSED}s/${MAX_WAIT}s) - Status: $SSM_STATUS"
+                sleep 5
+                ELAPSED=$((ELAPSED + 5))
+              done
+              
+              if [ "$SSM_STATUS" != "Online" ]; then
+                echo "⚠️  Warning: SSM agent may not be ready yet, but proceeding..."
+              fi
+            else
+              echo "❌ Error: Instance is in state '$STATE'. Cannot proceed."
+              echo "Please ensure the instance is running or stopped (will be started automatically)."
+              exit 1
+            fi
           fi
           
           # Check if SSM agent is ready
