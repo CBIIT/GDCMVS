@@ -1,9 +1,11 @@
 node_modules
 .DS_Store
 npm-debug.log
+client/dist
 client/static/dist
 gdc-docs
 geckodriver.exe
 .env
 .vscode
 .local
+package-lock.json
