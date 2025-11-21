@@ -1,0 +1,342 @@
+name: Deploy to EC2 and Restart
+
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Environment tier (dev or qa)"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+      target_folder:
+        description: "Target folder on EC2 to unzip code (e.g., /local/content/mvs/GDCMVS)"
+        required: true
+        default: "/local/content/mvs/GDCMVS"
+        type: string
+      backup_previous:
+        description: "Backup previous version before deploying? (Recommended: yes)"
+        required: true
+        default: "yes"
+        type: choice
+        options:
+          - yes
+          - no
+
+permissions:
+  id-token: write     # Required for GitHub OIDC to assume the AWS role
+  contents: read
+
+jobs:
+  deploy-to-ec2:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::688132009233:role/github_evstools_dev
+          aws-region: us-east-1
+
+      - name: Verify EC2 instance status
+        run: |
+          set -x
+          INSTANCE_ID="i-08eb1556c6cd5e596"
+          echo "Checking EC2 instance status for $INSTANCE_ID..."
+          
+          INSTANCE_STATUS=$(aws ec2 describe-instances \
+            --instance-ids "$INSTANCE_ID" \
+            --query 'Reservations[0].Instances[0].[State.Name, InstanceId]' \
+            --output text 2>&1)
+          
+          if [ $? -ne 0 ]; then
+            echo "❌ Error: Failed to describe instance"
+            echo "$INSTANCE_STATUS"
+            exit 1
+          fi
+          
+          STATE=$(echo "$INSTANCE_STATUS" | awk '{print $1}')
+          FOUND_ID=$(echo "$INSTANCE_STATUS" | awk '{print $2}')
+          
+          if [ -z "$FOUND_ID" ] || [ "$FOUND_ID" != "$INSTANCE_ID" ]; then
+            echo "❌ Error: Instance $INSTANCE_ID not found"
+            exit 1
+          fi
+          
+          echo "Instance state: $STATE"
+          
+          if [ "$STATE" != "running" ]; then
+            if [ "$STATE" == "stopped" ]; then
+              echo "⚠️  Instance is stopped. Attempting to start it..."
+              aws ec2 start-instances --instance-ids "$INSTANCE_ID" --output text
+              
+              echo "Waiting for instance to start (this may take 30-60 seconds)..."
+              aws ec2 wait instance-running --instance-ids "$INSTANCE_ID"
+              
+              # Wait a bit more for SSM agent to come online
+              echo "Waiting for SSM agent to come online..."
+              MAX_WAIT=120
+              ELAPSED=0
+              while [ $ELAPSED -lt $MAX_WAIT ]; do
+                SSM_STATUS=$(aws ssm describe-instance-information \
+                  --filters "Key=InstanceIds,Values=$INSTANCE_ID" \
+                  --query 'InstanceInformationList[0].PingStatus' \
+                  --output text 2>/dev/null || echo "Unknown")
+                
+                if [ "$SSM_STATUS" == "Online" ]; then
+                  echo "✅ SSM agent is now online"
+                  break
+                fi
+                
+                echo "Waiting for SSM agent... (${ELAPSED}s/${MAX_WAIT}s) - Status: $SSM_STATUS"
+                sleep 5
+                ELAPSED=$((ELAPSED + 5))
+              done
+              
+              if [ "$SSM_STATUS" != "Online" ]; then
+                echo "⚠️  Warning: SSM agent may not be ready yet, but proceeding..."
+              fi
+            else
+              echo "❌ Error: Instance is in state '$STATE'. Cannot proceed."
+              echo "Please ensure the instance is running or stopped (will be started automatically)."
+              exit 1
+            fi
+          fi
+          
+          # Check if SSM agent is ready
+          echo "Checking SSM agent status..."
+          SSM_STATUS=$(aws ssm describe-instance-information \
+            --filters "Key=InstanceIds,Values=$INSTANCE_ID" \
+            --query 'InstanceInformationList[0].PingStatus' \
+            --output text 2>&1)
+          
+          if [ "$SSM_STATUS" == "Online" ]; then
+            echo "✅ SSM agent is online"
+          else
+            echo "⚠️  Warning: SSM agent status: $SSM_STATUS"
+            echo "The instance may not be ready for SSM commands yet."
+          fi
+
+      - name: Create zip archive
+        run: |
+          set -x
+          echo "Creating zip archive of the codebase..."
+          
+          # Create zip file excluding common files/directories
+          zip -r GDCMVS.zip . \
+            -x "*.git/*" \
+            -x "*node_modules/*" \
+            -x "*client/dist/*" \
+            -x "*.DS_Store" \
+            -x "*.zip" \
+            -x "*.tgz" \
+            -x "*.tar.gz" || {
+            echo "⚠️  Warning: Some files may have been excluded or changed during archiving"
+          }
+          
+          if [ ! -f GDCMVS.zip ]; then
+            echo "❌ Error: Failed to create zip archive"
+            exit 1
+          fi
+          
+          ZIP_SIZE=$(du -h GDCMVS.zip | cut -f1)
+          echo "✅ Zip archive created: GDCMVS.zip (${ZIP_SIZE})"
+
+      - name: Upload zip to S3 (temporary storage)
+        id: upload-s3
+        run: |
+          set -x
+          TIER="${{ inputs.tier }}"
+          S3_BUCKET="evs-apps-nonprod"
+          S3_KEY="${TIER}/gdcmvs/GDCMVS-${GITHUB_SHA}.zip"
+          
+          # Upload zip file to S3
+          echo "Uploading zip file to S3..."
+          echo "S3 Bucket: ${S3_BUCKET}"
+          echo "S3 Key: ${S3_KEY}"
+          aws s3 cp GDCMVS.zip s3://${S3_BUCKET}/${S3_KEY}
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ Zip file uploaded to S3: s3://${S3_BUCKET}/${S3_KEY}"
+            echo "s3_bucket=${S3_BUCKET}" >> $GITHUB_OUTPUT
+            echo "s3_key=${S3_KEY}" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Error: Failed to upload zip file to S3"
+            exit 1
+          fi
+
+      - name: Download and unzip code on EC2 via SSM
+        run: |
+          set -x
+          INSTANCE_ID="i-08eb1556c6cd5e596"
+          TARGET_FOLDER="${{ inputs.target_folder }}"
+          S3_BUCKET="${{ steps.upload-s3.outputs.s3_bucket }}"
+          S3_KEY="${{ steps.upload-s3.outputs.s3_key }}"
+          
+          echo "Deploying code to EC2 instance..."
+          echo "Target folder: $TARGET_FOLDER"
+          echo "S3 location: s3://${S3_BUCKET}/${S3_KEY}"
+          
+          # Create deployment script file
+          cat > /tmp/deploy_script.sh <<'DEPLOY_SCRIPT'
+          #!/bin/bash
+          set -e
+          S3_BUCKET="$1"
+          S3_KEY="$2"
+          TARGET_FOLDER="$3"
+          BACKUP_ENABLED="$4"
+          TEMP_DIR="/tmp/gdcmvs-deploy-$$"
+          ZIP_FILE="${TEMP_DIR}/GDCMVS.zip"
+          
+          echo "Starting deployment..."
+          echo "S3 Bucket: ${S3_BUCKET}"
+          echo "S3 Key: ${S3_KEY}"
+          echo "Target Folder: ${TARGET_FOLDER}"
+          
+          mkdir -p "${TEMP_DIR}"
+          
+          echo "Downloading zip file from S3..."
+          aws s3 cp "s3://${S3_BUCKET}/${S3_KEY}" "${ZIP_FILE}"
+          
+          if [ ! -f "${ZIP_FILE}" ]; then
+            echo "❌ Error: Failed to download zip file from S3"
+            exit 1
+          fi
+          
+          echo "✅ Zip file downloaded successfully"
+          
+          echo "Creating target directory: ${TARGET_FOLDER}"
+          sudo mkdir -p "${TARGET_FOLDER}"
+          
+          BACKUP_ENABLED="$4"
+          if [ "$BACKUP_ENABLED" == "yes" ] && [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
+            BACKUP_DIR="${TARGET_FOLDER}.backup-$(date +%Y%m%d-%H%M%S)"
+            echo "Backing up existing code to: ${BACKUP_DIR}"
+            sudo mv "${TARGET_FOLDER}" "${BACKUP_DIR}"
+            sudo mkdir -p "${TARGET_FOLDER}"
+            echo "✅ Backup created at: ${BACKUP_DIR}"
+            echo "To restore: sudo mv ${BACKUP_DIR} ${TARGET_FOLDER}"
+          elif [ "$BACKUP_ENABLED" == "no" ]; then
+            echo "⚠️  Backup disabled - previous version will be overwritten"
+            if [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
+              echo "Removing existing code..."
+              sudo rm -rf "${TARGET_FOLDER}"
+              sudo mkdir -p "${TARGET_FOLDER}"
+            fi
+          fi
+          
+          echo "Extracting zip file to ${TARGET_FOLDER}..."
+          cd "${TEMP_DIR}"
+          unzip -q "${ZIP_FILE}" -d "${TEMP_DIR}/extracted" || {
+            echo "❌ Error: Failed to extract zip file"
+            exit 1
+          }
+          
+          echo "Moving extracted files to target directory..."
+          sudo mv "${TEMP_DIR}/extracted"/* "${TARGET_FOLDER}/" 2>/dev/null || \
+          sudo mv "${TEMP_DIR}/extracted"/.??* "${TARGET_FOLDER}/" 2>/dev/null || true
+          
+          echo "Setting file permissions..."
+          sudo chown -R ec2-user:ec2-user "${TARGET_FOLDER}" || \
+          sudo chown -R ubuntu:ubuntu "${TARGET_FOLDER}" || true
+          
+          echo "Cleaning up temporary files..."
+          rm -rf "${TEMP_DIR}"
+          
+          echo "✅ Deployment completed successfully"
+          echo "Code deployed to: ${TARGET_FOLDER}"
+          DEPLOY_SCRIPT
+          
+          # Base64 encode the script to pass it via SSM (use base64 without line breaks)
+          SCRIPT_B64=$(base64 /tmp/deploy_script.sh | tr -d '\n')
+          
+          # Create JSON parameters file using jq to properly escape values
+          BACKUP_OPTION="${{ inputs.backup_previous }}"
+          jq -n \
+            --arg cmd1 "echo '${SCRIPT_B64}' | base64 -d > /tmp/deploy_script.sh" \
+            --arg cmd2 "chmod +x /tmp/deploy_script.sh" \
+            --arg cmd3 "/tmp/deploy_script.sh '${S3_BUCKET}' '${S3_KEY}' '${TARGET_FOLDER}' '${BACKUP_OPTION}'" \
+            '{commands: [$cmd1, $cmd2, $cmd3]}' > /tmp/ssm_params.json
+          
+          # Send SSM command to deploy
+          echo "Sending SSM command to deploy code..."
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy GDCMVS code from S3" \
+            --parameters file:///tmp/ssm_params.json \
+            --timeout-seconds 600 \
+            --query "Command.CommandId" \
+            --output text)
+          
+          if [ -z "$COMMAND_ID" ] || [ "$COMMAND_ID" == "None" ]; then
+            echo "❌ Error: Failed to send SSM command"
+            exit 1
+          fi
+          
+          echo "✅ Command sent successfully. Command ID: $COMMAND_ID"
+          echo "Waiting for command to complete (this may take a few minutes)..."
+          
+          # Wait for command to complete
+          MAX_WAIT=600
+          ELAPSED=0
+          while [ $ELAPSED -lt $MAX_WAIT ]; do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query 'Status' \
+              --output text 2>/dev/null || echo "Unknown")
+            
+            if [ "$STATUS" == "Success" ]; then
+              echo "✅ Deployment command completed successfully"
+              break
+            elif [ "$STATUS" == "Failed" ] || [ "$STATUS" == "Cancelled" ] || [ "$STATUS" == "TimedOut" ]; then
+              echo "❌ Error: Deployment command failed with status: $STATUS"
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id "$INSTANCE_ID" \
+                --query '[Status, StandardOutputContent, StandardErrorContent]' \
+                --output table
+              exit 1
+            fi
+            
+            echo "Waiting for deployment... (${ELAPSED}s/${MAX_WAIT}s) - Status: $STATUS"
+            sleep 10
+            ELAPSED=$((ELAPSED + 10))
+          done
+          
+          if [ "$STATUS" != "Success" ]; then
+            echo "⚠️  Warning: Deployment may not have completed. Checking status..."
+          fi
+          
+          # Get command output
+          echo ""
+          echo "=== Deployment Command Output ==="
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID" \
+            --query '[Status, StandardOutputContent, StandardErrorContent]' \
+            --output table
+
+      - name: Clean up S3 temporary file
+        if: always()
+        run: |
+          set -x
+          S3_BUCKET="${{ steps.upload-s3.outputs.s3_bucket }}"
+          S3_KEY="${{ steps.upload-s3.outputs.s3_key }}"
+          
+          if [ -n "$S3_BUCKET" ] && [ -n "$S3_KEY" ]; then
+            echo "Cleaning up temporary S3 file..."
+            aws s3 rm "s3://${S3_BUCKET}/${S3_KEY}" || echo "⚠️  Warning: Failed to delete S3 file (may not exist)"
+          fi
+
+  restart-service:
+    needs: deploy-to-ec2
+    uses: ./.github/workflows/restart-nodejs.yml
+    secrets: inherit
+

@@ -2,6 +2,7 @@ name: Restart Node.js Service
 
 on:
   workflow_dispatch:  # You can trigger manually, or replace with push/schedule/etc.
+  workflow_call:      # Allow this workflow to be called from other workflows
 
 permissions:
   id-token: write     # Required for GitHub OIDC to assume the AWS role

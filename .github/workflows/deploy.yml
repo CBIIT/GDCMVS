@@ -71,6 +71,24 @@ jobs:
         run: |
           set -x
           
+          # Validate required environment variables
+          if [ -z "$REMOTE_HOST" ]; then
+            echo "❌ Error: REMOTE_HOST is not set. Please configure DEV_SERVER_HOST or QA_SERVER_HOST secret."
+            exit 1
+          fi
+          if [ -z "$REMOTE_USER" ]; then
+            echo "❌ Error: REMOTE_USER is not set. Please configure DEV_SERVER_USER or QA_SERVER_USER secret."
+            exit 1
+          fi
+          if [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "❌ Error: SSH_PRIVATE_KEY is not set. Please configure DEV_SSH_KEY or QA_SSH_KEY secret."
+            exit 1
+          fi
+          
+          echo "✅ Environment variables validated"
+          echo "Remote host: $REMOTE_HOST"
+          echo "Remote user: $REMOTE_USER"
+          
           # Setup SSH
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
@@ -78,7 +96,16 @@ jobs:
           ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts || true
           
           # Prepare deployment package
-          tar -czf GDCMVS.tgz --exclude='.git' --exclude='node_modules' --exclude='client/dist' --exclude='.DS_Store' .
+          # Use --warning=no-file-changed to ignore "file changed as we read it" warnings
+          tar -czf GDCMVS.tgz --warning=no-file-changed --exclude='.git' --exclude='node_modules' --exclude='client/dist' --exclude='.DS_Store' . || {
+            # If tar fails, check if it's just the warning
+            if [ -f GDCMVS.tgz ]; then
+              echo "⚠️  Tar completed with warnings, but archive was created"
+            else
+              echo "❌ Error: Failed to create archive"
+              exit 1
+            fi
+          }
           
           # Create temporary directory on remote server
           ssh -i ~/.ssh/deploy_key $REMOTE_USER@$REMOTE_HOST \
