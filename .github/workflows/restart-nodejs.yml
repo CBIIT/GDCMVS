@@ -1,8 +1,25 @@
 name: Restart Node.js Service
 
 on:
-  workflow_dispatch:  # You can trigger manually, or replace with push/schedule/etc.
-  workflow_call:      # Allow this workflow to be called from other workflows
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "Environment tier"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+          - prod
+  workflow_call:
+    inputs:
+      tier:
+        description: "Environment tier"
+        required: true
+        type: string
+        default: "dev"
 
 permissions:
   id-token: write     # Required for GitHub OIDC to assume the AWS role
@@ -11,22 +28,94 @@ permissions:
 jobs:
   restart-node-service:
     runs-on: ubuntu-latest
+    
+    env:
+      TIER: ${{ inputs.tier || 'dev' }}
 
     steps:
+      - name: Set environment-specific variables
+        id: set-env
+        run: |
+          TIER="${{ env.TIER }}"
+          echo "Selected tier: $TIER"
+          
+          # Set environment-specific role ARN and region
+          case "$TIER" in
+            dev)
+              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_evstools_dev" >> $GITHUB_OUTPUT
+              echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
+              ;;
+            qa)
+              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_evstools_qa" >> $GITHUB_OUTPUT
+              echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
+              ;;
+            stage)
+              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_evstools_stage" >> $GITHUB_OUTPUT
+              echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
+              ;;
+            prod)
+              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_evstools_prod" >> $GITHUB_OUTPUT
+              echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "❌ Error: Invalid tier '$TIER'"
+              exit 1
+              ;;
+          esac
+          
+          echo "✅ Configuration set for tier: $TIER"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::688132009233:role/github_evstools_dev
-          aws-region: us-east-1
+          role-to-assume: ${{ steps.set-env.outputs.AWS_ROLE_ARN }}
+          aws-region: ${{ steps.set-env.outputs.AWS_REGION }}
+
+      - name: Discover EC2 instance by tier
+        id: discover-instance
+        run: |
+          set -x
+          TIER="${{ env.TIER }}"
+          
+          echo "Discovering EC2 instance for tier: $TIER"
+          
+          # Query EC2 instances by tier tag
+          # Assumes instances are tagged with: Tier=dev, Tier=qa, Tier=stage, or Tier=prod
+          INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Tier,Values=$TIER" "Name=instance-state-name,Values=running,stopped" \
+            --query 'Reservations[0].Instances[0].InstanceId' \
+            --output text 2>&1)
+          
+          # If no instances found with Tier tag, try Environment tag as fallback
+          if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" == "None" ] || [ "$INSTANCE_ID" == "null" ]; then
+            echo "No instance found with Tier=$TIER tag, trying Environment tag..."
+            INSTANCE_ID=$(aws ec2 describe-instances \
+              --filters "Name=tag:Environment,Values=$TIER" "Name=instance-state-name,Values=running,stopped" \
+              --query 'Reservations[0].Instances[0].InstanceId' \
+              --output text 2>&1)
+          fi
+          
+          if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" == "None" ] || [ "$INSTANCE_ID" == "null" ]; then
+            echo "❌ Error: No EC2 instance found for tier '$TIER'"
+            echo "Please ensure your EC2 instance is tagged with either:"
+            echo "  - Tier=$TIER"
+            echo "  - Environment=$TIER"
+            exit 1
+          fi
+          
+          echo "INSTANCE_ID=$INSTANCE_ID" >> $GITHUB_OUTPUT
+          echo "✅ Found instance: $INSTANCE_ID for tier: $TIER"
 
       - name: Verify EC2 instance status
         run: |
           set -x
-          INSTANCE_ID="i-08eb1556c6cd5e596"
-          echo "Checking EC2 instance status for $INSTANCE_ID..."
+          INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
+          TIER="${{ env.TIER }}"
+          echo "Checking EC2 instance status for tier: $TIER"
+          echo "Instance ID: $INSTANCE_ID"
           
           INSTANCE_STATUS=$(aws ec2 describe-instances \
             --instance-ids "$INSTANCE_ID" \
@@ -104,12 +193,17 @@ jobs:
       - name: Restart Node.js service on EC2 via SSM
         run: |
           set -x
+          INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
+          TIER="${{ env.TIER }}"
+          
           echo "Sending SSM command to restart Node.js service..."
+          echo "Tier: $TIER"
+          echo "Instance ID: $INSTANCE_ID"
           
           COMMAND_ID=$(aws ssm send-command \
-            --instance-ids "i-08eb1556c6cd5e596" \
+            --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
-            --comment "Restarting Node.js service" \
+            --comment "Restarting Node.js service on $TIER" \
             --parameters 'commands=["sudo systemctl restart nodejs"]' \
             --query "Command.CommandId" \
             --output text)
@@ -131,7 +225,7 @@ jobs:
           # Get command status
           aws ssm get-command-invocation \
             --command-id "$COMMAND_ID" \
-            --instance-id "i-08eb1556c6cd5e596" \
+            --instance-id "$INSTANCE_ID" \
             --query '[Status, StandardOutputContent, StandardErrorContent]' \
             --output table
 
@@ -139,12 +233,15 @@ jobs:
       - name: Check Node.js service status
         run: |
           set -x
-          echo "Checking Node.js service status..."
+          INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
+          TIER="${{ env.TIER }}"
+          
+          echo "Checking Node.js service status on tier: $TIER..."
           
           STATUS_COMMAND_ID=$(aws ssm send-command \
-            --instance-ids "i-08eb1556c6cd5e596" \
+            --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
-            --comment "Check Node.js service status" \
+            --comment "Check Node.js service status on $TIER" \
             --parameters 'commands=["sudo systemctl status nodejs -l"]' \
             --query "Command.CommandId" \
             --output text)
@@ -158,7 +255,7 @@ jobs:
             
             aws ssm get-command-invocation \
               --command-id "$STATUS_COMMAND_ID" \
-              --instance-id "i-08eb1556c6cd5e596" \
+              --instance-id "$INSTANCE_ID" \
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
           fi
