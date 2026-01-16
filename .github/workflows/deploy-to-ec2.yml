@@ -1,4 +1,4 @@
-name: Deploy to EC2 and Restart
+name: Deploy GDCMVS - EC2 and Restart
 
 on:
   workflow_dispatch:
@@ -337,7 +337,7 @@ jobs:
           jq -n \
             --arg cmd1 "echo '${SCRIPT_B64}' | base64 -d > /tmp/deploy_script.sh" \
             --arg cmd2 "chmod +x /tmp/deploy_script.sh" \
-            --arg cmd3 "/tmp/deploy_script.sh '${S3_BUCKET}' '${S3_KEY}' '${TARGET_FOLDER}' '${BACKUP_OPTION}'" \
+            --arg cmd3 "bash /tmp/deploy_script.sh '${S3_BUCKET}' '${S3_KEY}' '${TARGET_FOLDER}' '${BACKUP_OPTION}'" \
             '{commands: [$cmd1, $cmd2, $cmd3]}' > /tmp/ssm_params.json
           
           # Send SSM command to deploy
