@@ -28,7 +28,7 @@
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "js-yaml": "^4.1.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "method-override": "^3.0.0",
     "morgan": "^1.10.0",
     "node-xlsx": "^0.24.0",
