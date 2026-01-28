@@ -85,7 +85,8 @@ jobs:
           # Query EC2 instances by tier tag
           # Assumes instances are tagged with: Tier=dev, Tier=qa, Tier=stage, or Tier=prod
           INSTANCE_ID=$(aws ec2 describe-instances \
-            --filters "Name=tag:Tier,Values=$TIER" "Name=instance-state-name,Values=running,stopped" \
+            --filters "Name=tag:Tier,Values=$TIER" \
+             "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
             --query 'Reservations[0].Instances[0].InstanceId' \
             --output text 2>&1)
           
@@ -93,7 +94,7 @@ jobs:
           if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" == "None" ] || [ "$INSTANCE_ID" == "null" ]; then
             echo "No instance found with Tier=$TIER tag, trying Environment tag..."
             INSTANCE_ID=$(aws ec2 describe-instances \
-              --filters "Name=tag:Environment,Values=$TIER" "Name=instance-state-name,Values=running,stopped" \
+              --filters "Name=tag:Environment,Values=$TIER" "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
               --query 'Reservations[0].Instances[0].InstanceId' \
               --output text 2>&1)
           fi
