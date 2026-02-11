@@ -193,6 +193,7 @@ jobs:
 
       - name: Restart Node.js service on EC2 via SSM
         run: |
+          set -euo pipefail
           set -x
           INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
           TIER="${{ env.TIER }}"
@@ -205,7 +206,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Restarting Node.js service on $TIER" \
-            --parameters 'commands=["sudo systemctl restart nodejs"]' \
+            --parameters 'commands=["sudo /bin/bash -c \"systemctl restart nodejs\" "]' \
             --query "Command.CommandId" \
             --output text)
           
@@ -221,18 +222,32 @@ jobs:
           
           echo "✅ Command sent successfully. Command ID: $COMMAND_ID"
           echo "Waiting for command to complete..."
-          sleep 3
           
-          # Get command status
+          aws ssm wait command-executed \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID"
+          
+          # Get command status and fail on non-success
           aws ssm get-command-invocation \
             --command-id "$COMMAND_ID" \
             --instance-id "$INSTANCE_ID" \
             --query '[Status, StandardOutputContent, StandardErrorContent]' \
             --output table
+          
+          FINAL_STATUS=$(aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID" \
+            --query 'Status' \
+            --output text)
+          if [ "$FINAL_STATUS" != "Success" ]; then
+            echo "❌ Error: Restart command failed with status: $FINAL_STATUS"
+            exit 1
+          fi
 
       # Optional: Verify service status (if you want confirmation)
       - name: Check Node.js service status
         run: |
+          set -euo pipefail
           set -x
           INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
           TIER="${{ env.TIER }}"
@@ -243,7 +258,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Check Node.js service status on $TIER" \
-            --parameters 'commands=["sudo systemctl status nodejs -l"]' \
+            --parameters 'commands=["sudo /bin/bash -c \"systemctl status nodejs -n 0\" "]' \
             --query "Command.CommandId" \
             --output text)
           
@@ -252,7 +267,9 @@ jobs:
           else
             echo "Status check command ID: $STATUS_COMMAND_ID"
             echo "Waiting for command to complete..."
-            sleep 5
+            aws ssm wait command-executed \
+              --command-id "$STATUS_COMMAND_ID" \
+              --instance-id "$INSTANCE_ID"
             
             aws ssm get-command-invocation \
               --command-id "$STATUS_COMMAND_ID" \
