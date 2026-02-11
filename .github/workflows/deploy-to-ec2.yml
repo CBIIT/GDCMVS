@@ -248,6 +248,7 @@ jobs:
 
       - name: Download and unzip code on EC2 via SSM
         run: |
+          set -euo pipefail
           set -x
           INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
           TIER="${{ env.TIER }}"
@@ -269,6 +270,7 @@ jobs:
           S3_KEY="$2"
           TARGET_FOLDER="$3"
           BACKUP_ENABLED="$4"
+          TIER="$5"
           TEMP_DIR="/tmp/gdcmvs-deploy-$$"
           ZIP_FILE="${TEMP_DIR}/GDCMVS.zip"
           
@@ -320,8 +322,31 @@ jobs:
           sudo mv "${TEMP_DIR}/extracted"/* "${TARGET_FOLDER}/" 2>/dev/null || \
           sudo mv "${TEMP_DIR}/extracted"/.??* "${TARGET_FOLDER}/" 2>/dev/null || true
           
+          echo "Writing .env file..."
+          {
+            echo "NODE_ENV=${TIER}"
+            echo "PORT=3000"
+            echo "LOGDIR=./logs"
+          } | sudo tee "${TARGET_FOLDER}/.env" >/dev/null
+          
+          echo "Ensuring log directory exists..."
+          sudo mkdir -p /local/content/mvs/logs
+          sudo chown -R gdcmvs:gdcmvs /local/content/mvs/logs
+          
           echo "Setting file permissions..."
-          sudo chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}" || true
+          sudo chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
+          
+          echo "Installing dependencies..."
+          if ! command -v npm >/dev/null 2>&1; then
+            export NVM_DIR="/home/gdcmvs/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+            elif [ -s "/etc/profile.d/nvm.sh" ]; then
+              . "/etc/profile.d/nvm.sh"
+            fi
+          fi
+          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm i"
+          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm run build"
           
           echo "Cleaning up temporary files..."
           rm -rf "${TEMP_DIR}"
@@ -338,7 +363,7 @@ jobs:
           jq -n \
             --arg cmd1 "echo '${SCRIPT_B64}' | base64 -d > /tmp/deploy_script.sh" \
             --arg cmd2 "chmod +x /tmp/deploy_script.sh" \
-            --arg cmd3 "bash /tmp/deploy_script.sh '${S3_BUCKET}' '${S3_KEY}' '${TARGET_FOLDER}' '${BACKUP_OPTION}'" \
+            --arg cmd3 "bash /tmp/deploy_script.sh '${S3_BUCKET}' '${S3_KEY}' '${TARGET_FOLDER}' '${BACKUP_OPTION}' '${TIER}'" \
             '{commands: [$cmd1, $cmd2, $cmd3]}' > /tmp/ssm_params.json
           
           # Send SSM command to deploy
@@ -389,7 +414,13 @@ jobs:
           done
           
           if [ "$STATUS" != "Success" ]; then
-            echo "⚠️  Warning: Deployment may not have completed. Checking status..."
+            echo "❌ Error: Deployment did not reach Success within ${MAX_WAIT}s"
+            aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query '[Status, StandardOutputContent, StandardErrorContent]' \
+              --output table
+            exit 1
           fi
           
           # Get command output
