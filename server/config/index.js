@@ -136,4 +136,9 @@ const all = {
 
 };
 
-module.exports = _.merge(all, require('./' + all.env + '.js'));
+// Load environment-specific config: prod uses prod.js, everything else uses development.js
+const envConfig = all.env === 'prod' 
+  ? require('./prod.js')
+  : require('./development.js');
+
+module.exports = _.merge(all, envConfig);
