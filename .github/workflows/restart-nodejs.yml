@@ -98,9 +98,9 @@ jobs:
             elif [[ "$TIER" == "stage" ]] || [[ "$TIER" == "prod" ]]; then
               # stage and prod must be from master branch
               if [[ "$BRANCH_NAME" != "master" ]]; then
-                echo "❌ Error: stage and prod tiers must deploy from 'master' branch"
+                echo "❌ Error: stage and prod tiers must deploy from 'master' branch or release tag"
                 echo "Current branch: $BRANCH_NAME"
-                echo "Expected branch: master"
+                echo "Expected: master branch or any release tag"
                 exit 1
               fi
               echo "✅ Branch validation passed for tier: $TIER"
