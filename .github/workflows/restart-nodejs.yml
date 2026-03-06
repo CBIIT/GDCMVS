@@ -68,6 +68,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate branch/tag for tier
+        run: |
+          set -x
+          TIER="${{ env.TIER }}"
+          
+          echo "Tier: $TIER"
+          echo "GitHub Ref: $GITHUB_REF"
+          
+          # Check if this is a tag
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+            echo "Deploying from tag: $TAG_NAME"
+            echo "✅ Tag deployment allowed for tier: $TIER"
+          else
+            # This is a branch
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            echo "Deploying from branch: $BRANCH_NAME"
+            
+            if [[ "$TIER" == "dev" ]] || [[ "$TIER" == "qa" ]]; then
+              # dev and qa can deploy from nonprod or master branch
+              if [[ "$BRANCH_NAME" != "nonprod" ]] && [[ "$BRANCH_NAME" != "master" ]]; then
+                echo "❌ Error: dev and qa tiers must deploy from 'nonprod' or 'master' branch"
+                echo "Current branch: $BRANCH_NAME"
+                echo "Expected branches: nonprod or master"
+                exit 1
+              fi
+              echo "✅ Branch validation passed for tier: $TIER"
+            elif [[ "$TIER" == "stage" ]] || [[ "$TIER" == "prod" ]]; then
+              # stage and prod must be from master branch
+              if [[ "$BRANCH_NAME" != "master" ]]; then
+                echo "❌ Error: stage and prod tiers must deploy from 'master' branch"
+                echo "Current branch: $BRANCH_NAME"
+                echo "Expected branch: master"
+                exit 1
+              fi
+              echo "✅ Branch validation passed for tier: $TIER"
+            fi
+          fi
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
