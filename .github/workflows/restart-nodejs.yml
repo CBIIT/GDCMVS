@@ -28,7 +28,7 @@ permissions:
 jobs:
   restart-node-service:
     runs-on: ubuntu-latest
-    
+    environment: ${{ inputs.tier == 'stage' && 'STAGE' || (inputs.tier == 'prod' && 'PROD' || inputs.tier) }}
     env:
       TIER: ${{ inputs.tier || 'dev' }}
 
