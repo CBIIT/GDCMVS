@@ -50,11 +50,11 @@ jobs:
               echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
               ;;
             stage)
-              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_evstools_stage" >> $GITHUB_OUTPUT
+              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_gdc_stage" >> $GITHUB_OUTPUT
               echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
               ;;
             prod)
-              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_evstools_prod" >> $GITHUB_OUTPUT
+              echo "AWS_ROLE_ARN=arn:aws:iam::688132009233:role/github_gdc_prod" >> $GITHUB_OUTPUT
               echo "AWS_REGION=us-east-1" >> $GITHUB_OUTPUT
               ;;
             *)
