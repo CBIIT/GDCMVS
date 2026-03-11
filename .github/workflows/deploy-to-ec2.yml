@@ -269,7 +269,17 @@ jobs:
         run: |
           set -x
           TIER="${{ inputs.tier }}"
+          
           S3_BUCKET="evs-apps-nonprod"
+          
+          if [[ "$TIER" == "dev" ]] || [[ "$TIER" == "qa" ]]; then
+            S3_BUCKET="evs-apps-nonprod"
+          elif [[ "$TIER" == "stage" ]] || [[ "$TIER" == "prod" ]]; then
+            S3_BUCKET="evs-apps-prod"
+          else
+            echo "❌ Error: Invalid tier '$TIER'"
+            exit 1
+          fi
           S3_KEY="gdcmvs/${TIER}/GDCMVS-${GITHUB_SHA}.zip"
           
           # Upload zip file to S3
