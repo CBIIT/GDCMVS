@@ -34,7 +34,7 @@ permissions:
 jobs:
   deploy-to-ec2:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.tier == 'stage' && 'STAGE' || (inputs.tier == 'prod' && 'PROD' || inputs.tier) }}
+    environment: ${{ inputs.tier == 'dev' && 'DEV' || inputs.tier == 'qa' && 'QA' || inputs.tier == 'stage' && 'STAGE' || inputs.tier == 'prod' && 'PROD' || inputs.tier }}
 
     
     env:
