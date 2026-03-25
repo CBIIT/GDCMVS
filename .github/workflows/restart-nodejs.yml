@@ -85,8 +85,9 @@ jobs:
             # This is a branch
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
             echo "Deploying from branch: $BRANCH_NAME"
-            
-            if [[ "$TIER" == "dev" ]] || [[ "$TIER" == "qa" ]]; then
+           
+            # MVS-329 allow all tiers to restart, for DEV tier - MLB 
+            if [[ "$TIER" == "qa" ]]; then
               # dev and qa can deploy from nonprod or master branch
               if [[ "$BRANCH_NAME" != "nonprod" ]] && [[ "$BRANCH_NAME" != "master" ]]; then
                 echo "❌ Error: dev and qa tiers must deploy from 'nonprod' or 'master' branch"
