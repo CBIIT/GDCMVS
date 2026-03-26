@@ -96,8 +96,8 @@ jobs:
            
             # MVS-329, allow all branches to be deployed to DEV -MLB 
             if [[ "$TIER" == "qa" ]]; then
-              # dev and qa can deploy from nonprod or master branch
-              if [[ "$BRANCH_NAME" != "nonprod" ]] && [[ "$BRANCH_NAME" != "master" ]]; then
+              # dev and qa can deploy from nonprod or master or stage branch
+              if [[ "$BRANCH_NAME" != "nonprod" ]] && [[ "$BRANCH_NAME" != "master" ]] && [[ "$BRANCH_NAME" != "stage" ]]; then
                 echo "❌ Error: dev and qa tiers must deploy from 'nonprod' or 'master' branch"
                 echo "Current branch: $BRANCH_NAME"
                 echo "Expected branches: nonprod or master"
@@ -106,8 +106,8 @@ jobs:
               echo "✅ Branch validation passed for tier: $TIER"
             elif [[ "$TIER" == "stage" ]] || [[ "$TIER" == "prod" ]]; then
               # stage and prod must be from master branch
-              if [[ "$BRANCH_NAME" != "master" ]] && [[ "$BRANCH_NAME" != "nonprod" ]]; then
-                echo "❌ Error: stage and prod tiers must deploy from 'master' branch or release tag"
+              if [[ "$BRANCH_NAME" != "master" ]] && [[ "$BRANCH_NAME" != "stage" ]] && [[ "$BRANCH_NAME" != "tags/*" ]]; then
+                echo "❌ Error: stage and prod tiers must deploy from 'master' or 'stage' branch or release tag"
                 echo "Current branch: $BRANCH_NAME"
                 echo "Expected: master branch or any release tag"
                 exit 1
