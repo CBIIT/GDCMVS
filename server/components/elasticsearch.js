@@ -6,7 +6,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const elasticsearch = require('elasticsearch');
+const { Client } = require('@opensearch-project/opensearch');
+const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
+const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const yaml = require('js-yaml');
 const config = require('../config');
 const config_dev = require('../config/development');
@@ -23,11 +25,32 @@ var allTerm = {};
 var cdeData = '';
 var allProperties = [];
 
-var esClient = new elasticsearch.Client({
-  host: config_dev.elasticsearch.host,
-  log: config_dev.elasticsearch.log,
-  requestTimeout: config_dev.elasticsearch.timeout
+const esClient = new Client({
+  ...AwsSigv4Signer({
+    region: 'us-east-1',
+    service: 'es',
+    // Must return a Promise that resolve to an AWS.Credentials object.
+    // This function is used to acquire the credentials when the client start and
+    // when the credentials are expired.
+    // The Client will refresh the Credentials only when they are expired.
+    // With AWS SDK V2, Credentials.refreshPromise is used when available to refresh the credentials.
+
+    // Example with AWS SDK V2:
+    getCredentials: () =>
+      new Promise((resolve, reject) => {
+        // Any other method to acquire a new Credentials object can be used.
+        AWS.config.getCredentials((err, credentials) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(credentials);
+          }
+        });
+      }),
+  }),
+  node: config_dev.opensearchDomain, // OpenSearch domain URL
 });
+
 
 const parseRef = (ref, termsJson, defJson) => {
   let name = ref.split('/')[1];
@@ -359,7 +382,7 @@ const extendDef = (termsJson, defJson) => {
   }
 }
 
-const bulkIndex = next => {
+const bulkIndex = async next => {
   let deprecated_properties = [];
   let deprecated_enum = [];
   fs.readdirSync(folderPath).forEach(file => {
@@ -722,46 +745,41 @@ const bulkIndex = next => {
     });
     propertyBody.push(doc);
   });
-  esClient.bulk({body: propertyBody}, (err_p, data_p) => {
-    if (err_p) {
-      return next(err_p);
-    }
+  try {
+    const data_p = await esClient.bulk({body: propertyBody});
     let errorCount_p = 0;
     data_p.items.forEach(item => {
       if (item.index && item.index.error) {
         logger.error(++errorCount_p, item.index.error);
       }
     });
-    esClient.bulk({body: suggestionBody}, (err_s, data_s) => {
-      if (err_s) {
-        return next(err_s);
+
+    const data_s = await esClient.bulk({body: suggestionBody});
+    let errorCount_s = 0;
+    data_s.items.forEach(itm => {
+      if (itm.index && itm.index.error) {
+        logger.error(++errorCount_s, itm.index.error);
       }
-      let errorCount_s = 0;
-      data_s.items.forEach(itm => {
-        if (itm.index && itm.index.error) {
-          logger.error(++errorCount_s, itm.index.error);
-        }
-      });
-      esClient.bulk({body: ncitDetail}, (err_s, data_s) => {
-        if (err_s) {
-          return next(err_s);
-        }
-        let errorCount_s = 0;
-        data_s.items.forEach(itm => {
-          if (itm.index && itm.index.error) {
-            logger.error(++errorCount_s, itm.index.error);
-          }
-        });
-        next({
-          property_indexed: (propertyBody.length - errorCount_p),
-          property_total: propertyBody.length,
-          suggestion_indexed: (suggestionBody.length - errorCount_s),
-          suggestion_total: suggestionBody.length,
-          ncit_details: ncitDetail.length
-        });
-      });
     });
-  });
+
+    const data_n = await esClient.bulk({body: ncitDetail});
+    let errorCount_n = 0;
+    data_n.items.forEach(itm => {
+      if (itm.index && itm.index.error) {
+        logger.error(++errorCount_n, itm.index.error);
+      }
+    });
+
+    next({
+      property_indexed: (propertyBody.length - errorCount_p),
+      property_total: propertyBody.length,
+      suggestion_indexed: (suggestionBody.length - errorCount_s),
+      suggestion_total: suggestionBody.length,
+      ncit_details: ncitDetail.length
+    });
+  } catch (err) {
+    return next(err);
+  }
 }
 exports.bulkIndex = bulkIndex;
 
@@ -779,14 +797,12 @@ const query = (index, dsl, highlight, next) => {
   }, {
     "node": "asc"
   }];
-  esClient.search({index: index, body: body}, (err, data) => {
-    if (err) {
+  esClient.search({index: index, body: body})
+    .then(data => next(data))
+    .catch(err => {
       logger.error(err);
       next(err);
-    } else {
-      next(data);
-    }
-  });
+    });
 }
 
 exports.query = query;
@@ -794,14 +810,12 @@ exports.query = query;
 const ncitDetails = (index, dsl, next) => {
   let body = {};
   body.query = dsl;
-  esClient.search({index: index, "_source": true, body: body}, (err, data) => {
-    if (err) {
+  esClient.search({index: index, "_source": true, body: body})
+    .then(data => next(data))
+    .catch(err => {
       logger.error(err);
       next(err);
-    } else {
-      next(data);
-    }
-  });
+    });
 }
 
 exports.ncitDetails = ncitDetails;
@@ -809,35 +823,26 @@ exports.ncitDetails = ncitDetails;
 const suggest = (index, suggest, next) => {
   let body = {};
   body.suggest = suggest;
-  esClient.search({index: index, "_source": true, body: body}, (err, data) => {
-    if (err) {
+  esClient.search({index: index, "_source": true, body: body})
+    .then(data => next(data))
+    .catch(err => {
       logger.error(err);
       next(err);
-    } else {
-      next(data);
-    }
-  });
+    });
 }
 
 exports.suggest = suggest;
 
-const createIndexes = (params, next) => {
-  esClient.indices.create(params[0], (err_2, result_2) => {
-    if (err_2) {
-      logger.error(err_2);
-      next(err_2);
-    } else {
-      esClient.indices.create(params[1], (err_3, result_3) => {
-        if (err_3) {
-          logger.error(err_3);
-          next(err_3);
-        } else {
-          logger.debug("have built property and suggestion indexes.");
-          next(result_3);
-        }
-      });
-    }
-  });
+const createIndexes = async (params, next) => {
+  try {
+    await esClient.indices.create(params[0]);
+    const result = await esClient.indices.create(params[1]);
+    logger.debug("have built property and suggestion indexes.");
+    next(result);
+  } catch (err) {
+    logger.error(err);
+    next(err);
+  }
 }
 
 exports.createIndexes = createIndexes;

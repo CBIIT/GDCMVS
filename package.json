@@ -20,11 +20,11 @@
     "url": "https://github.com/CBIIT/GDCMVS"
   },
   "dependencies": {
+    "@opensearch-project/opensearch": "^3.5.1",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
-    "elasticsearch": "^16.7.3",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "js-yaml": "^4.1.0",
