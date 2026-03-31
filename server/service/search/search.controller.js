@@ -637,16 +637,21 @@ const indexing = (req, res) => {
 	logger.debug('NCIT details index configuration added to configs array');
 
 	elastic.createIndexes(configs, result => {
+		logger.debug('aleph. Index creation result: ' + JSON.stringify(result));
 		if (result.acknowledged === undefined) {
 			return handleError.error(res, result);
 		}
 		elastic.bulkIndex(data => {
+			logger.debug('beta. Bulk index result: ' + JSON.stringify(data));
 			if (data.property_indexed === undefined) {
 				return handleError.error(res, data);
 			}
 			return res.status(200).json(data);
 		});
+		logger.debug('gimmel. Index creation and bulk indexing completed.');
 	});
+
+	logger.debug('indexing function execution completed, awaiting index creation and bulk indexing results');
 };
 
 const getDataFromCDE = (req, res) => {
