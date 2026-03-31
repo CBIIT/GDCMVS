@@ -1,6 +1,6 @@
 'use strict';
 
-const elastic = require('../../components/elasticsearch');
+const elastic = require('../../components/opensearch');
 const handleError = require('../../components/handleError');
 const logger = require('../../components/logger');
 const config = require('../../config');
@@ -452,6 +452,10 @@ const generateHighlight = () => {
 
 const indexing = (req, res) => {
 	let configs = [];
+
+	// debug indexing process
+	logger.debug('starting indexing process');
+
 	//config property index
 	let config_property = {};
 	config_property.index = config.index_p;
@@ -580,7 +584,13 @@ const indexing = (req, res) => {
 			}
 		}
 	};
+
+	// debug property index configuration
+	logger.debug('property index configuration created');
+	
 	configs.push(config_property);
+	logger.debug('property index configuration added to configs array');
+
 	//config suggestion index
 	let config_suggestion = {};
 	config_suggestion.index = config.suggestionName;
@@ -598,6 +608,8 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_suggestion);
+	logger.debug('suggestion index configuration created');
+	
 	let config_ncitDetails = {};
 	config_ncitDetails.index = config.ncitDetails;
 	config_ncitDetails.body = {
@@ -622,6 +634,8 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_ncitDetails);
+	logger.debug('NCIT details index configuration added to configs array');
+
 	elastic.createIndexes(configs, result => {
 		if (result.acknowledged === undefined) {
 			return handleError.error(res, result);
