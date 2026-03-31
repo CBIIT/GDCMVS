@@ -20,6 +20,7 @@
     "url": "https://github.com/CBIIT/GDCMVS"
   },
   "dependencies": {
+    "@aws-sdk/credential-provider-node": "^3.972.27",
     "@opensearch-project/opensearch": "^3.5.1",
     "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",

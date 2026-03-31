@@ -22,11 +22,11 @@ module.exports = {
 	*		password: process.env['OPENSEARCH_INITIAL_ADMIN_PASSWORD']
 	*	},
 	*	ssl: {
-	*		reject
+	*		rejectUnauthorized: false
 	*	}
-    *
 	*	log: 'error',
 	*	requestTimeout: 300000,
 	*}
     */	
+
 };
