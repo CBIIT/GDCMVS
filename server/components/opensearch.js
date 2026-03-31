@@ -6,7 +6,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const AWS = require('aws-sdk');
 const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const { Client } = require('@opensearch-project/opensearch');
 const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
@@ -21,6 +20,7 @@ const report = require('../service/search/report');
 const searchable_nodes = require('../config').searchable_nodes;
 const drugs_properties = require('../config').drugs_properties;
 const shared = require('../service/search/shared');
+const { log } = require('console');
 const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
 var cdeData = '';
@@ -396,43 +396,57 @@ const extendDef = (termsJson, defJson) => {
   }
 }
 
+// Bulk index all nodes and properties
 const bulkIndex = async next => {
   let deprecated_properties = [];
   let deprecated_enum = [];
+  // read all yaml files and generate doc for indexing, also collect deprecated properties and enums
   fs.readdirSync(folderPath).forEach(file => {
     if (file.indexOf('_') !== 0) {
       let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
+      logger.debug("Processing file: " + file);
       if(fileJson.category === 'administrative') fileJson.category = 'case';
       let category = fileJson.category;
       let node = fileJson.id;
+      logger.debug("Processing node: " + node + " in category: " + category);
 
       if (fileJson.deprecated) {
+        logger.debug("Node " + node + " is deprecated. Adding to deprecated properties list."); 
         fileJson.deprecated.forEach(d_p => {
           let tmp_d_p = category + "." + node + "." + d_p;
           deprecated_properties.push(tmp_d_p.trim().toLowerCase());
         })
       }
 
+      // check deprecated enum
       for (let keys in fileJson.properties) {
+        logger.debug("Processing property: " + keys + " in node: " + node);
         if (fileJson.properties[keys].deprecated_enum) {
+          logger.debug("Property " + keys + " in node " + node + " has deprecated enums. Adding to deprecated enum list.");
           fileJson.properties[keys].deprecated_enum.forEach(d_e => {
             let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
             deprecated_enum.push(tmp_d_e.trim().toLowerCase());
           });
         }
       }
+      logger.debug("Finished processing file: " + file);
     }
   });
+  // read concept code, gdc values and ncit details
+  logger.debug("Reading concept codes, GDC values, and NCIt details from files.");
   
   let ccode = shared.readConceptCode();
   let gdc_values = shared.readGDCValues();
   let syns = shared.readNCItDetails();
 
+  // read
+  logger.debug("Reading CDE data from file.");
   cdeData = shared.readCDEData();
   let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
   let defJson = yaml.load(fs.readFileSync(folderPath + '/_definitions.yaml', 'utf8'));
   extendDef(termsJson, defJson);
   // let bulkBody = [];
+  logger.debug("Processing YAML files to generate documents for indexing and collect deprecated properties and enums.");
   fs.readdirSync(folderPath).forEach(file => {
     if (file.indexOf('_') !== 0) {
       let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
@@ -460,6 +474,8 @@ const bulkIndex = async next => {
     gdc_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
   });
   gdc_data = report.preProcess(searchable_nodes, gdc_data);
+  logger.debug("Finished processing YAML files and generating documents for indexing.");
+  logger.debug('gdc_data is' + JSON.stringify(gdc_data));
 
   // build suggestion index
   let suggestionBody = [];
@@ -721,7 +737,11 @@ const bulkIndex = async next => {
   // Removing redundant values
   let check_enums = {};
   allProperties.forEach(result => {
-    if(result.enum === undefined) return;
+    logger.debug("x1. Processing property: " + result.property + " in node: " + result.node);
+    if(result.enum === undefined) {
+      logger.debug("x1.1 No enums for property: " + result.property + " in node: " + result.node);
+      return;
+    }
     let id = result.property+"@"+result.node+"@"+result.category;
     let new_enum = [];
     result.enum.forEach(item => {
@@ -739,7 +759,11 @@ const bulkIndex = async next => {
 
   // Remove non-gdc values
   allProperties.forEach(result => {
-    if(result.enum === undefined) return;
+    logger.debug("x2. Processing property: " + result.property + " in node: " + result.node);
+    if(result.enum === undefined) {
+      logger.debug("x2.1 No enums for property: " + result.property + " in node: " + result.node);
+      return;
+    }
     let new_enum = [];
     result.enum.forEach(item => {
       if(item.gdc_d === true) new_enum.push(item);
@@ -748,6 +772,7 @@ const bulkIndex = async next => {
   });
 
   allProperties.forEach(ap => {
+    logger.debug("x3. Processing property: " + ap.property + " in node: " + ap.node);
     let doc = extend(ap, {});
     doc.id = ap.property + "/" + ap.node + "/" + ap.category;
     propertyBody.push({
@@ -771,6 +796,7 @@ const bulkIndex = async next => {
     const data_s = await esClient.bulk({body: suggestionBody});
     let errorCount_s = 0;
     data_s.items.forEach(itm => {
+      logger.debug('item is' + JSON.stringify(itm));
       if (itm.index && itm.index.error) {
         logger.error(++errorCount_s, itm.index.error);
       }
@@ -795,7 +821,9 @@ const bulkIndex = async next => {
     return next(err);
   }
 }
+logger.debug("OpenSearch component loaded."); 
 exports.bulkIndex = bulkIndex;
+
 
 const query = (index, dsl, highlight, next) => {
   var body = {
@@ -857,8 +885,9 @@ const createIndexes = async (params, next) => {
     logger.error(err);
     next(err);
   }
-  logger.debug("Indexes created: " + JSON.stringify(params));
+  //logger.debug("Indexes created.")
 }
+logger.debug("no mans land"
 
 exports.createIndexes = createIndexes;
 logger.debug("OpenSearch component loaded.");

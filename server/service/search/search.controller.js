@@ -638,12 +638,14 @@ const indexing = (req, res) => {
 
 	elastic.createIndexes(configs, result => {
 		logger.debug('aleph. Index creation result: ' + JSON.stringify(result));
-		if (result.acknowledged === undefined) {
+		if (result.body.acknowledged === undefined) {
 			return handleError.error(res, result);
 		}
+		logger.debug('Index creation acknowledged.');
 		elastic.bulkIndex(data => {
 			logger.debug('beta. Bulk index result: ' + JSON.stringify(data));
 			if (data.property_indexed === undefined) {
+				logger.debug('Bulk indexing failed.  but did it though...');
 				return handleError.error(res, data);
 			}
 			return res.status(200).json(data);
