@@ -26,6 +26,7 @@ var allTerm = {};
 var cdeData = '';
 var allProperties = [];
 
+/**
 const esClient = new Client({
   ...AwsSigv4Signer({
     region: 'us-east-1',
@@ -45,6 +46,20 @@ const esClient = new Client({
   }),
   node: config_dev.node, // OpenSearch domain URL
   // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
+});
+*/
+
+const esClient = new Client({
+  node: config_dev.opensearch.node, // OpenSearch domain URL
+  auth: {
+    username: config_dev.opensearch.auth.username,
+    password: config_dev.opensearch.auth.password
+  },
+  ssl: {
+    rejectUnauthorized: false
+  },
+  log: config_dev.opensearch.log,
+  requestTimeout: config_dev.opensearch.requestTimeout
 });
 
 
