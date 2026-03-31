@@ -26,7 +26,7 @@ var allTerm = {};
 var cdeData = '';
 var allProperties = [];
 
-/**
+// Initialize the OpenSearch client
 const esClient = new Client({
   ...AwsSigv4Signer({
     region: 'us-east-1',
@@ -47,8 +47,8 @@ const esClient = new Client({
   node: config_dev.node, // OpenSearch domain URL
   // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 });
-*/
 
+/**
 const esClient = new Client({
   node: config_dev.opensearch.node, // OpenSearch domain URL
   auth: {
@@ -61,7 +61,7 @@ const esClient = new Client({
   log: config_dev.opensearch.log,
   requestTimeout: config_dev.opensearch.requestTimeout
 });
-
+*/
 
 logger.debug("OpenSearch client initialized with node: " + config_dev.node);
 
