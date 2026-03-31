@@ -1,6 +1,6 @@
 'use strict';
 
-const elastic = require('../../components/elasticsearch');
+const elastic = require('../../components/opensearch');
 const handleError = require('../../components/handleError');
 const config = require('../../config');
 const searchable_nodes = require('../../config').searchable_nodes;

@@ -7,10 +7,12 @@
 module.exports = {
 
 	// AWS openssearch configuration (development)
+	protocol: 'https',
 	opensearchDomain: process.env.OPENSEARCH_DOMAIN,
-	node:`https://${opensearchDomain}`, // OpenSearch domain URL
+	node: protocol + "://" + this.opensearchDomain,  // OpenSearch domain URL
+	// node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 	log: 'error',
-	requestTimeout: 300000
+	requestTimeout: 300000,
 
 	/** local development 
 	* opensearch: {

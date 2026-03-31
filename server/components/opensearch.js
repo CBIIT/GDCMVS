@@ -1,14 +1,15 @@
 /**
- * Client for elasticsearch
+ * Client for opensearch
  */
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
+const AWS = require('aws-sdk');
+const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const { Client } = require('@opensearch-project/opensearch');
 const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
-const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const yaml = require('js-yaml');
 const config = require('../config');
 const config_dev = require('../config/development');
@@ -35,21 +36,19 @@ const esClient = new Client({
     // The Client will refresh the Credentials only when they are expired.
     // With AWS SDK V2, Credentials.refreshPromise is used when available to refresh the credentials.
 
-    // Example with AWS SDK V2:
-    getCredentials: () =>
-      new Promise((resolve, reject) => {
-        // Any other method to acquire a new Credentials object can be used.
-        AWS.config.getCredentials((err, credentials) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(credentials);
-          }
-        });
-      }),
+    // Example with AWS SDK V3:
+    getCredentials: () => {
+      // Any other method to acquire a new Credentials object can be used.
+      const credentialsProvider = defaultProvider();
+      return credentialsProvider();
+    },
   }),
-  node: config_dev.opensearchDomain, // OpenSearch domain URL
+  node: config_dev.node, // OpenSearch domain URL
+  // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 });
+
+
+logger.debug("OpenSearch client initialized with node: " + config_dev.node);
 
 
 const parseRef = (ref, termsJson, defJson) => {
