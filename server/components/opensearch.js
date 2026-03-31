@@ -857,9 +857,11 @@ const createIndexes = async (params, next) => {
     logger.error(err);
     next(err);
   }
+  logger.debug("Indexes created: " + JSON.stringify(params));
 }
 
 exports.createIndexes = createIndexes;
+logger.debug("OpenSearch component loaded.");
 
 const preloadDataFromCaDSR = next => {
   let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
