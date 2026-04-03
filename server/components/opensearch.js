@@ -11,7 +11,7 @@ const { Client } = require('@opensearch-project/opensearch');
 const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
 const yaml = require('js-yaml');
 const config = require('../config');
-const config_dev = require('../config/dev');
+const config_dev = require('../config/development');
 const config_prod = require('../config/prod');
 const logger = require('./logger');
 const caDSR = require('./caDSR');
@@ -28,7 +28,7 @@ var cdeData = '';
 var allProperties = [];
 
 // decide which OpenSearch configuration to use based on environment
-const config_opensearch = ((config.env === 'prod') || (config.env === 'stage')) ? config_prod.opensearch : config_dev.opensearch;
+const config_opensearch = ((config.tier === 'prod') || (config.tier === 'stage')) ? config_prod.opensearch : config_dev.opensearch;
 
 // Initialize the OpenSearch client with AWS SigV4 signing for authentication 
 const esClient = new Client({

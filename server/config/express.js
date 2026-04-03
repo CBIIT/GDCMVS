@@ -12,6 +12,7 @@ const rfs = require('rotating-file-stream');
 
 module.exports = app => {
   let env = config.env;
+  let tier = config.tier;
 
   app.set('views', config.root + '/client');
   app.engine('html', require('ejs').renderFile);
@@ -29,9 +30,9 @@ module.exports = app => {
   app.use(express.static(path.join(config.root, 'client/static')));
   app.set('viewPath', 'client');
 
-  if (env === 'development') {
+  if ((tier === 'development') || (tier === 'dev')) {
     app.use(morgan('dev'));
-  } else if (env === 'prod' || env === 'test') {
+  } else if (tier === 'prod' || tier === 'test' || tier === 'stage' || tier === 'qa') {
     let logDirectory = config.logDir;
 
     // ensure log directory exists
