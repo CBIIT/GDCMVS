@@ -11,7 +11,7 @@ module.exports = {
 	opensearch: {
 	    node: "https://" + process.env.OPENSEARCH_DOMAIN,  // OpenSearch domain URL
         // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
-	}
+	} 
 
 	/** local development
 	opensearch: {
@@ -20,6 +20,7 @@ module.exports = {
 		node: "http://localhost:9200",  
 	}
 	*/
+	
 	
 	/** local development but with standard docker, install
 	* opensearch: {

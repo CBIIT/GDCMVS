@@ -378,6 +378,7 @@ jobs:
             echo "NODE_ENV=${TIER}"
             echo "PORT=3000"
             echo "LOGDIR=./logs"
+            echo "OPENSEARCH_DOMAIN=${{ vars.OPENSEARCH_HOST }}"
           } | sudo tee "${TARGET_FOLDER}/.env" >/dev/null
           
           echo "Ensuring log directory exists..."
