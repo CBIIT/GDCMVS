@@ -12,6 +12,7 @@ const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
 const yaml = require('js-yaml');
 const config = require('../config');
 const config_dev = require('../config/development');
+const config_prod = require('../config/prod');
 const logger = require('./logger');
 const caDSR = require('./caDSR');
 const extend = require('util')._extend;
@@ -26,7 +27,10 @@ var allTerm = {};
 var cdeData = '';
 var allProperties = [];
 
-// Initialize the OpenSearch client
+// decide which OpenSearch configuration to use based on environment
+const config_opensearch = ((config.env === 'prod') || (config.env === 'stage')) ? config_prod.opensearch : config_dev.opensearch;
+
+// Initialize the OpenSearch client with AWS SigV4 signing for authentication 
 const esClient = new Client({
   ...AwsSigv4Signer({
     region: 'us-east-1',
@@ -44,26 +48,10 @@ const esClient = new Client({
       return credentialsProvider();
     },
   }),
-  node: config_dev.node, // OpenSearch domain URL
+  
+  node: config_opensearch.node, // OpenSearch domain URL
   // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 });
-
-/**
-const esClient = new Client({
-  node: config_dev.opensearch.node, // OpenSearch domain URL
-  auth: {
-    username: config_dev.opensearch.auth.username,
-    password: config_dev.opensearch.auth.password
-  },
-  ssl: {
-    rejectUnauthorized: false
-  },
-  log: config_dev.opensearch.log,
-  requestTimeout: config_dev.opensearch.requestTimeout
-});
-*/
-
-logger.debug("OpenSearch client initialized with node: " + config_dev.node);
 
 
 const parseRef = (ref, termsJson, defJson) => {
@@ -433,7 +421,7 @@ const bulkIndex = async next => {
     }
   });
   // read concept code, gdc values and ncit details
-  logger.debug("Reading concept codes, GDC values, and NCIt details from files.");
+  logger.silly("Reading concept codes, GDC values, and NCIt details from files.");
   
   let ccode = shared.readConceptCode();
   let gdc_values = shared.readGDCValues();
@@ -474,10 +462,10 @@ const bulkIndex = async next => {
     gdc_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
   });
   gdc_data = report.preProcess(searchable_nodes, gdc_data);
-  logger.debug("l.477 Finished processing YAML files and generating documents for indexing.");
-  logger.debug('l.478 gdc_data is' + JSON.stringify(gdc_data));
-  logger.debug('-------------------')
-  logger.debug('-------------------')
+  logger.silly("Finished processing YAML files and generating documents for indexing.");
+  // check if gdc_data got built correctly
+  logger.silly('gdc_data is' + JSON.stringify(gdc_data).slice(0, 10));
+  
 
   // build suggestion index
   let suggestionBody = [];
@@ -609,14 +597,14 @@ const bulkIndex = async next => {
     suggestionBody.push({
       index: {
         _index: config.suggestionName,
-        _type: '_doc',
+        //_type: '_doc',   // mlb 0403-1015
         _id: doc.id
       }
     });
     suggestionBody.push(doc);
   }
   // check if suggestion got built correctly
-  logger.debug('l.619 Suggestion index body sample: ' + JSON.stringify(suggestionBody.slice(0, 10)));
+  logger.silly('Suggestion index body sample: ' + JSON.stringify(suggestionBody).slice(0, 100));
 
   // build ncit details index
 
@@ -635,13 +623,14 @@ const bulkIndex = async next => {
     ncitDetail.push({
       index: {
         _index: config.ncitDetails,
-        _type: '_doc',
+        //_type: '_doc',   // mlb 0403-1015
         _id: doc.id
       }
     });
     ncitDetail.push(doc);
   }
-  logger.debug('l.644 NCIt details index body sample: ' + JSON.stringify(ncitDetail.slice(0, 10)));
+  // check if ncit details got built correctly
+  logger.silly('NCIt details index body sample: ' + JSON.stringify(ncitDetail).slice(0, 100));
 
   // build property index
   let propertyBody = [];
@@ -747,9 +736,9 @@ const bulkIndex = async next => {
   // Removing redundant values
   let check_enums = {};
   allProperties.forEach(result => {
-    logger.debug("x1. Processing property: " + result.property + " in node: " + result.node);
+    logger.silly("x1. Processing property: " + result.property + " in node: " + result.node);
     if(result.enum === undefined) {
-      logger.debug("x1.1 No enums for property: " + result.property + " in node: " + result.node);
+      logger.silly("x1.1 No enums for property: " + result.property + " in node: " + result.node);
       return;
     }
     let id = result.property+"@"+result.node+"@"+result.category;
@@ -769,9 +758,9 @@ const bulkIndex = async next => {
 
   // Remove non-gdc values
   allProperties.forEach(result => {
-    logger.debug("x2. Processing property: " + result.property + " in node: " + result.node);
+    logger.silly("x2. Processing property: " + result.property + " in node: " + result.node);
     if(result.enum === undefined) {
-      logger.debug("x2.1 No enums for property: " + result.property + " in node: " + result.node);
+      logger.silly("x2.1 No enums for property: " + result.property + " in node: " + result.node);
       return;
     }
     let new_enum = [];
@@ -782,52 +771,53 @@ const bulkIndex = async next => {
   });
 
   allProperties.forEach(ap => {
-    //logger.debug("x3. Processing property: " + ap.property + " in node: " + ap.node);
+    logger.silly("x3. Processing property: " + ap.property + " in node: " + ap.node);
     let doc = extend(ap, {});
     doc.id = ap.property + "/" + ap.node + "/" + ap.category;
     propertyBody.push({
       index: {
         _index: config.index_p,
-        _type: '_doc',
+        //_type: '_doc', // mlb 0403-1015
         _id: doc.id
       }
     });
     propertyBody.push(doc);
   });
   // check if property index got built correctly
-  logger.debug('l.798 Property index body sample: ' + JSON.stringify(propertyBody.slice(0, 10))); 
-  logger.debug("Finished building index bodies for properties, suggestions, and NCIt details. Starting bulk indexing to OpenSearch.");
+  logger.silly('Property index body sample: ' + JSON.stringify(propertyBody).slice(0, 200)); 
+  logger.silly("Finished building index bodies for properties, suggestions, and NCIt details. Starting bulk indexing to OpenSearch.");
 
   try {
-    logger.debug("Starting bulk indexing for property index.");
+    logger.silly("Starting bulk indexing for property index.");
     const data_p = await esClient.bulk({body: propertyBody});
     let errorCount_p = 0;
     
-    logger.debug('data_p is' + JSON.stringify(data_p.slice(0, 10)));
-    logger.debug('data_p items is' + JSON.stringify(data_p.items.slice(0, 10)));
+    // check if data_p got response from OpenSearch -- 
+    logger.silly('data_p is' + JSON.stringify(data_p).slice(0, 300));
+    logger.silly('data_p items is' + JSON.stringify(data_p.body.items).slice(0, 300));
 
-    data_p.items.forEach(item => {
+    data_p.body.items.forEach(item => {
       if (item.index && item.index.error) {
         logger.error(++errorCount_p, item.index.error);
         logger.error("Error indexing property with ID: " + item.index._id);
       }
     });
 
-    logger.debug("Starting bulk indexing for suggestion index.");
+    logger.silly("Starting bulk indexing for suggestion index.");
     const data_s = await esClient.bulk({body: suggestionBody});
     let errorCount_s = 0;
-    data_s.items.forEach(itm => {
-      logger.debug('item is' + JSON.stringify(itm));
+    data_s.body.items.forEach(itm => {
+      logger.silly('item is' + JSON.stringify(itm).slice(0, 500) + '...');
       if (itm.index && itm.index.error) {
         logger.error(++errorCount_s, itm.index.error);
         logger.error("Error indexing suggestion with ID: " + itm.index._id);
       }
     });
 
-    logger.debug("Starting bulk indexing for NCIt details index.");
+    logger.silly("Starting bulk indexing for NCIt details index.");
     const data_n = await esClient.bulk({body: ncitDetail});
     let errorCount_n = 0;
-    data_n.items.forEach(itm => {
+    data_n.body.items.forEach(itm => {
       if (itm.index && itm.index.error) {
         logger.error(++errorCount_n, itm.index.error);
         logger.error("Error indexing NCIt detail with ID: " + itm.index._id);
@@ -846,7 +836,7 @@ const bulkIndex = async next => {
     return next(err);
   }
 }
-logger.debug("OpenSearch component loaded."); 
+logger.silly("OpenSearch component loaded."); 
 exports.bulkIndex = bulkIndex;
 
 
@@ -910,12 +900,12 @@ const createIndexes = async (params, next) => {
     logger.error(err);
     next(err);
   }
-  //logger.debug("Indexes created.")
+  logger.silly("Indexes created.")
 }
-logger.debug("no mans land");
+logger.silly("Index creation function defined.");
 
 exports.createIndexes = createIndexes;
-logger.debug("OpenSearch component loaded.");
+logger.silly("OpenSearch component loaded.");
 
 const preloadDataFromCaDSR = next => {
   let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));

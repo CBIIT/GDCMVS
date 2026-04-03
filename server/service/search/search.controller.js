@@ -29,10 +29,10 @@ const suggestion = (req, res) => {
     }
   };
   elastic.suggest(config.suggestionName, suggest, result => {
-    if (result.suggest === undefined) {
+    if (result.body.suggest === undefined) {
       return handleError.error(res, result);
     }
-    let dt = result.suggest.term_suggest;
+    let dt = result.body.suggest.term_suggest;
     let data = [];
     dt[0].options.forEach(opt => {
       data.push(opt._source);
@@ -56,10 +56,10 @@ const suggestionMisSpelled = (req, res) => {
     }
   };
   elastic.suggest(config.suggestionName, suggest, result => {
-    if (result.suggest === undefined) {
+    if (result.body.suggest === undefined) {
       return handleError.error(res, result);
     }
-    let dt = result.suggest.term_suggest;
+    let dt = result.body.suggest.term_suggest;
     let data = [];
     dt[0].options.forEach(opt => {
       data.push(opt._source);
@@ -81,10 +81,10 @@ const searchICDO3Data = (req, res) => {
 
 		elastic.query(config.index_p, query, highlight, result => {
 			let mainData = [];
-			if (result.hits === undefined) {
+			if (result.body.hits === undefined) {
 				res.send('No data found!');
 			}
-			let data = result.hits.hits;
+			let data = result.body.hits.hits;
 			data.forEach(entry => {
 				delete entry.sort;
 				delete entry._index;
@@ -147,10 +147,10 @@ const searchP = (req, res) => {
 		let query = generateQuery(keyword, option, isBoolean);
 		let highlight = generateHighlight();
 		elastic.query(config.index_p, query, highlight, result => {
-			if (result.hits === undefined) {
+			if (result.body.hits === undefined) {
 				return handleError.error(res, result);
 			}
-			let data = result.hits.hits;
+			let data = result.body.hits.hits;
 			data.forEach(entry => {
 				delete entry.sort;
 				delete entry._index;
@@ -197,10 +197,10 @@ const searchAPI = (req, res) => {
     if (keyword.indexOf(' AND ') !== -1 || keyword.indexOf(' OR ') !== -1 || keyword.indexOf(' NOT ') !== -1) isBoolean = true;
     let query = generateQuery(keyword, option, isBoolean);
     elastic.query(config.index_p, query, null, result => {
-      if (result.hits === undefined) {
+      if (result.body.hits === undefined) {
         return handleError.error(res, result);
       }
-      let data = result.hits.hits;
+      let data = result.body.hits.hits;
       data.forEach(entry => {
         if (entry.inner_hits.enum.hits.hits.length === 0) {
           delete entry.inner_hits;
@@ -586,10 +586,10 @@ const indexing = (req, res) => {
 	};
 
 	// debug property index configuration
-	logger.debug('property index configuration created');
+	logger.silly('property index configuration created');
 	
 	configs.push(config_property);
-	logger.debug('property index configuration added to configs array');
+	logger.silly('property index configuration added to configs array');
 
 	//config suggestion index
 	let config_suggestion = {};
@@ -608,7 +608,7 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_suggestion);
-	logger.debug('suggestion index configuration created');
+	logger.silly('suggestion index configuration created');
 	
 	let config_ncitDetails = {};
 	config_ncitDetails.index = config.ncitDetails;
@@ -634,26 +634,26 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_ncitDetails);
-	logger.debug('NCIT details index configuration added to configs array');
+	logger.silly('NCIT details index configuration added to configs array');
 
 	elastic.createIndexes(configs, result => {
-		logger.debug('aleph. Index creation result: ' + JSON.stringify(result));
+		logger.silly('aleph. Index creation result: ' + JSON.stringify(result).substring(0, 500) + '...'); // Log only the first 500 characters of the result for brevity
 		if (result.body.acknowledged === undefined) {
 			return handleError.error(res, result);
 		}
-		logger.debug('Index creation acknowledged.');
+		logger.silly('Index creation acknowledged.');
 		elastic.bulkIndex(data => {
-			logger.debug('beta. Bulk index result: ' + JSON.stringify(data));
+			logger.silly('beta. Bulk index result: ' + JSON.stringify(data).substring(0, 500) + '...'); // Log only the first 500 characters of the result for brevity
 			if (data.property_indexed === undefined) {
-				logger.debug('Bulk indexing failed.  but did it though...');
+				logger.silly('Bulk indexing failed.  but did it though...');
 				return handleError.error(res, data);
 			}
 			return res.status(200).json(data);
 		});
-		logger.debug('gimmel. Index creation and bulk indexing completed.');
+		logger.silly('gimmel. Index creation and bulk indexing completed.');
 	});
 
-	logger.debug('indexing function execution completed, awaiting index creation and bulk indexing results');
+	logger.silly('indexing function execution completed, awaiting index creation and bulk indexing results');
 };
 
 const getDataFromCDE = (req, res) => {
@@ -731,10 +731,10 @@ const getGDCData = (req, res) => {
 	query.terms.id = [];
 	query.terms.id.push(uid);
 	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
+		if (result.body.hits === undefined) {
 			return handleError.error(res, result);
 		}
-		let data = result.hits.hits;
+		let data = result.body.hits.hits;
 		res.json(data);
 	});
 };
@@ -875,10 +875,10 @@ const getPV = (req, res) => {
 	};
 
 	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
+		if (result.body.hits === undefined) {
 			return handleError.error(res, result);
 		}
-		let data = result.hits.hits;
+		let data = result.body.hits.hits;
 		let cc = [];
 		data.forEach(entry => {
 			let vs = entry._source.enum;
@@ -1009,10 +1009,10 @@ const getNCItInfo = (req, res) => {
 		}
 	};
 	elastic.ncitDetails(config.ncitDetails, query, result => {
-		if (result.hits === undefined) {
+		if (result.body.hits === undefined) {
 			return handleError.error(res, result);
-		}
-		let data = result.hits.hits;
+		}	
+		let data = result.body.hits.hits;
 		res.json(data[0]._source.data);
 	});
 };
@@ -1094,7 +1094,7 @@ const parseExcel = (req, res) => {
 	// 					}
 
 	// 				} else {
-	// 					//If no mapping exists for this category.node.property	
+	// 					//If tracepping exists for this category.node.property	
 	// 					icdo[category_node_property] = [];
 	// 					var temp_obj = {
 	// 						nm: dataParsed[dp].icdo3_term,

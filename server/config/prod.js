@@ -2,7 +2,8 @@
 
 module.exports = {
 	opensearch: {
-		node: 'http://127.0.0.1:9200',
-		log: 'error'
+		// AWS openssearch configuration (production)
+		node: "https://" + process.env.OPENSEARCH_DOMAIN,  // OpenSearch domain URL
+		// node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 	}
 };
