@@ -375,7 +375,8 @@ jobs:
           
           echo "Writing .env file..."
           {
-            echo "NODE_ENV=${TIER}"
+            echo "NODE_ENV=prod"
+            echo "TIER=${TIER}"
             echo "PORT=3000"
             echo "LOGDIR=./logs"
             echo "OPENSEARCH_DOMAIN=${{ vars.OPENSEARCH_HOST }}"
