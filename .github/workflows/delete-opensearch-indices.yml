@@ -455,7 +455,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deleting OpenSearch indices on $TIER" \
-            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS ;  \"]" \
+            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS/utils ;  python3 --version ; \"]" \
             --query "Command.CommandId" \
             --output text)
           
