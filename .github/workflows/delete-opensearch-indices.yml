@@ -373,7 +373,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deleting OpenSearch indices on $TIER" \
-            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; HEREDOC=`pwd`;  echo $HEREDOC ; \"]" \
+            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; export HEREDOC=`pwd`;  echo $HEREDOC ; \"]" \
             --query "Command.CommandId" \
             --output text)
           
@@ -416,7 +416,7 @@ jobs:
             exit 1
           fi  
 
-          
+
       - name: test setup 4
         run: |
           set -euo pipefail
