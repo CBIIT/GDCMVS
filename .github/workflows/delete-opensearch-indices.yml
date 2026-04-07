@@ -232,12 +232,13 @@ jobs:
           fi
 
       - name: Delete OpenSearch indices on EC2 via SSM
+        env:
+          OPENSEARCH_HOST: ${{ env.OPENSEARCH_HOST }}
         run: |
           set -euo pipefail
           set -x
           INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
           TIER="${{ env.TIER }}"
-          OPENSEARCH_HOST="${{ env.OPENSEARCH_HOST }}"
           
           echo "Sending SSM command to delete OpenSearch indices..."
           echo "Tier: $TIER"
