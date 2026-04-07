@@ -434,6 +434,14 @@ jobs:
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
             exit 1
+          else  
+            echo "✅ Python environment setup verified successfully on instance $INSTANCE_ID for tier $TIER"  
+            aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query '[Status, StandardOutputContent, StandardErrorContent]' \
+              --output table
+            exit 0  
           fi  
 
 
@@ -568,6 +576,8 @@ jobs:
             --instance-id "$INSTANCE_ID" \
             --query 'Status' \
             --output text)
+        
+
           if [ "$FINAL_STATUS" != "Success" ]; then
             echo "❌ Error: Rebuild failed with status: $FINAL_STATUS"
             aws ssm get-command-invocation \
@@ -576,7 +586,15 @@ jobs:
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
             exit 1
-          fi  
+          else  
+            echo "✅ Python environment setup verified successfully on instance $INSTANCE_ID for tier $TIER"  
+            aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query '[Status, StandardOutputContent, StandardErrorContent]' \
+              --output table
+            exit 0
+          fi
 
 
       - name: test setup 6
@@ -597,7 +615,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deleting OpenSearch indices on $TIER" \
-            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS/utils ;  python3 /local/content/mvs/GDCMVS/utils/delete-all-gdcmvs-indices.py ; \"]" \
+            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS/utils ; pip3 install -r /local/content/mvs/GDCMVS/utils/requirements.txt ; python3 /local/content/mvs/GDCMVS/utils/delete-all-gdcmvs-indices.py ; \"]" \
             --query "Command.CommandId" \
             --output text)
           
@@ -658,7 +676,6 @@ jobs:
               --output table
             exit 1
           fi  
-    
 
           echo "✅ OpenSearch indices deleted successfully on instance $INSTANCE_ID for tier $TIER"
 
