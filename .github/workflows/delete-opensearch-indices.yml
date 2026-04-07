@@ -516,7 +516,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deleting OpenSearch indices on $TIER" \
-            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS/utils ;  pip3 install boto3 ; \"]" \
+            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS/utils ;  pip3 install boto3 ; pip3 install opensearch-py ; pip3 install requests_aws4auth  ; pip3 freeze --all   \"]" \
             --query "Command.CommandId" \
             --output text)
           
