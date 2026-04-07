@@ -292,6 +292,7 @@ jobs:
             exit 1
           fi           
           
+
       - name: test setup 2
         run: |
           set -euo pipefail
@@ -351,6 +352,8 @@ jobs:
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
             exit 1
+          fi
+
 
       - name: test setup 3
         run: |
@@ -411,7 +414,9 @@ jobs:
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
             exit 1
+          fi  
 
+          
       - name: test setup 4
         run: |
           set -euo pipefail
@@ -471,6 +476,7 @@ jobs:
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
             exit 1
+          fi  
 
 
           echo "✅ OpenSearch indices deleted successfully on instance $INSTANCE_ID for tier $TIER"
