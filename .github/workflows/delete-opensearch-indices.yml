@@ -246,7 +246,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deleting OpenSearch indices on $TIER" \
-            --parameters 'commands=["sudo python3 /local/content/mvs/GDCMVS/utils/delete-all-gdcmvs-indices.py"]' \
+            --parameters 'commands=["export OPENSEARCH_HOST=${{ env.OPENSEARCH_HOST }}", "pip3 install --no-cache-dir -r /local/content/mvs/GDCMVS/utils/requirements.txt", "sudo python3 /local/content/mvs/GDCMVS/utils/delete-all-gdcmvs-indices.py"]' \
             --query "Command.CommandId" \
             --output text)
           
