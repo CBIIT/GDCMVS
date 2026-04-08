@@ -375,9 +375,10 @@ jobs:
           
           echo "Writing .env file..."
           {
-            echo "NODE_ENV=${TIER}"
+            echo "TIER=${TIER}"
             echo "PORT=3000"
             echo "LOGDIR=./logs"
+            echo "OPENSEARCH_HOST=${{ vars.OPENSEARCH_HOST }}"
           } | sudo tee "${TARGET_FOLDER}/.env" >/dev/null
           
           echo "Ensuring log directory exists..."

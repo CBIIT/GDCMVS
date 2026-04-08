@@ -9,3 +9,5 @@ geckodriver.exe
 .vscode
 .local
 package-lock.json
+DEV/
+logs/
