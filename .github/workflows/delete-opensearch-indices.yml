@@ -694,7 +694,7 @@ jobs:
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Rebuild OpenSearch index on $TIER" \
-            --parameters 'commands=["bash -lc \"set -euo pipefail; set -x; export TOKEN=$(curl -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\"); curl -H \"X-aws-ec2-metadata-token: $TOKEN\" -fsS http://localhost:3000/search/rebuildIndex ; set +x ; \" "]' \
+            --parameters 'commands=["export TOKEN=$(curl -fsS -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\"); echo $TOKEN; curl -fsS -H \"X-aws-ec2-metadata-token: $TOKEN\" -k http://localhost:3000/search/rebuildIndex ;  \" "]' \
             --query "Command.CommandId" \
             --output text)
 
