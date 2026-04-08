@@ -23,7 +23,7 @@ const logger = createLogger({
   transports: [
     new transports.Console(
       {
-        level: 'debug',
+        level: 'debug', // use 'silly' for detailed logs
         handleExceptions: true,
         json: false,
         colorize: true
