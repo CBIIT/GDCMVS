@@ -504,18 +504,4 @@ jobs:
     secrets: inherit
 
 
-  delete-then-rebuild-indices-service:
-    needs: deploy-to-ec2
-    uses: ./.github/workflows/delete-opensearch-indices.yml
-    with:
-      tier: ${{ inputs.tier }}
-    secrets: inherit
-
-    
-  restart-service-final:
-    needs: deploy-to-ec2
-    uses: ./.github/workflows/restart-nodejs.yml
-    with:
-      tier: ${{ inputs.tier }}
-    secrets: inherit
 
