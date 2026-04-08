@@ -15,8 +15,13 @@ const all = {
   // Server port
   logDir: process.env.LOGDIR || '/local/content/mvs/logs',
 
-  // Node environment (dev, test, stage, prod), must select one.
+  // Node environment (development, test, stage, prod), must select one.
+  // with vite NODE_ENV only supports 'development' so we will use a separate TIER variable 
+  // to distinguish stage from prod.
   env: process.env.NODE_ENV || 'prod',
+
+  // tier (dev, stage, prod), must select one.
+  tier: process.env.TIER || 'prod',
 
   // general gdc index name
   indexName: 'gdc',
