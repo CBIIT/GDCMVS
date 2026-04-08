@@ -107,6 +107,7 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     let p = {};
     let entryRaw = propsRaw[prop];
     // remove break line break in dictionary
+    logger.silly("track l.110 ");
     if (entryRaw.enum !== undefined && entryRaw.enum.length > 0) {
       for (let key in entryRaw.enum) {
         entryRaw.enum[key] = entryRaw.enum[key].toString().replace('\n', ' ').replace('  ', ' ');
@@ -678,8 +679,32 @@ const bulkIndex = async next => {
   allProperties.forEach(result => {
     if (result.enum === undefined) return;
     result.enum.forEach(item => {
+      logger.silly("HERE l.682 Processing enum item: ");
       if (item.i_c !== undefined) { // If it has icdo3 code.
         if (item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined) {
+          logger.silly("HERE l.685 ");
+          
+          //all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] };
+
+          logger.silly("HERE l.689 ");
+
+          //if (item.n_c !== undefined && item.n_c.length != 0) {
+          //  logger.silly("HERE l.692, NO LENGTH ! ")
+          //  all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c,  all_syn: [] };
+          //}
+
+          logger.silly("HERE l.697 ");
+
+          // handle quick reindexing
+          //if (item.n_c === undefined) {
+          //  logger.silly("HERE l.688, NO LENGTH ! ")
+          //   all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] }; 
+          //}
+          //else {
+          //  logger.silly("HERE l.690, n_c length: " + item.n_c.length);
+          //  all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.length !== 0 ? item.n_c : [], all_syn: [] };
+          //}
+          
           all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.length !== 0 ? item.n_c : [], all_syn: [] };
           if (item.n_c !== undefined && item.n_c !== '') {
             item.n_c.forEach((nc, i) => {
@@ -807,10 +832,10 @@ const bulkIndex = async next => {
     const data_s = await esClient.bulk({body: suggestionBody});
     let errorCount_s = 0;
     data_s.body.items.forEach(itm => {
-      logger.silly('item is' + JSON.stringify(itm).slice(0, 500) + '...');
+      logger.silly('l.836 item is ' + JSON.stringify(itm).slice(0, 100) + '...');
       if (itm.index && itm.index.error) {
-        logger.error(++errorCount_s, itm.index.error);
         logger.error("Error indexing suggestion with ID: " + itm.index._id);
+        logger.error(++errorCount_s, itm.index.error);
       }
     });
 
@@ -819,8 +844,9 @@ const bulkIndex = async next => {
     let errorCount_n = 0;
     data_n.body.items.forEach(itm => {
       if (itm.index && itm.index.error) {
-        logger.error(++errorCount_n, itm.index.error);
         logger.error("Error indexing NCIt detail with ID: " + itm.index._id);
+        logger.error(++errorCount_n, itm.index.error);
+        
       }
     });
 
@@ -897,6 +923,7 @@ const createIndexes = async (params, next) => {
     logger.debug("have built property and suggestion indexes.");
     next(result);
   } catch (err) {
+    logger.silly("ERROR l.901");
     logger.error(err);
     next(err);
   }
