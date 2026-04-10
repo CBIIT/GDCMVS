@@ -4,9 +4,8 @@ then delete indices used for gdc-mvs
 """
 
 import os
-
 import boto3
-from opensearchpy import OpenSearch, RequestsHttpConnection, AWSV4SignerAuth
+from opensearchpy import OpenSearch
 
 
 def connect_to_opensearch():
@@ -14,8 +13,7 @@ def connect_to_opensearch():
     host = 'localhost'
     port = 9200
 
-    # create client
-    # connect client to instance, using settings
+    # connect to local opensearch instance, using settings
     client = OpenSearch(
         hosts=[{'host': host, "port": port}],
         use_ssl=False,
@@ -26,34 +24,26 @@ def connect_to_opensearch():
     return client
 
 
-
 def check_connection(client):
     # Check if above command succeeded or not
     print(client.info())
 
 
-def delete_gdc_suggestion(client):
-    index='gdc-suggestion',
-    if client.indices.exists(index=index):
+def delete_index(client, indexname):
+    if client.indices.exists(index=indexname):
       response = client.indices.delete(
-        index='gdc-suggestion',
+        index=indexname,
       )
-      print('Deleting index:', response)
-
-
-def delete_gdc_p(client):
-    response = client.indices.delete(
-        index='gdc-p'
-    )
-    print('Deleting index:', response)
+      print('Deleting index {}:'.format(indexname), response)
 
 
 if __name__ == '__main__':
     client = connect_to_opensearch()
-    check_connection(client)
+    #check_connection(client)
 
-    delete_gdc_p(client)
-    delete_gdc_suggestion(client)
+    indices = ["gdc-suggestion", "gdc-p", "ncit-details"]
+    for index in indices:
+        delete_index(client, index)
 
     # close connection
     client.close()

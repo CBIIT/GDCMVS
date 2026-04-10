@@ -6,12 +6,12 @@
 
 module.exports = {
 
-	 
 	// AWS development
 	opensearch: {
 	    node: process.env.OPENSEARCH_HOST,  // OpenSearch domain URL
         // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 	} 
+		
 
 	/** local development
 	opensearch: {
