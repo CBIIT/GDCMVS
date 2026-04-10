@@ -496,6 +496,7 @@ jobs:
             aws s3 rm "s3://${S3_BUCKET}/${S3_KEY}" || echo "⚠️  Warning: Failed to delete S3 file (may not exist)"
           fi
 
+
   restart-service:
     needs: deploy-to-ec2
     uses: ./.github/workflows/restart-nodejs.yml
@@ -503,8 +504,9 @@ jobs:
       tier: ${{ inputs.tier }}
     secrets: inherit
 
+
   delete-then-rebuild-indices-service:
-    needs: deploy-to-ec2
+    needs: restart-service
     uses: ./.github/workflows/delete-opensearch-indices.yml
     with:
       tier: ${{ inputs.tier }}
@@ -512,7 +514,7 @@ jobs:
 
     
   restart-service-final:
-    needs: deploy-to-ec2
+    needs: delete-then-rebuild-indices-service
     uses: ./.github/workflows/restart-nodejs.yml
     with:
       tier: ${{ inputs.tier }}
