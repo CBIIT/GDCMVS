@@ -1,15 +1,18 @@
 /**
- * Client for elasticsearch
+ * Client for opensearch
  */
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
-const elasticsearch = require('elasticsearch');
+const { defaultProvider } = require('@aws-sdk/credential-provider-node');
+const { Client } = require('@opensearch-project/opensearch');
+const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
 const yaml = require('js-yaml');
 const config = require('../config');
 const config_dev = require('../config/development');
+const config_prod = require('../config/prod');
 const logger = require('./logger');
 const caDSR = require('./caDSR');
 const extend = require('util')._extend;
@@ -18,16 +21,38 @@ const report = require('../service/search/report');
 const searchable_nodes = require('../config').searchable_nodes;
 const drugs_properties = require('../config').drugs_properties;
 const shared = require('../service/search/shared');
+const { log } = require('console');
 const folderPath = path.join(__dirname, '..', 'data');
 var allTerm = {};
 var cdeData = '';
 var allProperties = [];
 
-var esClient = new elasticsearch.Client({
-  host: config_dev.elasticsearch.host,
-  log: config_dev.elasticsearch.log,
-  requestTimeout: config_dev.elasticsearch.timeout
+// decide which OpenSearch configuration to use based on environment
+const config_opensearch = ((config.tier === 'prod') || (config.tier === 'stage')) ? config_prod.opensearch : config_dev.opensearch;
+
+// Initialize the OpenSearch client with AWS SigV4 signing for authentication 
+const esClient = new Client({
+  ...AwsSigv4Signer({
+    region: 'us-east-1',
+    service: 'es',
+    // Must return a Promise that resolve to an AWS.Credentials object.
+    // This function is used to acquire the credentials when the client start and
+    // when the credentials are expired.
+    // The Client will refresh the Credentials only when they are expired.
+    // With AWS SDK V2, Credentials.refreshPromise is used when available to refresh the credentials.
+
+    // Example with AWS SDK V3:
+    getCredentials: () => {
+      // Any other method to acquire a new Credentials object can be used.
+      const credentialsProvider = defaultProvider();
+      return credentialsProvider();
+    },
+  }),
+  
+  node: config_opensearch.node, // OpenSearch domain URL
+  // node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 });
+
 
 const parseRef = (ref, termsJson, defJson) => {
   let name = ref.split('/')[1];
@@ -82,6 +107,7 @@ const helper = (fileJson, termsJson, defJson, gdc_values, syns) => {
     let p = {};
     let entryRaw = propsRaw[prop];
     // remove break line break in dictionary
+    logger.silly("track l.110 ");
     if (entryRaw.enum !== undefined && entryRaw.enum.length > 0) {
       for (let key in entryRaw.enum) {
         entryRaw.enum[key] = entryRaw.enum[key].toString().replace('\n', ' ').replace('  ', ' ');
@@ -359,43 +385,57 @@ const extendDef = (termsJson, defJson) => {
   }
 }
 
-const bulkIndex = next => {
+// Bulk index all nodes and properties
+const bulkIndex = async next => {
   let deprecated_properties = [];
   let deprecated_enum = [];
+  // read all yaml files and generate doc for indexing, also collect deprecated properties and enums
   fs.readdirSync(folderPath).forEach(file => {
     if (file.indexOf('_') !== 0) {
       let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
+      logger.debug("Processing file: " + file);
       if(fileJson.category === 'administrative') fileJson.category = 'case';
       let category = fileJson.category;
       let node = fileJson.id;
+      logger.debug("Processing node: " + node + " in category: " + category);
 
       if (fileJson.deprecated) {
+        logger.debug("Node " + node + " is deprecated. Adding to deprecated properties list."); 
         fileJson.deprecated.forEach(d_p => {
           let tmp_d_p = category + "." + node + "." + d_p;
           deprecated_properties.push(tmp_d_p.trim().toLowerCase());
         })
       }
 
+      // check deprecated enum
       for (let keys in fileJson.properties) {
+        logger.debug("Processing property: " + keys + " in node: " + node);
         if (fileJson.properties[keys].deprecated_enum) {
+          logger.debug("Property " + keys + " in node " + node + " has deprecated enums. Adding to deprecated enum list.");
           fileJson.properties[keys].deprecated_enum.forEach(d_e => {
             let tmp_d_e = category + "." + node + "." + keys + "." + d_e;
             deprecated_enum.push(tmp_d_e.trim().toLowerCase());
           });
         }
       }
+      logger.debug("Finished processing file: " + file);
     }
   });
+  // read concept code, gdc values and ncit details
+  logger.silly("Reading concept codes, GDC values, and NCIt details from files.");
   
   let ccode = shared.readConceptCode();
   let gdc_values = shared.readGDCValues();
   let syns = shared.readNCItDetails();
 
+  // read
+  logger.debug("Reading CDE data from file.");
   cdeData = shared.readCDEData();
   let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));
   let defJson = yaml.load(fs.readFileSync(folderPath + '/_definitions.yaml', 'utf8'));
   extendDef(termsJson, defJson);
   // let bulkBody = [];
+  logger.debug("Processing YAML files to generate documents for indexing and collect deprecated properties and enums.");
   fs.readdirSync(folderPath).forEach(file => {
     if (file.indexOf('_') !== 0) {
       let fileJson = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
@@ -423,6 +463,10 @@ const bulkIndex = next => {
     gdc_data[file.replace('.yaml', '')] = yaml.load(fs.readFileSync(folderPath + '/' + file, 'utf8'));
   });
   gdc_data = report.preProcess(searchable_nodes, gdc_data);
+  logger.silly("Finished processing YAML files and generating documents for indexing.");
+  // check if gdc_data got built correctly
+  logger.silly('gdc_data is' + JSON.stringify(gdc_data).slice(0, 10));
+  
 
   // build suggestion index
   let suggestionBody = [];
@@ -484,6 +528,7 @@ const bulkIndex = next => {
       }
     }
   }
+
 
   // type ahead suggestions for NCIt Codes.
   if (ccode) {
@@ -553,12 +598,16 @@ const bulkIndex = next => {
     suggestionBody.push({
       index: {
         _index: config.suggestionName,
-        _type: '_doc',
+        //_type: '_doc',   // mlb 0403-1015
         _id: doc.id
       }
     });
     suggestionBody.push(doc);
   }
+  // check if suggestion got built correctly
+  logger.silly('Suggestion index body sample: ' + JSON.stringify(suggestionBody).slice(0, 100));
+
+  // build ncit details index
 
   let ncitDetail = [];
   for (let conceptCode in syns) {
@@ -575,12 +624,15 @@ const bulkIndex = next => {
     ncitDetail.push({
       index: {
         _index: config.ncitDetails,
-        _type: '_doc',
+        //_type: '_doc',   // mlb 0403-1015
         _id: doc.id
       }
     });
     ncitDetail.push(doc);
   }
+  // check if ncit details got built correctly
+  logger.silly('NCIt details index body sample: ' + JSON.stringify(ncitDetail).slice(0, 100));
+
   // build property index
   let propertyBody = [];
 
@@ -629,7 +681,12 @@ const bulkIndex = next => {
     result.enum.forEach(item => {
       if (item.i_c !== undefined) { // If it has icdo3 code.
         if (item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined) {
-          all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.lenght !== 0 ? item.n_c : [], all_syn: [] };
+          if ( item.n_c === undefined ) {
+            all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] };
+          }
+          else{
+              all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.length !== 0 ? item.n_c : [], all_syn: [] };
+          }
           if (item.n_c !== undefined && item.n_c !== '') {
             item.n_c.forEach((nc, i) => {
               all_icdo3_syn[item.i_c.c].n_syn.push({ n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i] });
@@ -662,6 +719,7 @@ const bulkIndex = next => {
     });
   });
 
+  // Adding synonyms and ncit details for ICDO3 codes to the enum item  
   allProperties.forEach(result => {
     if (result.enum === undefined) return;
     result.enum.forEach(item => {
@@ -684,7 +742,11 @@ const bulkIndex = next => {
   // Removing redundant values
   let check_enums = {};
   allProperties.forEach(result => {
-    if(result.enum === undefined) return;
+    logger.silly("x1. Processing property: " + result.property + " in node: " + result.node);
+    if(result.enum === undefined) {
+      logger.silly("x1.1 No enums for property ");
+      return;
+    }
     let id = result.property+"@"+result.node+"@"+result.category;
     let new_enum = [];
     result.enum.forEach(item => {
@@ -702,7 +764,11 @@ const bulkIndex = next => {
 
   // Remove non-gdc values
   allProperties.forEach(result => {
-    if(result.enum === undefined) return;
+    logger.silly("x2. Processing property: " + result.property + " in node: " + result.node);
+    if(result.enum === undefined) {
+      logger.silly("x2.1 No enums for property: ");
+      return;
+    }
     let new_enum = [];
     result.enum.forEach(item => {
       if(item.gdc_d === true) new_enum.push(item);
@@ -711,59 +777,75 @@ const bulkIndex = next => {
   });
 
   allProperties.forEach(ap => {
+    logger.silly("x3. Processing property: " + ap.property + " in node: " + ap.node);
     let doc = extend(ap, {});
     doc.id = ap.property + "/" + ap.node + "/" + ap.category;
     propertyBody.push({
       index: {
         _index: config.index_p,
-        _type: '_doc',
+        //_type: '_doc', // mlb 0403-1015
         _id: doc.id
       }
     });
     propertyBody.push(doc);
   });
-  esClient.bulk({body: propertyBody}, (err_p, data_p) => {
-    if (err_p) {
-      return next(err_p);
-    }
+  // check if property index got built correctly
+  logger.silly('Property index body sample: ' + JSON.stringify(propertyBody).slice(0, 200)); 
+  logger.silly("Finished building index bodies for properties, suggestions, and NCIt details. Starting bulk indexing to OpenSearch.");
+
+  try {
+    logger.silly("Starting bulk indexing for property index.");
+    const data_p = await esClient.bulk({body: propertyBody});
     let errorCount_p = 0;
-    data_p.items.forEach(item => {
+    
+    // check if data_p got response from OpenSearch -- 
+    logger.silly('data_p is' + JSON.stringify(data_p).slice(0, 300));
+    logger.silly('data_p items is' + JSON.stringify(data_p.body.items).slice(0, 300));
+
+    data_p.body.items.forEach(item => {
       if (item.index && item.index.error) {
         logger.error(++errorCount_p, item.index.error);
+        logger.error("Error indexing property with ID: " + item.index._id);
       }
     });
-    esClient.bulk({body: suggestionBody}, (err_s, data_s) => {
-      if (err_s) {
-        return next(err_s);
+
+    logger.silly("Starting bulk indexing for suggestion index.");
+    const data_s = await esClient.bulk({body: suggestionBody});
+    let errorCount_s = 0;
+    data_s.body.items.forEach(itm => {
+      logger.silly('l.836 item is ' + JSON.stringify(itm).slice(0, 100) + '...');
+      if (itm.index && itm.index.error) {
+        logger.error("Error indexing suggestion with ID: " + itm.index._id);
+        logger.error(++errorCount_s, itm.index.error);
       }
-      let errorCount_s = 0;
-      data_s.items.forEach(itm => {
-        if (itm.index && itm.index.error) {
-          logger.error(++errorCount_s, itm.index.error);
-        }
-      });
-      esClient.bulk({body: ncitDetail}, (err_s, data_s) => {
-        if (err_s) {
-          return next(err_s);
-        }
-        let errorCount_s = 0;
-        data_s.items.forEach(itm => {
-          if (itm.index && itm.index.error) {
-            logger.error(++errorCount_s, itm.index.error);
-          }
-        });
-        next({
-          property_indexed: (propertyBody.length - errorCount_p),
-          property_total: propertyBody.length,
-          suggestion_indexed: (suggestionBody.length - errorCount_s),
-          suggestion_total: suggestionBody.length,
-          ncit_details: ncitDetail.length
-        });
-      });
     });
-  });
+
+    logger.silly("Starting bulk indexing for NCIt details index.");
+    const data_n = await esClient.bulk({body: ncitDetail});
+    let errorCount_n = 0;
+    data_n.body.items.forEach(itm => {
+      if (itm.index && itm.index.error) {
+        logger.error("Error indexing NCIt detail with ID: " + itm.index._id);
+        logger.error(++errorCount_n, itm.index.error);
+        
+      }
+    });
+
+    next({
+      property_indexed: (propertyBody.length - errorCount_p),
+      property_total: propertyBody.length,
+      suggestion_indexed: (suggestionBody.length - errorCount_s),
+      suggestion_total: suggestionBody.length,
+      ncit_details: ncitDetail.length
+    });
+  } catch (err) {
+    logger.error("Bulk indexing failed with error: " + err);
+    return next(err);
+  }
 }
+logger.silly("OpenSearch component loaded."); 
 exports.bulkIndex = bulkIndex;
+
 
 const query = (index, dsl, highlight, next) => {
   var body = {
@@ -779,14 +861,12 @@ const query = (index, dsl, highlight, next) => {
   }, {
     "node": "asc"
   }];
-  esClient.search({index: index, body: body}, (err, data) => {
-    if (err) {
+  esClient.search({index: index, body: body})
+    .then(data => next(data))
+    .catch(err => {
       logger.error(err);
       next(err);
-    } else {
-      next(data);
-    }
-  });
+    });
 }
 
 exports.query = query;
@@ -794,14 +874,12 @@ exports.query = query;
 const ncitDetails = (index, dsl, next) => {
   let body = {};
   body.query = dsl;
-  esClient.search({index: index, "_source": true, body: body}, (err, data) => {
-    if (err) {
+  esClient.search({index: index, "_source": true, body: body})
+    .then(data => next(data))
+    .catch(err => {
       logger.error(err);
       next(err);
-    } else {
-      next(data);
-    }
-  });
+    });
 }
 
 exports.ncitDetails = ncitDetails;
@@ -809,38 +887,33 @@ exports.ncitDetails = ncitDetails;
 const suggest = (index, suggest, next) => {
   let body = {};
   body.suggest = suggest;
-  esClient.search({index: index, "_source": true, body: body}, (err, data) => {
-    if (err) {
+  esClient.search({index: index, "_source": true, body: body})
+    .then(data => next(data))
+    .catch(err => {
       logger.error(err);
       next(err);
-    } else {
-      next(data);
-    }
-  });
+    });
 }
 
 exports.suggest = suggest;
 
-const createIndexes = (params, next) => {
-  esClient.indices.create(params[0], (err_2, result_2) => {
-    if (err_2) {
-      logger.error(err_2);
-      next(err_2);
-    } else {
-      esClient.indices.create(params[1], (err_3, result_3) => {
-        if (err_3) {
-          logger.error(err_3);
-          next(err_3);
-        } else {
-          logger.debug("have built property and suggestion indexes.");
-          next(result_3);
-        }
-      });
-    }
-  });
+const createIndexes = async (params, next) => {
+  try {
+    await esClient.indices.create(params[0]);
+    const result = await esClient.indices.create(params[1]);
+    logger.debug("have built property and suggestion indexes.");
+    next(result);
+  } catch (err) {
+    logger.silly("ERROR l.901");
+    logger.error(err);
+    next(err);
+  }
+  logger.silly("Indexes created.")
 }
+logger.silly("Index creation function defined.");
 
 exports.createIndexes = createIndexes;
+logger.silly("OpenSearch component loaded.");
 
 const preloadDataFromCaDSR = next => {
   let termsJson = yaml.load(fs.readFileSync(folderPath + '/_terms.yaml', 'utf8'));

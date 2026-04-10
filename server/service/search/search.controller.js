@@ -1,6 +1,6 @@
 'use strict';
 
-const elastic = require('../../components/elasticsearch');
+const opensearch = require('../../components/opensearch');
 const handleError = require('../../components/handleError');
 const logger = require('../../components/logger');
 const config = require('../../config');
@@ -28,11 +28,15 @@ const suggestion = (req, res) => {
       }
     }
   };
-  elastic.suggest(config.suggestionName, suggest, result => {
-    if (result.suggest === undefined) {
+  opensearch.suggest(config.suggestionName, suggest, result => {
+    // -- D
+	if (result.body === undefined) {
       return handleError.error(res, result);
     }
-    let dt = result.suggest.term_suggest;
+	if (result.body.suggest === undefined) {
+      return handleError.error(res, result);
+    }
+    let dt = result.body.suggest.term_suggest;
     let data = [];
     dt[0].options.forEach(opt => {
       data.push(opt._source);
@@ -55,11 +59,14 @@ const suggestionMisSpelled = (req, res) => {
       }
     }
   };
-  elastic.suggest(config.suggestionName, suggest, result => {
-    if (result.suggest === undefined) {
+  opensearch.suggest(config.suggestionName, suggest, result => {
+    if (result.body === undefined) {
       return handleError.error(res, result);
     }
-    let dt = result.suggest.term_suggest;
+    if (result.body.suggest === undefined) {
+      return handleError.error(res, result);
+    }
+    let dt = result.body.suggest.term_suggest;
     let data = [];
     dt[0].options.forEach(opt => {
       data.push(opt._source);
@@ -79,17 +86,21 @@ const searchICDO3Data = (req, res) => {
 		query.match_phrase_prefix["enum.i_c.have"].analyzer = "my_standard";
 		let highlight;
 
-		elastic.query(config.index_p, query, highlight, result => {
+		opensearch.query(config.index_p, query, highlight, result => {
 			let mainData = [];
-			if (result.hits === undefined) {
+			// -- F
+			if (result.body === undefined) {
 				res.send('No data found!');
 			}
-			let data = result.hits.hits;
+			if (result.body.hits === undefined) {
+				res.send('No data found!');
+			}
+			let data = result.body.hits.hits;
 			data.forEach(entry => {
 				delete entry.sort;
 				delete entry._index;
 				delete entry._score;
-				delete entry._type;
+				//delete entry._type;
 				delete entry._id;
 			});
 
@@ -146,16 +157,20 @@ const searchP = (req, res) => {
 		if(keyword.indexOf(" AND ") !== -1 || keyword.indexOf(" OR ") !== -1 || keyword.indexOf(" NOT ") !== -1) isBoolean = true;
 		let query = generateQuery(keyword, option, isBoolean);
 		let highlight = generateHighlight();
-		elastic.query(config.index_p, query, highlight, result => {
-			if (result.hits === undefined) {
+		opensearch.query(config.index_p, query, highlight, result => {
+			// -- A
+			if (result.body === undefined) {
 				return handleError.error(res, result);
 			}
-			let data = result.hits.hits;
+			if (result.body.hits === undefined) {
+				return handleError.error(res, result);
+			}
+			let data = result.body.hits.hits;
 			data.forEach(entry => {
 				delete entry.sort;
 				delete entry._index;
 				delete entry._score;
-				delete entry._type;
+				//delete entry._type;
 				delete entry._id;
 			});
 			res.json(data);
@@ -196,11 +211,15 @@ const searchAPI = (req, res) => {
   } else {
     if (keyword.indexOf(' AND ') !== -1 || keyword.indexOf(' OR ') !== -1 || keyword.indexOf(' NOT ') !== -1) isBoolean = true;
     let query = generateQuery(keyword, option, isBoolean);
-    elastic.query(config.index_p, query, null, result => {
-      if (result.hits === undefined) {
+    opensearch.query(config.index_p, query, null, result => {
+	  // --	B
+      if (result.body === undefined) {
         return handleError.error(res, result);
       }
-      let data = result.hits.hits;
+	  if (result.body.hits === undefined) {
+        return handleError.error(res, result);
+      }
+      let data = result.body.hits.hits;
       data.forEach(entry => {
         if (entry.inner_hits.enum.hits.hits.length === 0) {
           delete entry.inner_hits;
@@ -271,7 +290,7 @@ const searchAPI = (req, res) => {
         delete entry.inner_hits;
         delete entry._index;
         delete entry._score;
-        delete entry._type;
+        //delete entry._type;
         delete entry._id;
       });
       return res.json(data);
@@ -452,6 +471,10 @@ const generateHighlight = () => {
 
 const indexing = (req, res) => {
 	let configs = [];
+
+	// debug indexing process
+	logger.debug('starting indexing process');
+
 	//config property index
 	let config_property = {};
 	config_property.index = config.index_p;
@@ -461,6 +484,21 @@ const indexing = (req, res) => {
 			max_inner_result_window: 10000000,
 			max_result_window: 10000000,
 			analysis: {
+                // mlb
+		        tokenizer: {
+		    	    "my_char_group_tokenizer": {
+          		        "type": "char_group",
+          		        "tokenize_on_chars": [
+            		        "whitespace",
+            		        "-",
+            		        ":",
+							" ",  // mlb
+							"_",  // mlb
+							"\/", //
+          		        ]
+        		    },
+      			},
+	
 				analyzer: {
 					case_insensitive: {
 						tokenizer: "keyword",
@@ -476,12 +514,19 @@ const indexing = (req, res) => {
 					// 	"char_filter": ["my_filter"],
 					// 	"filter": ["lowercase","whitespace_remove"]
 					// }
-					my_whitespace: {
+					my_whitespace_for_elasticsearch: {
 						tokenizer: "whitespace",
 						//char_filter: ["my_filter"],
 						//filter: ["lowercase", "whitespace_remove"],
 						filter: ["lowercase"],
 					  },
+					// switching analyzer
+					my_whitespace: {
+						tokenizer: "my_char_group_tokenizer",
+						//char_filter: ["my_filter"],
+						//filter: ["lowercase", "whitespace_remove"],
+						filter: ["lowercase"],
+					  },  
 				},
 				char_filter: {
 					my_filter: {
@@ -580,7 +625,13 @@ const indexing = (req, res) => {
 			}
 		}
 	};
+
+	// debug property index configuration
+	logger.silly('property index configuration created');
+	
 	configs.push(config_property);
+	logger.silly('property index configuration added to configs array');
+
 	//config suggestion index
 	let config_suggestion = {};
 	config_suggestion.index = config.suggestionName;
@@ -598,6 +649,8 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_suggestion);
+	logger.silly('suggestion index configuration created');
+	
 	let config_ncitDetails = {};
 	config_ncitDetails.index = config.ncitDetails;
 	config_ncitDetails.body = {
@@ -622,17 +675,30 @@ const indexing = (req, res) => {
 		}
 	};
 	configs.push(config_ncitDetails);
-	elastic.createIndexes(configs, result => {
-		if (result.acknowledged === undefined) {
+	logger.silly('NCIT details index configuration added to configs array');
+
+	opensearch.createIndexes(configs, result => {
+		logger.silly('aleph. Index creation result: ' + JSON.stringify(result).substring(0, 500) + '...'); // Log only the first 500 characters of the result for brevity
+		// -- C
+		if (result.body === undefined) {
 			return handleError.error(res, result);
 		}
-		elastic.bulkIndex(data => {
+		if (result.body.acknowledged === undefined) {
+			return handleError.error(res, result);
+		}
+		logger.silly('Index creation acknowledged.');
+		opensearch.bulkIndex(data => {
+			logger.silly('beta. Bulk index result: ' + JSON.stringify(data).substring(0, 500) + '...'); // Log only the first 500 characters of the result for brevity
 			if (data.property_indexed === undefined) {
+				logger.silly('Bulk indexing failed.  but did it though...');
 				return handleError.error(res, data);
 			}
 			return res.status(200).json(data);
 		});
+		logger.silly('gimmel. Index creation and bulk indexing completed.');
 	});
+
+	logger.silly('indexing function execution completed, awaiting index creation and bulk indexing results');
 };
 
 const getDataFromCDE = (req, res) => {
@@ -709,18 +775,28 @@ const getGDCData = (req, res) => {
 	query.terms = {};
 	query.terms.id = [];
 	query.terms.id.push(uid);
-	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
+	opensearch.query(config.index_p, query, null, result => {
+		// --G
+		if (result.body === undefined) {
 			return handleError.error(res, result);
 		}
-		let data = result.hits.hits;
+		if (result.body.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.body.hits.hits;
 		res.json(data);
 	});
 };
 
 const preloadCadsrData = (req, res) => {
-	elastic.preloadDataFromCaDSR(result => {
+	opensearch.preloadDataFromCaDSR(result => {
+		// test
+		if (result.body === "CDE data Refreshed!!") {
+			logger.debug('KEY POINT preloadDataFromCaDSR!!');
+			res.end('Success!!');
+		}
 		if (result === "CDE data Refreshed!!") {
+			logger.debug('Normal POINT preloadDataFromCaDSR!!');
 			res.end('Success!!');
 		} else {
 			res.write(result);
@@ -729,8 +805,14 @@ const preloadCadsrData = (req, res) => {
 }
 
 const preloadDataTypeFromCaDSR = (req, res) => {
-	elastic.preloadDataTypeFromCaDSR(result => {
+	opensearch.preloadDataTypeFromCaDSR(result => {
+		// test
+		if (result.body === "CDE data Refreshed!!") {
+			logger.debug('KEY POINT preloadDataTypeFromCaDSR!!');
+			res.end('Success!!');
+		}
 		if (result === "CDE data Refreshed!!") {
+			logger.debug('Normal POINT preloadDataTypeFromCaDSR!!');
 			res.end('Success!!');
 		} else {
 			res.write(result);
@@ -740,8 +822,14 @@ const preloadDataTypeFromCaDSR = (req, res) => {
 
 const preloadSynonumsNcit = (req, res) => {
 	let arr = [];
-	elastic.loadSynonyms(result => {
+	opensearch.loadSynonyms(result => {
+		// test
+		if (result.body === "Success") {
+			logger.debug('KEY POINT loadSynonyms!!');
+			res.end('Success!!');
+		}
 		if (result === "Success") {
+			logger.debug('Normal POINT loadSynonyms!!');
 			res.end('Success!!');
 		} else {
 			if (arr.length === 50) {
@@ -790,52 +878,90 @@ const updateSynonumsNcit = (req, res) => {
 
 
 const loadSynonyms_list = (req, res) => {
-	elastic.loadNcitSynonyms_list(result => {
-		if (result === "Success") {
+	opensearch.loadNcitSynonyms_list(result => {
+		// test
+		logger.debug('... loadSynonyms_list!!');
+		if (result.body === "Success") {
+			logger.debug('KEY POINT  loadSynonyms_list!!');
 			copyToSynonymsJS();
 			res.end('Success!!');
-		} else {
-			res.write(result);
 		}
+		else {
+			if (result === "Success") {
+				logger.debug('Normal POINT loadSynonyms_list!!');
+				copyToSynonymsJS();
+				res.end('Success!!');
+			} else {
+				res.write(result);
+			}
+		}	
 	});
 };
 
 const loadSynonyms_continue = (req, res) => {
-	elastic.loadSynonyms_continue(result => {
-		if (result === "Success") {
+	opensearch.loadSynonyms_continue(result => {
+		// test
+		logger.debug('... loadSynonyms_continue!!');
+		if (result.body === "Success") {
+			logger.debug('KEY POINT loadSynonyms_continue!!');
 			copyToSynonymsJS();
 			res.end('Success!!');
-		} else {
-			res.write(result);
+		}
+		else {
+			if (result === "Success") {
+				logger.debug('Normal POINT loadSynonyms_continue!!');
+				copyToSynonymsJS();
+				res.end('Success!!');
+			} else {
+				res.write(result);
+			}
 		}
 	});
 };
 
 const preloadSynonumsCtcae = (req, res) => {
 	let arr = [];
-	elastic.loadSynonymsCtcae(result => {
-		if (result === "Success") {
+	opensearch.loadSynonymsCtcae(result => {
+		// test
+		if (result.body === "Success") {
+			logger.debug('KEY POINT loadSynonymsCtcae!!');
 			copyToSynonymsJS();
 			res.end('Success!!');
-		} else {
-			if (arr.length === 5) {
-				res.write(arr.toString());
-				arr = [];
-				arr.push(result);
-			}else{
-				arr.push(result);
+		}
+		else {
+			if (result === "Success") {
+				logger.debug('Normal POINT loadSynonymsCtcae!!');
+				copyToSynonymsJS();
+				res.end('Success!!');
+			} else {
+				if (arr.length === 5) {
+					res.write(arr.toString());
+					arr = [];
+					arr.push(result);
+				}else{
+					arr.push(result);
+				}
 			}
 		}
 	})
 };
 
 const loadCtcaeSynonyms_continue = (req, res) => {
-	elastic.loadCtcaeSynonyms_continue(result => {
-		if (result === "Success") {
+	// -- examining adjust structure to have "body"
+	opensearch.loadCtcaeSynonyms_continue(result => {
+		// CHECK
+		if (result.body === "Success") {
+			logger.debug('KEY POINT loadCtcaeSynonyms_continue!!');
 			copyToSynonymsJS();
 			res.end('Success!!');
 		} else {
-			res.write(result);
+			if (result === "Success") {
+				logger.debug('Normal POINT loadCtcaeSynonyms_continue!!');
+				copyToSynonymsJS();
+				res.end('Success!!');
+			} else {
+				res.write(result);
+			}
 		}
 	})
 };
@@ -853,11 +979,14 @@ const getPV = (req, res) => {
 		"match_all": {}
 	};
 
-	elastic.query(config.index_p, query, null, result => {
-		if (result.hits === undefined) {
+	opensearch.query(config.index_p, query, null, result => {
+		if (result.body === undefined) {
 			return handleError.error(res, result);
 		}
-		let data = result.hits.hits;
+		if (result.body.hits === undefined) {
+			return handleError.error(res, result);
+		}
+		let data = result.body.hits.hits;
 		let cc = [];
 		data.forEach(entry => {
 			let vs = entry._source.enum;
@@ -987,11 +1116,15 @@ const getNCItInfo = (req, res) => {
 			"id": code
 		}
 	};
-	elastic.ncitDetails(config.ncitDetails, query, result => {
-		if (result.hits === undefined) {
+	opensearch.ncitDetails(config.ncitDetails, query, result => {
+		// -- E
+		if (result.body === undefined) {
 			return handleError.error(res, result);
 		}
-		let data = result.hits.hits;
+		if (result.body.hits === undefined) {
+			return handleError.error(res, result);
+		}	
+		let data = result.body.hits.hits;
 		res.json(data[0]._source.data);
 	});
 };
@@ -1073,7 +1206,7 @@ const parseExcel = (req, res) => {
 	// 					}
 
 	// 				} else {
-	// 					//If no mapping exists for this category.node.property	
+	// 					//If tracepping exists for this category.node.property	
 	// 					icdo[category_node_property] = [];
 	// 					var temp_obj = {
 	// 						nm: dataParsed[dp].icdo3_term,
