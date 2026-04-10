@@ -1,7 +1,7 @@
 """
-NAME    delete-all-indices.py
-DESC    delete all indices used for gdc-mvs, so that we can start fresh with new data
-USAGE   python3 delete-all-indices.py
+NAME    delete_gdcmvs_aws_indices.py
+DESC    deletes all indices used for gdc-mvs, so that we can start fresh with new data
+USAGE   python3 delete_gdcmvs_aws_indices.py
 NOTES
         1. connect to opensearch
         2. using AWS credentials
@@ -54,28 +54,21 @@ def check_connection(client):
     print(client.info())
 
 
-def delete_gdc_suggestion(client):
-    index='gdc-suggestion',
-    if client.indices.exists(index=index):
+def delete_index(client, indexname):
+    if client.indices.exists(index=indexname):
       response = client.indices.delete(
-        index='gdc-suggestion',
+        index=indexname,
       )
-      print('Deleting index:', response)
-
-
-def delete_gdc_p(client):
-    response = client.indices.delete(
-        index='gdc-p'
-    )
-    print('Deleting index:', response)
+      print('Deleting index {}:'.format(indexname), response)
 
 
 if __name__ == '__main__':
     client = connect_to_opensearch()
-    check_connection(client)
+    #check_connection(client)
 
-    delete_gdc_p(client)
-    delete_gdc_suggestion(client)
+    indices = ["gdc-suggestion", "gdc-p", "ncit-details"]
+    for index in indices:
+        delete_index(client, index)
 
     # close connection
     client.close()

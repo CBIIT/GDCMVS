@@ -679,33 +679,14 @@ const bulkIndex = async next => {
   allProperties.forEach(result => {
     if (result.enum === undefined) return;
     result.enum.forEach(item => {
-      logger.silly("HERE l.682 Processing enum item: ");
       if (item.i_c !== undefined) { // If it has icdo3 code.
         if (item.i_c.c && all_icdo3_syn[item.i_c.c] === undefined) {
-          logger.silly("HERE l.685 ");
-          
-          //all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] };
-
-          logger.silly("HERE l.689 ");
-
-          //if (item.n_c !== undefined && item.n_c.length != 0) {
-          //  logger.silly("HERE l.692, NO LENGTH ! ")
-          //  all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c,  all_syn: [] };
-          //}
-
-          logger.silly("HERE l.697 ");
-
-          // handle quick reindexing
-          //if (item.n_c === undefined) {
-          //  logger.silly("HERE l.688, NO LENGTH ! ")
-          //   all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] }; 
-          //}
-          //else {
-          //  logger.silly("HERE l.690, n_c length: " + item.n_c.length);
-          //  all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.length !== 0 ? item.n_c : [], all_syn: [] };
-          //}
-          
-          all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.length !== 0 ? item.n_c : [], all_syn: [] };
+          if ( item.n_c === undefined ) {
+            all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: [], all_syn: [] };
+          }
+          else{
+              all_icdo3_syn[item.i_c.c] = { n_syn: [], checker_n_c: item.n_c.length !== 0 ? item.n_c : [], all_syn: [] };
+          }
           if (item.n_c !== undefined && item.n_c !== '') {
             item.n_c.forEach((nc, i) => {
               all_icdo3_syn[item.i_c.c].n_syn.push({ n_c: item.n_c[i], s: item.s[i], ap: item.ap[i], def: item.def[i] });
@@ -763,7 +744,7 @@ const bulkIndex = async next => {
   allProperties.forEach(result => {
     logger.silly("x1. Processing property: " + result.property + " in node: " + result.node);
     if(result.enum === undefined) {
-      logger.silly("x1.1 No enums for property: " + result.property + " in node: " + result.node);
+      logger.silly("x1.1 No enums for property ");
       return;
     }
     let id = result.property+"@"+result.node+"@"+result.category;
@@ -785,7 +766,7 @@ const bulkIndex = async next => {
   allProperties.forEach(result => {
     logger.silly("x2. Processing property: " + result.property + " in node: " + result.node);
     if(result.enum === undefined) {
-      logger.silly("x2.1 No enums for property: " + result.property + " in node: " + result.node);
+      logger.silly("x2.1 No enums for property: ");
       return;
     }
     let new_enum = [];
