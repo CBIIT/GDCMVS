@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = {
-	elasticsearch: {
-		host: '127.0.0.1:9200',
-		log: 'error'
+	opensearch: {
+		// AWS openssearch configuration (production)
+		node: process.env.OPENSEARCH_HOST,  // OpenSearch domain URL
+		// node: 'https://search-xxx.region.es.amazonaws.com', // OpenSearch domain URL
 	}
-};
+}

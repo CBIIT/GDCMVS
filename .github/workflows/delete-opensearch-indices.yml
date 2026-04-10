@@ -1,4 +1,4 @@
-name: Deploy GDCMVS - EC2 and Restart
+name: Delete Opensearch Indices
 
 on:
   workflow_dispatch:
@@ -13,33 +13,25 @@ on:
           - qa
           - stage
           - prod
-      target_folder:
-        description: "Target folder on EC2 to unzip code (e.g., /local/content/mvs/GDCMVS)"
+  workflow_call:
+    inputs:
+      tier:
+        description: "Environment tier"
         required: true
-        default: "/local/content/mvs/GDCMVS"
         type: string
-      backup_previous:
-        description: "Backup previous version before deploying? (Recommended: yes)"
-        required: true
-        default: "yes"
-        type: choice
-        options:
-          - yes
-          - no
+        default: "dev"
 
 permissions:
   id-token: write     # Required for GitHub OIDC to assume the AWS role
   contents: read
 
 jobs:
-  deploy-to-ec2:
+  delete-opensearch-indices:
     runs-on: ubuntu-latest
     environment: ${{ inputs.tier == 'dev' && 'DEV' || inputs.tier == 'qa' && 'QA' || inputs.tier == 'stage' && 'STAGE' || inputs.tier == 'prod' && 'PROD' || inputs.tier }}
-
-    
     env:
       TIER: ${{ inputs.tier || 'dev' }}
-    
+
     steps:
       - name: Set environment-specific variables
         id: set-env
@@ -94,10 +86,10 @@ jobs:
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
             echo "Deploying from branch: $BRANCH_NAME"
            
-            # MVS-329, allow all branches to be deployed to DEV -MLB 
+            # MVS-329 allow all tiers to restart, for DEV tier - MLB 
             if [[ "$TIER" == "qa" ]]; then
-              # dev and qa can deploy from nonprod or master or stage branch
-              if [[ "$BRANCH_NAME" != "nonprod" ]] && [[ "$BRANCH_NAME" != "master" ]] && [[ "$BRANCH_NAME" != "stage" ]]; then
+              # dev and qa can deploy from nonprod or master branch
+              if [[ "$BRANCH_NAME" != "nonprod" ]] && [[ "$BRANCH_NAME" != "master" ]]; then
                 echo "❌ Error: dev and qa tiers must deploy from 'nonprod' or 'master' branch"
                 echo "Current branch: $BRANCH_NAME"
                 echo "Expected branches: nonprod or master"
@@ -105,11 +97,11 @@ jobs:
               fi
               echo "✅ Branch validation passed for tier: $TIER"
             elif [[ "$TIER" == "stage" ]] || [[ "$TIER" == "prod" ]]; then
-              # stage and prod must be from master branch
+              # stage and prod must be from master branch or stage
               if [[ "$BRANCH_NAME" != "master" ]] && [[ "$BRANCH_NAME" != "stage" ]] && [[ "$BRANCH_NAME" != "tags/*" ]]; then
                 echo "❌ Error: stage and prod tiers must deploy from 'master' or 'stage' branch or release tag"
                 echo "Current branch: $BRANCH_NAME"
-                echo "Expected: master branch or any release tag"
+                echo "Expected: master branch or stage branch or any release tag"
                 exit 1
               fi
               echo "✅ Branch validation passed for tier: $TIER"
@@ -134,7 +126,7 @@ jobs:
           # Assumes instances are tagged with: Tier=dev, Tier=qa, Tier=stage, or Tier=prod
           INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:Tier,Values=$TIER" \
-            "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
+             "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
             --query 'Reservations[0].Instances[0].InstanceId' \
             --output text 2>&1)
           
@@ -142,8 +134,7 @@ jobs:
           if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" == "None" ] || [ "$INSTANCE_ID" == "null" ]; then
             echo "No instance found with Tier=$TIER tag, trying Environment tag..."
             INSTANCE_ID=$(aws ec2 describe-instances \
-              --filters "Name=tag:Environment,Values=$TIER" \
-              "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
+              --filters "Name=tag:Environment,Values=$TIER" "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
               --query 'Reservations[0].Instances[0].InstanceId' \
               --output text 2>&1)
           fi
@@ -240,197 +231,35 @@ jobs:
             echo "The instance may not be ready for SSM commands yet."
           fi
 
-      - name: Create zip archive
-        run: |
-          set -x
-          echo "Creating zip archive of the codebase..."
-          
-          # Create zip file excluding common files/directories
-          zip -r GDCMVS.zip . \
-            -x "*.git/*" \
-            -x "*node_modules/*" \
-            -x "*client/dist/*" \
-            -x "*.DS_Store" \
-            -x "*.zip" \
-            -x "*.tgz" \
-            -x "*.tar.gz" || {
-            echo "⚠️  Warning: Some files may have been excluded or changed during archiving"
-          }
-          
-          if [ ! -f GDCMVS.zip ]; then
-            echo "❌ Error: Failed to create zip archive"
-            exit 1
-          fi
-          
-          ZIP_SIZE=$(du -h GDCMVS.zip | cut -f1)
-          echo "✅ Zip archive created: GDCMVS.zip (${ZIP_SIZE})"
 
-      - name: Upload zip to S3 (temporary storage)
-        id: upload-s3
-        run: |
-          set -x
-          TIER="${{ inputs.tier }}"
-          
-          S3_BUCKET="evs-apps-nonprod"
-          
-          if [[ "$TIER" == "dev" ]] || [[ "$TIER" == "qa" ]]; then
-            S3_BUCKET="evs-apps-nonprod"
-          elif [[ "$TIER" == "stage" ]] || [[ "$TIER" == "prod" ]]; then
-            S3_BUCKET="evs-apps-prod"
-          else
-            echo "❌ Error: Invalid tier '$TIER'"
-            exit 1
-          fi
-          S3_KEY="gdcmvs/${TIER}/GDCMVS-${GITHUB_SHA}.zip"
-          
-          # Upload zip file to S3
-          echo "Uploading zip file to S3..."
-          echo "S3 Bucket: ${S3_BUCKET}"
-          echo "S3 Key: ${S3_KEY}"
-          aws s3 cp GDCMVS.zip s3://${S3_BUCKET}/${S3_KEY}
-          
-          if [ $? -eq 0 ]; then
-            echo "✅ Zip file uploaded to S3: s3://${S3_BUCKET}/${S3_KEY}"
-            echo "s3_bucket=${S3_BUCKET}" >> $GITHUB_OUTPUT
-            echo "s3_key=${S3_KEY}" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Error: Failed to upload zip file to S3"
-            exit 1
-          fi
-
-      - name: Download and unzip code on EC2 via SSM
+      - name: Delete Opensearch Indices
         run: |
           set -euo pipefail
           set -x
           INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
           TIER="${{ env.TIER }}"
-          TARGET_FOLDER="${{ inputs.target_folder }}"
-          S3_BUCKET="${{ steps.upload-s3.outputs.s3_bucket }}"
-          S3_KEY="${{ steps.upload-s3.outputs.s3_key }}"
+          OPENSEARCH_HOST="${{ vars.OPENSEARCH_HOST }}"
           
-          echo "Deploying code to EC2 instance..."
+          echo "Sending SSM command to delete OpenSearch indices..."
           echo "Tier: $TIER"
           echo "Instance ID: $INSTANCE_ID"
-          echo "Target folder: $TARGET_FOLDER"
-          echo "S3 location: s3://${S3_BUCKET}/${S3_KEY}"
+          echo "Opensearch Host: $OPENSEARCH_HOST"
           
-          # Create deployment script file
-          cat > /tmp/deploy_script.sh <<'DEPLOY_SCRIPT'
-          #!/bin/bash
-          set -e
-          S3_BUCKET="$1"
-          S3_KEY="$2"
-          TARGET_FOLDER="$3"
-          BACKUP_ENABLED="$4"
-          TIER="$5"
-          TEMP_DIR="/tmp/gdcmvs-deploy-$$"
-          ZIP_FILE="${TEMP_DIR}/GDCMVS.zip"
-          
-          echo "Starting deployment..."
-          echo "S3 Bucket: ${S3_BUCKET}"
-          echo "S3 Key: ${S3_KEY}"
-          echo "Target Folder: ${TARGET_FOLDER}"
-          
-          mkdir -p "${TEMP_DIR}"
-          
-          echo "Downloading zip file from S3..."
-          aws s3 cp "s3://${S3_BUCKET}/${S3_KEY}" "${ZIP_FILE}"
-          
-          if [ ! -f "${ZIP_FILE}" ]; then
-            echo "❌ Error: Failed to download zip file from S3"
-            exit 1
-          fi
-          
-          echo "✅ Zip file downloaded successfully"
-          
-          echo "Creating target directory: ${TARGET_FOLDER}"
-          sudo mkdir -p "${TARGET_FOLDER}"
-          
-          BACKUP_ENABLED="$4"
-          if [ "$BACKUP_ENABLED" == "yes" ] && [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
-            BACKUP_DIR="${TARGET_FOLDER}.backup-$(date +%Y%m%d-%H%M%S)"
-            echo "Backing up existing code to: ${BACKUP_DIR}"
-            sudo mv "${TARGET_FOLDER}" "${BACKUP_DIR}"
-            sudo mkdir -p "${TARGET_FOLDER}"
-            echo "✅ Backup created at: ${BACKUP_DIR}"
-            echo "To restore: sudo mv ${BACKUP_DIR} ${TARGET_FOLDER}"
-          elif [ "$BACKUP_ENABLED" == "no" ]; then
-            echo "⚠️  Backup disabled - previous version will be overwritten"
-            if [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
-              echo "Removing existing code..."
-              sudo rm -rf "${TARGET_FOLDER}"
-              sudo mkdir -p "${TARGET_FOLDER}"
-            fi
-          fi
-          
-          echo "Extracting zip file to ${TARGET_FOLDER}..."
-          cd "${TEMP_DIR}"
-          unzip -q "${ZIP_FILE}" -d "${TEMP_DIR}/extracted" || {
-            echo "❌ Error: Failed to extract zip file"
-            exit 1
-          }
-          
-          echo "Syncing extracted files to target directory..."
-          sudo rsync -av --delete "${TEMP_DIR}/extracted/" "${TARGET_FOLDER}/"
-          
-          echo "Writing .env file..."
-          {
-            echo "TIER=${TIER}"
-            echo "PORT=3000"
-            echo "LOGDIR=./logs"
-            echo "OPENSEARCH_HOST=${{ vars.OPENSEARCH_HOST }}"
-          } | sudo tee "${TARGET_FOLDER}/.env" >/dev/null
-          
-          echo "Ensuring log directory exists..."
-          sudo mkdir -p /local/content/mvs/logs
-          sudo chown -R gdcmvs:gdcmvs /local/content/mvs/logs
-          
-          echo "Setting file permissions..."
-          sudo chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
-          
-          echo "Installing dependencies..."
-          if ! command -v npm >/dev/null 2>&1; then
-            export NVM_DIR="/home/gdcmvs/.nvm"
-            if [ -s "$NVM_DIR/nvm.sh" ]; then
-              . "$NVM_DIR/nvm.sh"
-            elif [ -s "/etc/profile.d/nvm.sh" ]; then
-              . "/etc/profile.d/nvm.sh"
-            fi
-          fi
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm i"
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm run build"
-          
-          echo "Cleaning up temporary files..."
-          rm -rf "${TEMP_DIR}"
-          
-          echo "✅ Deployment completed successfully"
-          echo "Code deployed to: ${TARGET_FOLDER}"
-          DEPLOY_SCRIPT
-          
-          # Base64 encode the script to pass it via SSM (use base64 without line breaks)
-          SCRIPT_B64=$(base64 /tmp/deploy_script.sh | tr -d '\n')
-          
-          # Create JSON parameters file using jq to properly escape values
-          BACKUP_OPTION="${{ inputs.backup_previous }}"
-          jq -n \
-            --arg cmd1 "echo '${SCRIPT_B64}' | base64 -d > /tmp/deploy_script.sh" \
-            --arg cmd2 "chmod +x /tmp/deploy_script.sh" \
-            --arg cmd3 "bash /tmp/deploy_script.sh '${S3_BUCKET}' '${S3_KEY}' '${TARGET_FOLDER}' '${BACKUP_OPTION}' '${TIER}'" \
-            '{commands: [$cmd1, $cmd2, $cmd3]}' > /tmp/ssm_params.json
-          
-          # Send SSM command to deploy
-          echo "Sending SSM command to deploy code..."
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
-            --comment "Deploy GDCMVS code from S3" \
-            --parameters file:///tmp/ssm_params.json \
-            --timeout-seconds 600 \
+            --comment "Deleting OpenSearch indices on $TIER" \
+            --parameters "commands=[\"export OPENSEARCH_HOST=\\\"${{ vars.OPENSEARCH_HOST }}\\\" ; ls /local/content/mvs/GDCMVS/utils ;  python3 -m venv venv; source venv/bin/activate ; pip3 install -r /local/content/mvs/GDCMVS/utils/requirements.txt ; python3 /local/content/mvs/GDCMVS/utils/delete_gdcmvs_aws_indices.py ; \"]" \
             --query "Command.CommandId" \
             --output text)
           
           if [ -z "$COMMAND_ID" ] || [ "$COMMAND_ID" == "None" ]; then
             echo "❌ Error: Failed to send SSM command"
+            echo "This could be due to:"
+            echo "  - Instance not in a valid state (not running, SSM agent not ready)"
+            echo "  - IAM role doesn't have SSM permissions"
+            echo "  - SSM agent not installed or not running on the instance"
+            echo "  - Instance not in the same AWS account"
             exit 1
           fi
           
@@ -460,63 +289,113 @@ jobs:
               exit 1
             fi
             
-            echo "Waiting for deployment... (${ELAPSED}s/${MAX_WAIT}s) - Status: $STATUS"
+            echo "Waiting for run to complete... (${ELAPSED}s/${MAX_WAIT}s) - Status: $STATUS"
             sleep 10
             ELAPSED=$((ELAPSED + 10))
           done
+ 
           
-          if [ "$STATUS" != "Success" ]; then
-            echo "❌ Error: Deployment did not reach Success within ${MAX_WAIT}s"
+          FINAL_STATUS=$(aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID" \
+            --query 'Status' \
+            --output text)
+          if [ "$FINAL_STATUS" != "Success" ]; then
+            echo "❌ Error: Rebuild failed with status: $FINAL_STATUS"
             aws ssm get-command-invocation \
               --command-id "$COMMAND_ID" \
               --instance-id "$INSTANCE_ID" \
               --query '[Status, StandardOutputContent, StandardErrorContent]' \
               --output table
             exit 1
+          else  
+            echo "✅ Indices deleted successfully - on instance $INSTANCE_ID for tier $TIER"  
+            aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query '[Status, StandardOutputContent, StandardErrorContent]' \
+              --output table
+            exit 0
+          fi  
+
+
+      - name: Rebuild OpenSearch index
+        run: |
+          set -euo pipefail
+          set -x
+          INSTANCE_ID="${{ steps.discover-instance.outputs.INSTANCE_ID }}"
+          TIER="${{ env.TIER }}"
+
+          echo "Triggering OpenSearch index rebuild..."
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Rebuild OpenSearch index on $TIER" \
+            --parameters 'commands=["export TOKEN=$(curl -fsS -k -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\"); curl -fsS -H \"X-aws-ec2-metadata-token: $TOKEN\" -k \"http://localhost:3000/search/buildIndex\" ;   "]' \
+            --query "Command.CommandId" \
+            --output text)
+
+          if [ -z "$COMMAND_ID" ] || [ "$COMMAND_ID" == "None" ]; then
+            echo "❌ Error: Failed to send SSM command"
+            exit 1
           fi
-          
-          # Get command output
-          echo ""
-          echo "=== Deployment Command Output ==="
-          aws ssm get-command-invocation \
+
+          echo "✅ Command sent. Command ID: $COMMAND_ID"
+          echo "Waiting for command to complete..."
+
+          # Wait for command to complete
+          MAX_WAIT=600
+          ELAPSED=0
+          while [ $ELAPSED -lt $MAX_WAIT ]; do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query 'Status' \
+              --output text 2>/dev/null || echo "Unknown")
+            
+            if [ "$STATUS" == "Success" ]; then
+              echo "✅ Rebuild command completed successfully"
+              break
+            elif [ "$STATUS" == "Failed" ] || [ "$STATUS" == "Cancelled" ] || [ "$STATUS" == "TimedOut" ]; then
+              echo "❌ Error: Rebuild command failed with status: $STATUS"
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id "$INSTANCE_ID" \
+                --query '[Status, StandardOutputContent, StandardErrorContent]' \
+                --output table
+              exit 1
+            fi
+            
+            echo "Waiting for run to complete... (${ELAPSED}s/${MAX_WAIT}s) - Status: $STATUS"
+            sleep 10
+            ELAPSED=$((ELAPSED + 10))
+          done
+
+          FINAL_STATUS=$(aws ssm get-command-invocation \
             --command-id "$COMMAND_ID" \
             --instance-id "$INSTANCE_ID" \
-            --query '[Status, StandardOutputContent, StandardErrorContent]' \
-            --output table
-
-      - name: Clean up S3 temporary file
-        if: always()
-        run: |
-          set -x
-          S3_BUCKET="${{ steps.upload-s3.outputs.s3_bucket }}"
-          S3_KEY="${{ steps.upload-s3.outputs.s3_key }}"
-          
-          if [ -n "$S3_BUCKET" ] && [ -n "$S3_KEY" ]; then
-            echo "Cleaning up temporary S3 file..."
-            aws s3 rm "s3://${S3_BUCKET}/${S3_KEY}" || echo "⚠️  Warning: Failed to delete S3 file (may not exist)"
+            --query 'Status' \
+            --output text)
+    
+          if [ "$FINAL_STATUS" != "Success" ]; then
+            echo "❌ Error: Rebuild failed with status: $FINAL_STATUS"
+            aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query '[Status, StandardOutputContent, StandardErrorContent]' \
+              --output table
+            exit 1
+          else  
+            echo "✅ Success: Indics rebuilt verified successfully on instance $INSTANCE_ID for tier $TIER"  
+            aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --query '[Status, StandardOutputContent, StandardErrorContent]' \
+              --output table
+            exit 0
           fi
 
 
-  restart-service:
-    needs: deploy-to-ec2
-    uses: ./.github/workflows/restart-nodejs.yml
-    with:
-      tier: ${{ inputs.tier }}
-    secrets: inherit
-
-
-  delete-then-rebuild-indices-service:
-    needs: restart-service
-    uses: ./.github/workflows/delete-opensearch-indices.yml
-    with:
-      tier: ${{ inputs.tier }}
-    secrets: inherit
-
-    
-  restart-service-final:
-    needs: delete-then-rebuild-indices-service
-    uses: ./.github/workflows/restart-nodejs.yml
-    with:
-      tier: ${{ inputs.tier }}
-    secrets: inherit
+          echo "✅ OpenSearch indices deleted successfully on instance $INSTANCE_ID for tier $TIER"
 
