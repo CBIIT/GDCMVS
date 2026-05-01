@@ -28,6 +28,7 @@ module.exports = app => {
   app.use(methodOverride());
   app.use(cookieParser());
   app.use(express.static(path.join(config.root, 'client/static')));
+  app.use('/vendor/lodash', express.static(path.join(config.root, 'node_modules/lodash')));
   app.set('viewPath', 'client');
 
   if ((tier === 'development') || (tier === 'dev')) {
