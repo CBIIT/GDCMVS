@@ -117,12 +117,14 @@ jobs:
         id: discover-instance
         run: |
           set -x
+          # force TIER value to be UPPERCASE, e.g. DEV not dev
+          declare -u TIER
           TIER="${{ env.TIER }}"
           
           echo "Discovering EC2 instance for tier: $TIER"
           
           # Query EC2 instances by tier tag
-          # Assumes instances are tagged with: Tier=dev, Tier=qa, Tier=stage, or Tier=prod
+          # Assumes instances are tagged with: Tier=DEV, Tier=QA, Tier=STAGE, or Tier=PROD
           INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:Tier,Values=$TIER" \
             "Name=tag:App,Values=gdc" "Name=instance-state-name,Values=running,stopped" \
