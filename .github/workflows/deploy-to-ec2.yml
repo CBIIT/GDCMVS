@@ -344,22 +344,22 @@ jobs:
           echo "✅ Zip file downloaded successfully"
           
           echo "Creating target directory: ${TARGET_FOLDER}"
-          sudo mkdir -p "${TARGET_FOLDER}"
+          mkdir -p "${TARGET_FOLDER}"
           
           BACKUP_ENABLED="$4"
           if [ "$BACKUP_ENABLED" == "yes" ] && [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
             BACKUP_DIR="${TARGET_FOLDER}.backup-$(date +%Y%m%d-%H%M%S)"
             echo "Backing up existing code to: ${BACKUP_DIR}"
-            sudo mv "${TARGET_FOLDER}" "${BACKUP_DIR}"
-            sudo mkdir -p "${TARGET_FOLDER}"
+            mv "${TARGET_FOLDER}" "${BACKUP_DIR}"
+            mkdir -p "${TARGET_FOLDER}"
             echo "✅ Backup created at: ${BACKUP_DIR}"
-            echo "To restore: sudo mv ${BACKUP_DIR} ${TARGET_FOLDER}"
+            echo "To restore: mv ${BACKUP_DIR} ${TARGET_FOLDER}"
           elif [ "$BACKUP_ENABLED" == "no" ]; then
             echo "⚠️  Backup disabled - previous version will be overwritten"
             if [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
               echo "Removing existing code..."
-              sudo rm -rf "${TARGET_FOLDER}"
-              sudo mkdir -p "${TARGET_FOLDER}"
+              rm -rf "${TARGET_FOLDER}"
+              mkdir -p "${TARGET_FOLDER}"
             fi
           fi
           
@@ -371,7 +371,7 @@ jobs:
           }
           
           echo "Syncing extracted files to target directory..."
-          sudo rsync -av --delete "${TEMP_DIR}/extracted/" "${TARGET_FOLDER}/"
+          rsync -av --delete "${TEMP_DIR}/extracted/" "${TARGET_FOLDER}/"
           
           echo "Writing .env file..."
           {
@@ -379,14 +379,14 @@ jobs:
             echo "PORT=3000"
             echo "LOGDIR=./logs"
             echo "OPENSEARCH_HOST=${{ vars.OPENSEARCH_HOST }}"
-          } | sudo tee "${TARGET_FOLDER}/.env" >/dev/null
+          } | tee "${TARGET_FOLDER}/.env" >/dev/null
           
           echo "Ensuring log directory exists..."
-          sudo mkdir -p /local/content/mvs/logs
-          sudo chown -R gdcmvs:gdcmvs /local/content/mvs/logs
+          mkdir -p /local/content/mvs/logs
+          chown -R gdcmvs:gdcmvs /local/content/mvs/logs
           
           echo "Setting file permissions..."
-          sudo chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
+          chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
           
           echo "Installing dependencies..."
           if ! command -v npm >/dev/null 2>&1; then
@@ -397,8 +397,8 @@ jobs:
               . "/etc/profile.d/nvm.sh"
             fi
           fi
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm i"
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm run build"
+          cd \"${TARGET_FOLDER}\" && npm i"
+          cd \"${TARGET_FOLDER}\" && npm run build"
           
           echo "Cleaning up temporary files..."
           rm -rf "${TEMP_DIR}"
