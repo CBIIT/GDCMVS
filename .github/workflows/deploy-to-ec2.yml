@@ -318,6 +318,14 @@ jobs:
           cat > /tmp/deploy_script.sh <<'DEPLOY_SCRIPT'
           #!/bin/bash
           set -e
+          if [ "$(id -u)" -ne 0 ]; then
+            echo "Error: The SSM deployment script must run as root." >&2
+            exit 1
+          fi
+          if ! command -v runuser >/dev/null 2>&1; then
+            echo "Error: runuser is required to build as gdcmvs." >&2
+            exit 1
+          fi
           S3_BUCKET="$1"
           S3_KEY="$2"
           TARGET_FOLDER="$3"
@@ -344,22 +352,22 @@ jobs:
           echo "✅ Zip file downloaded successfully"
           
           echo "Creating target directory: ${TARGET_FOLDER}"
-          sudo mkdir -p "${TARGET_FOLDER}"
+          mkdir -p "${TARGET_FOLDER}"
           
           BACKUP_ENABLED="$4"
           if [ "$BACKUP_ENABLED" == "yes" ] && [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
             BACKUP_DIR="${TARGET_FOLDER}.backup-$(date +%Y%m%d-%H%M%S)"
             echo "Backing up existing code to: ${BACKUP_DIR}"
-            sudo mv "${TARGET_FOLDER}" "${BACKUP_DIR}"
-            sudo mkdir -p "${TARGET_FOLDER}"
+            mv "${TARGET_FOLDER}" "${BACKUP_DIR}"
+            mkdir -p "${TARGET_FOLDER}"
             echo "✅ Backup created at: ${BACKUP_DIR}"
-            echo "To restore: sudo mv ${BACKUP_DIR} ${TARGET_FOLDER}"
+            echo "To restore (as root): mv ${BACKUP_DIR} ${TARGET_FOLDER}"
           elif [ "$BACKUP_ENABLED" == "no" ]; then
             echo "⚠️  Backup disabled - previous version will be overwritten"
             if [ -d "${TARGET_FOLDER}" ] && [ "$(ls -A ${TARGET_FOLDER} 2>/dev/null)" ]; then
               echo "Removing existing code..."
-              sudo rm -rf "${TARGET_FOLDER}"
-              sudo mkdir -p "${TARGET_FOLDER}"
+              rm -rf "${TARGET_FOLDER}"
+              mkdir -p "${TARGET_FOLDER}"
             fi
           fi
           
@@ -371,7 +379,7 @@ jobs:
           }
           
           echo "Syncing extracted files to target directory..."
-          sudo rsync -av --delete "${TEMP_DIR}/extracted/" "${TARGET_FOLDER}/"
+          rsync -av --delete "${TEMP_DIR}/extracted/" "${TARGET_FOLDER}/"
           
           echo "Writing .env file..."
           {
@@ -379,26 +387,34 @@ jobs:
             echo "PORT=3000"
             echo "LOGDIR=./logs"
             echo "OPENSEARCH_HOST=${{ vars.OPENSEARCH_HOST }}"
-          } | sudo tee "${TARGET_FOLDER}/.env" >/dev/null
+          } > "${TARGET_FOLDER}/.env"
           
           echo "Ensuring log directory exists..."
-          sudo mkdir -p /local/content/mvs/logs
-          sudo chown -R gdcmvs:gdcmvs /local/content/mvs/logs
+          mkdir -p /local/content/mvs/logs
+          chown -R gdcmvs:gdcmvs /local/content/mvs/logs
           
           echo "Setting file permissions..."
-          sudo chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
+          chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
           
           echo "Installing dependencies..."
-          if ! command -v npm >/dev/null 2>&1; then
-            export NVM_DIR="/home/gdcmvs/.nvm"
-            if [ -s "$NVM_DIR/nvm.sh" ]; then
-              . "$NVM_DIR/nvm.sh"
-            elif [ -s "/etc/profile.d/nvm.sh" ]; then
-              . "/etc/profile.d/nvm.sh"
+          runuser -u gdcmvs -- bash -lc '
+            set -e
+            cd "$1"
+            if ! command -v npm >/dev/null 2>&1; then
+              export NVM_DIR="$HOME/.nvm"
+              if [ -s "$NVM_DIR/nvm.sh" ]; then
+                . "$NVM_DIR/nvm.sh"
+              elif [ -s "/etc/profile.d/nvm.sh" ]; then
+                . "/etc/profile.d/nvm.sh"
+              fi
             fi
-          fi
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm i"
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm run build"
+            if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+              echo "Error: Node.js and npm must be available for gdcmvs." >&2
+              exit 1
+            fi
+            npm i
+            npm run build
+          ' bash "${TARGET_FOLDER}"
           
           echo "Cleaning up temporary files..."
           rm -rf "${TEMP_DIR}"
@@ -519,4 +535,3 @@ jobs:
     with:
       tier: ${{ inputs.tier }}
     secrets: inherit
-
