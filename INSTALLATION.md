@@ -504,6 +504,20 @@ curl http://localhost:3000/search/buildIndex
 
 ---
 
+## EC2 Deployment Prerequisites
+
+The `deploy-to-ec2` GitHub Actions workflow uses AWS Systems Manager's
+`AWS-RunShellScript` document. The SSM agent must execute commands as root;
+deployment and the downstream Node.js restart workflow check this explicitly.
+Root operations run directly rather than through `sudo`, avoiding failures from
+`sudo` password-expiration policies.
+
+The instance must have the `gdcmvs` account and `runuser` installed. Dependency
+installation and the client build run as `gdcmvs` using `runuser`, not as root.
+Node.js and npm must be available in that user's login shell, or through
+`$HOME/.nvm/nvm.sh` or `/etc/profile.d/nvm.sh`. NVM initialization happens inside
+the same user shell that runs `npm i` and `npm run build`.
+
 ## Development Workflow
 
 ### Running in Development Mode
@@ -629,4 +643,3 @@ curl http://localhost:3000/search/buildIndex
 
 **Last Updated:** 2025
 **Project Version:** v2.2.19
-
