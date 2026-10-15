@@ -389,16 +389,21 @@ jobs:
           sudo chown -R gdcmvs:gdcmvs "${TARGET_FOLDER}"
           
           echo "Installing dependencies..."
-          if ! command -v npm >/dev/null 2>&1; then
-            export NVM_DIR="/home/gdcmvs/.nvm"
-            if [ -s "$NVM_DIR/nvm.sh" ]; then
-              . "$NVM_DIR/nvm.sh"
-            elif [ -s "/etc/profile.d/nvm.sh" ]; then
-              . "/etc/profile.d/nvm.sh"
+          sudo -u gdcmvs -H bash -lc "
+            set -e
+            export NVM_DIR=\"\$HOME/.nvm\"
+            if [ -s \"\$NVM_DIR/nvm.sh\" ]; then
+              . \"\$NVM_DIR/nvm.sh\"
+            elif [ -s \"/etc/profile.d/nvm.sh\" ]; then
+              . \"/etc/profile.d/nvm.sh\"
             fi
-          fi
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm i"
-          sudo -u gdcmvs -H bash -lc "cd \"${TARGET_FOLDER}\" && npm run build"
+            if command -v nvm >/dev/null 2>&1; then
+              nvm use 22
+            fi
+            cd \"${TARGET_FOLDER}\"
+            npm install
+            npm run build
+          "
           
           echo "Cleaning up temporary files..."
           rm -rf "${TEMP_DIR}"
@@ -519,4 +524,3 @@ jobs:
     with:
       tier: ${{ inputs.tier }}
     secrets: inherit
-
